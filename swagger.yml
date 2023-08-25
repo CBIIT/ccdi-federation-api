@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: CCDI Pediatric Cancer Data Catalog
+  description: |-
+    The CCDI Pediatric Cancer Data Catalog is an API that supports the querying
+    of federated pediatric cancer within the broader community. The goal of the
+    API is to support identification of pediatric cancer samples of interest via
+    a variety of query parameters.
+  version: "0.1"
+externalDocs:
+  description: Learn more about the Childhood Cancer Data Initiative
+  url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
+servers:
+  - url: https://ccdi.stjude.cloud/api/v0
+tags: 
+  - name: info
+    description: Information about the API implementation itself.
+paths:
+  /info:
+    get:
+      tags:
+        - info
+      summary: Information about the API implementation itself.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+components:
+  schemas:
+    Info:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Organization A — CCDI Pediatric Cancer Catalog API"
+        version:
+          type: string
+          example: 1.0.0
+        support_email:
+          type: string
+          example: "support@organization.org"
