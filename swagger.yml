@@ -12,6 +12,10 @@ externalDocs:
   url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
 servers:
   - url: https://ccdi.stjude.cloud/api/v0
+  - url: http://ccdi.treehouse.gi.ucsc.edu/api/v0
+    description: Treehouse CCDI API server
+  - url: http://ccdi.treehouse.gi.ucsc.edu/api/testing
+    description: Treehouse CCDI API internal staging server for testing
 tags: 
   - name: info
     description: Information about the API implementation itself.
