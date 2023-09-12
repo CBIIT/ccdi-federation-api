@@ -1,4 +1,5 @@
-openapi: 3.0.3
+---
+openapi: 3.1.0
 info:
   title: CCDI Pediatric Cancer Data Catalog
   description: |-
@@ -12,14 +13,18 @@ externalDocs:
   url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
 servers:
   - url: https://ccdi.stjude.cloud/api/v0
-tags: 
-  - name: info
+tags:
+  - name: Info
     description: Information about the API implementation itself.
+  - name: Studies
+    description: CCDI Metadata Template Study.
+  - name: Demographics
+    description: CCDI Metadata Template Demographics.
 paths:
   /info:
     get:
       tags:
-        - info
+        - Info
       summary: Information about the API implementation itself.
       responses:
         '200':
@@ -27,10 +32,178 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Info'
+                $ref: '#/components/schemas/info'
+  /studies:
+    get:
+      tags:
+        - Studies
+      summary: Find studies
+      description: >-
+        A list of studies.
+        Retrieve all studies or studies found by attributes.
+      operationId: searchStudies
+      parameters:
+        - {in: query, name: page, schema: {type: integer}}
+        - {in: query, name: per_page, schema: {type: integer}}
+        - name: phs_accession
+          in: query
+          description: CDE 11524544 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: study_name
+          in: query
+          description: CDE 3443999 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: study_short_title
+          in: query
+          description: CDE 3443999 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: study_acronym
+          in: query
+          description: A one word acronym to represent the study.
+          required: false
+          schema:
+            type: string
+        - name: grant_id
+          in: query
+          description: CDE 2534569 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: institution
+          in: query
+          description: institution name.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/paginatedResult'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/study'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+  /studies/{study_id}:
+    get:
+      tags:
+        - Studies
+      summary: Find study by study Id.
+      operationId: retrieveStudy
+      parameters:
+        - name: study_id
+          in: path
+          description: Study to return by Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/study'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+  /demographics:
+    get:
+      tags:
+        - Demographics
+      summary: Find participants
+      description: >-
+        A list of participants.
+        Retrieve all participants or participants found by attributes.
+      operationId: searchParticipants
+      parameters:
+        - {in: query, name: page, schema: {type: integer}}
+        - {in: query, name: per_page, schema: {type: integer}}
+        - name: study_id
+          in: query
+          description: CDE 6380045 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: CDE 6343385 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: race
+          in: query
+          description: CDE 2192199 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: ethnicity
+          in: query
+          description: CDE 2192217 v.2.0.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/paginatedResult'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/participant'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+  /demographics/{participant_id}:
+    get:
+      tags:
+        - Demographics
+      summary: Find participant by participant Id.
+      operationId: retrieveParticipant
+      parameters:
+        - name: participant_id
+          in: path
+          description: Participant to return by Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/participant'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
 components:
   schemas:
-    Info:
+    info:
       type: object
       properties:
         name:
@@ -42,3 +215,108 @@ components:
         support_email:
           type: string
           example: "support@organization.org"
+    study:
+      type: object
+      properties:
+        study_id:
+          type: string
+          description: >-
+            CDE 6380045 v1.0. Required. A unique identifier for a study.
+            example: phs008421
+        phs_accession:
+          type: string
+          description: >-
+            CDE 11524544 v1.0. Required.
+          example: phs008421
+        study_name:
+          type: string
+          description: >-
+            CDE 3443999 v1.0. Required.
+          example: CCDI-QW
+        study_short_title:
+          type: string
+          description: >-
+            CDE 3443999 v1.0. Required.
+          example: CCDI-QW
+        study_acronym:
+          type: string
+          description: >-
+            Required. A one word acronym to represent the study.
+          example: PHS008421
+        study_description:
+          type: string
+          description: >-
+            The text for reporting information
+            about race the study.
+          example: a description of a study phs008421.
+        grant_id:
+          type: string
+          description: >-
+            CDE 2534569 v1.0. Required.
+          example: 3P18CA008765-4321
+        institution:
+          type: string
+          description: >-
+            Required.
+          example: CHoP
+      required:
+        - study_id
+        - phs_accession
+        - study_short_title
+        - study_acronym
+        - grant_id
+    participant:
+      type: object
+      properties:
+        study_id:
+          type: string
+          description: >-
+            CDE 6380045 v1.0. Required. A unique identifier for a study.
+          example: phs008421
+        study_arm_id:
+          type: string
+          description: CDE 6380045 v1.0. An identifier for a study arm.
+        participant_id:
+          type: string
+          description: CDE 6867052 v1.0. Required.
+          example: IID_H842555
+        race:
+          type: string
+          description: >-
+            CDE 2192199 v1.0. Required. The text for reporting information
+            about race
+            based on the Office of Management and Budget (OMB) categories.
+          example: Not Reported
+        sex:
+          type: string
+          description: >-
+            CDE 6343385 v1.0 Required.
+          example: U
+        ethnicity:
+          type: string
+          description: >-
+            CDE 2192217 v.2.0.
+            (OMB) categories.
+          example: Unknown
+        alternate_participant_id:
+          type: string
+          description: CDE 6867052 v.1.0.
+          example: alt_ID_H842555
+      required:
+        - study_id
+        - participant_id
+        - race
+        - sex
+        - ethnicity
+    paginatedResult:
+      type: object
+      properties:
+        has_next: {type: boolean, example: true}
+        has_prev: {type: boolean, example: true}
+        page: {type: number, example: 3}
+        pages: {type: number, example: 5}
+        per_page: {type: number, example: 20}
+        total: {type: number, example: 100}
+        results: {type: array, items: {}}
+        # paginatedResult
+...
