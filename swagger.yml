@@ -21,7 +21,7 @@ tags:
   - name: Demographics
     description: CCDI Metadata Template Demographics.
   - name: Samples
-    description: CCDI Metadata Template Demographics.
+    description: CCDI Metadata Template Samples.
 paths:
   /info:
     get:
