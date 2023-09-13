@@ -1,5 +1,5 @@
 ---
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   title: CCDI Pediatric Cancer Data Catalog
   description: |-
@@ -19,6 +19,8 @@ tags:
   - name: Studies
     description: CCDI Metadata Template Study.
   - name: Demographics
+    description: CCDI Metadata Template Demographics.
+  - name: Samples
     description: CCDI Metadata Template Demographics.
 paths:
   /info:
@@ -201,6 +203,96 @@ paths:
           description: TBD
         '404':
           description: TBD
+  /samples:
+    get:
+      tags:
+        - Samples
+      summary: Find samples.
+      description: >-
+        A list of samples.
+        Retrieve all samples or samples found by attributes.
+      operationId: searchSamples
+      parameters:
+        - {in: query, name: page, schema: {type: integer}}
+        - {in: query, name: per_page, schema: {type: integer}}
+        - name: sample_type
+          in: query
+          description: CDE 11524544 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: anatomic_site
+          in: query
+          description: CDE 6161035 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: participant_age_at_collection
+          in: query
+          description: CDE 10609539 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: sample_tumor_status
+          in: query
+          description: CDE 5432687 v.2.0.
+          required: false
+          schema:
+            type: string
+        - name: participant_id
+          in: query
+          description: CDE 2534569 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: tumor_classification
+          in: query
+          description: CDE 12922545 v.1.0.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/paginatedResult'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/sample'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+  /samples/{sample_id}:
+    get:
+      tags:
+        - Samples
+      summary: Find sample by sample Id.
+      operationId: retrieveSample
+      parameters:
+        - name: sample_id
+          in: path
+          description: Sample to return by Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sample'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
 components:
   schemas:
     info:
@@ -319,4 +411,91 @@ components:
         total: {type: number, example: 100}
         results: {type: array, items: {}}
         # paginatedResult
+    sample:
+      type: object
+      properties:
+        sample_id:
+          type: string
+          description: >-
+            CDE 2003904 v.1.0. Required. A unique sequence
+            of alphanumeric characters
+            used to _identify the sample in the investigation or study.
+          example: IID_H842555.spec1
+        participant_id:
+          type: string
+          description: >-
+            CDE 6867052 v1.0. Required. A unique sequence of
+            alphanumeric characters
+            used to _identify the participant, in the investigation or study,
+            of the specimen at it's point of origin.
+          example: IID_H842555
+        sample_type:
+          type: string
+          description: >-
+            CDE 3111302 v.2.0. Required.
+            Specimen Type Collection Biospecimen Type.
+          example: Normal
+          enum:
+            - Normal
+            - Adnormal
+            # a list of 36 PVs.
+        anatomic_site:
+          type: string
+          description: >-
+            CDE 6161035 v.1.0. Required. The text term used to describe
+            the anatomic site of
+            origin, of the patient's malignant disease, as described by
+            the World Health Organization's (WHO) International
+            Classification of Diseases for Oncology (ICD-O).
+          example: sample
+          enum:
+            - 'Abdomen, NOS'
+            - 'Abdominal esophagus'
+            # a list here of 333 PVs
+            - 'Vulva, NOS'
+            - 'Waldeyer ring'
+        participant_age_at_collection:
+          type: integer
+          description: >-
+            CDE 10609539 v1.0. Required. The age of the participant
+            (in days) at the time of sample collection.
+          example: 6234
+        sample_tumor_status:
+          type: string
+          description: >-
+            CDE 5432687 v.2.0.
+            Tissue Sample Description Category.
+          example: Normal
+          enum:
+            - Normal
+            - Adnormal
+            # a list of 8 values
+        tumor_classification:
+          type: string
+          description: >-
+            CDE 12922545 v1.0. Required. Tumor Classification Category.
+          example: Unknown
+          enum:
+            - 'Metastatic'
+            - 'Not Stated'
+            - 'Primary tumor'
+            - 'Regional Disease'
+            - 'Unknown'
+        sample_description:
+          type: string
+          description: >-
+            CDE 2003907 v.3.0. Text description of a sample or specimen.
+          example: Normal sample for tumor comparison
+        alternate_sample_id:
+          type: string
+          description: >-
+            CDE 2003904 v.4.0. Sample ID Number.
+      required:
+        - sample_id
+        - participant_id
+        - sample_type
+        - sample_tumor_status
+        - anatomic_site
+        - participant_age_at_collection
+        - tumor_classification
 ...
