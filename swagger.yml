@@ -495,6 +495,7 @@ components:
     paginatedResult:
       type: object
       properties:
+        owner: {type: string, example: 'CHoP'}
         has_next: {type: boolean, example: true}
         has_prev: {type: boolean, example: true}
         page: {type: number, example: 3}
