@@ -21,7 +21,9 @@ tags:
   - name: Demographics
     description: CCDI Metadata Template Demographics.
   - name: Samples
-    description: CCDI Metadata Template Demographics.
+    description: CCDI Metadata Template Samples.
+  - name: Diagnoses
+    description: CCDI Metadata Template Diagnoses.
 paths:
   /info:
     get:
@@ -293,6 +295,96 @@ paths:
           description: TBD
         '404':
           description: TBD
+  /diagnoses:
+    get:
+      tags:
+        - Diagnoses
+      summary: Find diagnoses.
+      description: >-
+        A list of diagnoses.
+        Retrieve all diagnoses or diagnoses found by attributes.
+      operationId: searchDiagnoses
+      parameters:
+        - {in: query, name: page, schema: {type: integer}}
+        - {in: query, name: per_page, schema: {type: integer}}
+        - name: anatomic_site
+          in: query
+          description: CDE 6161035 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: disease_phase
+          in: query
+          description: CDE 12217251 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: age_at_diagnosis
+          in: query
+          description: CDE 3225640 v2.0.
+          required: false
+          schema:
+            type: string
+        - name: diagnosis_icd_o
+          in: query
+          description: CDE 11326261 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: participant_id
+          in: query
+          description: CDE 2534569 v.1.0.
+          required: false
+          schema:
+            type: string
+        - name: vital_status
+          in: query
+          description: CDE 2847330 v.1.0.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/paginatedResult'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/diagnosis'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+  /diagnoses/{diagnosis_id}:
+    get:
+      tags:
+        - Diagnoses
+      summary: Find diagnosis by diagnosis Id.
+      operationId: retrieveDiagnosis
+      parameters:
+        - name: diagnosis_id
+          in: path
+          description: Diagnosis to return by Id.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/diagnosis'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
 components:
   schemas:
     info:
@@ -447,7 +539,7 @@ components:
             origin, of the patient's malignant disease, as described by
             the World Health Organization's (WHO) International
             Classification of Diseases for Oncology (ICD-O).
-          example: sample
+          example: Not Reported
           enum:
             - 'Abdomen, NOS'
             - 'Abdominal esophagus'
@@ -498,4 +590,75 @@ components:
         - anatomic_site
         - participant_age_at_collection
         - tumor_classification
+    diagnosis:
+      type: object
+      properties:
+        diagnosis_id:
+          type: string
+          description: >-
+            Required. A unique sequence of alphanumeric characters used
+            to identify the participant diagnosis in the investigation or
+            study, which is used for linking metadata.
+          example: DG__5555-7777__0
+        participant_id:
+          type: string
+          description: >-
+            CDE 6867052 v1.0. Required. A unique sequence of
+            alphanumeric characters
+            used to _identify the participant, in the investigation or study,
+            of the specimen at it's point of origin.
+          example: IID_H842555
+        anatomic_site:
+          type: string
+          description: >-
+            CDE 6161035 v.1.0. Required. The text term used to describe
+            the anatomic site of
+            origin, of the patient's malignant disease, as described by
+            the World Health Organization's (WHO) International
+            Classification of Diseases for Oncology (ICD-O).
+          example: Not Reported
+        disease_phase:
+          type: string
+          description: >-
+            CDE 12217251 v1.0. Required. A unique sequence of
+            alphanumeric characters
+            used to _identify the participant, in the investigation or study,
+            of the specimen at it's point of origin.
+          example: Initial Diagnosis
+          enum:
+            - 'Initial Diagnosis'
+            - 'Not Reported'
+            # a list of 8 PVs
+        diagnosis_icd_o:
+          type: integer
+          description: >-
+            CDE 11326261 v1.0. Required. ISpecimen Tumor Tissue ICD-O-3.
+            Morphology Code.
+          example: '9400/3 : Astrocytoma, NOS'
+        age_at_diagnosis:
+          type: integer
+          description: >-
+            CDE 3225640 v2.0. Required. Age at the time of diagnosis
+            expressed in number of days since birth.
+          example: 6234
+        vital_status:
+          type: string
+          description: >-
+            CDE 2847330 v.1.0. Participant vital status
+          example: Unspecified
+          enum:
+            - Not Reported
+            - Alive
+            - Dead
+            - Unknown
+            - Unspecified
+            # a list of 5 values
+      required:
+        - diagnosis_id
+        - participant_id
+        - anatomic_site
+        - disease_phase
+        - diagnosis_icd_o
+        - age_at_diagnosis
+        - vital_status
 ...
