@@ -583,8 +583,14 @@ components:
             Tissue Sample Description Category.
           example: Normal
           enum:
+            - Abnormal
             - Normal
-            - Adnormal
+            - Peritumoral
+            - Tumor
+            - Non-neoplastic
+            - Unavailable
+            - Unknown
+            - Unspecified
             # a list of 8 values
         tumor_classification:
           type: string
@@ -593,9 +599,9 @@ components:
           example: Unknown
           enum:
             - 'Metastatic'
-            - 'Not Stated'
-            - 'Primary tumor'
-            - 'Regional Disease'
+            - 'Not Reported'
+            - 'Primary'
+            - 'Regional'
             - 'Unknown'
         sample_description:
           type: string
@@ -640,7 +646,11 @@ components:
             origin, of the patient's malignant disease, as described by
             the World Health Organization's (WHO) International
             Classification of Diseases for Oncology (ICD-O).
-          example: Not Reported
+          example: Abdomen, NOS
+          enum:
+            - 'Abdomen, NOS'
+            - 'Not Reported'
+            # a list of 333 PVs
         disease_phase:
           type: string
           description: >-
@@ -650,15 +660,23 @@ components:
             of the specimen at it's point of origin.
           example: Initial Diagnosis
           enum:
-            - 'Initial Diagnosis'
+            - 'Post-Mortem'
+            - 'Unknown'
             - 'Not Reported'
+            - 'Refactory'
+            - 'Progression'
+            - 'Relapse'
+            - 'Initial Diagnosis'
+            - 'Relapse/Progression'
             # a list of 8 PVs
         diagnosis_icd_o:
           type: integer
           description: >-
             CDE 11326261 v1.0. Required. ISpecimen Tumor Tissue ICD-O-3.
             Morphology Code.
-          example: '9400/3 : Astrocytoma, NOS'
+          example: 'ICD-O-3 (By Reference)'
+          enum:
+            - 'ICD-O-3 (By Reference)'
         age_at_diagnosis:
           type: integer
           description: >-
