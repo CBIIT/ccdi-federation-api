@@ -37,7 +37,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/info'
-  /studies:
+  /study:
     get:
       tags:
         - Studies
@@ -103,7 +103,7 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /studies/{study_id}:
+  /study/{study_id}:
     get:
       tags:
         - Studies
@@ -127,7 +127,8 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /demographics:
+  /demographic:
+    # this endpoint name and related attribute and parameters names - TBD
     get:
       tags:
         - Demographics
@@ -181,7 +182,8 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /demographics/{participant_id}:
+  /demographic/{participant_id}:
+    # this endpoint name - TBD
     get:
       tags:
         - Demographics
@@ -205,7 +207,7 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /samples:
+  /sample:
     get:
       tags:
         - Samples
@@ -271,7 +273,7 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /samples/{sample_id}:
+  /sample/{sample_id}:
     get:
       tags:
         - Samples
@@ -295,7 +297,7 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /diagnoses:
+  /diagnosis:
     get:
       tags:
         - Diagnoses
@@ -361,7 +363,7 @@ paths:
           description: TBD
         '404':
           description: TBD
-  /diagnoses/{diagnosis_id}:
+  /diagnosis/{diagnosis_id}:
     get:
       tags:
         - Diagnoses
@@ -451,6 +453,7 @@ components:
         - grant_id
     participant:
       type: object
+      # the name of this resource TBD: participant vs subject
       properties:
         study_id:
           type: string
