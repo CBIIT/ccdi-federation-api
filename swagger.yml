@@ -467,21 +467,44 @@ components:
         race:
           type: string
           description: >-
-            CDE 2192199 v1.0. Required. The text for reporting information
-            about race
+            CDE 2192199 v1.0. Required. The text for reporting
+            information about race
             based on the Office of Management and Budget (OMB) categories.
           example: Not Reported
+          enum:
+            - 'Not allowed to collect'
+            - 'Native Hawaiian or other Pacific Islander'
+            - 'Not Reported'
+            - 'Unknown'
+            - 'American Indian or Alaska Native'
+            - 'Asian'
+            - 'Black or African American'
+            - 'White'
+            # a list of 8 PVs
         sex:
           type: string
           description: >-
             CDE 6343385 v1.0 Required.
           example: U
+          enum:
+            - U
+            - F
+            - M
+            - UNDIFFERENTIATED
+            # a list of 4 PVs
         ethnicity:
           type: string
           description: >-
             CDE 2192217 v.2.0.
             (OMB) categories.
           example: Unknown
+          enum:
+            - 'Not allowed to collect'
+            - 'Hispanic or Latino'
+            - 'Not Hispanic or Latino'
+            - 'Unknown'
+            - 'Not Reported'
+            # a list of 5 PVs
         alternate_participant_id:
           type: string
           description: CDE 6867052 v.1.0.
