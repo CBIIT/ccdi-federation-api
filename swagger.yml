@@ -14,6 +14,7 @@ externalDocs:
   url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
 servers:
   - url: https://ccdi.stjude.cloud/api/v0
+    description: St. Jude Children's Research Hospital API server
   - url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
     description: Treehouse CCDI API server
 tags: 
