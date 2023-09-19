@@ -6,6 +6,8 @@ info:
     of federated pediatric cancer within the broader community. The goal of the
     API is to support identification of pediatric cancer samples of interest via
     a variety of query parameters.
+  contact:
+    email: NCIChildhoodCancerDataInitiative@mail.nih.gov
   version: "0.1"
 externalDocs:
   description: Learn more about the Childhood Cancer Data Initiative
