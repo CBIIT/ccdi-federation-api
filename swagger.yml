@@ -16,13 +16,13 @@ servers:
 tags:
   - name: info
     description: Information about the API implementation itself.
-  - name: Studies
+  - name: study
     description: CCDI Metadata Template Study.
-  - name: Demographics
+  - name: demographic
     description: CCDI Metadata Template Demographics.
-  - name: Samples
+  - name: sample
     description: CCDI Metadata Template Samples.
-  - name: Diagnoses
+  - name: diagnosis
     description: CCDI Metadata Template Diagnoses.
 paths:
   /info:
@@ -36,11 +36,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/info'
+                $ref: '#/components/schemas/Info'
   /study:
     get:
       tags:
-        - Studies
+        - study
       summary: Find studies
       description: >-
         A list of studies.
@@ -98,7 +98,7 @@ paths:
                       results:
                         type: array
                         items:
-                          $ref: '#/components/schemas/study'
+                          $ref: '#/components/schemas/Study'
         '400':
           description: TBD
         '404':
@@ -106,7 +106,7 @@ paths:
   /study/{study_id}:
     get:
       tags:
-        - Studies
+        - study
       summary: Find study by study Id.
       operationId: retrieveStudy
       parameters:
@@ -122,7 +122,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/study'
+                $ref: '#/components/schemas/Study'
         '400':
           description: TBD
         '404':
@@ -131,7 +131,7 @@ paths:
     # this endpoint name and related attribute and parameters names - TBD
     get:
       tags:
-        - Demographics
+        - demographic
       summary: Find participants
       description: >-
         A list of participants.
@@ -177,7 +177,7 @@ paths:
                       results:
                         type: array
                         items:
-                          $ref: '#/components/schemas/participant'
+                          $ref: '#/components/schemas/Participant'
         '400':
           description: TBD
         '404':
@@ -186,7 +186,7 @@ paths:
     # this endpoint name - TBD
     get:
       tags:
-        - Demographics
+        - demographic
       summary: Find participant by participant Id.
       operationId: retrieveParticipant
       parameters:
@@ -202,7 +202,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/participant'
+                $ref: '#/components/schemas/Participant'
         '400':
           description: TBD
         '404':
@@ -210,7 +210,7 @@ paths:
   /sample:
     get:
       tags:
-        - Samples
+        - sample
       summary: Find samples.
       description: >-
         A list of samples.
@@ -268,7 +268,7 @@ paths:
                       results:
                         type: array
                         items:
-                          $ref: '#/components/schemas/sample'
+                          $ref: '#/components/schemas/Sample'
         '400':
           description: TBD
         '404':
@@ -276,7 +276,7 @@ paths:
   /sample/{sample_id}:
     get:
       tags:
-        - Samples
+        - sample
       summary: Find sample by sample Id.
       operationId: retrieveSample
       parameters:
@@ -292,7 +292,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sample'
+                $ref: '#/components/schemas/Sample'
         '400':
           description: TBD
         '404':
@@ -300,7 +300,7 @@ paths:
   /diagnosis:
     get:
       tags:
-        - Diagnoses
+        - diagnosis
       summary: Find diagnoses.
       description: >-
         A list of diagnoses.
@@ -358,7 +358,7 @@ paths:
                       results:
                         type: array
                         items:
-                          $ref: '#/components/schemas/diagnosis'
+                          $ref: '#/components/schemas/Diagnosis'
         '400':
           description: TBD
         '404':
@@ -366,7 +366,7 @@ paths:
   /diagnosis/{diagnosis_id}:
     get:
       tags:
-        - Diagnoses
+        - diagnosis
       summary: Find diagnosis by diagnosis Id.
       operationId: retrieveDiagnosis
       parameters:
@@ -382,14 +382,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/diagnosis'
+                $ref: '#/components/schemas/Diagnosis'
         '400':
           description: TBD
         '404':
           description: TBD
 components:
   schemas:
-    info:
+    Info:
       type: object
       properties:
         name:
@@ -401,7 +401,7 @@ components:
         support_email:
           type: string
           example: "support@organization.org"
-    study:
+    Study:
       type: object
       properties:
         study_id:
@@ -451,7 +451,7 @@ components:
         - study_short_title
         - study_acronym
         - grant_id
-    participant:
+    Participant:
       type: object
       # the name of this resource TBD: participant vs subject
       properties:
@@ -530,7 +530,7 @@ components:
         total: {type: number, example: 100}
         results: {type: array, items: {}}
         # paginatedResult
-    sample:
+    Sample:
       type: object
       properties:
         sample_id:
@@ -623,7 +623,7 @@ components:
         - anatomic_site
         - participant_age_at_collection
         - tumor_classification
-    diagnosis:
+    Diagnosis:
       type: object
       properties:
         diagnosis_id:
