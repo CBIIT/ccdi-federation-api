@@ -465,7 +465,7 @@ components:
           description: CDE 6380045 v1.0. An identifier for a study arm.
         participant_id:
           type: string
-          description: CDE 6867052 v1.0. Required.
+          description: CDE 6380049 v1.0. Required.
           example: IID_H842555
         race:
           type: string
@@ -510,7 +510,7 @@ components:
             # a list of 5 PVs
         alternate_participant_id:
           type: string
-          description: CDE 6867052 v.1.0.
+          description: CDE 6380049 v.1.0.
           example: alt_ID_H842555
       required:
         - study_id
@@ -543,7 +543,7 @@ components:
         participant_id:
           type: string
           description: >-
-            CDE 6867052 v1.0. Required. A unique sequence of
+            CDE 6380049 v1.0. Required. A unique sequence of
             alphanumeric characters
             used to _identify the participant, in the investigation or study,
             of the specimen at it's point of origin.
@@ -636,7 +636,7 @@ components:
         participant_id:
           type: string
           description: >-
-            CDE 6867052 v1.0. Required. A unique sequence of
+            CDE 6380049 v1.0. Required. A unique sequence of
             alphanumeric characters
             used to _identify the participant, in the investigation or study,
             of the specimen at it's point of origin.
