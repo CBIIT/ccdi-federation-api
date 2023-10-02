@@ -14,7 +14,7 @@ externalDocs:
 servers:
   - url: https://ccdi.stjude.cloud/api/v0
 tags:
-  - name: Info
+  - name: info
     description: Information about the API implementation itself.
   - name: Studies
     description: CCDI Metadata Template Study.
@@ -28,7 +28,7 @@ paths:
   /info:
     get:
       tags:
-        - Info
+        - info
       summary: Information about the API implementation itself.
       responses:
         '200':
