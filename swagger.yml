@@ -1,3 +1,4 @@
+---
 openapi: 3.0.3
 info:
   title: CCDI Pediatric Cancer Data Catalog
@@ -17,11 +18,13 @@ servers:
     description: St. Jude Children's Research Hospital API server
   - url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
     description: Treehouse CCDI API server
-  - url:  https://ccdifederation.pedscommons.org/api/v0
+  - url: https://ccdifederation.pedscommons.org/api/v0
     description: Pediatric Cancer Data Common CCDI API server
-tags: 
+tags:
   - name: info
     description: Information about the API implementation itself.
+  - name: subject
+    description: CCDI Metadata Template Subject.
 paths:
   /info:
     get:
@@ -35,6 +38,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Info'
+  /subject/{id}:
+    get:
+      tags:
+        - subject
+      summary: Find a subject by id.
+      operationId: retrieveStudy
+      parameters:
+        - name: id
+          in: path
+          description: Study to return by Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+        '400':
+          description: TBD
+        '404':
+          description: TBD
+        '403':
+          description: >-
+            Cohort is too small.
 components:
   schemas:
     Info:
@@ -49,3 +79,81 @@ components:
         support_email:
           type: string
           example: "support@organization.org"
+    SubjectKind:
+      type: string
+      enum:
+        - 'Participant'
+        - 'Patient Derived Xenograft'
+        - 'Cell Line'
+        - 'Organoid'
+        # CDE ID here
+    MetadataField:
+      type: object
+      properties:
+        value:
+          type: string
+        ancestors:
+          type: array
+          items:
+            type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+      required:
+        - value
+    OwnedMetadataField:
+      type: object
+      properties:
+        owned:
+          type: boolean
+          nullable: true
+          # CDE ID here
+    UnharmonizedMetadataFields:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/MetadataField'
+        # [key: string]: MetadataField<any>
+    SubjectMetadata:
+      type: object
+      properties:
+        sex:
+          $ref: '#/components/schemas/MetadataField'
+          # CDE 6343385 v1.0 Required.
+        race:
+          $ref: '#/components/schemas/MetadataField'
+          # CDE 2192199 v1.0
+        ethnicity:
+          $ref: '#/components/schemas/MetadataField'
+          # CDE 2192217 v.2.0.
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnedMetadataField'
+          description: >-
+            CDE 6380049 v1.00
+        unharmonized:
+          $ref: '#/components/schemas/UnharmonizedMetadataFields'
+      required:
+        - sex
+        - race
+        - ethnicity
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: >-
+            ID
+        name:
+          type: string
+          description: >-
+            The primary name or identifier for a subject used
+            within the source server. This identifier should
+            ALWAYS be included in the 'identifiers' key under
+            metadata, should that object exist.
+        kind:
+          $ref: '#/components/schemas/SubjectKind'
+        metadata:
+          $ref: '#/components/schemas/SubjectMetadata'
+...
