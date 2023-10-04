@@ -43,11 +43,11 @@ paths:
       tags:
         - subject
       summary: Find a subject by id.
-      operationId: retrieveStudy
+      operationId: retrieveSubject
       parameters:
         - name: id
           in: path
-          description: Study to return by Id
+          description: Subject to return by Id
           required: true
           schema:
             type: string
