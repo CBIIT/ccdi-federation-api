@@ -103,12 +103,13 @@ components:
       required:
         - value
     OwnedMetadataField:
-      type: object
-      properties:
-        owned:
-          type: boolean
-          nullable: true
-          # CDE ID here
+      allOf:  # Combines the MetadataField and the inline model
+        - $ref: '#/components/schemas/MetadataField'
+        - type: object
+          properties:
+            owned:
+              type: boolean
+              nullable: true
     UnharmonizedMetadataFields:
       type: object
       additionalProperties:
