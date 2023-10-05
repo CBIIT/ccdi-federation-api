@@ -65,6 +65,90 @@ paths:
         '403':
           description: >-
             Cohort is too small.
+  /subject:
+    # this endpoint name and related attribute and parameters names - TBD
+    get:
+      tags:
+        - subject
+      summary: Find subjects
+      description: >-
+        A list of subjecta.
+        Retrieve all subject or found by attributes.
+      operationId: searchParticipants
+      parameters:
+        - name: sex
+          in: query
+          description: CDE 6343385 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: race
+          in: query
+          description: CDE 2192199 v1.0.
+          required: false
+          schema:
+            type: string
+        - name: ethnicity
+          in: query
+          description: CDE 2192217 v.2.0.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Subjects'
+        '400':
+          description: TBD
+        '403':
+          description: >-
+            Cohort is too small.
+        '404':
+          description: TBD
+  /subject/by/{field}/count:
+    get:
+      tags:
+        - subject
+      summary: A response for grouping by field values and then counting.
+      operationId: retrieveSubjectsByCount
+      parameters:
+        - name: field
+          in: path
+          description: Field to group by,
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectsCounts'
+        '400':
+          description: TBD
+        '422':
+          description: requested field to group by does not exist
+  /metadata/fields/subject:
+    get:
+      tags:
+        - subject
+      summary: A listing the metadata fields supported for subjects
+      operationId: retrieveSubjectsMetadataFields
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataFieldsForSubject'
+        '400':
+          description: TBD
 components:
   schemas:
     Info:
@@ -157,4 +241,73 @@ components:
           $ref: '#/components/schemas/SubjectKind'
         metadata:
           $ref: '#/components/schemas/SubjectMetadata'
+    Subjects:
+      allOf:  # Combines the Subject array and count
+        - type: object
+          properties:
+            counts:
+              type: integer
+        - type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+    TotalCounts:
+      type: object
+      properties:
+        total:
+          type: integer
+    SubjectsByCountCounts:  # Dictionary structure
+      allOf:  # Combines the TotalCounts and Count Dictionary
+        - $ref: '#/components/schemas/TotalCounts'
+        - type: object
+          properties:
+            value:
+              $ref: '#/components/schemas/SubjectMapCounts'
+    SubjectMapCounts:    # Dictionary key-value counts
+      type: object
+      additionalProperties:
+        type: integer
+    SubjectsCounts:
+      type: object
+      properties:
+        counts:
+          $ref: '#/components/schemas/SubjectsByCountCounts'
+    HarmonizedMetadataFieldDescription:
+      type: object
+      properties:
+        harmonized:
+          type: boolean
+          example: true
+        path:
+          type: string
+        standard:
+          type: string
+        url:
+          type: string
+    UnharmonizedMetadataFieldDescription:
+      type: object
+      properties:
+        harmonized:
+          type: boolean
+          example: false
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        path:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+    MetadataFieldsForSubject:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/UnharmonizedMetadataFieldDescription'
+              - $ref: '#/components/schemas/HarmonizedMetadataFieldDescription'
 ...
