@@ -206,8 +206,10 @@ components:
           $ref: '#/components/schemas/MetadataField'
           # CDE 6343385 v1.0 Required.
         race:
-          $ref: '#/components/schemas/MetadataField'
-          # CDE 2192199 v1.0
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataField'
+            # CDE 2192199 v1.0
         ethnicity:
           $ref: '#/components/schemas/MetadataField'
           # CDE 2192217 v.2.0.
