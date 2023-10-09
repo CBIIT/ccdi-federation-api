@@ -300,6 +300,9 @@ components:
         path:
           type: string
           nullable: true
+        standard:
+          type: string
+          nullable: true
         url:
           type: string
           nullable: true
