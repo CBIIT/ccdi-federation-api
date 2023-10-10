@@ -262,7 +262,7 @@ components:
         - $ref: '#/components/schemas/TotalCounts'
         - type: object
           properties:
-            value:
+            values:
               $ref: '#/components/schemas/SubjectMapCounts'
     SubjectMapCounts:    # Dictionary key-value counts
       type: object
