@@ -1,0 +1,28 @@
+[workspace]
+members = [
+    "ccdi-cde",
+    "ccdi-models",
+    "ccdi-openapi",
+    "ccdi-server",
+    "ccdi-spec",
+]
+resolver = "2"
+
+[workspace.package]
+license = "MIT OR Apache-2.0"
+edition = "2021"
+
+[workspace.dependencies]
+actix-web = "4.4.0"
+indexmap = "2.0.2"
+mime = "0.3.17"
+rand = "0.8.5"
+serde = { version = "1.0.189", features = ["serde_derive"] }
+serde_json = { version = "1.0.107", features = ["preserve_order"] }
+serde_test = "1.0.176"
+utoipa = { version = "4.0.0", features = [
+    "preserve_order",
+    "preserve_path_order",
+    "yaml",
+] }
+utoipa-swagger-ui = { version = "4.0.0", features = ["actix-web"] }
