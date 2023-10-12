@@ -1,0 +1,16 @@
+[package]
+name = "ccdi-server"
+version = "0.1.0"
+license.workspace = true
+edition.workspace = true
+
+[dependencies]
+actix-web.workspace = true
+ccdi-cde = { path = "../ccdi-cde", version = "0.1.0" }
+ccdi-models = { path = "../ccdi-models", version = "0.1.0" }
+indexmap.workspace = true
+mime.workspace = true
+rand.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+utoipa.workspace = true
