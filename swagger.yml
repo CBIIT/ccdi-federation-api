@@ -272,7 +272,7 @@ components:
       properties:
         counts:
           $ref: '#/components/schemas/SubjectsByCountCounts'
-    HarmonizedMetadataFieldDescription:
+    HarmonizedMetadataFieldDescr:
       type: object
       properties:
         harmonized:
@@ -284,7 +284,7 @@ components:
           type: string
         url:
           type: string
-    UnharmonizedMetadataFieldDescription:
+    UnharmonizedMetadataFieldDescr:
       type: object
       properties:
         harmonized:
@@ -312,6 +312,6 @@ components:
           type: array
           items:
             anyOf:
-              - $ref: '#/components/schemas/UnharmonizedMetadataFieldDescription'
-              - $ref: '#/components/schemas/HarmonizedMetadataFieldDescription'
+              - $ref: '#/components/schemas/UnharmonizedMetadataFieldDescr'
+              - $ref: '#/components/schemas/HarmonizedMetadataFieldDescr'
 ...
