@@ -16,6 +16,10 @@
   </p>
 </p>
 
+## Developing
+
+The specification is generated using the [Rust] packages contained with `packages` directory. In particular, [`utoipa`] is used to autogenerate the OpenAPI 3.0 specification. An [Actix Web] server is provided that (a) provides the foundation for `utoipa` to generate the API documentation and (b) provides an example server using fake data. Please refer to the [Learn Rust] guide to learn how to develop using Rust.
+
 ## Contributing
 
 ### Development Process
@@ -28,3 +32,8 @@
 - This repository uses the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) style for commit messages. Please make sure all commits conform to this style.
 - This repository, as well as the API itself, are versioned using the latest version of [Semantic Versioning](https://semver.org/).
 - All changes will either be squashed and merged or rebased off of the `main` branch—no merge commits are allowed in this repository.
+
+[Actix Web]: https://actix.rs/
+[Learn Rust]: https://www.rust-lang.org/learn
+[Rust]: https://www.rust-lang.org/
+[`utoipa`]: https://github.com/juhaku/utoipa
