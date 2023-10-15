@@ -1,0 +1,23 @@
+name: Specification
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+    - 'swagger.yml'
+  pull_request:
+    paths:
+    - 'swagger.yml'
+  
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+      - name: Install spectral
+        run: npm install -g @stoplight/spectral-cli
+      - run: spectral lint swagger.yml
