@@ -94,11 +94,11 @@ pub async fn index(subjects: Data<Store>) -> impl Responder {
     path = "/subject/{namespace}/{name}",
     params(
         (
-            "namespace",
+            "namespace" = String,
             description = "The namespace portion of the subject identifier.",
         ),
         (
-            "name",
+            "name" = String,
             description = "The name portion of the subject identifier."
         )
     ),
@@ -135,7 +135,7 @@ pub async fn show(path: Path<(String, String)>, subjects: Data<Store>) -> impl R
     get,
     path = "/subject/by/{field}/count",
     params(
-        ("field", description = "The field to group by and count."),
+        ("field" = String, description = "The field to group by and count."),
     ),
     tag = "Subject",
     responses(

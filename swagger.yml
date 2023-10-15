@@ -61,10 +61,14 @@ paths:
         in: path
         description: The namespace portion of the subject identifier.
         required: true
+        schema:
+          type: string
       - name: name
         in: path
         description: The name portion of the subject identifier.
         required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Successful operation.
@@ -92,6 +96,8 @@ paths:
         in: path
         description: The field to group by and count.
         required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Successful operation.
@@ -346,86 +352,6 @@ components:
           type: integer
           description: The total number of entities returned in the API call.
           minimum: 0
-    models.metadata.field.Description:
-      oneOf:
-      - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
-      - $ref: '#/components/schemas/models.metadata.field.description.Unharmonized'
-      description: A description for a metadata field.
-    models.metadata.field.description.Harmonized:
-      type: object
-      description: A harmonized metadata field description.
-      required:
-      - harmonized
-      - path
-      - standard
-      - url
-      properties:
-        harmonized:
-          type: boolean
-          description: |-
-            Whether or not this field is harmonized across the ecosystem.
-
-            This will always be set to `true`.
-          default: true
-        path:
-          type: string
-          description: |-
-            A comma (`.`) delimited path to the field's location on the `metadata`
-            objects returned by the various subject endpoints.
-        standard:
-          type: string
-          description: |-
-            The proper name of the standard to which this field is harmonized (defined
-            by the documentation for the CCDI metadata fields).
-        url:
-          type: string
-          description: |-
-            A URL to the CCDI documentation where the definition of this harmonized
-            field resides.
-    models.metadata.field.description.Unharmonized:
-      type: object
-      description: An unharmonized metadata field description.
-      required:
-      - harmonized
-      - path
-      properties:
-        harmonized:
-          type: boolean
-          description: |-
-            Whether or not this field is harmonized across the ecosystem.
-
-            This will always be set to `false`.
-          default: false
-        name:
-          type: string
-          description: |-
-            A display name for this metadata field as _suggested_ by the server (this
-            is not considered authoritative and can be ignored by the client if it so
-            chooses). This is mainly to avoid naming collisions of common fields across
-            servers.
-          nullable: true
-        description:
-          type: string
-          description: A plain-text description of what the field represents.
-          nullable: true
-        path:
-          type: string
-          description: |-
-            A comma (`.`) delimited path to the field's location on the `metadata`
-            objects returned by the various subject endpoints.
-        standard:
-          type: string
-          description: |-
-            If the field is considered harmonized across the federation ecosystem, the
-            name of the standard to which the field is harmonized.
-
-            If the field is _not_ harmonized across the federation ecosystem, then this
-            should be [`None`].
-          nullable: true
-        url:
-          type: string
-          description: A url that describes more about the metadata field, if available.
-          nullable: true
     models.subject.Kind:
       type: string
       description: A kind of [`Subject`](super::Subject).
@@ -486,22 +412,13 @@ components:
             $ref: '#/components/schemas/models.Subject'
           description: The subjects, if available.
           nullable: true
-    responses.metadata.FieldDescriptions:
-      type: object
-      description: A response for describing metadata fields for a subject.
-      required:
-      - fields
-      properties:
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/models.metadata.field.Description'
-          description: Field descriptions.
 tags:
 - name: Info
   description: Information about the API implementation itself.
 - name: Subject
   description: Subjects within the CCDI federated ecosystem.
+- name: Metadata
+  description: List and describe provided metadata fields.
 externalDocs:
   url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
   description: Learn more about the Childhood Cancer Data Initiative

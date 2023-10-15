@@ -51,6 +51,10 @@ a variety of query parameters.",
         (
             name = "Subject",
             description = "Subjects within the CCDI federated ecosystem."
+        ),
+        (
+            name = "Metadata",
+            description = "List and describe provided metadata fields."
         )
     ),
     paths(
@@ -86,10 +90,6 @@ a variety of query parameters.",
         models::subject::Kind,
         models::subject::Metadata,
 
-        models::metadata::field::Description,
-        models::metadata::field::description::Harmonized,
-        models::metadata::field::description::Unharmonized,
-
         // Counts.
         models::count::Total,
 
@@ -97,7 +97,6 @@ a variety of query parameters.",
         responses::Error,
         responses::Subject,
         responses::Subjects,
-        responses::metadata::FieldDescriptions,
     )),
     modifiers(&RemoveLicense)
 )]
