@@ -1,4 +1,3 @@
----
 openapi: 3.0.3
 info:
   title: CCDI Pediatric Cancer Data Catalog
@@ -8,310 +7,501 @@ info:
     API is to support identification of pediatric cancer samples of interest via
     a variety of query parameters.
   contact:
+    name: Childhood Cancer Data Initiative support email
+    url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: "0.1"
-externalDocs:
-  description: Learn more about the Childhood Cancer Data Initiative
-  url: >-
-    https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
+  version: '0.1'
 servers:
-  - url: https://ccdi.stjude.cloud/api/v0
-    description: St. Jude Children's Research Hospital API server
-  - url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
-    description: Treehouse CCDI API server
-  - url: https://ccdifederation.pedscommons.org/api/v0
-    description: Pediatric Cancer Data Common CCDI API server
-tags:
-  - name: info
-    description: Information about the API implementation itself.
-  - name: subject
-    description: CCDI Metadata Template Subject.
+- url: https://ccdi.stjude.cloud/api/v0
+  description: St. Jude Children's Research Hospital CCDI API server
+- url: https://ccdifederation.pedscommons.org/api/v0
+  description: UCSC Treehouse CCDI API server
+- url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
+  description: Pediatric Cancer Data Commons CCDI API server
 paths:
-  /info:
-    get:
-      tags:
-        - info
-      summary: Information about the API implementation itself.
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Info'
-  /subject/{id}:
-    get:
-      tags:
-        - subject
-      summary: Find a subject by id.
-      operationId: retrieveSubject
-      parameters:
-        - name: id
-          in: path
-          description: Subject to return by Id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subject'
-        '400':
-          description: TBD
-        '404':
-          description: TBD
-        '403':
-          description: >-
-            Cohort is too small.
-  /subject:
-    # this endpoint name and related attribute and parameters names - TBD
-    get:
-      tags:
-        - subject
-      summary: Find subjects
-      description: >-
-        A list of subjecta.
-        Retrieve all subject or found by attributes.
-      operationId: searchParticipants
-      parameters:
-        - name: sex
-          in: query
-          description: CDE 6343385 v1.0.
-          required: false
-          schema:
-            type: string
-        - name: race
-          in: query
-          description: CDE 2192199 v1.0.
-          required: false
-          schema:
-            type: string
-        - name: ethnicity
-          in: query
-          description: CDE 2192217 v.2.0.
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subjects'
-        '400':
-          description: TBD
-        '403':
-          description: >-
-            Cohort is too small.
-        '404':
-          description: TBD
-  /subject/by/{field}/count:
-    get:
-      tags:
-        - subject
-      summary: A response for grouping by field values and then counting.
-      operationId: retrieveSubjectsByCount
-      parameters:
-        - name: field
-          in: path
-          description: Field to group by,
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubjectsCounts'
-        '400':
-          description: TBD
-        '422':
-          description: requested field to group by does not exist
   /metadata/fields/subject:
     get:
       tags:
-        - subject
-      summary: A listing the metadata fields supported for subjects
-      operationId: retrieveSubjectsMetadataFields
+      - Metadata
+      summary: Gets the metadata fields for subjects that are supported by this server.
+      description: Gets the metadata fields for subjects that are supported by this server.
+      operationId: metadata_fields_subject
       responses:
         '200':
-          description: Successful operation
+          description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetadataFieldsForSubject'
-        '400':
-          description: TBD
+                type: array
+                items:
+                  $ref: '#/components/schemas/responses.Subjects'
+  /subject:
+    get:
+      tags:
+      - Subject
+      summary: Gets the subjects known by this server.
+      description: Gets the subjects known by this server.
+      operationId: index
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Subjects'
+  /subject/{namespace}/{name}:
+    get:
+      tags:
+      - Subject
+      summary: Gets the subject matching the provided id (if it exists).
+      description: Gets the subject matching the provided id (if it exists).
+      operationId: show
+      parameters:
+      - name: namespace
+        in: path
+        description: The namespace portion of the subject identifier.
+        required: true
+      - name: name
+        in: path
+        description: The name portion of the subject identifier.
+        required: true
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Subject'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Error'
+              example:
+                error: Subject with namespace 'foo' and name 'bar' not found.
+  /subject/by/{field}/count:
+    get:
+      tags:
+      - Subject
+      summary: Groups the subjects by the specified metadata field and returns counts.
+      description: Groups the subjects by the specified metadata field and returns counts.
+      operationId: subjects_by_count
+      parameters:
+      - name: field
+        in: path
+        description: The field to group by and count.
+        required: true
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Subject'
+        '422':
+          description: Unsupported field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Error'
+              example:
+                error: Field 'handedness' is unsupported.
 components:
   schemas:
-    Info:
+    cde.v1.Identifier:
       type: object
+      description: |-
+        **caDSR CDE 6380049 v1.00**
+
+        This metadata element is defined by the caDSR as "A unique subject
+        identifier within a site and a study.". No permissible values are defined
+        for this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1>
+      required:
+      - namespace
+      - name
       properties:
+        namespace:
+          type: string
+          description: The namespace of the identifier.
+          example: organization
         name:
           type: string
-          example: "Organization A — CCDI Pediatric Cancer Catalog API"
-        version:
-          type: string
-          example: 1.0.0
-        support_email:
-          type: string
-          example: "support@organization.org"
-    SubjectKind:
+          description: The name of the identifier.
+          example: SubjectName001
+    cde.v1.Race:
       type: string
+      description: |-
+        **caDSR CDE 2192199 v1.00**
+
+        This metadata element is defined by the caDSR as "The text for reporting
+        information about race based on the Office of Management and Budget (OMB)
+        categories.". Upon examination of the large number of projects using the
+        term, it appears to be the preferred term for the general concept of race.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192199%20and%20ver_nr=1>
       enum:
-        - 'Participant'
-        - 'Patient Derived Xenograft'
-        - 'Cell Line'
-        - 'Organoid'
-        # CDE ID here
-    MetadataField:
+      - Not allowed to collect
+      - Native Hawaiian or other Pacific Islander
+      - Not Reported
+      - Unknown
+      - American Indian or Alaska Native
+      - Asian
+      - Black or African American
+      - White
+    cde.v1.Sex:
+      type: string
+      description: |-
+        **caDSR CDE 6343385 v1.00**
+
+        This metadata element is defined by the caDSR as "Sex of the subject as
+        determined by the investigator." In particular, this field does not dictate
+        the time period: whether it represents sex at birth, sex at sample
+        collection, or any other determined time point. Further, the descriptions
+        for F and M suggest that this term can represent either biological sex,
+        culture gender roles, or both. Thus, this field cannot be assumed to
+        strictly represent biological sex.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6343385%20and%20ver_nr=1>
+      enum:
+      - U
+      - F
+      - M
+      - UNDIFFERENTIATED
+    cde.v2.Ethnicity:
+      type: string
+      description: |-
+        **caDSR CDE 2192217 v2.00**
+
+        This metadata element is defined by the caDSR as "The text for reporting
+        information about ethnicity based on the Office of Management and Budget
+        (OMB) categories." Upon examination of the large number of projects using
+        the term, it appears to be the preferred term for the general concept of
+        ethnicity.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2.0>
+      enum:
+      - Not allowed to collect
+      - Hispanic or Latino
+      - Not Hispanic or Latino
+      - Unknown
+      - Not reported
+    field.Ethnicity:
       type: object
+      required:
+      - value
       properties:
         value:
-          type: string
+          $ref: '#/components/schemas/cde.v2.Ethnicity'
         ancestors:
           type: array
           items:
             type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
           nullable: true
         comment:
           type: string
+          description: A free-text comment field.
           nullable: true
+    field.EthnicityOrNull:
+      oneOf:
+      - $ref: '#/components/schemas/field.Ethnicity'
+      - type: object
+        default: null
+        nullable: true
+      description: An unowned metadata field or null.
+    field.Identifier:
+      type: object
       required:
-        - value
-    OwnedMetadataField:
-      allOf:  # Combines the MetadataField and the inline model
-        - $ref: '#/components/schemas/MetadataField'
-        - type: object
-          properties:
-            owned:
-              type: boolean
-              nullable: true
-    UnharmonizedMetadataFields:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/MetadataField'
-        # [key: string]: MetadataField<any>
-    SubjectMetadata:
-      type: object
+      - value
       properties:
-        sex:
-          $ref: '#/components/schemas/MetadataField'
-          # CDE 6343385 v1.0 Required.
-        race:
+        value:
+          $ref: '#/components/schemas/cde.v1.Identifier'
+        ancestors:
           type: array
           items:
-            $ref: '#/components/schemas/MetadataField'
-            # CDE 2192199 v1.0
-        ethnicity:
-          $ref: '#/components/schemas/MetadataField'
-          # CDE 2192217 v.2.0.
-        identifiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OwnedMetadataField'
-          description: >-
-            CDE 6380049 v1.00
-        unharmonized:
-          $ref: '#/components/schemas/UnharmonizedMetadataFields'
-      required:
-        - sex
-        - race
-        - ethnicity
-    Subject:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+          nullable: true
+        comment:
+          type: string
+          description: A free-text comment field.
+          nullable: true
+        owned:
+          type: boolean
+          description: Whether or not the field is owned by the source server.
+          nullable: true
+    field.IdentifiersOrNull:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/field.Identifier'
+        description: Multiple owned values representing the field(s).
+      - type: object
+        default: null
+        nullable: true
+      description: Multiple owned metadata fields or null.
+    field.Race:
       type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.Race'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+          nullable: true
+        comment:
+          type: string
+          description: A free-text comment field.
+          nullable: true
+    field.RacesOrNull:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/field.Race'
+        description: Multiple unowned values representing the field(s).
+      - type: object
+        default: null
+        nullable: true
+      description: Multiple unowned metadata fields or null.
+    field.Sex:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.Sex'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+          nullable: true
+        comment:
+          type: string
+          description: A free-text comment field.
+          nullable: true
+    field.SexOrNull:
+      oneOf:
+      - $ref: '#/components/schemas/field.Sex'
+      - type: object
+        default: null
+        nullable: true
+      description: An unowned metadata field or null.
+    models.Subject:
+      type: object
+      description: A subject.
+      required:
+      - id
+      - name
+      - kind
       properties:
         id:
-          type: integer
-          description: >-
-            ID
+          $ref: '#/components/schemas/cde.v1.Identifier'
         name:
           type: string
-          description: >-
-            The primary name or identifier for a subject used
-            within the source server. This identifier should
-            ALWAYS be included in the 'identifiers' key under
-            metadata, should that object exist.
+          description: |-
+            The primary name or identifier for a subject used within the source
+            server.
+          example: SubjectName001
         kind:
-          $ref: '#/components/schemas/SubjectKind'
+          $ref: '#/components/schemas/models.subject.Kind'
         metadata:
-          $ref: '#/components/schemas/SubjectMetadata'
-    Subjects:
-      allOf:  # Combines the Subject array and count
-        - type: object
-          properties:
-            counts:
-              type: integer
-        - type: array
-          items:
-            $ref: '#/components/schemas/Subject'
-    TotalCounts:
+          allOf:
+          - $ref: '#/components/schemas/models.subject.Metadata'
+          nullable: true
+    models.count.Total:
       type: object
+      description: Total count of some entity as reported alongside an API call.
+      required:
+      - total
       properties:
         total:
           type: integer
-    SubjectsByCountCounts:  # Dictionary structure
-      allOf:  # Combines the TotalCounts and Count Dictionary
-        - $ref: '#/components/schemas/TotalCounts'
-        - type: object
-          properties:
-            values:
-              $ref: '#/components/schemas/SubjectMapCounts'
-    SubjectMapCounts:    # Dictionary key-value counts
+          description: The total number of entities returned in the API call.
+          minimum: 0
+    models.metadata.field.Description:
+      oneOf:
+      - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
+      - $ref: '#/components/schemas/models.metadata.field.description.Unharmonized'
+      description: A description for a metadata field.
+    models.metadata.field.description.Harmonized:
       type: object
-      additionalProperties:
-        type: integer
-    SubjectsCounts:
-      type: object
-      properties:
-        counts:
-          $ref: '#/components/schemas/SubjectsByCountCounts'
-    HarmonizedMetadataFieldDescr:
-      type: object
+      description: A harmonized metadata field description.
+      required:
+      - harmonized
+      - path
+      - standard
+      - url
       properties:
         harmonized:
           type: boolean
-          example: true
+          description: |-
+            Whether or not this field is harmonized across the ecosystem.
+
+            This will always be set to `true`.
+          default: true
         path:
           type: string
+          description: |-
+            A comma (`.`) delimited path to the field's location on the `metadata`
+            objects returned by the various subject endpoints.
         standard:
           type: string
+          description: |-
+            The proper name of the standard to which this field is harmonized (defined
+            by the documentation for the CCDI metadata fields).
         url:
           type: string
-    UnharmonizedMetadataFieldDescr:
+          description: |-
+            A URL to the CCDI documentation where the definition of this harmonized
+            field resides.
+    models.metadata.field.description.Unharmonized:
       type: object
+      description: An unharmonized metadata field description.
+      required:
+      - harmonized
+      - path
       properties:
         harmonized:
           type: boolean
-          example: false
+          description: |-
+            Whether or not this field is harmonized across the ecosystem.
+
+            This will always be set to `false`.
+          default: false
         name:
           type: string
+          description: |-
+            A display name for this metadata field as _suggested_ by the server (this
+            is not considered authoritative and can be ignored by the client if it so
+            chooses). This is mainly to avoid naming collisions of common fields across
+            servers.
           nullable: true
         description:
           type: string
+          description: A plain-text description of what the field represents.
           nullable: true
         path:
           type: string
-          nullable: true
+          description: |-
+            A comma (`.`) delimited path to the field's location on the `metadata`
+            objects returned by the various subject endpoints.
         standard:
           type: string
+          description: |-
+            If the field is considered harmonized across the federation ecosystem, the
+            name of the standard to which the field is harmonized.
+
+            If the field is _not_ harmonized across the federation ecosystem, then this
+            should be [`None`].
           nullable: true
         url:
           type: string
+          description: A url that describes more about the metadata field, if available.
           nullable: true
-    MetadataFieldsForSubject:
+    models.subject.Kind:
+      type: string
+      description: A kind of [`Subject`](super::Subject).
+      enum:
+      - Participant
+      - Patient Derived Xenograft
+      - Cell Line
+      - Organoid
+    models.subject.Metadata:
       type: object
+      description: Metadata associated with a subject.
+      required:
+      - sex
+      - race
+      - ethnicity
+      - identifiers
+      properties:
+        sex:
+          allOf:
+          - $ref: '#/components/schemas/field.SexOrNull'
+          nullable: true
+        race:
+          allOf:
+          - $ref: '#/components/schemas/field.RacesOrNull'
+          nullable: true
+        ethnicity:
+          allOf:
+          - $ref: '#/components/schemas/field.EthnicityOrNull'
+          nullable: true
+        identifiers:
+          allOf:
+          - $ref: '#/components/schemas/field.IdentifiersOrNull'
+          nullable: true
+    responses.Error:
+      type: object
+      description: A response indicating an error from the API.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: An error occurred.
+    responses.Subject:
+      $ref: '#/components/schemas/models.Subject'
+    responses.Subjects:
+      type: object
+      description: |-
+        A response representing multiple subjects known about by the server with a
+        summarized total count.
+      required:
+      - count
+      properties:
+        count:
+          $ref: '#/components/schemas/models.count.Total'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.Subject'
+          description: The subjects, if available.
+          nullable: true
+    responses.metadata.FieldDescriptions:
+      type: object
+      description: A response for describing metadata fields for a subject.
+      required:
+      - fields
       properties:
         fields:
           type: array
           items:
-            anyOf:
-              - $ref: '#/components/schemas/UnharmonizedMetadataFieldDescr'
-              - $ref: '#/components/schemas/HarmonizedMetadataFieldDescr'
-...
+            $ref: '#/components/schemas/models.metadata.field.Description'
+          description: Field descriptions.
+tags:
+- name: Info
+  description: Information about the API implementation itself.
+- name: Subject
+  description: Subjects within the CCDI federated ecosystem.
+externalDocs:
+  url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
+  description: Learn more about the Childhood Cancer Data Initiative
