@@ -30,10 +30,12 @@ macro_rules! unowned_field {
             /// Ancestors should be provided as period (`.`) delimited paths
             /// from the `metadata` key in the subject response object.
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false)]
             ancestors: Option<Vec<String>>,
 
             /// A free-text comment field.
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false)]
             comment: Option<String>,
         }
 
@@ -145,7 +147,13 @@ macro_rules! unowned_field {
     };
 }
 
-unowned_field!(Field, field::Unowned, Value, Value::Null, serde_json::Value);
+unowned_field!(
+    Field,
+    field::unowned::Field,
+    Value,
+    Value::Null,
+    serde_json::Value
+);
 
 unowned_field!(
     Sex,

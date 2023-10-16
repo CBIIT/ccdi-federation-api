@@ -30,14 +30,17 @@ macro_rules! owned_field {
             /// Ancestors should be provided as period (`.`) delimited paths
             /// from the `metadata` key in the subject response object.
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false)]
             ancestors: Option<Vec<String>>,
 
             /// A free-text comment field.
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false)]
             comment: Option<String>,
 
             /// Whether or not the field is owned by the source server.
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false)]
             owned: Option<bool>,
         }
 
@@ -178,7 +181,13 @@ macro_rules! owned_field {
     };
 }
 
-owned_field!(Field, field::Owned, Value, Value::Null, serde_json::Value);
+owned_field!(
+    Field,
+    field::owned::Field,
+    Value,
+    Value::Null,
+    serde_json::Value
+);
 
 owned_field!(
     Identifier,

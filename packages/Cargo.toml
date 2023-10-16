@@ -21,6 +21,7 @@ serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"
 utoipa = { version = "4.0.0", features = [
+    "indexmap",
     "preserve_order",
     "preserve_path_order",
     "yaml",

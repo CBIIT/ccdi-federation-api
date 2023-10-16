@@ -1,4 +1,5 @@
 use models::metadata::field;
+use models::metadata::fields;
 use utoipa::Modify;
 use utoipa::OpenApi;
 
@@ -73,11 +74,17 @@ a variety of query parameters.",
         cde::v2::Ethnicity,
         cde::v1::Identifier,
 
-        // Fields.
+        // Harmonized Fields.
         field::Sex,
         field::Race,
         field::Ethnicity,
         field::Identifier,
+
+        // Unharmonized Fields.
+        field::owned::Field,
+        field::unowned::Field,
+        field::UnharmonizedField,
+        fields::Unharmonized,
 
         // Models.
         models::Subject,

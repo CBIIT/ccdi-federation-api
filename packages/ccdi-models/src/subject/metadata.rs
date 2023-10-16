@@ -5,6 +5,7 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::metadata::field;
+use crate::metadata::fields;
 
 use ccdi_cde as cde;
 
@@ -34,6 +35,11 @@ pub struct Metadata {
     /// for the [`Subject`].
     #[schema(value_type = Vec<field::Identifier>, nullable = true)]
     identifiers: Option<Vec<field::Identifier>>,
+
+    /// An unharmonized map of metadata fields.
+    #[schema(value_type = fields::Unharmonized)]
+    #[serde(skip_serializing_if = "fields::Unharmonized::is_empty")]
+    unharmonized: fields::Unharmonized,
 }
 
 impl Metadata {
@@ -145,6 +151,49 @@ impl Metadata {
         &self.identifiers
     }
 
+    /// Gets the unharmonized fields for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use serde_json::Value;
+    ///
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::Identifier;
+    /// use models::metadata::field::UnharmonizedField;
+    /// use models::metadata::field::owned;
+    /// use models::metadata::field::unowned;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = Identifier::new(
+    ///     cde::v1::Identifier::parse("organization:Name", ":")?,
+    ///     None,
+    ///     None,
+    ///     None
+    /// );
+    ///
+    /// let metadata = Builder::default()
+    ///                         .insert_unharmonized(
+    ///                             "unowned",
+    ///                             UnharmonizedField::Unowned(unowned::Field::new(Value::String("test".into()), None, None))
+    ///                         )
+    ///                         .insert_unharmonized(
+    ///                             "owned",
+    ///                             UnharmonizedField::Owned(owned::Field::new(Value::String("test".into()), None, None, None))
+    ///                         )
+    ///                         .build();
+    ///
+    /// assert!(matches!(metadata.unharmonized().inner().get("unowned".into()), Some(&UnharmonizedField::Unowned(_))));
+    /// assert!(matches!(metadata.unharmonized().inner().get("owned".into()), Some(&UnharmonizedField::Owned(_))));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn unharmonized(&self) -> &fields::Unharmonized {
+        &self.unharmonized
+    }
+
     /// Generates a random [`Metadata`] based on a particular [`Identifier`](cde::v1::Identifier).
     ///
     /// # Examples
@@ -169,6 +218,21 @@ impl Metadata {
                 None,
                 Some(true),
             )]),
+            unharmonized: Default::default(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::subject::metadata::builder;
+
+    #[test]
+    fn it_skips_serializing_the_unharmonized_key_when_it_is_empty() {
+        let metadata = builder::Builder::default().build();
+        assert_eq!(
+            &serde_json::to_string(&metadata).unwrap(),
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null}"
+        );
     }
 }

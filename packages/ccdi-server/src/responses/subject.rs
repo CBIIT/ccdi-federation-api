@@ -26,6 +26,7 @@ pub struct Subjects {
 
     /// The subjects, if available.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(nullable = false)]
     subjects: Option<Vec<models::Subject>>,
 }
 

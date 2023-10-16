@@ -1,6 +1,7 @@
 //! A builder for [`Metadata`].
 
 use crate::metadata::field;
+use crate::metadata::fields;
 use crate::subject::Metadata;
 
 /// A builder for [`Metadata`].
@@ -17,6 +18,9 @@ pub struct Builder {
 
     /// The identifiers for the subject.
     identifiers: Option<Vec<field::Identifier>>,
+
+    /// An unharmonized map of metadata fields.
+    unharmonized: fields::Unharmonized,
 }
 
 impl Builder {
@@ -112,6 +116,57 @@ impl Builder {
         self
     }
 
+    /// Inserts an [`UnharmonizedField`](field::UnharmonizedField) into the
+    /// `unharmonized` map.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use serde_json::Value;
+    ///
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::Identifier;
+    /// use models::metadata::field::UnharmonizedField;
+    /// use models::metadata::field::owned;
+    /// use models::metadata::field::unowned;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = Identifier::new(
+    ///     cde::v1::Identifier::parse("organization:Name", ":")?,
+    ///     None,
+    ///     None,
+    ///     None
+    /// );
+    ///
+    /// let builder = Builder::default()
+    ///                         .insert_unharmonized(
+    ///                             "unowned",
+    ///                             UnharmonizedField::Unowned(unowned::Field::new(Value::String("test".into()), None, None))
+    ///                         )
+    ///                         .insert_unharmonized(
+    ///                             "owned",
+    ///                             UnharmonizedField::Owned(owned::Field::new(Value::String("test".into()), None, None, None))
+    ///                         );
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn insert_unharmonized<S: Into<String>>(
+        mut self,
+        key: S,
+        field: field::UnharmonizedField,
+    ) -> Self {
+        let key = key.into();
+
+        let mut unharmonized = self.unharmonized;
+        unharmonized.inner_mut().insert(key, field);
+
+        self.unharmonized = unharmonized;
+
+        self
+    }
+
     /// Consumes `self` to build a [`Metadata`].
     ///
     /// # Examples
@@ -129,6 +184,7 @@ impl Builder {
             race: self.race,
             ethnicity: self.ethnicity,
             identifiers: self.identifiers,
+            unharmonized: self.unharmonized,
         }
     }
 }

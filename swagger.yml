@@ -214,11 +214,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
-          nullable: true
         comment:
           type: string
           description: A free-text comment field.
-          nullable: true
     field.Identifier:
       type: object
       required:
@@ -235,15 +233,12 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
-          nullable: true
         comment:
           type: string
           description: A free-text comment field.
-          nullable: true
         owned:
           type: boolean
           description: Whether or not the field is owned by the source server.
-          nullable: true
     field.Race:
       type: object
       required:
@@ -260,11 +255,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
-          nullable: true
         comment:
           type: string
           description: A free-text comment field.
-          nullable: true
     field.Sex:
       type: object
       required:
@@ -281,11 +274,63 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
-          nullable: true
         comment:
           type: string
           description: A free-text comment field.
-          nullable: true
+    field.UnharmonizedField:
+      oneOf:
+      - $ref: '#/components/schemas/field.owned.Field'
+      - $ref: '#/components/schemas/field.unowned.Field'
+      description: A metadata field.
+    field.owned.Field:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          description: The value of the metadata field.
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+        owned:
+          type: boolean
+          description: Whether or not the field is owned by the source server.
+    field.unowned.Field:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          description: The value of the metadata field.
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    fields.Unharmonized:
+      allOf:
+      - type: object
+        description: The inner [`IndexMap`].
+        additionalProperties:
+          $ref: '#/components/schemas/field.UnharmonizedField'
+      - type: object
+      description: A map of unharmonized metadata fields.
     models.Subject:
       type: object
       description: A subject.
@@ -359,6 +404,8 @@ components:
             Note that this list of identifiers *must* include the main identifier
             for the [`Subject`].
           nullable: true
+        unharmonized:
+          $ref: '#/components/schemas/fields.Unharmonized'
     responses.Error:
       type: object
       description: A response indicating an error from the API.
@@ -388,7 +435,6 @@ components:
           items:
             $ref: '#/components/schemas/models.Subject'
           description: The subjects, if available.
-          nullable: true
 tags:
 - name: Info
   description: Information about the API implementation itself.

@@ -15,13 +15,16 @@ pub use unowned::Ethnicity;
 pub use unowned::Race;
 pub use unowned::Sex;
 
+use crate::metadata::field;
+
 /// A metadata field.
 #[derive(Clone, Debug, Deserialize, Eq, Serialize, PartialEq, ToSchema)]
 #[serde(untagged)]
-pub enum Field {
+#[schema(as = field::UnharmonizedField)]
+pub enum UnharmonizedField {
     /// An owned field.
-    Owned(owned::Field),
+    Owned(field::owned::Field),
 
     /// An unowned field.
-    Unowned(unowned::Field),
+    Unowned(field::unowned::Field),
 }
