@@ -8,7 +8,6 @@ info:
     a variety of query parameters.
   contact:
     name: Childhood Cancer Data Initiative support email
-    url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
   version: '0.1'
 servers:

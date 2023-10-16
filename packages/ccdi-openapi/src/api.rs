@@ -22,7 +22,6 @@ a variety of query parameters.",
         contact(
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
-            url = "https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative",
         ),
         version = "0.1",
     ),
