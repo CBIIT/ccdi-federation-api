@@ -7,14 +7,13 @@ use utoipa::ToSchema;
 
 use ccdi_models as models;
 
-use models::count::Total;
-
 /// A response for grouping [`Subject`](models::Subject)s by a metadata field
 /// and then summing the counts.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
+#[schema(as = responses::by::count::Subjects)]
 pub struct Subjects {
     #[serde(flatten)]
-    total: Total,
+    total: models::count::Total,
 
     values: IndexMap<String, usize>,
 }
@@ -44,7 +43,7 @@ impl From<IndexMap<String, usize>> for Subjects {
     fn from(values: IndexMap<String, usize>) -> Self {
         let total = values.values().sum::<usize>();
         Self {
-            total: Total::from(total),
+            total: models::count::Total::from(total),
             values,
         }
     }

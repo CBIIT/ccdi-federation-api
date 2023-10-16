@@ -88,6 +88,9 @@ a variety of query parameters.",
 
         // Models.
         models::Subject,
+        models::metadata::field::Description,
+        models::metadata::field::description::Harmonized,
+        models::metadata::field::description::Unharmonized,
         models::subject::Kind,
         models::subject::Metadata,
 
@@ -98,6 +101,8 @@ a variety of query parameters.",
         responses::Error,
         responses::Subject,
         responses::Subjects,
+        responses::by::count::Subjects,
+        responses::metadata::FieldDescriptions
     )),
     modifiers(&RemoveLicense)
 )]

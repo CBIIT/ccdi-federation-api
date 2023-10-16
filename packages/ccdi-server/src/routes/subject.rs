@@ -137,7 +137,7 @@ pub async fn show(path: Path<(String, String)>, subjects: Data<Store>) -> impl R
     ),
     tag = "Subject",
     responses(
-        (status = 200, description = "Successful operation.", body = responses::Subject),
+        (status = 200, description = "Successful operation.", body = responses::by::count::Subjects),
         (
             status = 422,
             description = "Unsupported field.",

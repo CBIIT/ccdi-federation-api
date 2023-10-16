@@ -25,7 +25,7 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
     path = "/metadata/fields/subject",
     tag = "Metadata",
     responses(
-        (status = 200, description = "Successful operation.", body = [responses::Subjects])
+        (status = 200, description = "Successful operation.", body = responses::metadata::FieldDescriptions)
     )
 )]
 #[get("/metadata/fields/subject")]
