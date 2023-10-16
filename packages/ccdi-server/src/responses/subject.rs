@@ -8,9 +8,12 @@ use models::count::Total;
 
 /// A response representing a single [`Subject`](models::Subject).
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
-#[serde(transparent)]
 #[schema(as = responses::Subject)]
-pub struct Subject(models::Subject);
+pub struct Subject {
+    /// Subject.
+    #[serde(flatten)]
+    inner: models::Subject
+}
 
 /// A response representing multiple subjects known about by the server with a
 /// summarized total count.

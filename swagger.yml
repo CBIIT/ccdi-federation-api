@@ -395,7 +395,10 @@ components:
           type: string
           example: An error occurred.
     responses.Subject:
-      $ref: '#/components/schemas/models.Subject'
+      allOf:
+      - $ref: '#/components/schemas/models.Subject'
+      - type: object
+      description: A response representing a single [`Subject`](models::Subject).
     responses.Subjects:
       type: object
       description: |-
