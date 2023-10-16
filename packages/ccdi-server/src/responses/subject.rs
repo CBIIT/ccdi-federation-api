@@ -12,7 +12,7 @@ use models::count::Total;
 pub struct Subject {
     /// Subject.
     #[serde(flatten)]
-    inner: models::Subject
+    inner: models::Subject,
 }
 
 /// A response representing multiple subjects known about by the server with a

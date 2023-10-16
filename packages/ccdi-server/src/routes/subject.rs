@@ -9,8 +9,6 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use indexmap::IndexMap;
-use models::metadata::field::RacesOrNull;
-use models::metadata::field::SexOrNull;
 use serde_json::Value;
 
 use ccdi_cde as cde;
@@ -182,23 +180,21 @@ pub async fn subjects_by_count(path: Path<String>, subjects: Data<Store>) -> imp
 fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
     match field {
         "sex" => match subject.metadata() {
-            Some(metadata) => match metadata.sex() {
-                SexOrNull::Unowned(unowned) => Some(Value::String(unowned.value().to_string())),
-                SexOrNull::Null => Some(Value::Null),
-            },
+            Some(metadata) => metadata
+                .sex()
+                .as_ref()
+                .map(|sex| Value::String(sex.value().to_string())),
             None => None,
         },
         "race" => match subject.metadata() {
-            Some(metadata) => match metadata.race() {
-                RacesOrNull::MultipleUnowned(unowned) => Some(Value::String(
-                    unowned
-                        .iter()
+            Some(metadata) => metadata.race().as_ref().map(|race| {
+                Value::String(
+                    race.iter()
                         .map(|race| race.value().to_string())
                         .collect::<Vec<_>>()
                         .join(" AND "),
-                )),
-                RacesOrNull::Null => Some(Value::Null),
-            },
+                )
+            }),
             None => None,
         },
         _ => None,

@@ -5,10 +5,6 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::metadata::field;
-use crate::metadata::field::EthnicityOrNull;
-use crate::metadata::field::IdentifiersOrNull;
-use crate::metadata::field::RacesOrNull;
-use crate::metadata::field::SexOrNull;
 
 use ccdi_cde as cde;
 
@@ -21,23 +17,23 @@ pub use builder::Builder;
 #[schema(as = models::subject::Metadata)]
 pub struct Metadata {
     /// The sex of the subject.
-    #[schema(value_type = field::SexOrNull, nullable = true)]
-    sex: SexOrNull,
+    #[schema(value_type = field::Sex, nullable = true)]
+    sex: Option<field::Sex>,
 
     /// The race(s) of the subject.
-    #[schema(value_type = field::RacesOrNull, nullable = true)]
-    race: RacesOrNull,
+    #[schema(value_type = Vec<field::Race>, nullable = true)]
+    race: Option<Vec<field::Race>>,
 
     /// The ethnicity of the subject.
-    #[schema(value_type = field::EthnicityOrNull, nullable = true)]
-    ethnicity: EthnicityOrNull,
+    #[schema(value_type = field::Ethnicity, nullable = true)]
+    ethnicity: Option<field::Ethnicity>,
 
     /// The identifiers for the subject.
     ///
     /// Note that this list of identifiers *must* include the main identifier
     /// for the [`Subject`].
-    #[schema(value_type = field::IdentifiersOrNull, nullable = true)]
-    identifiers: IdentifiersOrNull,
+    #[schema(value_type = Vec<field::Identifier>, nullable = true)]
+    identifiers: Option<Vec<field::Identifier>>,
 }
 
 impl Metadata {
@@ -49,8 +45,7 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::SexOrNull;
-    /// use models::metadata::field::unowned::Sex;
+    /// use models::metadata::field::Sex;
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
@@ -59,12 +54,10 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.sex(),
-    ///     &SexOrNull::Unowned(
-    ///         Sex::new(cde::v1::Sex::Female, None, None)
-    ///     )
+    ///     &Some(Sex::new(cde::v1::Sex::Female, None, None))
     /// );
     /// ```
-    pub fn sex(&self) -> &SexOrNull {
+    pub fn sex(&self) -> &Option<field::Sex> {
         &self.sex
     }
 
@@ -76,8 +69,7 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::RacesOrNull;
-    /// use models::metadata::field::unowned::Race;
+    /// use models::metadata::field::Race;
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
@@ -86,14 +78,10 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.race(),
-    ///     &RacesOrNull::MultipleUnowned(
-    ///         vec![
-    ///             Race::new(cde::v1::Race::Asian, None, None)
-    ///         ]
-    ///     )
+    ///     &Some(vec![Race::new(cde::v1::Race::Asian, None, None)])
     /// );
     /// ```
-    pub fn race(&self) -> &RacesOrNull {
+    pub fn race(&self) -> &Option<Vec<field::Race>> {
         &self.race
     }
 
@@ -105,8 +93,7 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::EthnicityOrNull;
-    /// use models::metadata::field::unowned::Ethnicity;
+    /// use models::metadata::field::Ethnicity;
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
@@ -115,10 +102,10 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.ethnicity(),
-    ///     &EthnicityOrNull::Unowned(Ethnicity::new(cde::v2::Ethnicity::NotHispanicOrLatino, None, None))
+    ///     &Some(Ethnicity::new(cde::v2::Ethnicity::NotHispanicOrLatino, None, None))
     /// );
     /// ```
-    pub fn ethnicity(&self) -> &EthnicityOrNull {
+    pub fn ethnicity(&self) -> &Option<field::Ethnicity> {
         &self.ethnicity
     }
 
@@ -130,8 +117,7 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::IdentifiersOrNull;
-    /// use models::metadata::field::owned::Identifier;
+    /// use models::metadata::field::Identifier;
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
@@ -145,7 +131,7 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.identifiers(),
-    ///     &IdentifiersOrNull::MultipleOwned(
+    ///     &Some(
     ///         vec![
     ///             Identifier::new(
     ///                 cde::v1::Identifier::parse("organization:Name", ":").unwrap(),
@@ -155,7 +141,7 @@ impl Metadata {
     ///     )
     /// );
     /// ```
-    pub fn identifiers(&self) -> &IdentifiersOrNull {
+    pub fn identifiers(&self) -> &Option<Vec<field::Identifier>> {
         &self.identifiers
     }
 
@@ -174,10 +160,10 @@ impl Metadata {
     /// ```
     pub fn random(identifier: cde::v1::Identifier) -> Metadata {
         Metadata {
-            sex: SexOrNull::Unowned(rand::random()),
-            race: RacesOrNull::MultipleUnowned(vec![rand::random()]),
-            ethnicity: EthnicityOrNull::Unowned(rand::random()),
-            identifiers: IdentifiersOrNull::MultipleOwned(vec![field::owned::Identifier::new(
+            sex: Some(rand::random()),
+            race: Some(vec![rand::random()]),
+            ethnicity: Some(rand::random()),
+            identifiers: Some(vec![field::owned::Identifier::new(
                 identifier,
                 None,
                 None,

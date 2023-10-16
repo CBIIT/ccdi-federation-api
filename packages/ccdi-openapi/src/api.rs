@@ -79,12 +79,6 @@ a variety of query parameters.",
         field::Ethnicity,
         field::Identifier,
 
-        // Fields or null.
-        field::SexOrNull,
-        field::RacesOrNull,
-        field::EthnicityOrNull,
-        field::IdentifiersOrNull,
-
         // Models.
         models::Subject,
         models::subject::Kind,

@@ -219,13 +219,6 @@ components:
           type: string
           description: A free-text comment field.
           nullable: true
-    field.EthnicityOrNull:
-      oneOf:
-      - $ref: '#/components/schemas/field.Ethnicity'
-      - type: object
-        default: null
-        nullable: true
-      description: An unowned metadata field or null.
     field.Identifier:
       type: object
       required:
@@ -251,16 +244,6 @@ components:
           type: boolean
           description: Whether or not the field is owned by the source server.
           nullable: true
-    field.IdentifiersOrNull:
-      oneOf:
-      - type: array
-        items:
-          $ref: '#/components/schemas/field.Identifier'
-        description: Multiple owned values representing the field(s).
-      - type: object
-        default: null
-        nullable: true
-      description: Multiple owned metadata fields or null.
     field.Race:
       type: object
       required:
@@ -282,16 +265,6 @@ components:
           type: string
           description: A free-text comment field.
           nullable: true
-    field.RacesOrNull:
-      oneOf:
-      - type: array
-        items:
-          $ref: '#/components/schemas/field.Race'
-        description: Multiple unowned values representing the field(s).
-      - type: object
-        default: null
-        nullable: true
-      description: Multiple unowned metadata fields or null.
     field.Sex:
       type: object
       required:
@@ -313,13 +286,6 @@ components:
           type: string
           description: A free-text comment field.
           nullable: true
-    field.SexOrNull:
-      oneOf:
-      - $ref: '#/components/schemas/field.Sex'
-      - type: object
-        default: null
-        nullable: true
-      description: An unowned metadata field or null.
     models.Subject:
       type: object
       description: A subject.
@@ -371,19 +337,27 @@ components:
       properties:
         sex:
           allOf:
-          - $ref: '#/components/schemas/field.SexOrNull'
+          - $ref: '#/components/schemas/field.Sex'
           nullable: true
         race:
-          allOf:
-          - $ref: '#/components/schemas/field.RacesOrNull'
+          type: array
+          items:
+            $ref: '#/components/schemas/field.Race'
+          description: The race(s) of the subject.
           nullable: true
         ethnicity:
           allOf:
-          - $ref: '#/components/schemas/field.EthnicityOrNull'
+          - $ref: '#/components/schemas/field.Ethnicity'
           nullable: true
         identifiers:
-          allOf:
-          - $ref: '#/components/schemas/field.IdentifiersOrNull'
+          type: array
+          items:
+            $ref: '#/components/schemas/field.Identifier'
+          description: |-
+            The identifiers for the subject.
+
+            Note that this list of identifiers *must* include the main identifier
+            for the [`Subject`].
           nullable: true
     responses.Error:
       type: object
