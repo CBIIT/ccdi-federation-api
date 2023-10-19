@@ -5,10 +5,7 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 
-use ccdi_cde as cde;
 use ccdi_models as models;
-
-use models::metadata::field::description::r#trait::Description as _;
 
 use crate::responses::metadata::FieldDescriptions;
 
@@ -16,6 +13,7 @@ use crate::responses::metadata::FieldDescriptions;
 pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
     |config: &mut ServiceConfig| {
         config.service(metadata_fields_subject);
+        config.service(metadata_fields_sample);
     }
 }
 
@@ -30,10 +28,23 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
 )]
 #[get("/metadata/fields/subject")]
 pub async fn metadata_fields_subject() -> impl Responder {
-    HttpResponse::Ok().json(FieldDescriptions::from(vec![
-        cde::v1::Sex::description(),
-        cde::v1::Race::description(),
-        cde::v2::Ethnicity::description(),
-        cde::v1::Identifier::description(),
-    ]))
+    HttpResponse::Ok().json(FieldDescriptions::from(
+        models::metadata::field::description::harmonized::subject::get_field_descriptions(),
+    ))
+}
+
+/// Gets the metadata fields for samples that are supported by this server.
+#[utoipa::path(
+    get,
+    path = "/metadata/fields/sample",
+    tag = "Metadata",
+    responses(
+        (status = 200, description = "Successful operation.", body = responses::metadata::FieldDescriptions)
+    )
+)]
+#[get("/metadata/fields/sample")]
+pub async fn metadata_fields_sample() -> impl Responder {
+    HttpResponse::Ok().json(FieldDescriptions::from(
+        models::metadata::field::description::harmonized::sample::get_field_descriptions(),
+    ))
 }

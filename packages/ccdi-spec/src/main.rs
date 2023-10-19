@@ -10,17 +10,24 @@ use actix_web::App;
 use actix_web::HttpServer;
 use clap::Parser;
 use clap::Subcommand;
+use log::info;
 use log::LevelFilter;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
+use ccdi_models as models;
 use ccdi_openapi as api;
 use ccdi_server as server;
 
 use api::Api;
+
 use server::routes::metadata;
+use server::routes::sample;
 use server::routes::subject;
-use server::routes::subject::Store;
+
+mod utils;
+
+use utils::markdown;
 
 const ERROR_EXIT_CODE: i32 = 1;
 
@@ -67,6 +74,21 @@ pub struct ServeArgs {
     port: u16,
 }
 
+#[derive(Clone, Debug, clap::ValueEnum)]
+pub enum WikiEntity {
+    /// A subject.
+    Subject,
+
+    /// A sample.
+    Sample,
+}
+
+#[derive(Debug, Parser)]
+pub struct WikiArgs {
+    /// The API entity for which to generate a wiki page.
+    entity: WikiEntity,
+}
+
 #[derive(Debug, Subcommand)]
 pub enum Command {
     /// Generate the OpenAPI specification as YAML.
@@ -74,6 +96,9 @@ pub enum Command {
 
     /// Runs the test server.
     Serve(ServeArgs),
+
+    /// Generates the documentation for a wiki page covering an API entity.
+    Wiki(WikiArgs),
 }
 
 // A program to prepare the Childhood Cancer Data Initiative OpenAPI
@@ -116,12 +141,17 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
             write!(writer, "{}", api.to_yaml()?)?;
         }
         Command::Serve(args) => {
+            info!("Starting server at http://localhost:{}", args.port);
+
             rt::System::new().block_on(
                 HttpServer::new(move || {
-                    let data = Data::new(Store::random(args.number_of_subjects));
+                    let subjects = Data::new(subject::Store::random(args.number_of_subjects));
+                    let samples = Data::new(sample::Store::random(args.number_of_subjects));
+
                     App::new()
                         .wrap(Logger::default())
-                        .configure(subject::configure(data))
+                        .configure(subject::configure(subjects))
+                        .configure(sample::configure(samples))
                         .configure(metadata::configure())
                         .service(
                             SwaggerUi::new("/swagger-ui/{_:.*}")
@@ -131,6 +161,22 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                 .bind((Ipv4Addr::UNSPECIFIED, args.port))?
                 .run(),
             )?;
+        }
+        Command::Wiki(args) => {
+            let fields = match args.entity {
+                WikiEntity::Subject => {
+                    models::metadata::field::description::harmonized::subject::get_field_descriptions()
+                }
+                WikiEntity::Sample => {
+                    models::metadata::field::description::harmonized::sample::get_field_descriptions(
+                    )
+                }
+            };
+
+            for field in fields {
+                let section = markdown::Section::from(field);
+                println!("{}\n", section);
+            }
         }
     }
 

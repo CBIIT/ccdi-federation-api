@@ -13,8 +13,6 @@ use serde::Serialize;
 use serde_json::Value;
 use utoipa::ToSchema;
 
-use ccdi_cde as cde;
-
 #[macropol::macropol]
 macro_rules! owned_field {
     ($name: ident, $as: ty, $inner: ty, $value: expr, $import: expr) => {
@@ -53,7 +51,7 @@ macro_rules! owned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::owned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -84,7 +82,7 @@ macro_rules! owned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::owned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -107,7 +105,7 @@ macro_rules! owned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::owned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -130,7 +128,7 @@ macro_rules! owned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::owned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -153,7 +151,7 @@ macro_rules! owned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::owned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -189,10 +187,15 @@ owned_field!(
     serde_json::Value
 );
 
-owned_field!(
-    Identifier,
-    field::Identifier,
-    cde::v1::Identifier,
-    cde::v1::Identifier::new("organization", "Name"),
-    ccdi_cde as cde
-);
+pub mod subject {
+    use super::*;
+    use ccdi_cde as cde;
+
+    owned_field!(
+        Identifier,
+        field::owned::subject::Identifier,
+        cde::v1::subject::Identifier,
+        cde::v1::subject::Identifier::new("organization", "Name"),
+        ccdi_cde as cde
+    );
+}

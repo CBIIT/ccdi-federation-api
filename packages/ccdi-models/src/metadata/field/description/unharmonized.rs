@@ -45,6 +45,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
@@ -78,6 +79,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
@@ -100,6 +102,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
@@ -122,6 +125,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
@@ -145,6 +149,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
@@ -168,6 +173,7 @@ impl Unharmonized {
     ///
     /// ```
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(

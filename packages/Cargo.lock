@@ -384,7 +384,10 @@ dependencies = [
 name = "ccdi-cde"
 version = "0.1.0"
 dependencies = [
+ "indexmap 2.0.2",
+ "introspect",
  "rand",
+ "regex",
  "serde",
  "serde_json",
  "utoipa",
@@ -435,6 +438,8 @@ name = "ccdi-spec"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "ccdi-cde",
+ "ccdi-models",
  "ccdi-openapi",
  "ccdi-server",
  "clap",
@@ -864,6 +869,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "introspect"
+version = "0.1.1"
+source = "git+https://github.com/claymcleod/introspect.git#31fe496dc1ec26b4bfd4aaf8ea039c703af41ae1"
+dependencies = [
+ "introspect-core",
+ "introspect-proc-macros",
+]
+
+[[package]]
+name = "introspect-core"
+version = "0.1.1"
+source = "git+https://github.com/claymcleod/introspect.git#31fe496dc1ec26b4bfd4aaf8ea039c703af41ae1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.38",
+]
+
+[[package]]
+name = "introspect-proc-macros"
+version = "0.1.0"
+source = "git+https://github.com/claymcleod/introspect.git#31fe496dc1ec26b4bfd4aaf8ea039c703af41ae1"
+dependencies = [
+ "introspect-core",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.38",
+]
+
+[[package]]
 name = "is-terminal"
 version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1172,9 +1207,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.10.0"
+version = "1.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d119d7c7ca818f8a53c300863d4f87566aac09943aef5b355bb83969dae75d87"
+checksum = "380b951a9c5e80ddfd6136919eef32310721aa4aacd4889a8d39124b026ab343"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -1184,9 +1219,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.4.1"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "465c6fc0621e4abc4187a2bda0937bfd4f722c2730b29562e19689ea796c9a4b"
+checksum = "5f804c7828047e88b2d32e2d7fe5a105da8ee3264f01902f796c8e067dc2483f"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -1195,9 +1230,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56d84fdd47036b038fc80dd333d10b6aab10d5d31f4a366e20014def75328d33"
+checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 
 [[package]]
 name = "rust-embed"

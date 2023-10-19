@@ -5,7 +5,10 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+indexmap.workspace = true
+introspect.workspace = true
 rand.workspace = true
+regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 utoipa.workspace = true

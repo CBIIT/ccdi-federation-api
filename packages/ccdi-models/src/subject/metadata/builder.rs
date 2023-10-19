@@ -8,16 +8,16 @@ use crate::subject::Metadata;
 #[derive(Clone, Debug, Default)]
 pub struct Builder {
     /// The sex of the subject.
-    sex: Option<field::Sex>,
+    sex: Option<field::unowned::subject::Sex>,
 
     /// The race of the subject.
-    race: Option<Vec<field::Race>>,
+    race: Option<Vec<field::unowned::subject::Race>>,
 
     /// The ethnicity of the subject.
-    ethnicity: Option<field::Ethnicity>,
+    ethnicity: Option<field::unowned::subject::Ethnicity>,
 
     /// The identifiers for the subject.
-    identifiers: Option<Vec<field::Identifier>>,
+    identifiers: Option<Vec<field::owned::subject::Identifier>>,
 
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
@@ -32,13 +32,13 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::Sex;
+    /// use models::metadata::field::unowned::subject::Sex;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Sex::new(cde::v1::Sex::Unknown, None, None);
+    /// let field = Sex::new(cde::v1::subject::Sex::Unknown, None, None);
     /// let builder = Builder::default().sex(field);
     /// ```
-    pub fn sex(mut self, sex: field::Sex) -> Self {
+    pub fn sex(mut self, sex: field::unowned::subject::Sex) -> Self {
         self.sex = Some(sex);
         self
     }
@@ -51,13 +51,13 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::Race;
+    /// use models::metadata::field::unowned::subject::Race;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Race::new(cde::v1::Race::Unknown, None, None);
+    /// let field = Race::new(cde::v1::subject::Race::Unknown, None, None);
     /// let builder = Builder::default().append_race(field);
     /// ```
-    pub fn append_race(mut self, race: field::Race) -> Self {
+    pub fn append_race(mut self, race: field::unowned::subject::Race) -> Self {
         let mut inner = self.race.unwrap_or_default();
         inner.push(race);
 
@@ -74,13 +74,13 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::Ethnicity;
+    /// use models::metadata::field::unowned::subject::Ethnicity;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Ethnicity::new(cde::v2::Ethnicity::Unknown, None, None);
+    /// let field = Ethnicity::new(cde::v2::subject::Ethnicity::Unknown, None, None);
     /// let builder = Builder::default().ethnicity(field);
     /// ```
-    pub fn ethnicity(mut self, ethnicity: field::Ethnicity) -> Self {
+    pub fn ethnicity(mut self, ethnicity: field::unowned::subject::Ethnicity) -> Self {
         self.ethnicity = Some(ethnicity);
         self
     }
@@ -93,11 +93,11 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::Identifier;
+    /// use models::metadata::field::owned::subject::Identifier;
     /// use models::subject::metadata::Builder;
     ///
     /// let field = Identifier::new(
-    ///     cde::v1::Identifier::parse("organization:Name", ":")?,
+    ///     cde::v1::subject::Identifier::parse("organization:Name", ":")?,
     ///     None,
     ///     None,
     ///     None
@@ -107,7 +107,7 @@ impl Builder {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn append_identifier(mut self, identifier: field::Identifier) -> Self {
+    pub fn append_identifier(mut self, identifier: field::owned::subject::Identifier) -> Self {
         let mut inner = self.identifiers.unwrap_or_default();
         inner.push(identifier);
 
@@ -127,18 +127,10 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::Identifier;
     /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::owned;
     /// use models::metadata::field::unowned;
     /// use models::subject::metadata::Builder;
-    ///
-    /// let field = Identifier::new(
-    ///     cde::v1::Identifier::parse("organization:Name", ":")?,
-    ///     None,
-    ///     None,
-    ///     None
-    /// );
     ///
     /// let builder = Builder::default()
     ///                         .insert_unharmonized(

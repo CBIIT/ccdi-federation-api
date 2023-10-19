@@ -14,15 +14,14 @@ use serde_json::Value;
 use ccdi_cde as cde;
 use ccdi_models as models;
 
-use cde::v1::Identifier;
+use cde::v1::subject::Identifier;
 use models::Subject;
 
 use crate::responses::by;
 use crate::responses::Error;
 use crate::responses::Subjects;
-
-const MISSING_GROUP_BY_KEY: &str = "missing";
-const NULL_GROUP_BY_KEY: &str = "null";
+use crate::routes::MISSING_GROUP_BY_KEY;
+use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`Subject`]s.
 #[derive(Debug)]
@@ -68,8 +67,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
     |config: &mut ServiceConfig| {
         config
             .app_data(store)
-            .service(index)
-            .service(show)
+            .service(subject_index)
+            .service(subject_show)
             .service(subjects_by_count);
     }
 }
@@ -84,12 +83,12 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
     )
 )]
 #[get("/subject")]
-pub async fn index(subjects: Data<Store>) -> impl Responder {
+pub async fn subject_index(subjects: Data<Store>) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap().clone();
     HttpResponse::Ok().json(Subjects::from(subjects))
 }
 
-/// Gets the subject matching the provided id (if it exists).
+/// Gets the subject matching the provided id (if the subject exists).
 #[utoipa::path(
     get,
     path = "/subject/{namespace}/{name}",
@@ -115,7 +114,7 @@ pub async fn index(subjects: Data<Store>) -> impl Responder {
     )
 )]
 #[get("/subject/{namespace}/{name}")]
-pub async fn show(path: Path<(String, String)>, subjects: Data<Store>) -> impl Responder {
+pub async fn subject_show(path: Path<(String, String)>, subjects: Data<Store>) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap();
     let (namespace, name) = path.into_inner();
 

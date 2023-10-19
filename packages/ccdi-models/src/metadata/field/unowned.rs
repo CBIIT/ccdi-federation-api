@@ -13,8 +13,6 @@ use serde::Serialize;
 use serde_json::Value;
 use utoipa::ToSchema;
 
-use ccdi_cde as cde;
-
 #[macropol::macropol]
 macro_rules! unowned_field {
     ($name: ident, $as: ty, $inner: ty, $value: expr, $import: expr) => {
@@ -48,7 +46,7 @@ macro_rules! unowned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::unowned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -76,7 +74,7 @@ macro_rules! unowned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::unowned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -98,7 +96,7 @@ macro_rules! unowned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::unowned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -120,7 +118,7 @@ macro_rules! unowned_field {
             /// use ${stringify!($import)};
             /// use ccdi_models as models;
             ///
-            /// use models::metadata::field::unowned::${stringify!($name)};
+            /// use models::metadata::${stringify!($as)};
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
@@ -155,26 +153,62 @@ unowned_field!(
     serde_json::Value
 );
 
-unowned_field!(
-    Sex,
-    field::Sex,
-    cde::v1::Sex,
-    cde::v1::Sex::Unknown,
-    ccdi_cde as cde
-);
+pub mod sample {
+    use super::*;
 
-unowned_field!(
-    Race,
-    field::Race,
-    cde::v1::Race,
-    cde::v1::Race::Unknown,
-    ccdi_cde as cde
-);
+    use ccdi_cde as cde;
 
-unowned_field!(
-    Ethnicity,
-    field::Ethnicity,
-    cde::v2::Ethnicity,
-    cde::v2::Ethnicity::Unknown,
-    ccdi_cde as cde
-);
+    unowned_field!(
+        DiseasePhase,
+        field::unowned::sample::DiseasePhase,
+        cde::v1::sample::DiseasePhase,
+        cde::v1::sample::DiseasePhase::InitialDiagnosis,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        TissueType,
+        field::unowned::sample::TissueType,
+        cde::v2::sample::TissueType,
+        cde::v2::sample::TissueType::Tumor,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        TumorClassification,
+        field::unowned::sample::TumorClassification,
+        cde::v1::sample::TumorClassification,
+        cde::v1::sample::TumorClassification::Primary,
+        ccdi_cde as cde
+    );
+}
+
+pub mod subject {
+    use super::*;
+
+    use ccdi_cde as cde;
+
+    unowned_field!(
+        Sex,
+        field::unowned::subject::Sex,
+        cde::v1::subject::Sex,
+        cde::v1::subject::Sex::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Race,
+        field::unowned::subject::Race,
+        cde::v1::subject::Race,
+        cde::v1::subject::Race::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Ethnicity,
+        field::unowned::subject::Ethnicity,
+        cde::v2::subject::Ethnicity,
+        cde::v2::subject::Ethnicity::Unknown,
+        ccdi_cde as cde
+    );
+}
