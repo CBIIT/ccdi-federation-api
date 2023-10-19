@@ -1,3 +1,4 @@
+use introspect::Introspect;
 use rand::distributions::Standard;
 use rand::prelude::Distribution;
 use serde::Deserialize;
@@ -6,7 +7,7 @@ use utoipa::ToSchema;
 
 use crate::CDE;
 
-/// **caDSR CDE 2192217 v2.00**
+/// **`caDSR CDE 2192217 v2.00`**
 ///
 /// This metadata element is defined by the caDSR as "The text for reporting
 /// information about ethnicity based on the Office of Management and Budget
@@ -15,20 +16,27 @@ use crate::CDE;
 /// ethnicity.
 ///
 /// Link:
-/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2.0>
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
-#[schema(as = cde::v2::Ethnicity)]
-pub enum Ethnicity
-where
-    Self: CDE,
-{
-    /// Not Allowed To Collect
+/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2>
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
+#[schema(as = cde::v2::subject::Ethnicity)]
+pub enum Ethnicity {
+    /// `Not allowed to collect`
+    ///
+    /// * **VM Long Name**: Not Allowed To Collect
+    /// * **VM Public ID**: 6662191
+    /// * **Concept Code**: C141478
+    /// * **Begin Date**:   03/06/2019
     ///
     /// An indicator that specifies that a collection event was not permitted.
     #[serde(rename = "Not allowed to collect")]
     NotAllowedToCollect,
 
-    /// Hispanic or Latino
+    /// `Hispanic or Latino`
+    ///
+    /// * **VM Long Name**: Hispanic or Latino
+    /// * **VM Public ID**: 2581176
+    /// * **Concept Code**: C17459
+    /// * **Begin Date**:   05/20/2002
     ///
     /// A person of Cuban, Mexican, Puerto Rican, South or Central American, or
     /// other Spanish culture or origin, regardless of race. The term, "Spanish
@@ -36,20 +44,35 @@ where
     #[serde(rename = "Hispanic or Latino")]
     HispanicOrLatino,
 
-    /// Not Hispanic or Latino
+    /// `Not Hispanic or Latino`
+    ///
+    /// * **VM Long Name**: Not Hispanic or Latino
+    /// * **VM Public ID**: 2567110
+    /// * **Concept Code**: C41222
+    /// * **Begin Date**:   05/20/2002
     ///
     /// A person not of Cuban, Mexican, Puerto Rican, South or Central American,
     /// or other Spanish culture or origin, regardless of race.
     #[serde(rename = "Not Hispanic or Latino")]
     NotHispanicOrLatino,
 
-    /// Unknown
+    /// `Unknown`
+    ///
+    /// * **VM Long Name**: Unknown
+    /// * **VM Public ID**: 2572577
+    /// * **Concept Code**: C17998
+    /// * **Begin Date**:   07/09/2002
     ///
     /// Not known, not observed, not recorded, or refused.
     #[serde(rename = "Unknown")]
     Unknown,
 
-    /// Not Reported
+    /// `Not reported`
+    ///
+    /// * **VM Long Name**: Not Reported
+    /// * **VM Public ID**: 2572578
+    /// * **Concept Code**: C43234
+    /// * **Begin Date**:   10/16/2003
     ///
     /// Not provided or available.
     #[serde(rename = "Not reported")]
@@ -57,18 +80,6 @@ where
 }
 
 impl CDE for Ethnicity {}
-
-impl crate::Standard for Ethnicity {
-    fn standard() -> &'static str {
-        "caDSR CDE 2192217 v2.00"
-    }
-}
-
-impl crate::Url for Ethnicity {
-    fn url() -> &'static str {
-        "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2.0"
-    }
-}
 
 impl std::fmt::Display for Ethnicity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

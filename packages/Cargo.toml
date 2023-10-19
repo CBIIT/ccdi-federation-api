@@ -15,9 +15,11 @@ edition = "2021"
 [workspace.dependencies]
 actix-web = "4.4.0"
 indexmap = "2.0.2"
+introspect = { git = "https://github.com/claymcleod/introspect.git" }
 log = "0.4.20"
 mime = "0.3.17"
 rand = "0.8.5"
+regex = "1.10.2"
 serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"

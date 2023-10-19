@@ -8,7 +8,7 @@ use utoipa::ToSchema;
 
 use ccdi_cde as cde;
 
-use cde::v1::Identifier;
+use cde::v1::subject::Identifier;
 
 mod kind;
 pub mod metadata;
@@ -24,11 +24,14 @@ pub struct Subject {
     ///
     /// This identifier should *ALWAYS* be included in the `identifiers` key
     /// under `metadata`, should that key exist.
-    #[schema(value_type = cde::v1::Identifier)]
+    #[schema(value_type = cde::v1::subject::Identifier)]
     id: Identifier,
 
-    /// The primary name or identifier for a subject used within the source
-    /// server.
+    /// The primary name for a subject used within the source server.
+    ///
+    /// Note that this field is not namespaced like an `identifier` is, and,
+    /// instead, is intended to represent a colloquial or display name for the
+    /// sample (without indicating the scope of the name).
     #[schema(example = "SubjectName001")]
     name: String,
 
@@ -51,7 +54,7 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     /// use models::Subject;
     /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
@@ -82,7 +85,7 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     /// use models::Subject;
     /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
@@ -113,7 +116,7 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     /// use models::Subject;
     /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
@@ -141,7 +144,7 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     /// use models::Subject;
     /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
@@ -169,7 +172,7 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     /// use models::Subject;
     /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
@@ -201,7 +204,7 @@ impl Subject {
     ///
     /// use models::Subject;
     ///
-    /// let identifier = cde::v1::Identifier::parse("organization:Name", ":").unwrap();
+    /// let identifier = cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap();
     /// let subject = Subject::random(identifier);
     /// ```
     pub fn random(identifier: Identifier) -> Self {

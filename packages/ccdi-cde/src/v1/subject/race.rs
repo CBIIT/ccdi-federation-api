@@ -1,3 +1,4 @@
+use introspect::Introspect;
 use rand::distributions::Standard;
 use rand::prelude::Distribution;
 use serde::Deserialize;
@@ -6,7 +7,7 @@ use utoipa::ToSchema;
 
 use crate::CDE;
 
-/// **caDSR CDE 2192199 v1.00**
+/// **`caDSR CDE 2192199 v1.00`**
 ///
 /// This metadata element is defined by the caDSR as "The text for reporting
 /// information about race based on the Office of Management and Budget (OMB)
@@ -15,19 +16,26 @@ use crate::CDE;
 ///
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192199%20and%20ver_nr=1>
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
-#[schema(as = cde::v1::Race)]
-pub enum Race
-where
-    Self: CDE,
-{
-    /// Not Allowed To Collect
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
+#[schema(as = cde::v1::subject::Race)]
+pub enum Race {
+    /// `Not allowed to collect`
+    ///
+    /// * **VM Long Name**: Not Allowed To Collect
+    /// * **VM Public ID**: 6662191
+    /// * **Concept Code**: C141478
+    /// * **Begin Date**:   03/06/2019
     ///
     /// An indicator that specifies that a collection event was not permitted.
     #[serde(rename = "Not allowed to collect")]
     NotAllowedToCollect,
 
-    /// Native Hawaiian or Other Pacific Islander
+    /// `Native Hawaiian or other Pacific Islander`
+    ///
+    /// * **VM Long Name**: Native Hawaiian or Other Pacific Islander
+    /// * **VM Public ID**: 2572235
+    /// * **Concept Code**: C41219
+    /// * **Begin Date**:   05/31/2002
     ///
     /// Denotes a person having origins in any of the original peoples of
     /// Hawaii, Guam, Samoa, or other Pacific Islands. The term covers
@@ -39,19 +47,34 @@ where
     #[serde(rename = "Native Hawaiian or other Pacific Islander")]
     NativeHawaiianOrOtherPacificIslander,
 
-    /// Not Reported
+    /// `Not Reported`
+    ///
+    /// * **VM Long Name**: Not Reported
+    /// * **VM Public ID**: 2572578
+    /// * **Concept Code**: C43234
+    /// * **Begin Date**:   10/16/2003
     ///
     /// Not provided or available.
     #[serde(rename = "Not Reported")]
     NotReported,
 
-    /// Unknown
+    /// `Unknown`
+    ///
+    /// * **VM Long Name**: Unknown
+    /// * **VM Public ID**: 2572577
+    /// * **Concept Code**: C17998
+    /// * **Begin Date**:   02/11/2002
     ///
     /// Not known, not observed, not recorded, or refused.
     #[serde(rename = "Unknown")]
     Unknown,
 
-    /// American Indian or Alaska Native
+    /// `American Indian or Alaska Native`
+    ///
+    /// * **VM Long Name**: American Indian or Alaska Native
+    /// * **VM Public ID**: 2572232
+    /// * **Concept Code**: C41259
+    /// * **Begin Date**:   05/31/2002
     ///
     /// A person having origins in any of the original peoples of North and
     /// South America (including Central America) and who maintains tribal
@@ -59,7 +82,12 @@ where
     #[serde(rename = "American Indian or Alaska Native")]
     AmericanIndianOrAlaskaNative,
 
-    /// Asian
+    /// `Asian`
+    ///
+    /// * **VM Long Name**: Asian
+    /// * **VM Public ID**: 2572233
+    /// * **Concept Code**: C41260
+    /// * **Begin Date**:   05/31/2002
     ///
     /// A person having origins in any of the original peoples of the Far East,
     /// Southeast Asia, or the Indian subcontinent, including for example,
@@ -68,15 +96,26 @@ where
     #[serde(rename = "Asian")]
     Asian,
 
-    /// Black or African American
+    /// `Asian`
     ///
-    /// A person having origins in any of the Black racial groups of Africa.
-    /// Terms such as "Haitian" or "Negro" can be used in addition to "Black or
-    /// African American". (OMB)
+    /// * **VM Long Name**: Asian
+    /// * **VM Public ID**: 2572233
+    /// * **Concept Code**: C41260
+    /// * **Begin Date**:   05/31/2002
+    ///
+    /// A person having origins in any of the original peoples of the Far East,
+    /// Southeast Asia, or the Indian subcontinent, including for example,
+    /// Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine
+    /// Islands, Thailand, and Vietnam. (OMB)
     #[serde(rename = "Black or African American")]
     BlackOrAfricanAmerican,
 
-    /// White
+    /// `White`
+    ///
+    /// * **VM Long Name**: White
+    /// * **VM Public ID**: 2572236
+    /// * **Concept Code**: C41261
+    /// * **Begin Date**:   05/31/2002
     ///
     /// Denotes person with European, Middle Eastern, or North African ancestral
     /// origin who identifies, or is identified, as White.
@@ -85,18 +124,6 @@ where
 }
 
 impl CDE for Race {}
-
-impl crate::Standard for Race {
-    fn standard() -> &'static str {
-        "caDSR CDE 2192199 v1.00"
-    }
-}
-
-impl crate::Url for Race {
-    fn url() -> &'static str {
-        "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192199%20and%20ver_nr=1"
-    }
-}
 
 impl std::fmt::Display for Race {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

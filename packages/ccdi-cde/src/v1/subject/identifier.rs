@@ -1,3 +1,4 @@
+use introspect::Introspect;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -36,7 +37,7 @@ impl std::fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-/// **caDSR CDE 6380049 v1.00**
+/// **`caDSR CDE 6380049 v1.00`**
 ///
 /// This metadata element is defined by the caDSR as "A unique subject
 /// identifier within a site and a study.". No permissible values are defined
@@ -44,12 +45,9 @@ impl std::error::Error for Error {}
 ///
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1>
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
-#[schema(as = cde::v1::Identifier)]
-pub struct Identifier
-where
-    Self: CDE,
-{
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
+#[schema(as = cde::v1::subject::Identifier)]
+pub struct Identifier {
     /// The namespace of the identifier.
     #[schema(example = "organization")]
     namespace: String,
@@ -66,7 +64,7 @@ impl Identifier {
     ///
     /// ```
     /// use ccdi_cde as cde;
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     ///
     /// let identifier = Identifier::new("organization", "Name");
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
@@ -85,7 +83,7 @@ impl Identifier {
     ///
     /// ```
     /// use ccdi_cde as cde;
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
@@ -102,7 +100,7 @@ impl Identifier {
     ///
     /// ```
     /// use ccdi_cde as cde;
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.name(), &String::from("Name"));
@@ -120,7 +118,7 @@ impl Identifier {
     ///
     /// ```
     /// use ccdi_cde as cde;
-    /// use cde::v1::Identifier;
+    /// use cde::v1::subject::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
@@ -149,18 +147,6 @@ impl Identifier {
 
 impl CDE for Identifier {}
 
-impl crate::Standard for Identifier {
-    fn standard() -> &'static str {
-        "caDSR CDE 6380049 v1.00"
-    }
-}
-
-impl crate::Url for Identifier {
-    fn url() -> &'static str {
-        "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1"
-    }
-}
-
 impl std::fmt::Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -173,7 +159,7 @@ impl std::fmt::Display for Identifier {
 
 #[cfg(test)]
 mod tests {
-    use crate::v1::Identifier;
+    use crate::v1::subject::Identifier;
 
     #[test]
     fn it_displays_correctly() {

@@ -23,7 +23,7 @@ a variety of query parameters.",
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "0.1",
+        version = "0.2",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",
@@ -45,62 +45,97 @@ a variety of query parameters.",
     ),
     tags(
         (
-            name = "Info",
-            description = "Information about the API implementation itself."
-        ),
-        (
             name = "Subject",
             description = "Subjects within the CCDI federated ecosystem."
         ),
         (
+            name = "Sample",
+            description = "Samples within the CCDI federated ecosystem."
+        ),
+        (
             name = "Metadata",
             description = "List and describe provided metadata fields."
-        )
+        ),
+        (
+            name = "Info",
+            description = "Information about the API implementation itself."
+        ),
     ),
     paths(
+        // Subject routes.
+        server::routes::subject::subject_index,
+        server::routes::subject::subject_show,
+        server::routes::subject::subjects_by_count,
+
+        // Sample routes.
+        server::routes::sample::sample_index,
+        server::routes::sample::sample_show,
+        server::routes::sample::samples_by_count,
+
         // Metadata.
         server::routes::metadata::metadata_fields_subject,
-
-        // Subject.
-        server::routes::subject::index,
-        server::routes::subject::show,
-        server::routes::subject::subjects_by_count,
+        server::routes::metadata::metadata_fields_sample,
     ),
     components(schemas(
-        // Common data elements.
-        cde::v1::Race,
-        cde::v1::Sex,
-        cde::v2::Ethnicity,
-        cde::v1::Identifier,
+        // Subject common data elements (CDEs).
+        cde::v1::subject::Race,
+        cde::v1::subject::Sex,
+        cde::v2::subject::Ethnicity,
+        cde::v1::subject::Identifier,
 
-        // Harmonized Fields.
-        field::Sex,
-        field::Race,
-        field::Ethnicity,
-        field::Identifier,
+        // Sample common data elements (CDEs).
+        cde::v1::sample::DiseasePhase,
+        cde::v2::sample::TissueType,
+        cde::v1::sample::TumorClassification,
 
-        // Unharmonized Fields.
+        // Harmonized subject fields.
+        field::unowned::subject::Sex,
+        field::unowned::subject::Race,
+        field::unowned::subject::Ethnicity,
+        field::owned::subject::Identifier,
+
+        // Harmonized sample fields.
+        field::unowned::sample::DiseasePhase,
+        field::unowned::sample::TissueType,
+        field::unowned::sample::TumorClassification,
+
+        // Unharmonized fields.
         field::owned::Field,
         field::unowned::Field,
         field::UnharmonizedField,
         fields::Unharmonized,
 
-        // Models.
+        // Subject models.
         models::Subject,
+        models::subject::Kind,
+        models::subject::Metadata,
+
+        // Sample models.
+        models::Sample,
+        models::sample::Metadata,
+
+        // Metadata models.
         models::metadata::field::Description,
         models::metadata::field::description::Harmonized,
         models::metadata::field::description::Unharmonized,
-        models::subject::Kind,
-        models::subject::Metadata,
 
         // Counts.
         models::count::Total,
 
-        // Responses.
+        // General responses.
         responses::Error,
+
+        // Subject responses.
         responses::Subject,
         responses::Subjects,
         responses::by::count::Subjects,
+
+        // Sample responses.
+        responses::Sample,
+        responses::Samples,
+        responses::by::count::Samples,
+
+        // Metadata responses.
         responses::metadata::FieldDescriptions
     )),
     modifiers(&RemoveLicense)

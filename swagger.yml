@@ -9,7 +9,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: '0.1'
+  version: '0.2'
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -18,27 +18,13 @@ servers:
 - url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
   description: UCSC Treehouse CCDI API server
 paths:
-  /metadata/fields/subject:
-    get:
-      tags:
-      - Metadata
-      summary: Gets the metadata fields for subjects that are supported by this server.
-      description: Gets the metadata fields for subjects that are supported by this server.
-      operationId: metadata_fields_subject
-      responses:
-        '200':
-          description: Successful operation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
   /subject:
     get:
       tags:
       - Subject
       summary: Gets the subjects known by this server.
       description: Gets the subjects known by this server.
-      operationId: index
+      operationId: subject_index
       responses:
         '200':
           description: Successful operation.
@@ -50,9 +36,9 @@ paths:
     get:
       tags:
       - Subject
-      summary: Gets the subject matching the provided id (if it exists).
-      description: Gets the subject matching the provided id (if it exists).
-      operationId: show
+      summary: Gets the subject matching the provided id (if the subject exists).
+      description: Gets the subject matching the provided id (if the subject exists).
+      operationId: subject_show
       parameters:
       - name: namespace
         in: path
@@ -110,12 +96,148 @@ paths:
                 $ref: '#/components/schemas/responses.Error'
               example:
                 error: Field 'handedness' is unsupported.
+  /sample:
+    get:
+      tags:
+      - Sample
+      summary: Gets the samples known by this server.
+      description: Gets the samples known by this server.
+      operationId: sample_index
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Samples'
+  /sample/{name}:
+    get:
+      tags:
+      - Sample
+      summary: Gets the sample matching the provided name (if the sample exists).
+      description: Gets the sample matching the provided name (if the sample exists).
+      operationId: sample_show
+      parameters:
+      - name: name
+        in: path
+        description: The name for the sample.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Sample'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Error'
+              example:
+                error: Sample with name 'foo' not found.
+  /sample/by/{field}/count:
+    get:
+      tags:
+      - Sample
+      summary: Groups the samples by the specified metadata field and returns counts.
+      description: Groups the samples by the specified metadata field and returns counts.
+      operationId: samples_by_count
+      parameters:
+      - name: field
+        in: path
+        description: The field to group by and count.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.by.count.Samples'
+        '422':
+          description: Unsupported field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Error'
+              example:
+                error: Field 'handedness' is unsupported.
+  /metadata/fields/subject:
+    get:
+      tags:
+      - Metadata
+      summary: Gets the metadata fields for subjects that are supported by this server.
+      description: Gets the metadata fields for subjects that are supported by this server.
+      operationId: metadata_fields_subject
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
+  /metadata/fields/sample:
+    get:
+      tags:
+      - Metadata
+      summary: Gets the metadata fields for samples that are supported by this server.
+      description: Gets the metadata fields for samples that are supported by this server.
+      operationId: metadata_fields_sample
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
 components:
   schemas:
-    cde.v1.Identifier:
+    cde.v1.sample.DiseasePhase:
+      type: string
+      description: |-
+        **`caDSR CDE 12217251 v1.00`**
+
+        This metadata element is defined by the caDSR as "The stage or period of an
+        individual's treatment process during which relevant observations were
+        recorded.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12217251%20and%20ver_nr=1>
+      enum:
+      - Post-Mortem
+      - Not Reported
+      - Unknown
+      - Initial Diagnosis
+      - Progression
+      - Refactory
+      - Relapse
+      - Relapse/Progression
+    cde.v1.sample.TumorClassification:
+      type: string
+      description: |-
+        **`caDSR CDE 12922545 v1.00`**
+
+        This metadata element is defined by the caDSR as "The classification of a
+        tumor based primarily on histopathological characteristics.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12922545%20and%20ver_nr=1>
+      enum:
+      - Metastatic
+      - Not Reported
+      - Primary
+      - Regional
+      - Unknown
+    cde.v1.subject.Identifier:
       type: object
       description: |-
-        **caDSR CDE 6380049 v1.00**
+        **`caDSR CDE 6380049 v1.00`**
 
         This metadata element is defined by the caDSR as "A unique subject
         identifier within a site and a study.". No permissible values are defined
@@ -135,10 +257,10 @@ components:
           type: string
           description: The name of the identifier.
           example: SubjectName001
-    cde.v1.Race:
+    cde.v1.subject.Race:
       type: string
       description: |-
-        **caDSR CDE 2192199 v1.00**
+        **`caDSR CDE 2192199 v1.00`**
 
         This metadata element is defined by the caDSR as "The text for reporting
         information about race based on the Office of Management and Budget (OMB)
@@ -156,17 +278,17 @@ components:
       - Asian
       - Black or African American
       - White
-    cde.v1.Sex:
+    cde.v1.subject.Sex:
       type: string
       description: |-
-        **caDSR CDE 6343385 v1.00**
+        **`caDSR CDE 6343385 v1.00`**
 
         This metadata element is defined by the caDSR as "Sex of the subject as
         determined by the investigator." In particular, this field does not dictate
         the time period: whether it represents sex at birth, sex at sample
         collection, or any other determined time point. Further, the descriptions
         for F and M suggest that this term can represent either biological sex,
-        culture gender roles, or both. Thus, this field cannot be assumed to
+        cultural gender roles, or both. Thus, this field cannot be assumed to
         strictly represent biological sex.
 
         Link:
@@ -176,10 +298,31 @@ components:
       - F
       - M
       - UNDIFFERENTIATED
-    cde.v2.Ethnicity:
+    cde.v2.sample.TissueType:
       type: string
       description: |-
-        **caDSR CDE 2192217 v2.00**
+        **`caDSR CDE 5432687 v2.00`**
+
+        This metadata element is defined by the caDSR as "Text term that represents
+        a description of the kind of tissue collected with respect to disease status
+        or proximity to tumor tissue."
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=5432687%20and%20ver_nr=2>
+      enum:
+      - Not Reported
+      - Abnormal
+      - Normal
+      - Peritumoral
+      - Tumor
+      - Non-neoplastic
+      - Unavailable
+      - Unknown
+      - Unspecified
+    cde.v2.subject.Ethnicity:
+      type: string
+      description: |-
+        **`caDSR CDE 2192217 v2.00`**
 
         This metadata element is defined by the caDSR as "The text for reporting
         information about ethnicity based on the Office of Management and Budget
@@ -188,39 +331,25 @@ components:
         ethnicity.
 
         Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2.0>
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2192217%20and%20ver_nr=2>
       enum:
       - Not allowed to collect
       - Hispanic or Latino
       - Not Hispanic or Latino
       - Unknown
       - Not reported
-    field.Ethnicity:
+    field.UnharmonizedField:
+      oneOf:
+      - $ref: '#/components/schemas/field.owned.Field'
+      - $ref: '#/components/schemas/field.unowned.Field'
+      description: A metadata field.
+    field.owned.Field:
       type: object
       required:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/cde.v2.Ethnicity'
-        ancestors:
-          type: array
-          items:
-            type: string
-          description: |-
-            The ancestors from which this field was derived.
-
-            Ancestors should be provided as period (`.`) delimited paths
-            from the `metadata` key in the subject response object.
-        comment:
-          type: string
-          description: A free-text comment field.
-    field.Identifier:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/cde.v1.Identifier'
+          description: The value of the metadata field.
         ancestors:
           type: array
           items:
@@ -236,56 +365,13 @@ components:
         owned:
           type: boolean
           description: Whether or not the field is owned by the source server.
-    field.Race:
+    field.owned.subject.Identifier:
       type: object
       required:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/cde.v1.Race'
-        ancestors:
-          type: array
-          items:
-            type: string
-          description: |-
-            The ancestors from which this field was derived.
-
-            Ancestors should be provided as period (`.`) delimited paths
-            from the `metadata` key in the subject response object.
-        comment:
-          type: string
-          description: A free-text comment field.
-    field.Sex:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/cde.v1.Sex'
-        ancestors:
-          type: array
-          items:
-            type: string
-          description: |-
-            The ancestors from which this field was derived.
-
-            Ancestors should be provided as period (`.`) delimited paths
-            from the `metadata` key in the subject response object.
-        comment:
-          type: string
-          description: A free-text comment field.
-    field.UnharmonizedField:
-      oneOf:
-      - $ref: '#/components/schemas/field.owned.Field'
-      - $ref: '#/components/schemas/field.unowned.Field'
-      description: A metadata field.
-    field.owned.Field:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          description: The value of the metadata field.
+          $ref: '#/components/schemas/cde.v1.subject.Identifier'
         ancestors:
           type: array
           items:
@@ -320,6 +406,120 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.sample.DiseasePhase:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.DiseasePhase'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.TissueType:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v2.sample.TissueType'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.TumorClassification:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.TumorClassification'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.Ethnicity:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v2.subject.Ethnicity'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.Race:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.subject.Race'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.Sex:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.subject.Sex'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
     fields.Unharmonized:
       allOf:
       - type: object
@@ -328,6 +528,25 @@ components:
           $ref: '#/components/schemas/field.UnharmonizedField'
       - type: object
       description: A map of unharmonized metadata fields.
+    models.Sample:
+      type: object
+      description: A sample.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: |-
+            The primary name for a sample used within the source server.
+
+            Note that this field is not namespaced like an `identifier` is, and,
+            instead, is intended to represent a colloquial or display name for the
+            sample (without indicating the scope of the name).
+          example: SampleName001
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/models.sample.Metadata'
+          nullable: true
     models.Subject:
       type: object
       description: A subject.
@@ -337,12 +556,15 @@ components:
       - kind
       properties:
         id:
-          $ref: '#/components/schemas/cde.v1.Identifier'
+          $ref: '#/components/schemas/cde.v1.subject.Identifier'
         name:
           type: string
           description: |-
-            The primary name or identifier for a subject used within the source
-            server.
+            The primary name for a subject used within the source server.
+
+            Note that this field is not namespaced like an `identifier` is, and,
+            instead, is intended to represent a colloquial or display name for the
+            sample (without indicating the scope of the name).
           example: SubjectName001
         kind:
           $ref: '#/components/schemas/models.subject.Kind'
@@ -440,6 +662,28 @@ components:
           type: string
           description: A url that describes more about the metadata field, if available.
           nullable: true
+    models.sample.Metadata:
+      type: object
+      description: Metadata associated with a sample.
+      required:
+      - disease_phase
+      - tissue_type
+      - tumor_classification
+      properties:
+        disease_phase:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.DiseasePhase'
+          nullable: true
+        tissue_type:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.TissueType'
+          nullable: true
+        tumor_classification:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.TumorClassification'
+          nullable: true
+        unharmonized:
+          $ref: '#/components/schemas/fields.Unharmonized'
     models.subject.Kind:
       type: string
       description: A kind of [`Subject`](super::Subject).
@@ -459,22 +703,22 @@ components:
       properties:
         sex:
           allOf:
-          - $ref: '#/components/schemas/field.Sex'
+          - $ref: '#/components/schemas/field.unowned.subject.Sex'
           nullable: true
         race:
           type: array
           items:
-            $ref: '#/components/schemas/field.Race'
+            $ref: '#/components/schemas/field.unowned.subject.Race'
           description: The race(s) of the subject.
           nullable: true
         ethnicity:
           allOf:
-          - $ref: '#/components/schemas/field.Ethnicity'
+          - $ref: '#/components/schemas/field.unowned.subject.Ethnicity'
           nullable: true
         identifiers:
           type: array
           items:
-            $ref: '#/components/schemas/field.Identifier'
+            $ref: '#/components/schemas/field.owned.subject.Identifier'
           description: |-
             The identifiers for the subject.
 
@@ -492,6 +736,26 @@ components:
         error:
           type: string
           example: An error occurred.
+    responses.Sample:
+      allOf:
+      - $ref: '#/components/schemas/models.Sample'
+      - type: object
+      description: A response representing a single [`Sample`](models::Sample).
+    responses.Samples:
+      type: object
+      description: |-
+        A response representing multiple samples known about by the server with a
+        summarized total count.
+      required:
+      - count
+      properties:
+        count:
+          $ref: '#/components/schemas/models.count.Total'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.Sample'
+          description: The samples, if available.
     responses.Subject:
       allOf:
       - $ref: '#/components/schemas/models.Subject'
@@ -512,6 +776,21 @@ components:
           items:
             $ref: '#/components/schemas/models.Subject'
           description: The subjects, if available.
+    responses.by.count.Samples:
+      allOf:
+      - $ref: '#/components/schemas/models.count.Total'
+      - type: object
+        required:
+        - values
+        properties:
+          values:
+            type: object
+            additionalProperties:
+              type: integer
+              minimum: 0
+      description: |-
+        A response for grouping [`Sample`](models::Sample)s by a metadata field
+        and then summing the counts.
     responses.by.count.Subjects:
       allOf:
       - $ref: '#/components/schemas/models.count.Total'
@@ -539,12 +818,14 @@ components:
             $ref: '#/components/schemas/models.metadata.field.Description'
           description: Field descriptions.
 tags:
-- name: Info
-  description: Information about the API implementation itself.
 - name: Subject
   description: Subjects within the CCDI federated ecosystem.
+- name: Sample
+  description: Samples within the CCDI federated ecosystem.
 - name: Metadata
   description: List and describe provided metadata fields.
+- name: Info
+  description: Information about the API implementation itself.
 externalDocs:
   url: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
   description: Learn more about the Childhood Cancer Data Initiative

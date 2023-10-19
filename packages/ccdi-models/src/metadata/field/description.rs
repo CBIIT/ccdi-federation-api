@@ -4,8 +4,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-mod harmonized;
-mod unharmonized;
+pub mod harmonized;
+pub mod unharmonized;
 
 pub use harmonized::Harmonized;
 pub use unharmonized::Unharmonized;
@@ -28,50 +28,14 @@ pub enum Description {
 pub mod r#trait {
     use ccdi_cde as cde;
 
-    use cde::Standard;
-    use cde::Url;
     use cde::CDE;
-
-    use crate::metadata::field::description::Harmonized;
 
     /// A trait to get a [`Description`] for a [`CDE`].
     pub trait Description
     where
-        Self: CDE,
+        Self: CDE + Sized,
     {
         /// Gets the [`Description`].
         fn description() -> super::Description;
-    }
-
-    impl Description for cde::v1::Sex {
-        fn description() -> super::Description {
-            super::Description::Harmonized(Harmonized::new("sex", Self::standard(), Self::url()))
-        }
-    }
-
-    impl Description for cde::v1::Race {
-        fn description() -> super::Description {
-            super::Description::Harmonized(Harmonized::new("race", Self::standard(), Self::url()))
-        }
-    }
-
-    impl Description for cde::v2::Ethnicity {
-        fn description() -> super::Description {
-            super::Description::Harmonized(Harmonized::new(
-                "ethnicity",
-                Self::standard(),
-                Self::url(),
-            ))
-        }
-    }
-
-    impl Description for cde::v1::Identifier {
-        fn description() -> super::Description {
-            super::Description::Harmonized(Harmonized::new(
-                "identifiers",
-                Self::standard(),
-                Self::url(),
-            ))
-        }
     }
 }
