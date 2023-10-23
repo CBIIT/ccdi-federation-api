@@ -527,7 +527,10 @@ components:
         additionalProperties:
           $ref: '#/components/schemas/field.UnharmonizedField'
       - type: object
-      description: A map of unharmonized metadata fields.
+      description: |-
+        A map of unharmonized metadata fields.
+
+        Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
     models.Sample:
       type: object
       description: A sample.
@@ -589,7 +592,10 @@ components:
       description: A description for a metadata field.
     models.metadata.field.description.Harmonized:
       type: object
-      description: A harmonized metadata field description.
+      description: |-
+        A harmonized metadata field description.
+
+        Harmonized keys _must_ fit the regex pattern `^[a-z_]+$`.
       required:
       - harmonized
       - path
@@ -620,7 +626,10 @@ components:
             field resides.
     models.metadata.field.description.Unharmonized:
       type: object
-      description: An unharmonized metadata field description.
+      description: |-
+        An unharmonized metadata field description.
+
+        Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
       required:
       - harmonized
       - path

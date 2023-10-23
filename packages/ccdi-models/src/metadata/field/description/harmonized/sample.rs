@@ -70,6 +70,11 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
 
 #[cfg(test)]
 mod tests {
+    use regex::Regex;
+
+    use crate::metadata::field::description::Description;
+    use crate::HARMONIZED_KEY_REGEX;
+
     use super::*;
 
     #[test]
@@ -78,5 +83,21 @@ mod tests {
         // array is constructed, we can simply use this function to test that
         // all of them unwrap successfully.
         get_field_descriptions();
+    }
+
+    #[test]
+    fn all_of_the_harmonized_keys_conform_to_the_harmonized_key_regex() {
+        let regex = Regex::new(HARMONIZED_KEY_REGEX).unwrap();
+
+        for field in get_field_descriptions() {
+            let path = match field {
+                Description::Harmonized(description) => description.path,
+                // This test is only concerned with harmonized fields, so we can
+                // skip non-harmonized ones.
+                Description::Unharmonized(_) => continue,
+            };
+
+            assert!(regex.is_match(path.as_str()))
+        }
     }
 }
