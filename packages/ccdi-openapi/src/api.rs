@@ -36,11 +36,11 @@ a variety of query parameters.",
         ),
         (
             url = "https://ccdifederation.pedscommons.org/api/v0",
-            description = "UCSC Treehouse CCDI API server"
+            description = "Pediatric Cancer Data Commons CCDI API server"
         ),
         (
             url = "https://ccdi.treehouse.gi.ucsc.edu/api/v0",
-            description = "Pediatric Cancer Data Commons CCDI API server"
+            description = "UCSC Treehouse CCDI API server"
         ),
     ),
     tags(
