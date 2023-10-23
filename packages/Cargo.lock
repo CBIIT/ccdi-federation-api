@@ -401,6 +401,7 @@ dependencies = [
  "indexmap 2.0.2",
  "macropol",
  "rand",
+ "regex",
  "serde",
  "serde_json",
  "serde_test",

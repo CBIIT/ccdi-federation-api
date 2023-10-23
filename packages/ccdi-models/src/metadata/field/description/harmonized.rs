@@ -13,6 +13,8 @@ pub mod sample;
 pub mod subject;
 
 /// A harmonized metadata field description.
+///
+/// Harmonized keys _must_ fit the regex pattern `^[a-z_]+$`.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = models::metadata::field::description::Harmonized)]
 pub struct Harmonized {

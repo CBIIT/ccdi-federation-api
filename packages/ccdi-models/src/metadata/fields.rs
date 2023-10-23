@@ -9,6 +9,8 @@ use crate::metadata::field;
 use crate::metadata::field::UnharmonizedField;
 
 /// A map of unharmonized metadata fields.
+///
+/// Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
 #[derive(Clone, Default, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = fields::Unharmonized)]
 pub struct Unharmonized {

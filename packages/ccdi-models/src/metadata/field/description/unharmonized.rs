@@ -5,6 +5,8 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 /// An unharmonized metadata field description.
+///
+/// Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = models::metadata::field::description::Unharmonized)]
 pub struct Unharmonized {
