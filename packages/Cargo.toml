@@ -15,6 +15,7 @@ edition = "2021"
 [workspace.dependencies]
 actix-web = "4.4.0"
 indexmap = "2.0.2"
+log = "0.4.20"
 mime = "0.3.17"
 rand = "0.8.5"
 serde = { version = "1.0.189", features = ["serde_derive"] }

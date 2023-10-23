@@ -21,6 +21,9 @@ use crate::responses::by;
 use crate::responses::Error;
 use crate::responses::Subjects;
 
+const MISSING_GROUP_BY_KEY: &str = "missing";
+const NULL_GROUP_BY_KEY: &str = "null";
+
 /// A store for [`Subject`]s.
 #[derive(Debug)]
 pub struct Store {
@@ -154,25 +157,25 @@ pub async fn subjects_by_count(path: Path<String>, subjects: Data<Store>) -> imp
     let values = subjects
         .iter()
         .map(|subject| parse_field(&field, subject))
-        .collect::<Option<Vec<_>>>();
+        .collect::<Vec<_>>();
 
-    let result = match values {
-        Some(values) => values
-            .into_iter()
-            .map(|value| match value {
-                Value::Null => String::from("null"),
-                Value::String(s) => s,
-                _ => todo!(),
-            })
-            .fold(IndexMap::new(), |mut map, value| {
-                *map.entry(value).or_insert_with(|| 0usize) += 1;
-                map
-            }),
-        None => {
-            return HttpResponse::UnprocessableEntity()
-                .json(Error::new(format!("Field '{}' is not supported.", field)))
-        }
-    };
+    let result = values
+        .into_iter()
+        .map(|value| match value {
+            Some(Value::Null) => String::from(NULL_GROUP_BY_KEY),
+            Some(Value::String(s)) => s,
+            None => String::from(MISSING_GROUP_BY_KEY),
+            _ => todo!(),
+        })
+        .fold(IndexMap::new(), |mut map, value| {
+            *map.entry(value).or_insert_with(|| 0usize) += 1;
+            map
+        });
+
+    if result.len() == 1 && result.get(MISSING_GROUP_BY_KEY).is_some() {
+        return HttpResponse::UnprocessableEntity()
+            .json(Error::new(format!("Field '{}' is not supported.", field)));
+    }
 
     HttpResponse::Ok().json(by::count::Subjects::from(result))
 }
@@ -191,6 +194,25 @@ fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
                 Value::String(
                     race.iter()
                         .map(|race| race.value().to_string())
+                        .collect::<Vec<_>>()
+                        .join(" AND "),
+                )
+            }),
+            None => None,
+        },
+        "ethnicity" => match subject.metadata() {
+            Some(metadata) => metadata
+                .ethnicity()
+                .as_ref()
+                .map(|ethnicity| Value::String(ethnicity.value().to_string())),
+            None => None,
+        },
+        "identifiers" => match subject.metadata() {
+            Some(metadata) => metadata.identifiers().as_ref().map(|identifiers| {
+                Value::String(
+                    identifiers
+                        .iter()
+                        .map(|identifier| identifier.value().to_string())
                         .collect::<Vec<_>>()
                         .join(" AND "),
                 )

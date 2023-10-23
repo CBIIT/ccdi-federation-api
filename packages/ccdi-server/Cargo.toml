@@ -9,6 +9,7 @@ actix-web.workspace = true
 ccdi-cde = { path = "../ccdi-cde", version = "0.1.0" }
 ccdi-models = { path = "../ccdi-models", version = "0.1.0" }
 indexmap.workspace = true
+log.workspace = true
 mime.workspace = true
 rand.workspace = true
 serde.workspace = true

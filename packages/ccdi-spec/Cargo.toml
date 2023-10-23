@@ -10,6 +10,6 @@ env_logger = "0.10.0"
 ccdi-openapi = { path = "../ccdi-openapi", version = "0.1.0" }
 ccdi-server = { path = "../ccdi-server", version = "0.1.0" }
 clap = { version = "4.4.6", features = ["derive"] }
-log = "0.4.20"
+log.workspace = true
 utoipa.workspace = true
 utoipa-swagger-ui.workspace = true

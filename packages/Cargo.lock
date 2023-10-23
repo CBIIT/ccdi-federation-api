@@ -422,6 +422,7 @@ dependencies = [
  "ccdi-cde",
  "ccdi-models",
  "indexmap 2.0.2",
+ "log",
  "mime",
  "rand",
  "serde",
