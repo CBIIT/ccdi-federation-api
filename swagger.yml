@@ -530,7 +530,7 @@ components:
       description: |-
         A map of unharmonized metadata fields.
 
-        Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
+        Unharmonized keys may be any valid JSON string.
     models.Sample:
       type: object
       description: A sample.
@@ -629,7 +629,7 @@ components:
       description: |-
         An unharmonized metadata field description.
 
-        Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
+        Unharmonized keys may be any valid JSON string.
       required:
       - harmonized
       - path

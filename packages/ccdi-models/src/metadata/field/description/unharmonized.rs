@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 
 /// An unharmonized metadata field description.
 ///
-/// Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
+/// Unharmonized keys may be any valid JSON string.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = models::metadata::field::description::Unharmonized)]
 pub struct Unharmonized {
