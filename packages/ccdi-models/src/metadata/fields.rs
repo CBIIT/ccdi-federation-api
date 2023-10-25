@@ -10,7 +10,7 @@ use crate::metadata::field::UnharmonizedField;
 
 /// A map of unharmonized metadata fields.
 ///
-/// Unharmonized keys _must_ fit the regex pattern `^[\w]+$`.
+/// Unharmonized keys may be any valid JSON string.
 #[derive(Clone, Default, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = fields::Unharmonized)]
 pub struct Unharmonized {
