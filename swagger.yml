@@ -9,7 +9,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: '0.2'
+  version: '0.3'
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -110,7 +110,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.Samples'
-  /sample/{name}:
+  /sample/{namespace}/{name}:
     get:
       tags:
       - Sample
@@ -118,9 +118,15 @@ paths:
       description: Gets the sample matching the provided name (if the sample exists).
       operationId: sample_show
       parameters:
+      - name: namespace
+        in: path
+        description: The namespace portion of the sample identifier.
+        required: true
+        schema:
+          type: string
       - name: name
         in: path
-        description: The name for the sample.
+        description: The name portion of the sample identifier.
         required: true
         schema:
           type: string
@@ -138,7 +144,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/responses.Error'
               example:
-                error: Sample with name 'foo' not found.
+                error: Sample with namespace 'foo' and name 'bar' not found.
   /sample/by/{field}/count:
     get:
       tags:
@@ -535,17 +541,10 @@ components:
       type: object
       description: A sample.
       required:
-      - name
+      - id
       properties:
-        name:
-          type: string
-          description: |-
-            The primary name for a sample used within the source server.
-
-            Note that this field is not namespaced like an `identifier` is, and,
-            instead, is intended to represent a colloquial or display name for the
-            sample (without indicating the scope of the name).
-          example: SampleName001
+        id:
+          $ref: '#/components/schemas/models.sample.Identifier'
         metadata:
           allOf:
           - $ref: '#/components/schemas/models.sample.Metadata'
@@ -671,6 +670,21 @@ components:
           type: string
           description: A url that describes more about the metadata field, if available.
           nullable: true
+    models.sample.Identifier:
+      type: object
+      description: The primary name and namespace for a sample used within the source server.
+      required:
+      - namespace
+      - name
+      properties:
+        namespace:
+          type: string
+          description: The namespace of the identifier.
+          example: organization
+        name:
+          type: string
+          description: The name of the identifier.
+          example: SampleName001
     models.sample.Metadata:
       type: object
       description: Metadata associated with a sample.

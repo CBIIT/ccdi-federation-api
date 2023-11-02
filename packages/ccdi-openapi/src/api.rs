@@ -23,7 +23,7 @@ a variety of query parameters.",
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "0.2",
+        version = "0.3",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",
@@ -112,6 +112,7 @@ a variety of query parameters.",
 
         // Sample models.
         models::Sample,
+        models::sample::Identifier,
         models::sample::Metadata,
 
         // Metadata models.

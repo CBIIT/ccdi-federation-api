@@ -9,6 +9,7 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use indexmap::IndexMap;
+use models::sample::Identifier;
 use serde_json::Value;
 
 use ccdi_models as models;
@@ -43,7 +44,17 @@ impl Store {
         Self {
             samples: Mutex::new(
                 (0..count)
-                    .map(|i| Sample::random(i + 1))
+                    .map(|i| {
+                        // SAFETY: this is manually crafted to never fail, so it can be
+                        // unwrapped.
+                        let identifier = Identifier::parse(
+                            format!("organization:Sample{}", i + 1).as_ref(),
+                            ":",
+                        )
+                        .unwrap();
+
+                        Sample::random(identifier)
+                    })
                     .collect::<Vec<_>>(),
             ),
         }
@@ -79,11 +90,15 @@ pub async fn sample_index(samples: Data<Store>) -> impl Responder {
 /// Gets the sample matching the provided name (if the sample exists).
 #[utoipa::path(
     get,
-    path = "/sample/{name}",
+    path = "/sample/{namespace}/{name}",
     params(
         (
+            "namespace" = String,
+            description = "The namespace portion of the sample identifier.",
+        ),
+        (
             "name" = String,
-            description = "The name for the sample."
+            description = "The name portion of the sample identifier."
         )
     ),
     tag = "Sample",
@@ -93,23 +108,23 @@ pub async fn sample_index(samples: Data<Store>) -> impl Responder {
             status = 404,
             description = "Not found.",
             body = responses::Error,
-            example = json!(Error::new("Sample with name 'foo' not found."))
+            example = json!(Error::new("Sample with namespace 'foo' and name 'bar' not found."))
         )
     )
 )]
-#[get("/sample/{name}")]
-pub async fn sample_show(path: Path<String>, samples: Data<Store>) -> impl Responder {
+#[get("/sample/{namespace}/{name}")]
+pub async fn sample_show(path: Path<(String, String)>, samples: Data<Store>) -> impl Responder {
     let samples = samples.samples.lock().unwrap();
-    let name = path.into_inner();
+    let (namespace, name) = path.into_inner();
 
     samples
         .iter()
-        .find(|sample| sample.name() == &name)
+        .find(|sample| sample.id().namespace() == &namespace && sample.id().name() == &name)
         .map(|sample| HttpResponse::Ok().json(sample))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Error::new(format!(
-                "Sample with name '{}' not found.",
-                name
+                "Sample with namespace '{}' and name '{}' not found.",
+                namespace, name
             )))
         })
 }
@@ -160,7 +175,7 @@ pub async fn samples_by_count(path: Path<String>, samples: Data<Store>) -> impl 
             .json(Error::new(format!("Field '{}' is not supported.", field)));
     }
 
-    HttpResponse::Ok().json(by::count::Subjects::from(result))
+    HttpResponse::Ok().json(by::count::Samples::from(result))
 }
 
 fn parse_field(field: &str, sample: &Sample) -> Option<Value> {

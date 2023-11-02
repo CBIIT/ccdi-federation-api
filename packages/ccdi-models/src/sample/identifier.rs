@@ -1,9 +1,6 @@
-use introspect::Introspect;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
-
-use crate::CDE;
 
 /// A parse error related to an [`Identifier`].
 #[derive(Debug)]
@@ -39,23 +36,16 @@ impl std::fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-/// **`caDSR CDE 6380049 v1.00`**
-///
-/// This metadata element is defined by the caDSR as "A unique subject
-/// identifier within a site and a study.". No permissible values are defined
-/// for this CDE.
-///
-/// Link:
-/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1>
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v1::subject::Identifier)]
+/// The primary name and namespace for a sample used within the source server.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[schema(as = models::sample::Identifier)]
 pub struct Identifier {
     /// The namespace of the identifier.
     #[schema(example = "organization")]
     namespace: String,
 
     /// The name of the identifier.
-    #[schema(example = "SubjectName001")]
+    #[schema(example = "SampleName001")]
     name: String,
 }
 
@@ -65,12 +55,12 @@ impl Identifier {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
-    /// use cde::v1::subject::Identifier;
+    /// use ccdi_models as models;
+    /// use models::sample::Identifier;
     ///
-    /// let identifier = Identifier::new("organization", "Name");
+    /// let identifier = Identifier::new("organization", "Sample");
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
-    /// assert_eq!(identifier.name(), &String::from("Name"));
+    /// assert_eq!(identifier.name(), &String::from("Sample"));
     /// ```
     pub fn new(namespace: impl Into<String>, name: impl Into<String>) -> Self {
         Self {
@@ -84,8 +74,8 @@ impl Identifier {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
-    /// use cde::v1::subject::Identifier;
+    /// use ccdi_models as models;
+    /// use models::sample::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
@@ -101,8 +91,8 @@ impl Identifier {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
-    /// use cde::v1::subject::Identifier;
+    /// use ccdi_models as models;
+    /// use models::sample::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.name(), &String::from("Name"));
@@ -119,8 +109,8 @@ impl Identifier {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
-    /// use cde::v1::subject::Identifier;
+    /// use ccdi_models as models;
+    /// use models::sample::Identifier;
     ///
     /// let identifier = Identifier::parse("organization:Name", ":")?;
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
@@ -147,8 +137,6 @@ impl Identifier {
     }
 }
 
-impl CDE for Identifier {}
-
 impl std::fmt::Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -156,19 +144,5 @@ impl std::fmt::Display for Identifier {
             "{{ namespace: {}, name: {} }}",
             self.namespace, self.name
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::v1::subject::Identifier;
-
-    #[test]
-    fn it_displays_correctly() {
-        let identifier = Identifier::new("organization", "Name");
-        assert_eq!(
-            identifier.to_string(),
-            "{ namespace: organization, name: Name }"
-        );
     }
 }

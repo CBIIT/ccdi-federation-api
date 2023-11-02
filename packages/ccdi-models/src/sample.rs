@@ -6,21 +6,19 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+mod identifier;
 pub mod metadata;
 
+pub use identifier::Identifier;
 pub use metadata::Metadata;
 
 /// A sample.
 #[derive(Clone, Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = models::Sample)]
 pub struct Sample {
-    /// The primary name for a sample used within the source server.
-    ///
-    /// Note that this field is not namespaced like an `identifier` is, and,
-    /// instead, is intended to represent a colloquial or display name for the
-    /// sample (without indicating the scope of the name).
-    #[schema(example = "SampleName001")]
-    name: String,
+    /// The identifier for this [`Sample`].
+    #[schema(value_type = models::sample::Identifier)]
+    id: Identifier,
 
     /// Metadata associated with this [`Sample`].
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,17 +36,18 @@ impl Sample {
     /// use ccdi_models as models;
     ///
     /// use models::Sample;
+    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
     ///
     /// let sample = Sample::new(
-    ///     String::from("Name"),
+    ///     Identifier::new("organization", "SampleName001"),
     ///     Some(Builder::default().build())
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn new(name: String, metadata: Option<Metadata>) -> Self {
-        Self { name, metadata }
+    pub fn new(id: Identifier, metadata: Option<Metadata>) -> Self {
+        Self { id, metadata }
     }
 
     /// Gets the name for this [`Sample`] by reference.
@@ -60,19 +59,21 @@ impl Sample {
     /// use ccdi_models as models;
     ///
     /// use models::Sample;
+    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
     ///
     /// let sample = Sample::new(
-    ///     String::from("Name"),
+    ///     Identifier::new("organization", "SampleName001"),
     ///     Some(Builder::default().build())
     /// );
     ///
-    /// assert_eq!(sample.name(), &String::from("Name"));
+    /// assert_eq!(sample.id().namespace(), &String::from("organization"));
+    /// assert_eq!(sample.id().name(), &String::from("SampleName001"));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn name(&self) -> &String {
-        &self.name
+    pub fn id(&self) -> &Identifier {
+        &self.id
     }
 
     /// Gets the metadata for this [`Sample`] by reference.
@@ -84,12 +85,13 @@ impl Sample {
     /// use ccdi_models as models;
     ///
     /// use models::Sample;
+    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
     ///
     /// let metadata = Builder::default().build();
     ///
     /// let sample = Sample::new(
-    ///     String::from("Name"),
+    ///     Identifier::new("organization", "SampleName001"),
     ///     Some(metadata.clone())
     /// );
     ///
@@ -107,16 +109,18 @@ impl Sample {
     ///
     /// ```
     /// use ccdi_models as models;
+    /// use models::sample::Identifier;
     ///
     /// use models::Sample;
     ///
-    /// let sample = Sample::random(1usize);
+    ///
+    /// let sample = Sample::random(Identifier::new("organization", "SampleName001"));
     /// ```
-    pub fn random(sample_number: usize) -> Self {
+    pub fn random(identifier: Identifier) -> Self {
         let mut rng = thread_rng();
 
         Self {
-            name: format!("SampleName{:0>6}", sample_number),
+            id: identifier.clone(),
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random()),
                 false => None,
