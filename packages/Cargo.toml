@@ -24,7 +24,9 @@ regex = "1.10.2"
 serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"
+serde_with = "3.4.0"
 utoipa = { version = "4.0.0", features = [
+    "actix_extras",
     "indexmap",
     "preserve_order",
     "preserve_path_order",

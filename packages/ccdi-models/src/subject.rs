@@ -17,7 +17,7 @@ pub use kind::Kind;
 pub use metadata::Metadata;
 
 /// A subject.
-#[derive(Clone, Debug, Deserialize, Serialize, ToSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Subject)]
 pub struct Subject {
     /// The primary identifier used by the site.
@@ -219,5 +219,123 @@ impl Subject {
                 false => None,
             },
         }
+    }
+}
+
+impl PartialOrd for Subject {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+// Subjects are sorted purely by identifier: the values contained _within_ a
+// [`Subject`] are not relevant to the sort order. They are, however, relevant
+// to equality—thus, why [`Eq`] and [`PartialEq`] are derived.
+impl Ord for Subject {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.id.cmp(&other.id)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::cmp::Ordering;
+
+    use super::*;
+
+    #[test]
+    fn it_orders_samples_correctly() {
+        let a = Subject::new(
+            Identifier::parse("organization:A", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let b = Subject::new(
+            Identifier::parse("organization:B", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+
+        assert_eq!(a.cmp(&b), Ordering::Less);
+
+        let c = Subject::new(
+            Identifier::parse("organization:C", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let b = Subject::new(
+            Identifier::parse("organization:B", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+
+        assert_eq!(c.cmp(&b), Ordering::Greater);
+
+        let foo = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let bar = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+
+        assert_eq!(foo.cmp(&bar), Ordering::Equal);
+    }
+
+    #[test]
+    fn it_tests_equality_correctly() {
+        let foo = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let bar = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+
+        assert!(foo == bar);
+
+        let foo = Subject::new(
+            Identifier::parse("organization:A", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let bar = Subject::new(
+            Identifier::parse("organization:B", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+
+        assert!(foo != bar);
+
+        let foo = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            None,
+        );
+        let bar = Subject::new(
+            Identifier::parse("organization:Name", ":").unwrap(),
+            String::from("Name"),
+            Kind::Participant,
+            Some(metadata::Builder::default().build()),
+        );
+
+        assert!(foo != bar);
     }
 }

@@ -10,7 +10,6 @@
 #![feature(decl_macro)]
 #![feature(trivial_bounds)]
 
-pub mod count;
 pub mod metadata;
 pub mod sample;
 pub mod subject;

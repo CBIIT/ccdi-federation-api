@@ -3,15 +3,19 @@ use std::io;
 use std::net::Ipv4Addr;
 use std::path::PathBuf;
 
+use actix_web::error::QueryPayloadError;
 use actix_web::middleware::Logger;
 use actix_web::rt;
 use actix_web::web::Data;
+use actix_web::web::QueryConfig;
 use actix_web::App;
 use actix_web::HttpServer;
 use clap::Parser;
 use clap::Subcommand;
 use log::info;
 use log::LevelFilter;
+use server::responses::error;
+use server::responses::Errors;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -149,6 +153,18 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                     let samples = Data::new(sample::Store::random(args.number_of_subjects));
 
                     App::new()
+                        .app_data(QueryConfig::default().error_handler(|err, _| {
+                            match err {
+                                QueryPayloadError::Deserialize(err) => {
+                                    Errors::new(vec![error::Kind::invalid_parameters(
+                                        None,
+                                        err.to_string(),
+                                    )])
+                                    .into()
+                                }
+                                _ => todo!(),
+                            }
+                        }))
                         .wrap(Logger::default())
                         .configure(subject::configure(subjects))
                         .configure(sample::configure(samples))
