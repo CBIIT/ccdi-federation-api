@@ -1,11 +1,11 @@
 [package]
 name = "ccdi-openapi"
-version = "0.1.0"
+version.workspace = true
 license.workspace = true
 edition.workspace = true
 
 [dependencies]
-ccdi-cde = { path = "../ccdi-cde", version = "0.1.0" }
-ccdi-models = { path = "../ccdi-models", version = "0.1.0" }
-ccdi-server = { path = "../ccdi-server", version = "0.1.0" }
+ccdi-cde = { path = "../ccdi-cde" }
+ccdi-models = { path = "../ccdi-models" }
+ccdi-server = { path = "../ccdi-server" }
 utoipa.workspace = true

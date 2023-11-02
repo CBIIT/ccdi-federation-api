@@ -382,7 +382,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-cde"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "indexmap 2.0.2",
  "introspect",
@@ -395,7 +395,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-models"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ccdi-cde",
  "indexmap 2.0.2",
@@ -410,7 +410,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-openapi"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ccdi-cde",
  "ccdi-models",
@@ -420,7 +420,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "actix-web",
  "ccdi-cde",
@@ -436,7 +436,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-spec"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "actix-web",
  "ccdi-cde",

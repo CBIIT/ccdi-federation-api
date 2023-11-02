@@ -1,13 +1,13 @@
 [package]
 name = "ccdi-server"
-version = "0.1.0"
+version.workspace = true
 license.workspace = true
 edition.workspace = true
 
 [dependencies]
 actix-web.workspace = true
-ccdi-cde = { path = "../ccdi-cde", version = "0.1.0" }
-ccdi-models = { path = "../ccdi-models", version = "0.1.0" }
+ccdi-cde = { path = "../ccdi-cde" }
+ccdi-models = { path = "../ccdi-models" }
 indexmap.workspace = true
 log.workspace = true
 mime.workspace = true

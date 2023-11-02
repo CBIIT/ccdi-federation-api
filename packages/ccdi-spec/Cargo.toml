@@ -1,16 +1,16 @@
 [package]
 name = "ccdi-spec"
-version = "0.1.0"
+version.workspace = true
 license.workspace = true
 edition.workspace = true
 
 [dependencies]
 actix-web.workspace = true
 env_logger = "0.10.0"
-ccdi-cde = { path = "../ccdi-cde", version = "0.1.0" }
-ccdi-models = { path = "../ccdi-models", version = "0.1.0" }
-ccdi-openapi = { path = "../ccdi-openapi", version = "0.1.0" }
-ccdi-server = { path = "../ccdi-server", version = "0.1.0" }
+ccdi-cde = { path = "../ccdi-cde" }
+ccdi-models = { path = "../ccdi-models" }
+ccdi-openapi = { path = "../ccdi-openapi" }
+ccdi-server = { path = "../ccdi-server" }
 clap = { version = "4.4.6", features = ["derive"] }
 log.workspace = true
 utoipa.workspace = true
