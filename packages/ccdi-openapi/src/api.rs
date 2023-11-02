@@ -70,11 +70,13 @@ a variety of query parameters.",
         server::routes::subject::subject_index,
         server::routes::subject::subject_show,
         server::routes::subject::subjects_by_count,
+        server::routes::subject::subject_summary,
 
         // Sample routes.
         server::routes::sample::sample_index,
         server::routes::sample::sample_show,
         server::routes::sample::samples_by_count,
+        server::routes::sample::sample_summary,
 
         // Metadata.
         server::routes::metadata::metadata_fields_subject,
@@ -124,11 +126,12 @@ a variety of query parameters.",
         models::metadata::field::description::Harmonized,
         models::metadata::field::description::Unharmonized,
 
-        // Counts.
-        models::count::Total,
-
         // General responses.
-        responses::Error,
+        responses::Errors,
+
+        // Summary responses.
+        responses::summary::Counts,
+        responses::Summary,
 
         // Subject responses.
         responses::Subject,
@@ -141,7 +144,11 @@ a variety of query parameters.",
         responses::by::count::Samples,
 
         // Metadata responses.
-        responses::metadata::FieldDescriptions
+        responses::metadata::FieldDescriptions,
+
+        // Error responses.
+        responses::error::Kind,
+        responses::Errors
     )),
     modifiers(&RemoveLicense)
 )]

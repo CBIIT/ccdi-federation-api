@@ -37,7 +37,7 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 
 /// The primary name and namespace for a sample used within the source server.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, ToSchema)]
 #[schema(as = models::sample::Identifier)]
 pub struct Identifier {
     /// The namespace of the identifier.

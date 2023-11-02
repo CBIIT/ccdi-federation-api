@@ -25,15 +25,81 @@ paths:
       tags:
       - Subject
       summary: Gets the subjects known by this server.
-      description: Gets the subjects known by this server.
+      description: |-
+        Gets the subjects known by this server.
+
+        This endpoint supports pagination. Pagination is enabled by providing one of
+        the pagination-related query parameters below.
+
+        **Note:** please read the provided details on default sort order within the
+        `responses::Subjects` schema, as that is a requirement of this endpoint.
       operationId: subject_index
+      parameters:
+      - name: page
+        in: query
+        description: |-
+          The page to retrieve.
+
+          This is a 1-based index of a page within a page set. The value of `page`
+          **must** default to `1` when pagination is enabled but this parameter is
+          not provided. Pagination is enabled if this parameter is provided to the
+          endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: per_page
+        in: query
+        description: |-
+          The number of results per page.
+
+          Each server can select its own default value for `per_page` if
+          pagination is enabled but this parameter is not provided. A default
+          value of `100` is recommended if all values are equally reasonable.
+          Pagination is enabled if this parameter is provided to the endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
       responses:
         '200':
           description: Successful operation.
+          headers:
+            link:
+              schema:
+                type: string
+              description: "Links to URLs that may be of interesting when paging through paginated responses. This header contains two or more links of interest. The format of the field is as follows: \n\n`Link: <URL>; rel=\"REL\"` \n### Relationships\n\nIn the format above, `URL` represents a valid URL for the link of interest and `REL` is one of four values: \n- `first` (_Required_). A link to the first page in the results (can be the same as `last` if there is only one page).\n- `last` (_Required_). A link to the first page in the results (can be the same as `first` if there is only one page).\n- `next` (_Optional_). A link to the next page (if it exists).\n- `prev` (_Optional_). A link to the previous page (if it exists).\n\n### Requirements\n\n- This header is required to exist when pagination is enabled.\n- It is also required _not_ to exist when pagination is not enabled.\n- When the header is present, this header must provide links for at least the `first` and `last` rels.\n - The `prev` and `next` and next header must exist only (a) when there are multiple pages in the result page set and (b) when the current page is not the first and last page respectively.\n- This list of links is unordered.\n\n ### Notes\n\n- HTTP 1.1 and HTTP 2.0 dictate that response headers are case insensitive. Though not required, we recommend an all lowercase name of `link` for this response header."
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.Subjects'
+        '404':
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: NotFound
+                  entity: Subjects
+                  message: Subjects not found.
+        '422':
+          description: Invalid query or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: InvalidParameters
+                  parameters:
+                  - page
+                  - per_page
+                  reason: Unable to calculate offset.
+                  message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
   /subject/{namespace}/{name}:
     get:
       tags:
@@ -62,13 +128,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/responses.Subject'
         '404':
-          description: Not found.
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.Error'
+                $ref: '#/components/schemas/responses.Errors'
               example:
-                error: Subject with namespace 'foo' and name 'bar' not found.
+                errors:
+                - kind: NotFound
+                  entity: Subjects
+                  message: Subjects not found.
   /subject/by/{field}/count:
     get:
       tags:
@@ -95,23 +166,107 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.Error'
+                $ref: '#/components/schemas/responses.Errors'
               example:
-                error: Field 'handedness' is unsupported.
-  /sample:
+                errors:
+                - kind: UnsupportedField
+                  field: handedness
+                  reason: This field is not present for subjects.
+                  message: 'Field ''handedness'' is not supported: this field is not present for subjects.'
+  /subject/summary:
     get:
       tags:
-      - Sample
-      summary: Gets the samples known by this server.
-      description: Gets the samples known by this server.
-      operationId: sample_index
+      - Subject
+      summary: Reports summary information for the subjects known by this server.
+      description: Reports summary information for the subjects known by this server.
+      operationId: subject_summary
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/responses.Summary'
+  /sample:
+    get:
+      tags:
+      - Sample
+      summary: Gets the samples known by this server.
+      description: |-
+        Gets the samples known by this server.
+
+        This endpoint supports pagination. Pagination is enabled by providing one of
+        the pagination-related query parameters below.
+
+        **Note:** please read the provided details on default sort order within the
+        `responses::Samples` schema, as that is a requirement of this endpoint.
+      operationId: sample_index
+      parameters:
+      - name: page
+        in: query
+        description: |-
+          The page to retrieve.
+
+          This is a 1-based index of a page within a page set. The value of `page`
+          **must** default to `1` when pagination is enabled but this parameter is
+          not provided. Pagination is enabled if this parameter is provided to the
+          endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: per_page
+        in: query
+        description: |-
+          The number of results per page.
+
+          Each server can select its own default value for `per_page` if
+          pagination is enabled but this parameter is not provided. A default
+          value of `100` is recommended if all values are equally reasonable.
+          Pagination is enabled if this parameter is provided to the endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            link:
+              schema:
+                type: string
+              description: "Links to URLs that may be of interesting when paging through paginated responses. This header contains two or more links of interest. The format of the field is as follows: \n\n`Link: <URL>; rel=\"REL\"` \n### Relationships\n\nIn the format above, `URL` represents a valid URL for the link of interest and `REL` is one of four values: \n- `first` (_Required_). A link to the first page in the results (can be the same as `last` if there is only one page).\n- `last` (_Required_). A link to the first page in the results (can be the same as `first` if there is only one page).\n- `next` (_Optional_). A link to the next page (if it exists).\n- `prev` (_Optional_). A link to the previous page (if it exists).\n\n### Requirements\n\n- This header is required to exist when pagination is enabled.\n- It is also required _not_ to exist when pagination is not enabled.\n- When the header is present, this header must provide links for at least the `first` and `last` rels.\n - When the header is present, the `prev` and `next` links must exist only (a) when there are multiple pages in the result page set and (b) when the current page is not the first and last page respectively.\n- This list of links is unordered.\n\n ### Notes\n\n- HTTP 1.1 and HTTP 2.0 dictate that response headers are case insensitive. Though not required, we recommend an all lowercase name of `link` for this response header."
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/responses.Samples'
+        '404':
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: NotFound
+                  entity: Samples
+                  message: Samples not found.
+        '422':
+          description: Invalid query or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: InvalidParameters
+                  parameters:
+                  - page
+                  - per_page
+                  reason: Unable to calculate offset.
+                  message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
   /sample/{namespace}/{name}:
     get:
       tags:
@@ -140,13 +295,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/responses.Sample'
         '404':
-          description: Not found.
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.Error'
+                $ref: '#/components/schemas/responses.Errors'
               example:
-                error: Sample with namespace 'foo' and name 'bar' not found.
+                errors:
+                - kind: NotFound
+                  entity: Sample with namespace 'foo' and name 'bar'
+                  message: Sample with namespace 'foo' and name 'bar' not found.
   /sample/by/{field}/count:
     get:
       tags:
@@ -173,9 +333,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.Error'
+                $ref: '#/components/schemas/responses.Errors'
               example:
-                error: Field 'handedness' is unsupported.
+                errors:
+                - kind: UnsupportedField
+                  field: handedness
+                  reason: This field is not present for samples.
+                  message: 'Field ''handedness'' is not supported: this field is not present for samples.'
+  /sample/summary:
+    get:
+      tags:
+      - Sample
+      summary: Reports summary information for the samples known by this server.
+      description: Reports summary information for the samples known by this server.
+      operationId: sample_summary
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Summary'
   /metadata/fields/subject:
     get:
       tags:
@@ -576,16 +754,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/models.subject.Metadata'
           nullable: true
-    models.count.Total:
-      type: object
-      description: Total count of some entity as reported alongside an API call.
-      required:
-      - total
-      properties:
-        total:
-          type: integer
-          description: The total number of entities returned in the API call.
-          minimum: 0
     models.metadata.field.Description:
       oneOf:
       - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
@@ -752,15 +920,17 @@ components:
           nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
-    responses.Error:
+    responses.Errors:
       type: object
-      description: A response indicating an error from the API.
+      description: A wrapper around one or more [errors](Kind).
       required:
-      - error
+      - errors
       properties:
-        error:
-          type: string
-          example: An error occurred.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/responses.error.Kind'
+          description: The errors within this response.
     responses.Sample:
       allOf:
       - $ref: '#/components/schemas/models.Sample'
@@ -769,18 +939,26 @@ components:
     responses.Samples:
       type: object
       description: |-
-        A response representing multiple samples known about by the server with a
-        summarized total count.
+        A response representing multiple samples known about by the server.
+
+        When no sort order is provided, samples **must** be ordered by the primary
+        identifier. This means that, when comparing two identifiers:
+
+        1. The `namespace` field should be sorted alphabetically. If there is a
+        clear order, return that. Else, if the namespaces are equal,
+        2. The `name` field should be sorted alphabetically. Since the `namespace`
+        and the `name` should always uniquely apply to a single entity, this
+        should always resolve to an ordering.
+
+        Of course, if there is a provided sort order, use that instead.
       required:
-      - count
+      - data
       properties:
-        count:
-          $ref: '#/components/schemas/models.count.Total'
-        samples:
+        data:
           type: array
           items:
             $ref: '#/components/schemas/models.Sample'
-          description: The samples, if available.
+          description: The samples.
     responses.Subject:
       allOf:
       - $ref: '#/components/schemas/models.Subject'
@@ -789,48 +967,150 @@ components:
     responses.Subjects:
       type: object
       description: |-
-        A response representing multiple subjects known about by the server with a
-        summarized total count.
+        A response representing multiple subjects known about by the server.
+
+        When no sort order is provided, subjects **must** be ordered by the primary
+        identifier. This means that, when comparing two identifiers:
+
+        1. The `namespace` field should be sorted alphabetically. If there is a
+        clear order, return that. Else, if the namespaces are equal,
+        2. The `name` field should be sorted alphabetically. Since the `namespace`
+        and the `name` should always uniquely apply to a single entity, this
+        should always resolve to an ordering.
+
+        Of course, if there is a provided sort order, use that instead.
       required:
-      - count
+      - data
       properties:
-        count:
-          $ref: '#/components/schemas/models.count.Total'
-        subjects:
+        data:
           type: array
           items:
             $ref: '#/components/schemas/models.Subject'
-          description: The subjects, if available.
+          description: The subjects.
+    responses.Summary:
+      type: object
+      description: A summary response for an entity endpoint.
+      required:
+      - counts
+      properties:
+        counts:
+          $ref: '#/components/schemas/responses.summary.Counts'
     responses.by.count.Samples:
-      allOf:
-      - $ref: '#/components/schemas/models.count.Total'
-      - type: object
-        required:
-        - values
-        properties:
-          values:
-            type: object
-            additionalProperties:
-              type: integer
-              minimum: 0
+      type: object
       description: |-
-        A response for grouping [`Sample`](models::Sample)s by a metadata field
+        A response for grouping [`Sample`](ccdi_models::Sample)s by a metadata field
         and then summing the counts.
+      required:
+      - total
+      - values
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        values:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 0
     responses.by.count.Subjects:
+      type: object
+      description: |-
+        A response for grouping [`Subject`](ccdi_models::Subject)s by a metadata field
+        and then summing the counts.
+      required:
+      - total
+      - values
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        values:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 0
+    responses.error.Kind:
       allOf:
-      - $ref: '#/components/schemas/models.count.Total'
+      - oneOf:
+        - type: object
+          description: One or more invalid query or path parameters were provided.
+          required:
+          - reason
+          - kind
+          properties:
+            parameters:
+              type: array
+              items:
+                type: string
+              description: |-
+                If known, the parameters that are invalid. If not known, pass `None`
+                to this field for a more general error message.
+              nullable: true
+            reason:
+              type: string
+              description: A plain-text reason describing why the parameters are invalid.
+            kind:
+              type: string
+              enum:
+              - InvalidParameters
+          example:
+            kind: InvalidParameters
+            parameters:
+            - id
+            reason: The parameter was a non-integer value.
+        - type: object
+          description: An entity was not found.
+          required:
+          - entity
+          - kind
+          properties:
+            entity:
+              type: string
+              description: The entity (or entities) that are not found.
+            kind:
+              type: string
+              enum:
+              - NotFound
+          example:
+            kind: NotFound
+            entity: Samples
+        - type: object
+          description: A field name was not supported for the attempted operation.
+          required:
+          - field
+          - reason
+          - kind
+          properties:
+            field:
+              type: string
+              description: The field that is not supported.
+            reason:
+              type: string
+              description: The reason that the field is not supported.
+            kind:
+              type: string
+              enum:
+              - UnsupportedField
+          example:
+            kind: UnsupportedField
+            field: field
+            reason: The field was not found in the metadata object.
+        description: An inner type of a [Kind](super::Kind).
+        discriminator:
+          propertyName: kind
       - type: object
         required:
-        - values
+        - message
         properties:
-          values:
-            type: object
-            additionalProperties:
-              type: integer
-              minimum: 0
-      description: |-
-        A response for grouping [`Subject`](models::Subject)s by a metadata field
-        and then summing the counts.
+          message:
+            type: string
+            description: |-
+              A plain-text description of the error.
+
+              This field is intended to be shown within a user interface or similar if
+              needed. Please use this field if you intend to pass the error along to a
+              user.
+      description: A response indicating an error from the API.
     responses.metadata.FieldDescriptions:
       type: object
       description: A response for describing metadata fields for a subject.
@@ -842,6 +1122,15 @@ components:
           items:
             $ref: '#/components/schemas/models.metadata.field.Description'
           description: Field descriptions.
+    responses.summary.Counts:
+      type: object
+      description: Counts included in a summary endpoint.
+      required:
+      - total
+      properties:
+        total:
+          type: integer
+          minimum: 0
 tags:
 - name: Subject
   description: Subjects within the CCDI federated ecosystem.

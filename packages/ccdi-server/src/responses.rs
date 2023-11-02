@@ -1,13 +1,15 @@
 //! Responses for the server.
 
 pub mod by;
-mod error;
+pub mod error;
 pub mod metadata;
 mod sample;
 mod subject;
+pub mod summary;
 
-pub use error::Error;
+pub use error::Errors;
 pub use sample::Sample;
 pub use sample::Samples;
 pub use subject::Subject;
 pub use subject::Subjects;
+pub use summary::Summary;

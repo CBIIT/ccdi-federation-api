@@ -5,16 +5,12 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use ccdi_models as models;
-
-/// A response for grouping [`Subject`](models::Subject)s by a metadata field
+/// A response for grouping [`Subject`](ccdi_models::Subject)s by a metadata field
 /// and then summing the counts.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = responses::by::count::Subjects)]
 pub struct Subjects {
-    #[serde(flatten)]
-    total: models::count::Total,
-
+    total: usize,
     values: IndexMap<String, usize>,
 }
 
@@ -29,7 +25,6 @@ impl From<IndexMap<String, usize>> for Subjects {
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
-    /// use models::count::Total;
     /// use server::responses::by::count::Subjects;
     ///
     /// let mut map = IndexMap::<String, usize>::new();
@@ -42,9 +37,6 @@ impl From<IndexMap<String, usize>> for Subjects {
     /// ```
     fn from(values: IndexMap<String, usize>) -> Self {
         let total = values.values().sum::<usize>();
-        Self {
-            total: models::count::Total::from(total),
-            values,
-        }
+        Self { total, values }
     }
 }

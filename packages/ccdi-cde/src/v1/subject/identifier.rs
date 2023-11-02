@@ -47,7 +47,9 @@ impl std::error::Error for Error {}
 ///
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1>
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
+#[derive(
+    Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, ToSchema, Introspect,
+)]
 #[schema(as = cde::v1::subject::Identifier)]
 pub struct Identifier {
     /// The namespace of the identifier.
