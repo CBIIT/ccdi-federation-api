@@ -223,7 +223,7 @@ components:
       - Unknown
       - Initial Diagnosis
       - Progression
-      - Refactory
+      - Refractory
       - Relapse
       - Relapse/Progression
     cde.v1.sample.TumorClassification:

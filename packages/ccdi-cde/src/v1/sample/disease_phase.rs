@@ -73,7 +73,7 @@ pub enum DiseasePhase {
     #[serde(rename = "Progression")]
     Progression,
 
-    /// `Refactory`
+    /// `Refractory`
     ///
     /// * **VM Long Name**: Refractory
     /// * **VM Public ID**: 2566882
@@ -81,8 +81,8 @@ pub enum DiseasePhase {
     /// * **Begin Date**:   12/27/2022
     ///
     /// Not responding to treatment.
-    #[serde(rename = "Refactory")]
-    Refactory,
+    #[serde(rename = "Refractory")]
+    Refractory,
 
     /// `Relapse`
     ///
@@ -117,7 +117,7 @@ impl std::fmt::Display for DiseasePhase {
             DiseasePhase::Unknown => write!(f, "Unknown"),
             DiseasePhase::InitialDiagnosis => write!(f, "Initial Diagnosis"),
             DiseasePhase::Progression => write!(f, "Progression"),
-            DiseasePhase::Refactory => write!(f, "Refactory"),
+            DiseasePhase::Refractory => write!(f, "Refractory"),
             DiseasePhase::Relapse => write!(f, "Relapse"),
             DiseasePhase::RelapseOrProgression => write!(f, "Relapse/Progression"),
         }
@@ -132,7 +132,7 @@ impl Distribution<DiseasePhase> for Standard {
             2 => DiseasePhase::Unknown,
             3 => DiseasePhase::InitialDiagnosis,
             4 => DiseasePhase::Progression,
-            5 => DiseasePhase::Refactory,
+            5 => DiseasePhase::Refractory,
             6 => DiseasePhase::Relapse,
             _ => DiseasePhase::RelapseOrProgression,
         }
@@ -153,7 +153,7 @@ mod tests {
             "Initial Diagnosis"
         );
         assert_eq!(DiseasePhase::Progression.to_string(), "Progression");
-        assert_eq!(DiseasePhase::Refactory.to_string(), "Refactory");
+        assert_eq!(DiseasePhase::Refractory.to_string(), "Refractory");
         assert_eq!(DiseasePhase::Relapse.to_string(), "Relapse");
         assert_eq!(
             DiseasePhase::RelapseOrProgression.to_string(),
@@ -184,8 +184,8 @@ mod tests {
             "\"Progression\""
         );
         assert_eq!(
-            serde_json::to_string(&DiseasePhase::Refactory).unwrap(),
-            "\"Refactory\""
+            serde_json::to_string(&DiseasePhase::Refractory).unwrap(),
+            "\"Refractory\""
         );
         assert_eq!(
             serde_json::to_string(&DiseasePhase::Relapse).unwrap(),
