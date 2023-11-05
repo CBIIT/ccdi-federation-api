@@ -13,6 +13,7 @@ use indexmap::IndexMap;
 use models::sample::Identifier;
 use serde_json::Value;
 
+use ccdi_cde as cde;
 use ccdi_models as models;
 
 use models::Sample;
@@ -57,8 +58,13 @@ impl Store {
                             ":",
                         )
                         .unwrap();
+                        let subject = cde::v1::subject::Identifier::parse(
+                            format!("organization:Subject{}", i + 1).as_ref(),
+                            ":",
+                        )
+                        .unwrap();
 
-                        Sample::random(identifier)
+                        Sample::random(identifier, subject)
                     })
                     .collect::<Vec<_>>(),
             ),

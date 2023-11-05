@@ -6,6 +6,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use ccdi_cde as cde;
+
 mod identifier;
 pub mod metadata;
 
@@ -13,12 +15,25 @@ pub use identifier::Identifier;
 pub use metadata::Metadata;
 
 /// A sample.
+///
+/// **Note:** the `subject` identifier **must** match a
+/// [`Subject`](super::Subject) that both (a) is listed in the
+/// [`Subject`](super::Subject) index endpoint and (b) is able to be shown with
+/// the [`Subject`](super::Subject) show endpoint.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Sample)]
 pub struct Sample {
     /// The identifier for this [`Sample`].
     #[schema(value_type = models::sample::Identifier)]
     id: Identifier,
+
+    /// The identifier for the subject from which this sample was derived.
+    ///
+    /// This identifier **must** match a [`Subject`](super::Subject) that both
+    /// (a) is listed in the [`Subject`](super::Subject) index endpoint and (b)
+    /// is able to be shown with the [`Subject`](super::Subject) show endpoint.
+    #[schema(value_type = cde::v1::subject::Identifier)]
+    subject: cde::v1::subject::Identifier,
 
     /// Metadata associated with this [`Sample`].
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,13 +56,22 @@ impl Sample {
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
+    ///     cde::v1::subject::Identifier::new("organization", "SubjectName001"),
     ///     Some(Builder::default().build()),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn new(id: Identifier, metadata: Option<Metadata>) -> Self {
-        Self { id, metadata }
+    pub fn new(
+        id: Identifier,
+        subject: cde::v1::subject::Identifier,
+        metadata: Option<Metadata>,
+    ) -> Self {
+        Self {
+            id,
+            subject,
+            metadata,
+        }
     }
 
     /// Gets the name for this [`Sample`] by reference.
@@ -64,6 +88,7 @@ impl Sample {
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
+    ///     cde::v1::subject::Identifier::new("organization", "SubjectName001"),
     ///     Some(Builder::default().build()),
     /// );
     ///
@@ -74,6 +99,34 @@ impl Sample {
     /// ```
     pub fn id(&self) -> &Identifier {
         &self.id
+    }
+
+    /// Gets the identifier for the [`Subject`](super::Subject) from which this
+    /// [`Sample`] was derived (by reference).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::sample::metadata::Builder;
+    /// use models::sample::Identifier;
+    /// use models::Sample;
+    ///
+    /// let sample = Sample::new(
+    ///     Identifier::new("organization", "SampleName001"),
+    ///     cde::v1::subject::Identifier::new("organization", "SubjectName001"),
+    ///     Some(Builder::default().build()),
+    /// );
+    ///
+    /// assert_eq!(sample.subject().namespace(), &String::from("organization"));
+    /// assert_eq!(sample.subject().name(), &String::from("SubjectName001"));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn subject(&self) -> &cde::v1::subject::Identifier {
+        &self.subject
     }
 
     /// Gets the metadata for this [`Sample`] by reference.
@@ -92,6 +145,7 @@ impl Sample {
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
+    ///     cde::v1::subject::Identifier::new("organization", "SubjectName001"),
     ///     Some(metadata.clone()),
     /// );
     ///
@@ -108,18 +162,23 @@ impl Sample {
     /// # Examples
     ///
     /// ```
+    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
-    /// use models::sample::Identifier;
     ///
+    /// use models::sample::Identifier;
     /// use models::Sample;
     ///
-    /// let sample = Sample::random(Identifier::new("organization", "SampleName001"));
+    /// let sample = Sample::random(
+    ///     Identifier::new("organization", "SampleName001"),
+    ///     cde::v1::subject::Identifier::new("organization", "SubjectName001"),
+    /// );
     /// ```
-    pub fn random(identifier: Identifier) -> Self {
+    pub fn random(identifier: Identifier, subject: cde::v1::subject::Identifier) -> Self {
         let mut rng = thread_rng();
 
         Self {
             id: identifier.clone(),
+            subject,
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random()),
                 false => None,
@@ -151,39 +210,84 @@ mod tests {
 
     #[test]
     fn it_orders_samples_correctly() {
-        let a = Sample::new(Identifier::parse("organization:A", ":").unwrap(), None);
-        let b = Sample::new(Identifier::parse("organization:B", ":").unwrap(), None);
+        let a = Sample::new(
+            Identifier::parse("organization:SampleA", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectA"),
+            None,
+        );
+        let b = Sample::new(
+            Identifier::parse("organization:SampleB", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectB"),
+            None,
+        );
 
         assert_eq!(a.cmp(&b), Ordering::Less);
 
-        let c = Sample::new(Identifier::parse("organization:C", ":").unwrap(), None);
-        let b = Sample::new(Identifier::parse("organization:B", ":").unwrap(), None);
+        let c = Sample::new(
+            Identifier::parse("organization:SampleC", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectC"),
+            None,
+        );
+        let b = Sample::new(
+            Identifier::parse("organization:SampleB", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectB"),
+            None,
+        );
 
         assert_eq!(c.cmp(&b), Ordering::Greater);
 
-        let foo = Sample::new(Identifier::parse("organization:Name", ":").unwrap(), None);
-        let bar = Sample::new(Identifier::parse("organization:Name", ":").unwrap(), None);
+        let foo = Sample::new(
+            Identifier::parse("organization:SampleName", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization:Na", "Subjecte"),
+            None,
+        );
+        let bar = Sample::new(
+            Identifier::parse("organization:SampleName", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization:Na", "Subjecte"),
+            None,
+        );
 
         assert_eq!(foo.cmp(&bar), Ordering::Equal);
     }
 
     #[test]
     fn it_tests_equality_correctly() {
-        let foo = Sample::new(Identifier::parse("organization:B", ":").unwrap(), None);
-        let bar = Sample::new(Identifier::parse("organization:B", ":").unwrap(), None);
+        let foo = Sample::new(
+            Identifier::parse("organization:SampleB", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectB"),
+            None,
+        );
+        let bar = Sample::new(
+            Identifier::parse("organization:SampleB", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectB"),
+            None,
+        );
 
         assert!(foo == bar);
 
-        let foo = Sample::new(Identifier::parse("organization:A", ":").unwrap(), None);
-        let bar = Sample::new(Identifier::parse("organization:B", ":").unwrap(), None);
+        let foo = Sample::new(
+            Identifier::parse("organization:SampleA", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectA"),
+            None,
+        );
+        let bar = Sample::new(
+            Identifier::parse("organization:SampleB", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectB"),
+            None,
+        );
 
         assert!(foo != bar);
 
         let foo = Sample::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::parse("organization:SampleName", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectName"),
             Some(metadata::Builder::default().build()),
         );
-        let bar = Sample::new(Identifier::parse("organization:Name", ":").unwrap(), None);
+        let bar = Sample::new(
+            Identifier::parse("organization:SampleName", ":").unwrap(),
+            cde::v1::subject::Identifier::new("organization", "SubjectName"),
+            None,
+        );
 
         assert!(foo != bar);
     }
