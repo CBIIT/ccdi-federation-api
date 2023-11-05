@@ -54,9 +54,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -67,15 +67,18 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -105,9 +108,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -118,15 +121,18 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// assert_eq!(description.path(), &String::from("test"));
@@ -146,9 +152,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -159,15 +165,18 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// assert_eq!(description.standard(), &String::from("caDSR ------ v1.00"));
@@ -187,9 +196,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -200,15 +209,18 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// assert_eq!(description.url(), &String::from("https://cancer.gov"));
@@ -227,9 +239,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -240,19 +252,25 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// assert_eq!(description.entity().standard(), "A Standard");
-    /// assert_eq!(description.entity().description(), "A description for the entity.");
+    /// assert_eq!(
+    ///     description.entity().description(),
+    ///     "A description for the entity."
+    /// );
     /// assert_eq!(description.entity().url(), "https://example.com");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -269,9 +287,9 @@ impl Harmonized {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
-    /// use cde::parse::cde::member::Variant;
     /// use models::metadata::field::description::Harmonized;
     ///
     /// let description = Harmonized::new(
@@ -282,26 +300,33 @@ impl Harmonized {
     ///     
     ///     A description for the entity.
     ///
-    ///     Link: <https://example.com>".parse::<Entity>()?,
-    ///     vec![
-    ///         (
-    ///             String::from("Unknown"),
-    ///             Member::Variant("`Unknown`
+    ///     Link: <https://example.com>"
+    ///         .parse::<Entity>()?,
+    ///     vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
     ///              
-    ///             A description for the variant.".parse::<Variant>().unwrap())
-    ///         )
-    ///     ]
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )],
     /// );
     ///
     /// assert_eq!(description.members().len(), 1);
     ///
-    /// let (identifier, variant) = description.members()
-    ///                 .first()
-    ///                 .unwrap();
+    /// let (identifier, variant) = description.members().first().unwrap();
     ///
     /// assert_eq!(identifier.as_str(), "Unknown");
-    /// assert_eq!(variant.get_variant().unwrap().permissible_value(), "Unknown");
-    /// assert_eq!(variant.get_variant().unwrap().description(), "A description for the variant.");
+    /// assert_eq!(
+    ///     variant.get_variant().unwrap().permissible_value(),
+    ///     "Unknown"
+    /// );
+    /// assert_eq!(
+    ///     variant.get_variant().unwrap().description(),
+    ///     "A description for the variant."
+    /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

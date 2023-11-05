@@ -59,7 +59,8 @@ impl Member {
     ///
     /// let variant = "`A Permissible Value`
     ///
-    /// A description.".parse::<Variant>()?;
+    /// A description."
+    ///     .parse::<Variant>()?;
     /// let member = Member::Variant(variant);
     /// assert_eq!(member.is_field(), false);
     ///
@@ -87,7 +88,8 @@ impl Member {
     ///
     /// let variant = "`A Permissible Value`
     ///
-    /// A description.".parse::<Variant>()?;
+    /// A description."
+    ///     .parse::<Variant>()?;
     /// let member = Member::Variant(variant.clone());
     /// assert_eq!(member.get_field(), None);
     ///
@@ -117,7 +119,8 @@ impl Member {
     ///
     /// let variant = "`A Permissible Value`
     ///
-    /// A description.".parse::<Variant>()?;
+    /// A description."
+    ///     .parse::<Variant>()?;
     /// let member = Member::Variant(variant);
     /// assert_eq!(member.is_field(), false);
     ///
@@ -145,7 +148,8 @@ impl Member {
     ///
     /// let variant = "`A Permissible Value`
     ///
-    /// A description.".parse::<Variant>()?;
+    /// A description."
+    ///     .parse::<Variant>()?;
     /// let member = Member::Variant(variant.clone());
     /// assert_eq!(member.get_variant(), Some(&variant));
     ///

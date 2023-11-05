@@ -86,7 +86,8 @@ impl Entity {
     /// A description that spans
     /// multiple lines.
     ///
-    /// Link: <https://example.com>"#.parse::<Entity>()?;
+    /// Link: <https://example.com>"#
+    ///     .parse::<Entity>()?;
     ///
     /// assert_eq!(entity.standard(), "A Standard");
     ///
@@ -110,9 +111,13 @@ impl Entity {
     /// A description that spans
     /// multiple lines.
     ///
-    /// Link: <https://example.com>"#.parse::<Entity>()?;
+    /// Link: <https://example.com>"#
+    ///     .parse::<Entity>()?;
     ///
-    /// assert_eq!(entity.description(), "A description that spans multiple lines.");
+    /// assert_eq!(
+    ///     entity.description(),
+    ///     "A description that spans multiple lines."
+    /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -134,7 +139,8 @@ impl Entity {
     /// A description that spans
     /// multiple lines.
     ///
-    /// Link: <https://example.com>"#.parse::<Entity>()?;
+    /// Link: <https://example.com>"#
+    ///     .parse::<Entity>()?;
     ///
     /// assert_eq!(entity.url(), "https://example.com");
     ///

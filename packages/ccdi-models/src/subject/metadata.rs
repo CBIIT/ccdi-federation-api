@@ -55,8 +55,8 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None))
-    ///                 .build();
+    ///     .sex(Sex::new(cde::v1::subject::Sex::Female, None, None))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.sex(),
@@ -79,8 +79,8 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .append_race(Race::new(cde::v1::subject::Race::Asian, None, None))
-    ///                 .build();
+    ///     .append_race(Race::new(cde::v1::subject::Race::Asian, None, None))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.race(),
@@ -103,12 +103,20 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .ethnicity(Ethnicity::new(cde::v2::subject::Ethnicity::NotHispanicOrLatino, None, None))
-    ///                 .build();
+    ///     .ethnicity(Ethnicity::new(
+    ///         cde::v2::subject::Ethnicity::NotHispanicOrLatino,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.ethnicity(),
-    ///     &Some(Ethnicity::new(cde::v2::subject::Ethnicity::NotHispanicOrLatino, None, None))
+    ///     &Some(Ethnicity::new(
+    ///         cde::v2::subject::Ethnicity::NotHispanicOrLatino,
+    ///         None,
+    ///         None
+    ///     ))
     /// );
     /// ```
     pub fn ethnicity(&self) -> &Option<field::unowned::subject::Ethnicity> {
@@ -127,24 +135,22 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .append_identifier(
-    ///                     Identifier::new(
-    ///                         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
-    ///                         None, None, Some(true)
-    ///                     )
-    ///                 )
-    ///                 .build();
+    ///     .append_identifier(Identifier::new(
+    ///         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
+    ///         None,
+    ///         None,
+    ///         Some(true),
+    ///     ))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.identifiers(),
-    ///     &Some(
-    ///         vec![
-    ///             Identifier::new(
-    ///                 cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
-    ///                 None, None, Some(true)
-    ///             )
-    ///         ]
-    ///     )
+    ///     &Some(vec![Identifier::new(
+    ///         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
+    ///         None,
+    ///         None,
+    ///         Some(true)
+    ///     )])
     /// );
     /// ```
     pub fn identifiers(&self) -> &Option<Vec<field::owned::subject::Identifier>> {
@@ -161,24 +167,39 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::owned;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                         .insert_unharmonized(
-    ///                             "unowned",
-    ///                             UnharmonizedField::Unowned(unowned::Field::new(Value::String("test".into()), None, None))
-    ///                         )
-    ///                         .insert_unharmonized(
-    ///                             "owned",
-    ///                             UnharmonizedField::Owned(owned::Field::new(Value::String("test".into()), None, None, None))
-    ///                         )
-    ///                         .build();
+    ///     .insert_unharmonized(
+    ///         "unowned",
+    ///         UnharmonizedField::Unowned(unowned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     )
+    ///     .insert_unharmonized(
+    ///         "owned",
+    ///         UnharmonizedField::Owned(owned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     )
+    ///     .build();
     ///
-    /// assert!(matches!(metadata.unharmonized().inner().get("unowned".into()), Some(&UnharmonizedField::Unowned(_))));
-    /// assert!(matches!(metadata.unharmonized().inner().get("owned".into()), Some(&UnharmonizedField::Owned(_))));
+    /// assert!(matches!(
+    ///     metadata.unharmonized().inner().get("unowned".into()),
+    ///     Some(&UnharmonizedField::Unowned(_))
+    /// ));
+    /// assert!(matches!(
+    ///     metadata.unharmonized().inner().get("owned".into()),
+    ///     Some(&UnharmonizedField::Owned(_))
+    /// ));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

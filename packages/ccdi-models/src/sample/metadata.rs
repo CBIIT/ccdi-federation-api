@@ -47,14 +47,20 @@ impl Metadata {
     /// use models::sample::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .disease_phase(
-    ///                     DiseasePhase::new(cde::v1::sample::DiseasePhase::InitialDiagnosis, None, None)
-    ///                 )
-    ///                 .build();
+    ///     .disease_phase(DiseasePhase::new(
+    ///         cde::v1::sample::DiseasePhase::InitialDiagnosis,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.disease_phase(),
-    ///     &Some(DiseasePhase::new(cde::v1::sample::DiseasePhase::InitialDiagnosis, None, None))
+    ///     &Some(DiseasePhase::new(
+    ///         cde::v1::sample::DiseasePhase::InitialDiagnosis,
+    ///         None,
+    ///         None
+    ///     ))
     /// );
     /// ```
     pub fn disease_phase(&self) -> &Option<field::unowned::sample::DiseasePhase> {
@@ -73,14 +79,20 @@ impl Metadata {
     /// use models::sample::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .tissue_type(
-    ///                     TissueType::new(cde::v2::sample::TissueType::Tumor, None, None)
-    ///                 )
-    ///                 .build();
+    ///     .tissue_type(TissueType::new(
+    ///         cde::v2::sample::TissueType::Tumor,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.tissue_type(),
-    ///     &Some(TissueType::new(cde::v2::sample::TissueType::Tumor, None, None))
+    ///     &Some(TissueType::new(
+    ///         cde::v2::sample::TissueType::Tumor,
+    ///         None,
+    ///         None
+    ///     ))
     /// );
     /// ```
     pub fn tissue_type(&self) -> &Option<field::unowned::sample::TissueType> {
@@ -99,14 +111,20 @@ impl Metadata {
     /// use models::sample::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                 .tumor_classification(
-    ///                     TumorClassification::new(cde::v1::sample::TumorClassification::Primary, None, None)
-    ///                 )
-    ///                 .build();
+    ///     .tumor_classification(TumorClassification::new(
+    ///         cde::v1::sample::TumorClassification::Primary,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.tumor_classification(),
-    ///     &Some(TumorClassification::new(cde::v1::sample::TumorClassification::Primary, None, None))
+    ///     &Some(TumorClassification::new(
+    ///         cde::v1::sample::TumorClassification::Primary,
+    ///         None,
+    ///         None
+    ///     ))
     /// );
     /// ```
     pub fn tumor_classification(&self) -> &Option<field::unowned::sample::TumorClassification> {
@@ -123,24 +141,39 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::owned;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::sample::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///                         .insert_unharmonized(
-    ///                             "unowned",
-    ///                             UnharmonizedField::Unowned(unowned::Field::new(Value::String("test".into()), None, None))
-    ///                         )
-    ///                         .insert_unharmonized(
-    ///                             "owned",
-    ///                             UnharmonizedField::Owned(owned::Field::new(Value::String("test".into()), None, None, None))
-    ///                         )
-    ///                         .build();
+    ///     .insert_unharmonized(
+    ///         "unowned",
+    ///         UnharmonizedField::Unowned(unowned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     )
+    ///     .insert_unharmonized(
+    ///         "owned",
+    ///         UnharmonizedField::Owned(owned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     )
+    ///     .build();
     ///
-    /// assert!(matches!(metadata.unharmonized().inner().get("unowned".into()), Some(&UnharmonizedField::Unowned(_))));
-    /// assert!(matches!(metadata.unharmonized().inner().get("owned".into()), Some(&UnharmonizedField::Owned(_))));
+    /// assert!(matches!(
+    ///     metadata.unharmonized().inner().get("unowned".into()),
+    ///     Some(&UnharmonizedField::Unowned(_))
+    /// ));
+    /// assert!(matches!(
+    ///     metadata.unharmonized().inner().get("owned".into()),
+    ///     Some(&UnharmonizedField::Owned(_))
+    /// ));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

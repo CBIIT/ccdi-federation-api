@@ -93,20 +93,29 @@ impl Builder {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::owned;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::sample::metadata::Builder;
     ///
     /// let builder = Builder::default()
-    ///                         .insert_unharmonized(
-    ///                             "unowned",
-    ///                             UnharmonizedField::Unowned(unowned::Field::new(Value::String("test".into()), None, None))
-    ///                         )
-    ///                         .insert_unharmonized(
-    ///                             "owned",
-    ///                             UnharmonizedField::Owned(owned::Field::new(Value::String("test".into()), None, None, None))
-    ///                         );
+    ///     .insert_unharmonized(
+    ///         "unowned",
+    ///         UnharmonizedField::Unowned(unowned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     )
+    ///     .insert_unharmonized(
+    ///         "owned",
+    ///         UnharmonizedField::Owned(owned::Field::new(
+    ///             Value::String("test".into()),
+    ///             None,
+    ///             None,
+    ///             None,
+    ///         )),
+    ///     );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

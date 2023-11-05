@@ -55,7 +55,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     None,
-    ///     None
+    ///     None,
     /// );
     /// ```
     pub fn new<S: Into<String>, O: Into<Option<String>>>(
@@ -89,7 +89,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     None,
-    ///     None
+    ///     None,
     /// );
     ///
     /// assert_eq!(field.name(), Some(&String::from("test")))
@@ -112,7 +112,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     None,
-    ///     None
+    ///     None,
     /// );
     ///
     /// assert_eq!(field.description(), Some(&String::from("A description.")))
@@ -135,7 +135,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     None,
-    ///     None
+    ///     None,
     /// );
     ///
     /// assert_eq!(field.path(), &String::from("test"))
@@ -159,7 +159,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     Some("US Census Bureau".into()),
-    ///     None
+    ///     None,
     /// );
     ///
     /// assert_eq!(field.standard().unwrap(), &String::from("US Census Bureau"))
@@ -183,7 +183,7 @@ impl Unharmonized {
     ///     Some("A description.".into()),
     ///     "test",
     ///     None,
-    ///     Some("https://cancer.gov".into())
+    ///     Some("https://cancer.gov".into()),
     /// );
     ///
     /// assert_eq!(field.url().unwrap(), &String::from("https://cancer.gov"))

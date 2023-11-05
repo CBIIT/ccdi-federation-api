@@ -55,15 +55,15 @@ impl Subject {
     /// use ccdi_models as models;
     ///
     /// use cde::v1::subject::Identifier;
-    /// use models::Subject;
-    /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Subject;
     ///
     /// let subject = Subject::new(
     ///     Identifier::parse("organization:Name", ":")?,
     ///     String::from("Name"),
     ///     Kind::Participant,
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -86,15 +86,15 @@ impl Subject {
     /// use ccdi_models as models;
     ///
     /// use cde::v1::subject::Identifier;
-    /// use models::Subject;
-    /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Subject;
     ///
     /// let subject = Subject::new(
     ///     Identifier::parse("organization:Name", ":")?,
     ///     String::from("Name"),
     ///     Kind::Participant,
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// assert_eq!(
@@ -117,15 +117,15 @@ impl Subject {
     /// use ccdi_models as models;
     ///
     /// use cde::v1::subject::Identifier;
-    /// use models::Subject;
-    /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Subject;
     ///
     /// let subject = Subject::new(
     ///     Identifier::parse("organization:Name", ":")?,
     ///     String::from("Name"),
     ///     Kind::Participant,
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// assert_eq!(subject.name(), &String::from("Name"));
@@ -145,15 +145,15 @@ impl Subject {
     /// use ccdi_models as models;
     ///
     /// use cde::v1::subject::Identifier;
-    /// use models::Subject;
-    /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Subject;
     ///
     /// let subject = Subject::new(
     ///     Identifier::parse("organization:Name", ":")?,
     ///     String::from("Name"),
     ///     Kind::Participant,
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// assert_eq!(subject.kind(), &Kind::Participant);
@@ -173,9 +173,9 @@ impl Subject {
     /// use ccdi_models as models;
     ///
     /// use cde::v1::subject::Identifier;
-    /// use models::Subject;
-    /// use models::subject::Kind;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Subject;
     ///
     /// let metadata = Builder::default().build();
     ///
@@ -183,7 +183,7 @@ impl Subject {
     ///     Identifier::parse("organization:Name", ":")?,
     ///     String::from("Name"),
     ///     Kind::Participant,
-    ///     Some(metadata.clone())
+    ///     Some(metadata.clone()),
     /// );
     ///
     /// assert_eq!(subject.metadata(), Some(&metadata));

@@ -88,7 +88,8 @@ impl Variant {
     /// * **Concept Code**: C17998
     /// * **Begin Date**:   03/09/2023
     ///
-    /// Not known, not observed, not recorded, or refused."#.parse::<Variant>()?;
+    /// Not known, not observed, not recorded, or refused."#
+    ///     .parse::<Variant>()?;
     ///
     /// assert_eq!(variant.permissible_value(), "Unknown");
     ///
@@ -114,7 +115,8 @@ impl Variant {
     /// * **Concept Code**: C17998
     /// * **Begin Date**:   03/09/2023
     ///
-    /// Not known, not observed, not recorded, or refused."#.parse::<Variant>()?;
+    /// Not known, not observed, not recorded, or refused."#
+    ///     .parse::<Variant>()?;
     ///
     /// let metadata = variant.metadata().unwrap();
     ///
@@ -145,9 +147,13 @@ impl Variant {
     /// * **Concept Code**: C17998
     /// * **Begin Date**:   03/09/2023
     ///
-    /// Not known, not observed, not recorded, or refused."#.parse::<Variant>()?;
+    /// Not known, not observed, not recorded, or refused."#
+    ///     .parse::<Variant>()?;
     ///
-    /// assert_eq!(variant.description(), "Not known, not observed, not recorded, or refused.");
+    /// assert_eq!(
+    ///     variant.description(),
+    ///     "Not known, not observed, not recorded, or refused."
+    /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

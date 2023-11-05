@@ -28,7 +28,9 @@ pub mod cde;
 ///
 /// use cde::parse::trim_and_concat_contiguous_lines;
 ///
-/// let mut lines = "hello\nthere,\nworld\n\nfoo\nbar\n\n\"baz\ntest\"".lines().peekable();
+/// let mut lines = "hello\nthere,\nworld\n\nfoo\nbar\n\n\"baz\ntest\""
+///     .lines()
+///     .peekable();
 ///
 /// assert_eq!(
 ///     trim_and_concat_contiguous_lines(&mut lines),
@@ -45,10 +47,7 @@ pub mod cde;
 ///     Some(String::from(r#""baz test""#))
 /// );
 ///
-/// assert_eq!(
-///     trim_and_concat_contiguous_lines(&mut lines),
-///     None
-/// );
+/// assert_eq!(trim_and_concat_contiguous_lines(&mut lines), None);
 /// ```
 pub fn trim_and_concat_contiguous_lines(lines: &mut Peekable<Lines<'_>>) -> Option<String> {
     // If the first line is `None`, return `None`;

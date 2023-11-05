@@ -35,13 +35,13 @@ impl Sample {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::Sample;
-    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
+    /// use models::sample::Identifier;
+    /// use models::Sample;
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -58,13 +58,13 @@ impl Sample {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::Sample;
-    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
+    /// use models::sample::Identifier;
+    /// use models::Sample;
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
-    ///     Some(Builder::default().build())
+    ///     Some(Builder::default().build()),
     /// );
     ///
     /// assert_eq!(sample.id().namespace(), &String::from("organization"));
@@ -84,15 +84,15 @@ impl Sample {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::Sample;
-    /// use models::sample::Identifier;
     /// use models::sample::metadata::Builder;
+    /// use models::sample::Identifier;
+    /// use models::Sample;
     ///
     /// let metadata = Builder::default().build();
     ///
     /// let sample = Sample::new(
     ///     Identifier::new("organization", "SampleName001"),
-    ///     Some(metadata.clone())
+    ///     Some(metadata.clone()),
     /// );
     ///
     /// assert_eq!(sample.metadata(), Some(&metadata));
@@ -112,7 +112,6 @@ impl Sample {
     /// use models::sample::Identifier;
     ///
     /// use models::Sample;
-    ///
     ///
     /// let sample = Sample::random(Identifier::new("organization", "SampleName001"));
     /// ```

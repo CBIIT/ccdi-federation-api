@@ -29,8 +29,8 @@ impl Unharmonized {
     ///
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::fields::Unharmonized;
     ///
     /// let mut fields = Unharmonized::default();
@@ -49,14 +49,18 @@ impl Unharmonized {
     ///
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::fields::Unharmonized;
     ///
     /// let mut fields = Unharmonized::default();
     /// fields.inner_mut().insert(
     ///     "hello".into(),
-    ///     UnharmonizedField::Unowned(unowned::Field::new(Value::String("world".into()), None, None))
+    ///     UnharmonizedField::Unowned(unowned::Field::new(
+    ///         Value::String("world".into()),
+    ///         None,
+    ///         None,
+    ///     )),
     /// );
     /// ```
     pub fn inner_mut(&mut self) -> &mut IndexMap<String, UnharmonizedField> {
@@ -72,8 +76,8 @@ impl Unharmonized {
     ///
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::fields::Unharmonized;
     ///
     /// let mut fields = Unharmonized::default();
@@ -92,8 +96,8 @@ impl Unharmonized {
     ///
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::fields::Unharmonized;
     ///
     /// let mut fields = Unharmonized::default();
@@ -113,8 +117,8 @@ impl Unharmonized {
     ///
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::field::unowned;
+    /// use models::metadata::field::UnharmonizedField;
     /// use models::metadata::fields::Unharmonized;
     ///
     /// let mut fields = Unharmonized::default();
