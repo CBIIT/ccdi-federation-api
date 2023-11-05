@@ -719,12 +719,21 @@ components:
         Unharmonized keys may be any valid JSON string.
     models.Sample:
       type: object
-      description: A sample.
+      description: |-
+        A sample.
+
+        **Note:** the ancestor identifier **must** match a
+        [`Subject`](super::Subject) that both (a) is listed in the
+        [`Subject`](super::Subject) index endpoint and (b) is able to be shown with
+        the [`Subject`](super::Subject) show endpoint.
       required:
       - id
+      - subject
       properties:
         id:
           $ref: '#/components/schemas/models.sample.Identifier'
+        subject:
+          $ref: '#/components/schemas/cde.v1.subject.Identifier'
         metadata:
           allOf:
           - $ref: '#/components/schemas/models.sample.Metadata'
