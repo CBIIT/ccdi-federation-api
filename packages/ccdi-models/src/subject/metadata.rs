@@ -60,11 +60,11 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.sex(),
-    ///     &Some(Sex::new(cde::v1::subject::Sex::Female, None, None))
+    ///     Some(&Sex::new(cde::v1::subject::Sex::Female, None, None))
     /// );
     /// ```
-    pub fn sex(&self) -> &Option<field::unowned::subject::Sex> {
-        &self.sex
+    pub fn sex(&self) -> Option<&field::unowned::subject::Sex> {
+        self.sex.as_ref()
     }
 
     /// Gets the harmonized race(s) for the [`Metadata`].
@@ -84,11 +84,11 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.race(),
-    ///     &Some(vec![Race::new(cde::v1::subject::Race::Asian, None, None)])
+    ///     Some(&vec![Race::new(cde::v1::subject::Race::Asian, None, None)])
     /// );
     /// ```
-    pub fn race(&self) -> &Option<Vec<field::unowned::subject::Race>> {
-        &self.race
+    pub fn race(&self) -> Option<&Vec<field::unowned::subject::Race>> {
+        self.race.as_ref()
     }
 
     /// Gets the harmonized ethnicity for the [`Metadata`].
@@ -112,15 +112,15 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.ethnicity(),
-    ///     &Some(Ethnicity::new(
+    ///     Some(&Ethnicity::new(
     ///         cde::v2::subject::Ethnicity::NotHispanicOrLatino,
     ///         None,
     ///         None
     ///     ))
     /// );
     /// ```
-    pub fn ethnicity(&self) -> &Option<field::unowned::subject::Ethnicity> {
-        &self.ethnicity
+    pub fn ethnicity(&self) -> Option<&field::unowned::subject::Ethnicity> {
+        self.ethnicity.as_ref()
     }
 
     /// Gets the harmonized identifier(s) for the [`Metadata`].
@@ -145,7 +145,7 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.identifiers(),
-    ///     &Some(vec![Identifier::new(
+    ///     Some(&vec![Identifier::new(
     ///         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
     ///         None,
     ///         None,
@@ -153,8 +153,8 @@ impl Metadata {
     ///     )])
     /// );
     /// ```
-    pub fn identifiers(&self) -> &Option<Vec<field::owned::subject::Identifier>> {
-        &self.identifiers
+    pub fn identifiers(&self) -> Option<&Vec<field::owned::subject::Identifier>> {
+        self.identifiers.as_ref()
     }
 
     /// Gets the unharmonized fields for the [`Metadata`].

@@ -5,13 +5,15 @@ use std::num::NonZeroUsize;
 use actix_web::HttpResponse;
 use serde::Serialize;
 
-use crate::paginate::links::Relationship;
 use crate::params::pagination;
 use crate::params::Pagination as PaginationParams;
 use crate::responses::error;
 use crate::responses::Errors;
 
 pub mod links;
+
+pub use links::Links;
+pub use links::Relationship;
 
 pub(crate) fn response<T, R>(
     params: PaginationParams,
@@ -23,12 +25,7 @@ where
     R: Serialize,
     R: From<Vec<T>>,
 {
-    let page = match NonZeroUsize::try_from(
-        params
-            .page()
-            .unwrap_or(Some(pagination::DEFAULT_PAGE))
-            .unwrap_or(pagination::DEFAULT_PAGE),
-    ) {
+    let page = match NonZeroUsize::try_from(params.page().unwrap_or(pagination::DEFAULT_PAGE)) {
         Ok(value) => value,
         Err(_) => {
             return HttpResponse::UnprocessableEntity().json(Errors::from(
@@ -40,22 +37,18 @@ where
         }
     };
 
-    let per_page = match NonZeroUsize::try_from(
-        params
-            .per_page()
-            .unwrap_or(Some(pagination::DEFAULT_PER_PAGE))
-            .unwrap_or(pagination::DEFAULT_PER_PAGE),
-    ) {
-        Ok(value) => value,
-        Err(_) => {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::invalid_parameters(
-                    Some(vec![String::from("per_page")]),
-                    String::from("must be a non-zero usize"),
-                ),
-            ))
-        }
-    };
+    let per_page =
+        match NonZeroUsize::try_from(params.per_page().unwrap_or(pagination::DEFAULT_PER_PAGE)) {
+            Ok(value) => value,
+            Err(_) => {
+                return HttpResponse::UnprocessableEntity().json(Errors::from(
+                    error::Kind::invalid_parameters(
+                        Some(vec![String::from("per_page")]),
+                        String::from("must be a non-zero usize"),
+                    ),
+                ))
+            }
+        };
 
     if entities.is_empty() {
         // If this error occurs, there is likely some misconfiguration that

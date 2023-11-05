@@ -56,15 +56,15 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.disease_phase(),
-    ///     &Some(DiseasePhase::new(
+    ///     Some(&DiseasePhase::new(
     ///         cde::v1::sample::DiseasePhase::InitialDiagnosis,
     ///         None,
     ///         None
     ///     ))
     /// );
     /// ```
-    pub fn disease_phase(&self) -> &Option<field::unowned::sample::DiseasePhase> {
-        &self.disease_phase
+    pub fn disease_phase(&self) -> Option<&field::unowned::sample::DiseasePhase> {
+        self.disease_phase.as_ref()
     }
 
     /// Gets the harmonized tissue type for the [`Metadata`].
@@ -88,15 +88,15 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.tissue_type(),
-    ///     &Some(TissueType::new(
+    ///     Some(&TissueType::new(
     ///         cde::v2::sample::TissueType::Tumor,
     ///         None,
     ///         None
     ///     ))
     /// );
     /// ```
-    pub fn tissue_type(&self) -> &Option<field::unowned::sample::TissueType> {
-        &self.tissue_type
+    pub fn tissue_type(&self) -> Option<&field::unowned::sample::TissueType> {
+        self.tissue_type.as_ref()
     }
 
     /// Gets the harmonized tumor classification for the [`Metadata`].
@@ -120,15 +120,15 @@ impl Metadata {
     ///
     /// assert_eq!(
     ///     metadata.tumor_classification(),
-    ///     &Some(TumorClassification::new(
+    ///     Some(&TumorClassification::new(
     ///         cde::v1::sample::TumorClassification::Primary,
     ///         None,
     ///         None
     ///     ))
     /// );
     /// ```
-    pub fn tumor_classification(&self) -> &Option<field::unowned::sample::TumorClassification> {
-        &self.tumor_classification
+    pub fn tumor_classification(&self) -> Option<&field::unowned::sample::TumorClassification> {
+        self.tumor_classification.as_ref()
     }
 
     /// Gets the unharmonized fields for the [`Metadata`].

@@ -8,6 +8,7 @@
 #![warn(missing_debug_implementations)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
+pub mod filter;
 pub mod paginate;
 pub mod params;
 pub mod responses;

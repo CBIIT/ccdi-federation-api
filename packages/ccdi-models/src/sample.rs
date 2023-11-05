@@ -12,6 +12,8 @@ pub mod metadata;
 pub use identifier::Identifier;
 pub use metadata::Metadata;
 
+use crate::Entity;
+
 /// A sample.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Sample)]
@@ -127,6 +129,8 @@ impl Sample {
         }
     }
 }
+
+impl Entity for Sample {}
 
 impl PartialOrd for Sample {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {

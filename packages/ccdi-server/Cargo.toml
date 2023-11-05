@@ -10,6 +10,7 @@ ccdi-cde = { path = "../ccdi-cde" }
 ccdi-models = { path = "../ccdi-models" }
 indexmap.workspace = true
 itertools = "0.11.0"
+introspect.workspace = true
 log.workspace = true
 mime.workspace = true
 rand.workspace = true

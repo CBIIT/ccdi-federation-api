@@ -34,13 +34,9 @@ pub struct Pagination {
     /// **must** default to `1` when pagination is enabled but this parameter is
     /// not provided. Pagination is enabled if this parameter is provided to the
     /// endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        with = "::serde_with::rust::double_option"
-    )]
-    #[param(nullable = false)]
-    page: Option<Option<usize>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    page: Option<usize>,
 
     /// The number of results per page.
     ///
@@ -48,13 +44,9 @@ pub struct Pagination {
     /// pagination is enabled but this parameter is not provided. A default
     /// value of `100` is recommended if all values are equally reasonable.
     /// Pagination is enabled if this parameter is provided to the endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        with = "::serde_with::rust::double_option"
-    )]
-    #[param(nullable = false)]
-    per_page: Option<Option<usize>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    per_page: Option<usize>,
 }
 
 impl Pagination {
@@ -68,7 +60,7 @@ impl Pagination {
     /// let params = server::params::Pagination::default();
     /// assert_eq!(params.page(), None);
     /// ```
-    pub fn page(&self) -> Option<Option<usize>> {
+    pub fn page(&self) -> Option<usize> {
         self.page
     }
 
@@ -82,7 +74,7 @@ impl Pagination {
     /// let params = server::params::Pagination::default();
     /// assert_eq!(params.per_page(), None);
     /// ```
-    pub fn per_page(&self) -> Option<Option<usize>> {
+    pub fn per_page(&self) -> Option<usize> {
         self.per_page
     }
 }

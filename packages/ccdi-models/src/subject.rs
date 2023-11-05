@@ -16,6 +16,8 @@ pub mod metadata;
 pub use kind::Kind;
 pub use metadata::Metadata;
 
+use crate::Entity;
+
 /// A subject.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Subject)]
@@ -128,12 +130,12 @@ impl Subject {
     ///     Some(Builder::default().build()),
     /// );
     ///
-    /// assert_eq!(subject.name(), &String::from("Name"));
+    /// assert_eq!(subject.name(), "Name");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn name(&self) -> &String {
-        &self.name
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 
     /// Gets the kind for this [`Subject`] by reference.
@@ -212,7 +214,7 @@ impl Subject {
 
         Self {
             id: identifier.clone(),
-            name: identifier.name().clone(),
+            name: identifier.name().to_string(),
             kind: rand::random(),
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random(identifier)),
@@ -221,6 +223,8 @@ impl Subject {
         }
     }
 }
+
+impl Entity for Subject {}
 
 impl PartialOrd for Subject {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
