@@ -18,7 +18,9 @@ use ccdi_models as models;
 
 use models::Sample;
 
+use crate::filter::filter;
 use crate::paginate;
+use crate::params::filter::Sample as FilterSampleParams;
 use crate::params::Pagination as PaginationParams;
 use crate::responses::by;
 use crate::responses::error;
@@ -51,8 +53,8 @@ impl Store {
             samples: Mutex::new(
                 (0..count)
                     .map(|i| {
-                        // SAFETY: this is manually crafted to never fail, so it can be
-                        // unwrapped.
+                        // SAFETY: this is manually crafted to never fail, so it
+                        // can be unwrapped.
                         let identifier = Identifier::parse(
                             format!("organization:Sample{}", i + 1).as_ref(),
                             ":",
@@ -86,16 +88,66 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 
 /// Gets the samples known by this server.
 ///
+/// ### Pagination
+///
 /// This endpoint supports pagination. Pagination is enabled by providing one of
 /// the pagination-related query parameters below.
 ///
-/// **Note:** please read the provided details on default sort order within the
-/// `responses::Samples` schema, as that is a requirement of this endpoint.
+/// ### Filtering
+///
+/// All harmonized (top-level) and unharmonized (nested under the
+/// `metadata.unharmonized` key) metadata fields are filterable. To achieve
+/// this, you can provide the field name as a [`String`]. Filtering follows the
+/// following rules:
+///
+/// * For single-value metadata field, the sample is included in the results if
+///   its value _exactly_ matches the query string. Matches are case-sensitive.
+/// * For multiple-value metadata fields, the sample is included in the results
+///   if any of its values for the field _exactly_ match the query string (a
+///   logical OR [`||`]). Matches are case-sensitive.
+/// * When the metadata field is `null` (in the case of singlular or
+///   multiple-valued metadata fields) or empty, the sample is not included.
+/// * When multiple fields are provided as filters, a logical AND (`&&`) strings
+///   together the predicates. In other words, all filters must match for a
+///   sample to be returned. Note that this means that servers do not natively
+///   support logical OR (`||`) across multiple fields: that must be done by
+///   calling this endpoint with each of your desired queries and performing a
+///   set union of those samples out of band.
+///
+/// ### Ordering
+///
+/// This endpoint has default ordering requirements—those details are documented
+/// in the `responses::Samples` schema.
 #[utoipa::path(
     get,
     path = "/sample",
     tag = "Sample",
-    params(PaginationParams),
+    params(
+        FilterSampleParams,
+        (
+            "metadata.unharmonized.<field>" = Option<String>,
+            Query,
+            nullable = false,
+            description = "All unharmonized fields should be filterable in the \
+            same manner as harmonized fields:\n\n\
+            * Filtering on a singular field should include the `Sample` in \
+            the results if the query exactly matches the value of that field \
+            for the `Sample` (case-sensitive).\n\
+            * Filtering on field with multiple values should include the \
+            `Sample` in the results if the query exactly matches any of the \
+            values of the field for that `Sample` (case-sensitive).\n\
+            * Unlike harmonized fields, unharmonized fields must be prefixed \
+            with `metadata.unharmonized`.\n\n\
+            **Note:** this query parameter is intended to be symbolic of any \
+            unharmonized field. Because of limitations within Swagger UI, it \
+            will show up as a query parameter that can be optionally be \
+            submitted as part of a request within Swagger UI. Please keep in \
+            mind that the literal query parameter \
+            `?metadata.unharmonized.<field>=value` is not supported, so \
+            attempting to use it within Swagger UI will not work!"
+        ),
+        PaginationParams,
+    ),
     responses(
         (
             status = 200,
@@ -165,15 +217,25 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
     )
 )]
 #[get("/sample")]
-pub async fn sample_index(params: Query<PaginationParams>, samples: Data<Store>) -> impl Responder {
+pub async fn sample_index(
+    filter_params: Query<FilterSampleParams>,
+    pagination_params: Query<PaginationParams>,
+    samples: Data<Store>,
+) -> impl Responder {
     let mut samples = samples.samples.lock().unwrap().clone();
 
     // See the note in the documentation for this endpoint: the results must be
     // sorted by identifier by default.
     samples.sort();
 
-    if params.0.page().is_some() || params.0.per_page().is_some() {
-        paginate::response::<Sample, Samples>(params.0, samples, "http://localhost:8000/sample")
+    let samples = filter::<Sample, FilterSampleParams>(samples, filter_params.0);
+
+    if pagination_params.0.page().is_some() || pagination_params.0.per_page().is_some() {
+        paginate::response::<Sample, Samples>(
+            pagination_params.0,
+            samples,
+            "http://localhost:8000/sample",
+        )
     } else {
         HttpResponse::Ok().json(Samples::from(samples))
     }

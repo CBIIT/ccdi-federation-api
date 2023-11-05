@@ -447,6 +447,7 @@ dependencies = [
  "ccdi-cde",
  "ccdi-models",
  "indexmap 2.0.2",
+ "introspect",
  "itertools",
  "log",
  "mime",

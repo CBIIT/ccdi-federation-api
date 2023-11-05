@@ -176,6 +176,12 @@ macro_rules! owned_field {
                 $name::new(rand::random(), None, None, Some(false))
             }
         }
+
+        impl std::fmt::Display for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.value)
+            }
+        }
     };
 }
 

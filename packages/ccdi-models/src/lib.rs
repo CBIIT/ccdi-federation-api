@@ -10,6 +10,9 @@
 #![feature(decl_macro)]
 #![feature(trivial_bounds)]
 
+/// A marker trait for queriable entities within this API.
+pub trait Entity {}
+
 pub mod metadata;
 pub mod sample;
 pub mod subject;

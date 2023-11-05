@@ -14,6 +14,8 @@ pub mod metadata;
 pub use identifier::Identifier;
 pub use metadata::Metadata;
 
+use crate::Entity;
+
 /// A sample.
 ///
 /// **Note:** the `subject` identifier **must** match a
@@ -186,6 +188,8 @@ impl Sample {
         }
     }
 }
+
+impl Entity for Sample {}
 
 impl PartialOrd for Sample {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {

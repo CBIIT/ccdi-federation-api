@@ -28,13 +28,85 @@ paths:
       description: |-
         Gets the subjects known by this server.
 
+        ### Pagination
+
         This endpoint supports pagination. Pagination is enabled by providing one of
         the pagination-related query parameters below.
 
-        **Note:** please read the provided details on default sort order within the
-        `responses::Subjects` schema, as that is a requirement of this endpoint.
+        ### Filtering
+
+        All harmonized (top-level) and unharmonized (nested under the
+        `metadata.unharmonized` key) metadata fields are filterable. To achieve
+        this, you can provide the field name as a [`String`]. Filtering follows the
+        following rules:
+
+        * For single-value metadata field, the subject is included in the results if
+        its value _exactly_ matches the query string. Matches are case-sensitive.
+        * For multiple-value metadata fields, the subject is included in the results
+        if any of its values for the field _exactly_ match the query string (a
+        logical OR [`||`]). Matches are case-sensitive.
+        * When the metadata field is `null` (in the case of singlular or
+        multiple-valued metadata fields) or empty, the subject is not included.
+        * When multiple fields are provided as filters, a logical AND (`&&`) strings
+        together the predicates. In other words, all filters must match for a
+        subject to be returned. Note that this means that servers do not natively
+        support logical OR (`||`) across multiple fields: that must be done by
+        calling this endpoint with each of your desired queries and performing a
+        set union of those subjects out of band.
+
+        ### Ordering
+
+        This endpoint has default ordering requirements—those details are documented
+        in the `responses::Subjects` schema.
       operationId: subject_index
       parameters:
+      - name: sex
+        in: query
+        description: Matches any subject where the `sex` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: race
+        in: query
+        description: |-
+          Matches any subject where any member of the `race` fieldmatches
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: ethnicity
+        in: query
+        description: matches any subject where the `ethnicity` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: identifiers
+        in: query
+        description: |-
+          Matches any subject where any member of the `identifiers` fieldmatches
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: metadata.unharmonized.<field>
+        in: query
+        description: |-
+          All unharmonized fields should be filterable in the same manner as harmonized fields:
+
+          * Filtering on a singular field should include the `Subject` in the results if the query exactly matches the value of that field for the `Subject` (case-sensitive).
+          * Filtering on field with multiple values should include the `Subject` in the results if the query exactly matches any of the values of the field for that `Subject` (case-sensitive).
+          * Unlike harmonized fields, unharmonized fields must be prefixed with `metadata.unharmonized`.
+
+          **Note:** this query parameter is intended to be symbolic of any unharmonized field. Because of limitations within Swagger UI, it will show up as a query parameter that can be optionally be submitted as part of a request within Swagger UI. Please keep in mind that the literal query parameter `?metadata.unharmonized.<field>=value` is not supported, so attempting to use it within Swagger UI will not work!
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         description: |-
@@ -195,13 +267,75 @@ paths:
       description: |-
         Gets the samples known by this server.
 
+        ### Pagination
+
         This endpoint supports pagination. Pagination is enabled by providing one of
         the pagination-related query parameters below.
 
-        **Note:** please read the provided details on default sort order within the
-        `responses::Samples` schema, as that is a requirement of this endpoint.
+        ### Filtering
+
+        All harmonized (top-level) and unharmonized (nested under the
+        `metadata.unharmonized` key) metadata fields are filterable. To achieve
+        this, you can provide the field name as a [`String`]. Filtering follows the
+        following rules:
+
+        * For single-value metadata field, the sample is included in the results if
+        its value _exactly_ matches the query string. Matches are case-sensitive.
+        * For multiple-value metadata fields, the sample is included in the results
+        if any of its values for the field _exactly_ match the query string (a
+        logical OR [`||`]). Matches are case-sensitive.
+        * When the metadata field is `null` (in the case of singlular or
+        multiple-valued metadata fields) or empty, the sample is not included.
+        * When multiple fields are provided as filters, a logical AND (`&&`) strings
+        together the predicates. In other words, all filters must match for a
+        sample to be returned. Note that this means that servers do not natively
+        support logical OR (`||`) across multiple fields: that must be done by
+        calling this endpoint with each of your desired queries and performing a
+        set union of those samples out of band.
+
+        ### Ordering
+
+        This endpoint has default ordering requirements—those details are documented
+        in the `responses::Samples` schema.
       operationId: sample_index
       parameters:
+      - name: disease_phase
+        in: query
+        description: |-
+          Matches any subject where the `disease_phase` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
+      - name: tissue_type
+        in: query
+        description: |-
+          Matches any subject where the `tissue_type` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
+      - name: tumor_classification
+        in: query
+        description: |-
+          Matches any subject where the `tumor_classification` field matches the
+          string provided.
+        required: false
+        schema:
+          type: string
+      - name: metadata.unharmonized.<field>
+        in: query
+        description: |-
+          All unharmonized fields should be filterable in the same manner as harmonized fields:
+
+          * Filtering on a singular field should include the `Sample` in the results if the query exactly matches the value of that field for the `Sample` (case-sensitive).
+          * Filtering on field with multiple values should include the `Sample` in the results if the query exactly matches any of the values of the field for that `Sample` (case-sensitive).
+          * Unlike harmonized fields, unharmonized fields must be prefixed with `metadata.unharmonized`.
+
+          **Note:** this query parameter is intended to be symbolic of any unharmonized field. Because of limitations within Swagger UI, it will show up as a query parameter that can be optionally be submitted as part of a request within Swagger UI. Please keep in mind that the literal query parameter `?metadata.unharmonized.<field>=value` is not supported, so attempting to use it within Swagger UI will not work!
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         description: |-

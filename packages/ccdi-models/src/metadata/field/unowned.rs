@@ -142,6 +142,12 @@ macro_rules! unowned_field {
                 $name::new(rand::random(), None, None)
             }
         }
+
+        impl std::fmt::Display for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.value)
+            }
+        }
     };
 }
 
