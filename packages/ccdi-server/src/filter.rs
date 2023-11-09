@@ -31,33 +31,42 @@ where
 /// use ccdi_models as models;
 /// use ccdi_server as server;
 ///
-/// use cde::v1::subject::Identifier;
 /// use models::metadata::field::unowned::subject::Race;
 /// use models::metadata::field::unowned::subject::Sex;
 /// use models::subject::metadata::Builder;
+/// use models::subject::Identifier;
 /// use models::subject::Kind;
+/// use models::Namespace;
 /// use models::Subject;
 /// use server::filter::filter;
 /// use server::params::filter::Subject as SubjectFilterParams;
 ///
+/// let namespace = Namespace::try_new(
+///     "organization",
+///     "Example Organization",
+///     "support@example.com",
+///     None,
+/// )
+/// .unwrap();
+///
 /// let subjects = vec![
 ///     // A subject with no metadata.
 ///     Subject::new(
-///         Identifier::new("organization", "SubjectName001"),
+///         Identifier::new(&namespace, "SubjectName001"),
 ///         String::from("SubjectName001"),
 ///         Kind::Participant,
 ///         Some(Builder::default().build()),
 ///     ),
 ///     // A subject with metadata but no specified sex.
 ///     Subject::new(
-///         Identifier::new("organization", "SubjectName002"),
+///         Identifier::new(&namespace, "SubjectName002"),
 ///         String::from("SubjectName002"),
 ///         Kind::Participant,
 ///         Some(Builder::default().build()),
 ///     ),
 ///     // A subject with sex 'F'.
 ///     Subject::new(
-///         Identifier::new("organization", "SubjectName003"),
+///         Identifier::new(&namespace, "SubjectName003"),
 ///         String::from("SubjectName003"),
 ///         Kind::Participant,
 ///         Some(
@@ -68,7 +77,7 @@ where
 ///     ),
 ///     // A subject with sex 'F' and race 'Asian'.
 ///     Subject::new(
-///         Identifier::new("organization", "SubjectName004"),
+///         Identifier::new(&namespace, "SubjectName004"),
 ///         String::from("SubjectName004"),
 ///         Kind::Participant,
 ///         Some(

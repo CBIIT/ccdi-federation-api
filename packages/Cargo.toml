@@ -15,8 +15,11 @@ version = "0.4.0"
 
 [workspace.dependencies]
 actix-web = "4.4.0"
+chrono = { version = "0.4.31", features = ["serde"] }
+clap = { version = "4.4.6", features = ["cargo", "derive"] }
 indexmap = "2.0.2"
 introspect = { git = "https://github.com/claymcleod/introspect.git" }
+lazy_static = "1.4.0"
 log = "0.4.20"
 mime = "0.3.17"
 rand = "0.8.5"
@@ -27,6 +30,7 @@ serde_test = "1.0.176"
 serde_with = "3.4.0"
 utoipa = { version = "4.0.0", features = [
     "actix_extras",
+    "chrono",
     "indexmap",
     "preserve_order",
     "preserve_path_order",

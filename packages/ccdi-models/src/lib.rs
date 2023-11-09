@@ -14,9 +14,11 @@
 pub trait Entity {}
 
 pub mod metadata;
+pub mod namespace;
 pub mod sample;
 pub mod subject;
 
+pub use namespace::Namespace;
 pub use sample::Sample;
 pub use subject::Subject;
 

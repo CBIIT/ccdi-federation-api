@@ -61,6 +61,10 @@ a variety of query parameters.",
             description = "List and describe provided metadata fields."
         ),
         (
+            name = "Namespace",
+            description = "List and describe namespaces supported by this server."
+        ),
+        (
             name = "Info",
             description = "Information about the API implementation itself."
         ),
@@ -81,6 +85,13 @@ a variety of query parameters.",
         // Metadata.
         server::routes::metadata::metadata_fields_subject,
         server::routes::metadata::metadata_fields_sample,
+
+        // Namespaces.
+        server::routes::namespace::namespace_index,
+        server::routes::namespace::namespace_show,
+
+        // Information.
+        server::routes::info::info_index,
     ),
     components(schemas(
         // Subject common data elements (CDEs).
@@ -113,6 +124,7 @@ a variety of query parameters.",
 
         // Subject models.
         models::Subject,
+        models::subject::Identifier,
         models::subject::Kind,
         models::subject::Metadata,
 
@@ -125,6 +137,11 @@ a variety of query parameters.",
         models::metadata::field::Description,
         models::metadata::field::description::Harmonized,
         models::metadata::field::description::Unharmonized,
+
+        // Namespace models.
+        models::Namespace,
+        models::namespace::Name,
+        models::namespace::Description,
 
         // General responses.
         responses::Errors,
@@ -145,6 +162,18 @@ a variety of query parameters.",
 
         // Metadata responses.
         responses::metadata::FieldDescriptions,
+
+        // Namespace responses.
+        responses::Namespace,
+        responses::Namespaces,
+
+        // Namespace responses.
+        responses::Information,
+        responses::info::api::Information,
+        responses::info::data::Information,
+        responses::info::data::Version,
+        responses::info::data::version::About,
+        responses::info::server::Information,
 
         // Error responses.
         responses::error::Kind,

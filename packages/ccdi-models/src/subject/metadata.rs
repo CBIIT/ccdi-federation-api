@@ -6,8 +6,7 @@ use utoipa::ToSchema;
 
 use crate::metadata::field;
 use crate::metadata::fields;
-
-use ccdi_cde as cde;
+use crate::subject::Identifier;
 
 pub mod builder;
 
@@ -207,7 +206,8 @@ impl Metadata {
         &self.unharmonized
     }
 
-    /// Generates a random [`Metadata`] based on a particular [`Identifier`](cde::v1::subject::Identifier).
+    /// Generates a random [`Metadata`] based on a particular
+    /// [`Identifier`](ccdi_cde::v1::subject::Identifier).
     ///
     /// # Examples
     ///
@@ -215,18 +215,28 @@ impl Metadata {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::subject::Identifier;
     /// use models::subject::Metadata;
+    /// use models::Namespace;
     ///
-    /// let identifier = cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap();
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
+    /// let identifier = Identifier::new(&namespace, "Name");
     /// let metadata = Metadata::random(identifier);
     /// ```
-    pub fn random(identifier: cde::v1::subject::Identifier) -> Metadata {
+    pub fn random(identifier: Identifier) -> Metadata {
         Metadata {
             sex: Some(rand::random()),
             race: Some(vec![rand::random()]),
             ethnicity: Some(rand::random()),
             identifiers: Some(vec![field::owned::subject::Identifier::new(
-                identifier,
+                identifier.into_inner(),
                 None,
                 None,
                 Some(true),

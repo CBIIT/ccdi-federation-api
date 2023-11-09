@@ -420,6 +420,7 @@ version = "0.4.0"
 dependencies = [
  "ccdi-cde",
  "indexmap 2.0.2",
+ "lazy_static",
  "macropol",
  "rand",
  "regex",
@@ -446,9 +447,12 @@ dependencies = [
  "actix-web",
  "ccdi-cde",
  "ccdi-models",
+ "chrono",
+ "clap",
  "indexmap 2.0.2",
  "introspect",
  "itertools",
+ "lazy_static",
  "log",
  "mime",
  "rand",
@@ -489,8 +493,10 @@ checksum = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-targets",
 ]
 
@@ -1066,6 +1072,12 @@ name = "language-tags"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d4345964bb142484797b161f473a503a434de77149dd8c7427788c6e13379388"
+
+[[package]]
+name = "lazy_static"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
