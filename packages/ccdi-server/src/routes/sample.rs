@@ -13,7 +13,6 @@ use indexmap::IndexMap;
 use models::sample::Identifier;
 use serde_json::Value;
 
-use ccdi_cde as cde;
 use ccdi_models as models;
 
 use models::Sample;
@@ -27,6 +26,7 @@ use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Samples;
 use crate::responses::Summary;
+use crate::routes::namespace::NAMESPACES;
 use crate::routes::MISSING_GROUP_BY_KEY;
 use crate::routes::NULL_GROUP_BY_KEY;
 
@@ -53,18 +53,19 @@ impl Store {
             samples: Mutex::new(
                 (0..count)
                     .map(|i| {
-                        // SAFETY: this is manually crafted to never fail, so it
-                        // can be unwrapped.
-                        let identifier = Identifier::parse(
-                            format!("organization:Sample{}", i + 1).as_ref(),
-                            ":",
-                        )
-                        .unwrap();
-                        let subject = cde::v1::subject::Identifier::parse(
-                            format!("organization:Subject{}", i + 1).as_ref(),
-                            ":",
-                        )
-                        .unwrap();
+                        let identifier = Identifier::new(
+                            // SAFETY: this is hardcoded to work and is tested
+                            // statically below.
+                            NAMESPACES.get("organization").unwrap(),
+                            format!("Subject{}", i + 1),
+                        );
+
+                        let subject = models::subject::Identifier::new(
+                            // SAFETY: this is hardcoded to work and is tested
+                            // statically below.
+                            NAMESPACES.get("organization").unwrap(),
+                            format!("organization:Subject{}", i + 1),
+                        );
 
                         Sample::random(identifier, subject)
                     })
@@ -396,4 +397,14 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
 pub async fn sample_summary(samples: Data<Store>) -> impl Responder {
     let samples = samples.samples.lock().unwrap().clone();
     HttpResponse::Ok().json(Summary::new(samples.len()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_unwraps_the_default_namespace() {
+        NAMESPACES.get("organization").unwrap();
+    }
 }

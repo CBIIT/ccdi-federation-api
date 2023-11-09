@@ -9,7 +9,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: '0.4'
+  version: '0.3'
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -518,6 +518,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
+  /namespace:
+    get:
+      tags:
+      - Namespace
+      summary: Gets the namespaces known by this server.
+      description: Gets the namespaces known by this server.
+      operationId: namespace_index
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Namespaces'
+  /namespace/{name}:
+    get:
+      tags:
+      - Namespace
+      summary: Gets the namespace matching the provided name (if it exists).
+      description: Gets the namespace matching the provided name (if it exists).
+      operationId: namespace_show
+      parameters:
+      - name: name
+        in: path
+        description: The name of the namespace.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Namespace'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: NotFound
+                  entity: Namespaces
+                  message: Namespaces not found.
+  /info:
+    get:
+      tags:
+      - Info
+      summary: Gets the info for this server.
+      description: Gets the info for this server.
+      operationId: info_index
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Information'
 components:
   schemas:
     cde.v1.sample.DiseasePhase:
@@ -853,6 +913,46 @@ components:
         A map of unharmonized metadata fields.
 
         Unharmonized keys may be any valid JSON string.
+    models.Namespace:
+      type: object
+      description: A response for describing metadata fields for a subject.
+      required:
+      - name
+      - owner
+      - contact_email
+      - description
+      properties:
+        name:
+          $ref: '#/components/schemas/models.namespace.Name'
+        owner:
+          type: string
+          description: |-
+            A free-text string describing the owner of the namespace.
+
+            This field is intended to be the proper name of the organization that
+            mints identifiers within a given namespace. That said, we have
+            intentionally not required this restriction, as there may be exceptions
+            to this guideline. We recommend that you use an organization name here
+            if you can, but you may put whatever value is appropriate to describe
+            the owner of the namespace.
+
+            It is recommended that you use title case for this field, though that is
+            not strictly required.
+
+            **Note:** this field is asserted by the source server, but it is not
+            guaranteed to be authoritative across the federation (due to the
+            decentralized nature of namespace allocation).
+          example: Example Organization
+        contact_email:
+          type: string
+          description: |-
+            A support email address for entities contained within the namespace.
+
+            This field is required to be a valid email address (both in format and
+            in terms of the email address being actively monitored).
+          example: support@example.com
+        description:
+          $ref: '#/components/schemas/models.namespace.Description'
     models.Sample:
       type: object
       description: |-
@@ -869,7 +969,7 @@ components:
         id:
           $ref: '#/components/schemas/models.sample.Identifier'
         subject:
-          $ref: '#/components/schemas/cde.v1.subject.Identifier'
+          $ref: '#/components/schemas/models.subject.Identifier'
         metadata:
           allOf:
           - $ref: '#/components/schemas/models.sample.Metadata'
@@ -883,7 +983,7 @@ components:
       - kind
       properties:
         id:
-          $ref: '#/components/schemas/cde.v1.subject.Identifier'
+          $ref: '#/components/schemas/models.subject.Identifier'
         name:
           type: string
           description: |-
@@ -985,6 +1085,26 @@ components:
           type: string
           description: A url that describes more about the metadata field, if available.
           nullable: true
+    models.namespace.Description:
+      type: string
+      description: |-
+        A description of a namespace.
+
+        This description cannot exceed 2048 characters.
+      example: A namespace owned by Example Organization.
+    models.namespace.Name:
+      type: string
+      description: |-
+        The name of a namespace.
+
+        The name **must** conform to
+        [`kebab-casing`](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case),
+        matching the pattern `^[a-z0-9-]+$`. Any name that does not match this
+        pattern should be considered invalid by clients.
+
+        **Note:** this field is asserted by the source server, but it is not
+        guaranteed to be authoritative across the federation (due to the
+        decentralized nature of namespace allocation).
     models.sample.Identifier:
       type: object
       description: The primary name and namespace for a sample used within the source server.
@@ -1022,6 +1142,8 @@ components:
           nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
+    models.subject.Identifier:
+      $ref: '#/components/schemas/cde.v1.subject.Identifier'
     models.subject.Kind:
       type: string
       description: A kind of [`Subject`](super::Subject).
@@ -1076,6 +1198,27 @@ components:
           items:
             $ref: '#/components/schemas/responses.error.Kind'
           description: The errors within this response.
+    responses.Information:
+      type: object
+      description: A response for information regarding the server.
+      required:
+      - server
+      - api
+      - data
+      properties:
+        server:
+          $ref: '#/components/schemas/responses.info.server.Information'
+        api:
+          $ref: '#/components/schemas/responses.info.api.Information'
+        data:
+          $ref: '#/components/schemas/responses.info.data.Information'
+    responses.Namespace:
+      $ref: '#/components/schemas/models.Namespace'
+    responses.Namespaces:
+      type: array
+      items:
+        $ref: '#/components/schemas/models.Namespace'
+      description: A response for describing namespaces.
     responses.Sample:
       allOf:
       - $ref: '#/components/schemas/models.Sample'
@@ -1277,6 +1420,177 @@ components:
               needed. Please use this field if you intend to pass the error along to a
               user.
       description: A response indicating an error from the API.
+    responses.info.api.Information:
+      type: object
+      description: Information that is specific to the API that the server implements.
+      required:
+      - api_version
+      - documentation_url
+      properties:
+        api_version:
+          type: string
+          description: The version of the API that this server supports.
+          example: v0.3
+        documentation_url:
+          type: string
+          description: |-
+            A URL pointing to the latest version of the Swagger documentation.
+
+            Note that, at times, the latest version of the Swagger documentation may
+            not be in sync with the version of the API deployed for this server. The
+            intention of this field is not to link to a Swagger specification that
+            strictly matches this particular server, but rather, to point users to
+            where the specification is developed and hosted.
+          default: https://cbiit.github.io/ccdi-federation-api/
+    responses.info.data.Information:
+      type: object
+      description: Information that is specific to the API that the server implements.
+      required:
+      - version
+      - last_updated
+      - wiki_url
+      properties:
+        version:
+          $ref: '#/components/schemas/responses.info.data.Version'
+        last_updated:
+          type: string
+          format: date-time
+          description: |-
+            The ISO 8601 formatted date and time when the data was last updated.
+
+            This represents the last _update_ time. In contrast to the
+            `data_version` field, this field is updated whenever a data update is
+            performed irrespective of whether there were actually changes in the
+            data.
+        wiki_url:
+          type: string
+          description: |-
+            A URL pointing to the wiki.
+
+            The intention of this field is to make users aware that we maintain a
+            federation-wide wiki that describes the data elements in detail.
+          default: https://github.com/CBIIT/ccdi-federation-api/wiki
+        documentation_url:
+          type: string
+          description: |-
+            If available, a link pointing to where users can learn more about the
+            data contained within this particular server.
+
+            This is intended to be a server-specification documentation link, not
+            any link that is developed by the federation.
+          nullable: true
+    responses.info.data.Version:
+      allOf:
+      - $ref: '#/components/schemas/responses.info.data.version.About'
+      - type: object
+        required:
+        - version
+        properties:
+          version:
+            type: integer
+            description: |-
+              The value of the version.
+
+              This field represents a free-text field where data is arbitrarily
+              versioned by the source server. Any versioning scheme is permissible.
+            example: 1
+            minimum: 1
+      description: The version of data published within this source server.
+    responses.info.data.version.About:
+      oneOf:
+      - type: object
+        required:
+        - about
+        properties:
+          about:
+            type: string
+            description: |-
+              A free-text description of the data version included with the response
+              from the source server. This field is interpreted as Markdown (as
+              defined by the [CommonMark](https://commonmark.org/) specification).
+      - type: object
+        required:
+        - about_url
+        properties:
+          about_url:
+            type: string
+            description: |-
+              A URL where one can learn more about the data versioning for this source
+              server.
+      description: A description of how data is versioning within the source server.
+    responses.info.server.Information:
+      type: object
+      description: Information that is specific to the server itself.
+      required:
+      - owner
+      - contact_email
+      properties:
+        name:
+          type: string
+          description: |-
+            The name of this server (if it has one).
+
+            This is a free-text field describing the name of this server, if it has
+            one. The intention is to be able to describe the proper name of the
+            application.
+          example: Example Server
+          nullable: true
+        version:
+          type: string
+          description: |-
+            The version of this server (if it has one).
+
+            Though there is explicitly no versioning dictated by the specification,
+            we recommend [Semantic Versioning v2.0](https://semver.org/) in the
+            absence of better options to align with the scheme used by the API. Note
+            that using the same versioning scheme does not mean that the version of
+            your server is recommended to be the same version as the API.
+          example: v1.22
+          nullable: true
+        owner:
+          type: string
+          description: |-
+            A free-text string describing the owner of the namespace.
+
+            This field is intended to be the proper name of the organization that
+            owns and operates the server. That said, we have intentionally not
+            required this restriction, as there may be exceptions to this guideline.
+            We recommend that you use an organization name here if you can, but you
+            may put whatever value is appropriate to describe the owner of the
+            server.
+
+            It is recommended that you use title case for this field, though that is
+            not strictly required.
+          example: Example Organization
+        contact_email:
+          type: string
+          description: |-
+            A support email address for the server.
+
+            This field is required to be a valid email address (both in format and
+            in terms of the email address being actively monitored).
+          example: support@example.com
+        about_url:
+          type: string
+          description: |-
+            If desired, a link to a page intended to be consumed by a web browser
+            that describes more about the owner. This can be a link to your
+            organization's main web page or a link to a webpage describing the
+            project.
+          example: https://example.com
+          nullable: true
+        repository_url:
+          type: string
+          description: |-
+            If your code base is open source and you want to advertise that, a link
+            to the repository where the code is stored.
+          example: https://github.com/CBIIT/ccdi-federation/api
+          nullable: true
+        issues_url:
+          type: string
+          description: If available, a URL where users can report issues.
+          example: https://github.com/CBIIT/ccdi-federation-api/issues
+          nullable: true
     responses.metadata.FieldDescriptions:
       type: object
       description: A response for describing metadata fields for a subject.
@@ -1304,6 +1618,8 @@ tags:
   description: Samples within the CCDI federated ecosystem.
 - name: Metadata
   description: List and describe provided metadata fields.
+- name: Namespace
+  description: List and describe namespaces supported by this server.
 - name: Info
   description: Information about the API implementation itself.
 externalDocs:

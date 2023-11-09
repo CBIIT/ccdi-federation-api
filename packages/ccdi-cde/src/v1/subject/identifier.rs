@@ -1,3 +1,5 @@
+//! An identifier for a subject.
+
 use introspect::Introspect;
 use serde::Deserialize;
 use serde::Serialize;
@@ -94,8 +96,8 @@ impl Identifier {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn namespace(&self) -> &String {
-        &self.namespace
+    pub fn namespace(&self) -> &str {
+        self.namespace.as_str()
     }
 
     /// Gets the name for the [`Identifier`] by reference.
@@ -111,8 +113,8 @@ impl Identifier {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn name(&self) -> &String {
-        &self.name
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 
     /// Parses an [`Identifier`] from a [`&str`](str) using the provided
