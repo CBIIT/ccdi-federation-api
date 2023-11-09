@@ -1,7 +1,7 @@
 //! Common data elements that have a major version of one and are related to a
 //! subject.
 
-mod identifier;
+pub mod identifier;
 mod race;
 mod sex;
 

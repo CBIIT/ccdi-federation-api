@@ -14,8 +14,6 @@ use clap::Parser;
 use clap::Subcommand;
 use log::info;
 use log::LevelFilter;
-use server::responses::error;
-use server::responses::Errors;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -25,7 +23,11 @@ use ccdi_server as server;
 
 use api::Api;
 
+use server::responses::error;
+use server::responses::Errors;
+use server::routes::info;
 use server::routes::metadata;
+use server::routes::namespace;
 use server::routes::sample;
 use server::routes::subject;
 
@@ -169,6 +171,8 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                         .configure(subject::configure(subjects))
                         .configure(sample::configure(samples))
                         .configure(metadata::configure())
+                        .configure(namespace::configure())
+                        .configure(info::configure())
                         .service(
                             SwaggerUi::new("/swagger-ui/{_:.*}")
                                 .url("/api-docs/openapi.json", Api::openapi()),

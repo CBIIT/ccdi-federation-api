@@ -12,10 +12,9 @@ use actix_web::Responder;
 use indexmap::IndexMap;
 use serde_json::Value;
 
-use ccdi_cde as cde;
 use ccdi_models as models;
 
-use cde::v1::subject::Identifier;
+use models::subject::Identifier;
 use models::Subject;
 
 use crate::filter::filter;
@@ -27,6 +26,7 @@ use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Subjects;
 use crate::responses::Summary;
+use crate::routes::namespace::NAMESPACES;
 use crate::routes::MISSING_GROUP_BY_KEY;
 use crate::routes::NULL_GROUP_BY_KEY;
 
@@ -53,13 +53,12 @@ impl Store {
             subjects: Mutex::new(
                 (0..count)
                     .map(|i| {
-                        // SAFETY: this is manually crafted to never fail, so it
-                        // can be unwrapped.
-                        let identifier = Identifier::parse(
-                            format!("organization:Subject{}", i + 1).as_ref(),
-                            ":",
-                        )
-                        .unwrap();
+                        let identifier = Identifier::new(
+                            // SAFETY: this is hardcoded to work and is tested
+                            // statically below.
+                            NAMESPACES.get("organization").unwrap(),
+                            format!("Subject{}", i + 1),
+                        );
 
                         Subject::random(identifier)
                     })
@@ -281,7 +280,7 @@ pub async fn subject_show(path: Path<(String, String)>, subjects: Data<Store>) -
 
     subjects
         .iter()
-        .find(|subject| subject.id().namespace() == &namespace && subject.id().name() == &name)
+        .find(|subject| subject.id().namespace() == namespace && subject.id().name() == name)
         .map(|subject| HttpResponse::Ok().json(subject))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
@@ -409,4 +408,14 @@ fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
 pub async fn subject_summary(subjects: Data<Store>) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap().clone();
     HttpResponse::Ok().json(Summary::new(subjects.len()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_unwraps_the_default_namespace() {
+        NAMESPACES.get("organization").unwrap();
+    }
 }

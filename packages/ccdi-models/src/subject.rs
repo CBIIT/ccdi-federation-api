@@ -6,13 +6,11 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use ccdi_cde as cde;
-
-use cde::v1::subject::Identifier;
-
+mod identifier;
 mod kind;
 pub mod metadata;
 
+pub use identifier::Identifier;
 pub use kind::Kind;
 pub use metadata::Metadata;
 
@@ -22,11 +20,16 @@ use crate::Entity;
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Subject)]
 pub struct Subject {
-    /// The primary identifier used by the site.
+    /// The primary identifier used by the site for this [`Subject`].
     ///
-    /// This identifier should *ALWAYS* be included in the `identifiers` key
+    /// This identifier should **ALWAYS** be included in the `identifiers` key
     /// under `metadata`, should that key exist.
-    #[schema(value_type = cde::v1::subject::Identifier)]
+    ///
+    /// This namespace pointed to by this identifier must also **ALWAYS** be
+    /// included in results provided by the `/namespace` endpoint (and the
+    /// subsequent `/namespace/<name>` endpoint). Failure to include the
+    /// namespace there signifies non-compliance with the API.
+    #[schema(value_type = models::subject::Identifier)]
     id: Identifier,
 
     /// The primary name for a subject used within the source server.
@@ -56,13 +59,22 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::subject::Identifier;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Identifier;
     /// use models::subject::Kind;
+    /// use models::Namespace;
     /// use models::Subject;
     ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
     /// let subject = Subject::new(
-    ///     Identifier::parse("organization:Name", ":")?,
+    ///     Identifier::new(&namespace, "Name"),
     ///     String::from("Name"),
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
@@ -87,24 +99,29 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::subject::Identifier;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Identifier;
     /// use models::subject::Kind;
+    /// use models::Namespace;
     /// use models::Subject;
     ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
     /// let subject = Subject::new(
-    ///     Identifier::parse("organization:Name", ":")?,
+    ///     Identifier::new(&namespace, "Name"),
     ///     String::from("Name"),
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
     /// );
     ///
-    /// assert_eq!(
-    ///     subject.id(),
-    ///     &Identifier::parse("organization:Name", ":").unwrap()
-    /// );
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// assert_eq!(subject.id().namespace(), "organization");
+    /// assert_eq!(subject.id().name(), "Name");
     /// ```
     pub fn id(&self) -> &Identifier {
         &self.id
@@ -118,13 +135,22 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::subject::Identifier;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Identifier;
     /// use models::subject::Kind;
+    /// use models::Namespace;
     /// use models::Subject;
     ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
     /// let subject = Subject::new(
-    ///     Identifier::parse("organization:Name", ":")?,
+    ///     Identifier::new(&namespace, "Name"),
     ///     String::from("Name"),
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
@@ -146,13 +172,22 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::subject::Identifier;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Identifier;
     /// use models::subject::Kind;
+    /// use models::Namespace;
     /// use models::Subject;
     ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
     /// let subject = Subject::new(
-    ///     Identifier::parse("organization:Name", ":")?,
+    ///     Identifier::new(&namespace, "Name"),
     ///     String::from("Name"),
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
@@ -174,15 +209,24 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use cde::v1::subject::Identifier;
     /// use models::subject::metadata::Builder;
+    /// use models::subject::Identifier;
     /// use models::subject::Kind;
+    /// use models::Namespace;
     /// use models::Subject;
+    ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
     ///
     /// let metadata = Builder::default().build();
     ///
     /// let subject = Subject::new(
-    ///     Identifier::parse("organization:Name", ":")?,
+    ///     Identifier::new(&namespace, "Name"),
     ///     String::from("Name"),
     ///     Kind::Participant,
     ///     Some(metadata.clone()),
@@ -204,9 +248,19 @@ impl Subject {
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::subject::Identifier;
+    /// use models::Namespace;
     /// use models::Subject;
     ///
-    /// let identifier = cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap();
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
+    /// let identifier = Identifier::new(&namespace, "Name");
     /// let subject = Subject::random(identifier);
     /// ```
     pub fn random(identifier: Identifier) -> Self {
@@ -245,18 +299,30 @@ impl Ord for Subject {
 mod tests {
     use std::cmp::Ordering;
 
+    use crate::Namespace;
+
     use super::*;
 
     #[test]
     fn it_orders_samples_correctly() {
+        // SAFETY: this is manually crafted to unwrap every time, as the
+        // organization name conforms to the correct pattern.
+        let namespace = Namespace::try_new(
+            "organization",
+            "Example Organization",
+            "support@example.com",
+            None,
+        )
+        .unwrap();
+
         let a = Subject::new(
-            Identifier::parse("organization:A", ":").unwrap(),
+            Identifier::new(&namespace, "A"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let b = Subject::new(
-            Identifier::parse("organization:B", ":").unwrap(),
+            Identifier::new(&namespace, "B"),
             String::from("Name"),
             Kind::Participant,
             None,
@@ -265,13 +331,13 @@ mod tests {
         assert_eq!(a.cmp(&b), Ordering::Less);
 
         let c = Subject::new(
-            Identifier::parse("organization:C", ":").unwrap(),
+            Identifier::new(&namespace, "C"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let b = Subject::new(
-            Identifier::parse("organization:B", ":").unwrap(),
+            Identifier::new(&namespace, "B"),
             String::from("Name"),
             Kind::Participant,
             None,
@@ -280,13 +346,13 @@ mod tests {
         assert_eq!(c.cmp(&b), Ordering::Greater);
 
         let foo = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             None,
@@ -297,14 +363,24 @@ mod tests {
 
     #[test]
     fn it_tests_equality_correctly() {
+        // SAFETY: this is manually crafted to unwrap every time, as the
+        // organization name conforms to the correct pattern.
+        let namespace = Namespace::try_new(
+            "organization",
+            "Example Organization",
+            "support@example.com",
+            None,
+        )
+        .unwrap();
+
         let foo = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             None,
@@ -313,13 +389,13 @@ mod tests {
         assert!(foo == bar);
 
         let foo = Subject::new(
-            Identifier::parse("organization:A", ":").unwrap(),
+            Identifier::new(&namespace, "A"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::parse("organization:B", ":").unwrap(),
+            Identifier::new(&namespace, "B"),
             String::from("Name"),
             Kind::Participant,
             None,
@@ -328,13 +404,13 @@ mod tests {
         assert!(foo != bar);
 
         let foo = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::parse("organization:Name", ":").unwrap(),
+            Identifier::new(&namespace, "Name"),
             String::from("Name"),
             Kind::Participant,
             Some(metadata::Builder::default().build()),
