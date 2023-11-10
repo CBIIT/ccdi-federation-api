@@ -38,6 +38,19 @@ pub enum Inner {
         entity: String,
     },
 
+    /// Line-level data cannot be shared for the specified entity.
+    #[schema(example = json!(Inner::UnshareableData {
+        entity: String::from("Sample"),
+        reason: String::from("Our agreement with data providers prohibits us from sharing line-level data.")
+    }))]
+    UnshareableData {
+        /// The entity (or entities) where data cannot be shared.
+        entity: String,
+
+        /// The reason that the line-level data cannot be shared.
+        reason: String,
+    },
+
     /// A field name was not supported for the attempted operation.
     #[schema(example = json!(Inner::UnsupportedField {
         field: String::from("field"),
@@ -102,6 +115,43 @@ impl Inner {
         Inner::NotFound { entity }
     }
 
+    /// Creates an [`Inner::UnshareableData`] with a formalized `reason`.
+    ///
+    /// For more information on the definition of **formalizing** the `reason`
+    /// field, see the [`formalize_reason()`] method.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_server as server;
+    ///
+    /// use server::responses::error::kind::Inner;
+    ///
+    /// let error = Inner::unshareable_data(
+    ///     String::from("samples"),
+    ///     String::from(
+    ///         "Our agreement with data providers prohibits us from sharing \
+    ///         line-level data.",
+    ///     ),
+    /// );
+    ///
+    /// assert_eq!(
+    ///     error.to_string(),
+    ///     String::from("Unable to share data for samples: our agreement with data providers prohibits us from sharing line-level data.")
+    /// );
+    /// ```
+    pub fn unshareable_data(entity: String, reason: String) -> Self {
+        let entity = capitalize(entity).unwrap_or_else(|| {
+            panic!("you should always provide an entity for an unshareable data error")
+        });
+
+        let reason = formalize_reason(reason).unwrap_or_else(|| {
+            panic!("you should always provide a reason for an unshareable data error")
+        });
+
+        Inner::UnshareableData { entity, reason }
+    }
+
     /// Creates an [`Inner::UnsupportedField`] with a formalized `reason`.
     ///
     /// For more information on the definition of **formalizing** the `reason`
@@ -160,12 +210,48 @@ impl std::fmt::Display for Inner {
                 }
             }
             Inner::NotFound { entity } => write!(f, "{entity} not found."),
+            Inner::UnshareableData { entity, reason } => {
+                let entity = entity.to_lowercase();
+                let reason = reason.to_lowercase();
+                write!(f, "Unable to share data for {entity}: {reason}")
+            }
             Inner::UnsupportedField { field, reason } => {
                 let reason = reason.to_lowercase();
                 write!(f, "Field '{field}' is not supported: {reason}")
             }
         }
     }
+}
+
+/// Ensure that the first letter in the [`String`] is capitalized.
+///
+/// # Examples
+///
+/// ```
+/// use ccdi_server as server;
+///
+/// use server::responses::error::kind::inner::capitalize;
+///
+/// assert_eq!(
+///     capitalize(String::from("hello, world")),
+///     Some(String::from("Hello, world"))
+/// );
+///
+/// assert_eq!(capitalize(String::from("")), None);
+/// ```
+pub fn capitalize(value: String) -> Option<String> {
+    if value.is_empty() {
+        return None;
+    }
+
+    Some(
+        value
+            .chars()
+            .take(1)
+            .flat_map(|c| c.to_uppercase())
+            .chain(value.chars().skip(1))
+            .collect::<String>(),
+    )
 }
 
 /// Formalizes a [`String`] (in this case, specifically, a reason for an error
@@ -175,7 +261,8 @@ impl std::fmt::Display for Inner {
 /// 1. Ensures that the [`String`] is punctuated with an ASCII punctuation mark.
 ///    If no ASCII punctuation mark exists, then a period (`.`) is appended to
 ///    the `reason`.
-/// 2. Ensuring that the first character in the [`String`] is capitalized.
+/// 2. Ensuring that the first character in the [`String`] is capitalized (via
+///    the [`capitalize()`] function).
 ///
 /// **NOTE:** an empty string is simply returned as [`None`], as that cannot be
 /// formalized.
@@ -202,14 +289,7 @@ pub fn formalize_reason(mut value: String) -> Option<String> {
         value.push('.')
     }
 
-    Some(
-        value
-            .chars()
-            .take(1)
-            .flat_map(|c| c.to_uppercase())
-            .chain(value.chars().skip(1))
-            .collect::<String>(),
-    )
+    capitalize(value)
 }
 
 impl std::error::Error for Inner {}

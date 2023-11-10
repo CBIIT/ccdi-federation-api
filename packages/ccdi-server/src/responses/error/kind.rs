@@ -43,6 +43,7 @@ impl ResponseError for Kind {
             Inner::InvalidParameters { .. } => StatusCode::UNPROCESSABLE_ENTITY,
             Inner::NotFound { .. } => StatusCode::NOT_FOUND,
             Inner::UnsupportedField { .. } => StatusCode::UNPROCESSABLE_ENTITY,
+            Inner::UnshareableData { .. } => StatusCode::NOT_FOUND,
         }
     }
 
@@ -106,6 +107,35 @@ impl Kind {
     /// ```
     pub fn not_found(entity: String) -> Self {
         let inner = Inner::not_found(entity);
+
+        Self {
+            message: inner.to_string(),
+            inner,
+        }
+    }
+
+    /// Creates a new [Kind] with an
+    /// [`UnshareableData`](Inner::UnshareableData) inner.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_server as server;
+    ///
+    /// let error = server::responses::error::Kind::unshareable_data(
+    ///     String::from("samples"),
+    ///     String::from(
+    ///         "Our agreement with data providers prohibits us from sharing \
+    ///         line-level data."
+    ///     ),
+    /// );
+    ///
+    /// assert_eq!(serde_json::to_string(&error)?, String::from("{\"kind\":\"UnshareableData\",\"entity\":\"Samples\",\"reason\":\"Our agreement with data providers prohibits us from sharing line-level data.\",\"message\":\"Unable to share data for samples: our agreement with data providers prohibits us from sharing line-level data.\"}"));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn unshareable_data(entity: String, reason: String) -> Self {
+        let inner = Inner::unshareable_data(entity, reason);
 
         Self {
             message: inner.to_string(),
