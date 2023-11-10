@@ -15,10 +15,17 @@ use utoipa::openapi;
 #[openapi(
     info(
         title = "CCDI Pediatric Cancer Data Catalog",
-        description = "The CCDI Pediatric Cancer Data Catalog is an API that supports the querying
-of federated pediatric cancer within the broader community. The goal of the
-API is to support identification of pediatric cancer samples of interest via
-a variety of query parameters.",
+        description = "The CCDI Pediatric Cancer Data Catalog is an API that 
+supports the querying of federated pediatric cancer within the broader 
+community. The goal of the API is to support identification of pediatric cancer 
+samples of interest via a variety of query parameters. 
+
+### Invalid Routes
+
+All responses that do not match an endpoint below should return a Not Found 
+(`404`) response. The body of this response should be the `responses.Errors` 
+JSON object with one `responses.error.Kind` where the `Kind` matches the 
+`InvalidRoute` error.",
         contact(
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",

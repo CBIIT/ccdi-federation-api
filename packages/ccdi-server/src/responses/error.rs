@@ -29,7 +29,7 @@ impl std::fmt::Display for Errors {
             .iter()
             .map(|s| s.to_string())
             .collect::<Vec<_>>()
-            .join(",");
+            .join(", ");
         write!(f, "errors: {errors}")
     }
 }
@@ -92,6 +92,19 @@ impl From<Kind> for Errors {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn invalid_route() -> Result<(), Box<dyn std::error::Error>> {
+        let errors = Errors::from(Kind::invalid_route(
+            String::from("GET"),
+            String::from("/foobar"),
+        ));
+
+        let result = serde_json::to_string(&errors)?;
+        assert_eq!(&result, "{\"errors\":[{\"kind\":\"InvalidRoute\",\"method\":\"GET\",\"route\":\"/foobar\",\"message\":\"Invalid route: GET /foobar.\"}]}");
+
+        Ok(())
+    }
 
     #[test]
     fn invalid_parameter() -> Result<(), Box<dyn std::error::Error>> {

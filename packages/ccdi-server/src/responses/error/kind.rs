@@ -44,6 +44,7 @@ impl ResponseError for Kind {
             Inner::NotFound { .. } => StatusCode::NOT_FOUND,
             Inner::UnsupportedField { .. } => StatusCode::UNPROCESSABLE_ENTITY,
             Inner::UnshareableData { .. } => StatusCode::NOT_FOUND,
+            Inner::InvalidRoute { .. } => StatusCode::NOT_FOUND,
         }
     }
 
@@ -55,6 +56,31 @@ impl ResponseError for Kind {
 }
 
 impl Kind {
+    /// Creates a new [Kind] with an [`InvalidRoute`](Inner::InvalidRoute) inner.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_server as server;
+    ///
+    /// let error = server::responses::error::Kind::invalid_route(
+    ///     String::from("GET"),
+    ///     String::from("/foobar")
+    /// );
+    ///
+    /// assert_eq!(serde_json::to_string(&error)?, String::from("{\"kind\":\"InvalidRoute\",\"method\":\"GET\",\"route\":\"/foobar\",\"message\":\"Invalid route: GET /foobar.\"}"));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn invalid_route(method: String, route: String) -> Self {
+        let inner = Inner::invalid_route(method, route);
+
+        Self {
+            message: inner.to_string(),
+            inner,
+        }
+    }
+
     /// Creates a new [Kind] with an [`InvalidParameters`](Inner::InvalidParameters) inner.
     ///
     /// # Examples

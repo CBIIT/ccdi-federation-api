@@ -1,11 +1,7 @@
 openapi: 3.0.3
 info:
   title: CCDI Pediatric Cancer Data Catalog
-  description: |-
-    The CCDI Pediatric Cancer Data Catalog is an API that supports the querying
-    of federated pediatric cancer within the broader community. The goal of the
-    API is to support identification of pediatric cancer samples of interest via
-    a variety of query parameters.
+  description: "The CCDI Pediatric Cancer Data Catalog is an API that \nsupports the querying of federated pediatric cancer within the broader \ncommunity. The goal of the API is to support identification of pediatric cancer \nsamples of interest via a variety of query parameters. \n\n### Invalid Routes\n\nAll responses that do not match an endpoint below should return a Not Found \n(`404`) response. The body of this response should be the `responses.Errors` \nJSON object with one `responses.error.Kind` where the `Kind` matches the \n`InvalidRoute` error."
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
@@ -1320,6 +1316,31 @@ components:
     responses.error.Kind:
       allOf:
       - oneOf:
+        - type: object
+          description: |-
+            Attempted to access an invalid route.
+
+            Also includes all routes for which the path exists, but the HTTP method
+            is not supported for that path.
+          required:
+          - method
+          - route
+          - kind
+          properties:
+            method:
+              type: string
+              description: The HTTP method that was used in the request.
+            route:
+              type: string
+              description: The route that was requested.
+            kind:
+              type: string
+              enum:
+              - InvalidRoute
+          example:
+            kind: InvalidRoute
+            method: GET
+            route: /foobar
         - type: object
           description: One or more invalid query or path parameters were provided.
           required:
