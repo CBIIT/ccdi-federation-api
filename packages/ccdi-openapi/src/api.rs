@@ -42,6 +42,10 @@ a variety of query parameters.",
             url = "https://ccdi.treehouse.gi.ucsc.edu/api/v0",
             description = "UCSC Treehouse CCDI API server"
         ),
+        (
+            url = "https://ccdi.kidsfirstdrc.org/api/v0",
+            description = "KidsFirst CCDI API server"
+        ),
     ),
     tags(
         (
