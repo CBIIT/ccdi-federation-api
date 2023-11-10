@@ -198,7 +198,17 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
             there is no level of authorization that would allow one to access \
             the information included in the API.",
             body = responses::Errors,
-            example = json!(Errors::from(error::Kind::not_found(String::from("Subjects"))))
+            example = json!(
+                Errors::from(
+                    error::Kind::unshareable_data(
+                        String::from("subjects"),
+                        String::from(
+                            "Our agreement with data providers prohibits us from sharing \
+                            line-level data."
+                        ),
+                    )
+                )
+            )
         ),
         (
             status = 422,

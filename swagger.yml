@@ -155,9 +155,10 @@ paths:
                 $ref: '#/components/schemas/responses.Errors'
               example:
                 errors:
-                - kind: NotFound
+                - kind: UnshareableData
                   entity: Subjects
-                  message: Subjects not found.
+                  reason: Our agreement with data providers prohibits us from sharing line-level data.
+                  message: 'Unable to share data for subjects: our agreement with data providers prohibits us from sharing line-level data.'
         '422':
           description: Invalid query or path parameters.
           content:
@@ -384,9 +385,10 @@ paths:
                 $ref: '#/components/schemas/responses.Errors'
               example:
                 errors:
-                - kind: NotFound
+                - kind: UnshareableData
                   entity: Samples
-                  message: Samples not found.
+                  reason: Our agreement with data providers prohibits us from sharing line-level data.
+                  message: 'Unable to share data for samples: our agreement with data providers prohibits us from sharing line-level data.'
         '422':
           description: Invalid query or path parameters.
           content:
@@ -1217,6 +1219,27 @@ components:
           example:
             kind: NotFound
             entity: Samples
+        - type: object
+          description: Line-level data cannot be shared for the specified entity.
+          required:
+          - entity
+          - reason
+          - kind
+          properties:
+            entity:
+              type: string
+              description: The entity (or entities) where data cannot be shared.
+            reason:
+              type: string
+              description: The reason that the line-level data cannot be shared.
+            kind:
+              type: string
+              enum:
+              - UnshareableData
+          example:
+            kind: UnshareableData
+            entity: Sample
+            reason: Our agreement with data providers prohibits us from sharing line-level data.
         - type: object
           description: A field name was not supported for the attempted operation.
           required:
