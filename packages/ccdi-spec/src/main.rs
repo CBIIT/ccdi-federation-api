@@ -6,9 +6,12 @@ use std::path::PathBuf;
 use actix_web::error::QueryPayloadError;
 use actix_web::middleware::Logger;
 use actix_web::rt;
+use actix_web::web;
 use actix_web::web::Data;
 use actix_web::web::QueryConfig;
 use actix_web::App;
+use actix_web::HttpRequest;
+use actix_web::HttpResponse;
 use actix_web::HttpServer;
 use clap::Parser;
 use clap::Subcommand;
@@ -177,6 +180,12 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                             SwaggerUi::new("/swagger-ui/{_:.*}")
                                 .url("/api-docs/openapi.json", Api::openapi()),
                         )
+                        .default_service(web::to(|req: HttpRequest| async move {
+                            HttpResponse::NotFound().json(Errors::from(error::Kind::invalid_route(
+                                req.method().to_string(),
+                                req.path().to_string(),
+                            )))
+                        }))
                 })
                 .bind((Ipv4Addr::UNSPECIFIED, args.port))?
                 .run(),

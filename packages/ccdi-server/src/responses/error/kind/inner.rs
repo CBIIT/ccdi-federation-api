@@ -15,6 +15,24 @@ use utoipa::ToSchema;
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[serde(tag = "kind")]
 pub enum Inner {
+    /// Attempted to access an invalid route.
+    ///
+    /// Also includes all routes for which the path exists, but the HTTP method
+    /// is not supported for that path.
+    #[schema(example = json!(
+        Inner::InvalidRoute {
+            method: String::from("GET"),
+            route: String::from("/foobar")
+        }
+    ))]
+    InvalidRoute {
+        /// The HTTP method that was used in the request.
+        method: String,
+
+        /// The route that was requested.
+        route: String,
+    },
+
     /// One or more invalid query or path parameters were provided.
     #[schema(example = json!(
         Inner::InvalidParameters {
@@ -66,6 +84,29 @@ pub enum Inner {
 }
 
 impl Inner {
+    /// Creates an [`Inner::InvalidParameters`] with a formalized `reason`.
+    ///
+    /// For more information on the definition of **formalizing** the `reason`
+    /// field, see the [`formalize_reason()`] method.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_server as server;
+    ///
+    /// use server::responses::error::kind::Inner;
+    ///
+    /// let error = Inner::invalid_route(String::from("GET"), String::from("/foobar"));
+    ///
+    /// assert_eq!(
+    ///     error.to_string(),
+    ///     String::from("Invalid route: GET /foobar.")
+    /// );
+    /// ```
+    pub fn invalid_route(method: String, route: String) -> Self {
+        Inner::InvalidRoute { method, route }
+    }
+
     /// Creates an [`Inner::InvalidParameters`] with a formalized `reason`.
     ///
     /// For more information on the definition of **formalizing** the `reason`
@@ -185,6 +226,9 @@ impl Inner {
 impl std::fmt::Display for Inner {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Inner::InvalidRoute { method, route } => {
+                write!(f, "Invalid route: {method} {route}.")
+            }
             Inner::InvalidParameters { parameters, reason } => {
                 let reason = reason.to_lowercase();
 
