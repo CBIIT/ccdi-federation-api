@@ -74,7 +74,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
             .app_data(store)
             .service(subject_index)
             .service(subject_show)
-            .service(subjects_by_count);
+            .service(subjects_by_count)
+            .service(subject_summary);
     }
 }
 
