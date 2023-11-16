@@ -98,7 +98,7 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
             headers(
                 (
                     "link" = String,
-                    description = "Links to URLs that may be of interesting \
+                    description = "Links to URLs that may be of interest \
                     when paging through paginated responses. This header \
                     contains two or more links of interest. The format of the \
                     field is as follows: \
@@ -128,7 +128,7 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
                     - When the header is present, the `prev` and `next` links \
                     must exist only (a) when there are multiple pages in the \
                     result page set and (b) when the current page is not the \
-                    first and last page respectively.\n\
+                    first or last page, respectively.\n\
                     - This list of links is unordered.\n\n \
                     ### Notes\n\n\
                     - HTTP 1.1 and HTTP 2.0 dictate that response \
