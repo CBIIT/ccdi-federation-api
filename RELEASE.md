@@ -16,3 +16,4 @@
   * [ ] Go to the Releases page in Github
     * [ ] Create a Release for this tag.
     * [ ] Copy the notes from the `CHANGELOG.md` file.
+  * [ ] Update all relevant wiki pages.
