@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 — 11-02-2023
+
+### Added
+
+* Adds filtering via query parameters for `/subject` and `/sample` ([#26](https://github.com/CBIIT/ccdi-federation-api/pull/26)).
+* Adds a reference from samples back to subjects ([#25](https://github.com/CBIIT/ccdi-federation-api/pull/25)).
+* Adds pagination to `/subject` and `/sample` ([#24](https://github.com/CBIIT/ccdi-federation-api/pull/24)).
+* New server endpoints.
+    * Adds Kids First Data Resource Center endpoint ([#30](https://github.com/CBIIT/ccdi-federation-api/pull/30)).
+
+### Fixes
+
+* Applies the `Refactory` -> `Refractory` typo present in the CDE 12217251 v1.00 ([#23](https://github.com/CBIIT/ccdi-federation-api/pull/23)).
+
 ## 0.3.0 — 11-02-2023
 
 ### Revise
