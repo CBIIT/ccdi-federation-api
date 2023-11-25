@@ -17,3 +17,4 @@
     * [ ] Create a Release for this tag.
     * [ ] Copy the notes from the `CHANGELOG.md` file.
   * [ ] Update all relevant wiki pages.
+    * Commit the updates with this message: `release: updates wiki page for v0.1.0`
