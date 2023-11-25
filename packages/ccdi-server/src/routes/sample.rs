@@ -289,7 +289,7 @@ pub async fn sample_show(path: Path<(String, String)>, samples: Data<Store>) -> 
 
     samples
         .iter()
-        .find(|sample| sample.id().namespace() == &namespace && sample.id().name() == &name)
+        .find(|sample| sample.id().namespace() == namespace && sample.id().name() == name)
         .map(|sample| HttpResponse::Ok().json(sample))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(

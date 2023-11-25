@@ -1,5 +1,6 @@
 //! Routing.
 
+pub mod file;
 pub mod info;
 pub mod metadata;
 pub mod namespace;

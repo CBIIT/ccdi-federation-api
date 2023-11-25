@@ -13,14 +13,20 @@
 /// A marker trait for queriable entities within this API.
 pub trait Entity {}
 
+pub mod file;
+pub mod gateway;
 pub mod metadata;
 pub mod namespace;
 pub mod sample;
 pub mod subject;
+mod url;
 
+pub use file::File;
+pub use gateway::Gateway;
 pub use namespace::Namespace;
 pub use sample::Sample;
 pub use subject::Subject;
+pub use url::Url;
 
 /// The regex that all harmonized keys must conform to.
 ///

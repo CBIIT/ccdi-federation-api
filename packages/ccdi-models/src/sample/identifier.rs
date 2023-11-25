@@ -68,8 +68,8 @@ impl Identifier {
     /// let identifier = Identifier::new(&namespace, "Name");
     /// assert_eq!(identifier.namespace(), &String::from("organization"));
     /// ```
-    pub fn namespace(&self) -> &String {
-        &self.namespace
+    pub fn namespace(&self) -> &str {
+        self.namespace.as_str()
     }
 
     /// Gets the name for the [`Identifier`] by reference.
@@ -93,8 +93,8 @@ impl Identifier {
     /// let identifier = Identifier::new(&namespace, "Name");
     /// assert_eq!(identifier.name(), &String::from("Name"));
     /// ```
-    pub fn name(&self) -> &String {
-        &self.name
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 }
 

@@ -6,6 +6,7 @@ use std::str::Lines;
 use regex::Regex;
 use serde::Deserialize;
 use serde::Serialize;
+use url::Url;
 
 use crate::parse::trim_and_concat_contiguous_lines;
 
@@ -30,6 +31,9 @@ pub enum ParseError {
     /// A field URL line was does not match the format we expect. The
     /// argument is the line that we are attempting to parse.
     InvalidURLFormat(String),
+
+    /// The URL itself was not valid.
+    InvalidURL(url::ParseError),
 }
 
 impl std::fmt::Display for ParseError {
@@ -49,10 +53,12 @@ impl std::fmt::Display for ParseError {
             ParseError::InvalidURLFormat(value) => {
                 write!(
                     f,
-                    "entity's URL line does not match expected format: \"{value}\". \
-                    The following format is expected: \"Link: <URL>\""
+                    "the entity's url line does not match expected format: \
+                    \"{value}\". The following format is expected: \"Link: \
+                    <URL>\""
                 )
             }
+            ParseError::InvalidURL(err) => write!(f, "invalid url: {err}"),
         }
     }
 }
@@ -68,7 +74,7 @@ pub type Result<T> = std::result::Result<T, ParseError>;
 pub struct Entity {
     standard: String,
     description: String,
-    url: String,
+    url: Url,
 }
 
 impl Entity {
@@ -142,12 +148,12 @@ impl Entity {
     /// Link: <https://example.com>"#
     ///     .parse::<Entity>()?;
     ///
-    /// assert_eq!(entity.url(), "https://example.com");
+    /// assert_eq!(entity.url().as_str(), "https://example.com/");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn url(&self) -> &str {
-        self.url.as_str()
+    pub fn url(&self) -> &Url {
+        &self.url
     }
 }
 
@@ -161,9 +167,10 @@ impl std::str::FromStr for Entity {
             return Err(ParseError::Empty);
         }
 
-        let standard = parse_standard(&mut lines)?;
-        let description = parse_description(&mut lines)?;
-        let url = parse_url(&mut lines)?;
+        let standard = parse_standard_line(&mut lines)?;
+        let description = parse_description_line(&mut lines)?;
+        let url = parse_url_line(&mut lines)?;
+        let url = Url::parse(&url).map_err(ParseError::InvalidURL)?;
 
         Ok(Self {
             standard,
@@ -173,7 +180,7 @@ impl std::str::FromStr for Entity {
     }
 }
 
-fn parse_standard(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
+fn parse_standard_line(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
     let line = trim_and_concat_contiguous_lines(lines)
         .map(Ok)
         .unwrap_or(Err(ParseError::IteratorEndedEarly(String::from(
@@ -193,7 +200,7 @@ fn parse_standard(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
     }
 }
 
-fn parse_description(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
+fn parse_description_line(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
     trim_and_concat_contiguous_lines(lines)
         .map(Ok)
         .unwrap_or(Err(ParseError::IteratorEndedEarly(String::from(
@@ -201,7 +208,7 @@ fn parse_description(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
         ))))
 }
 
-fn parse_url(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
+fn parse_url_line(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
     let line = match trim_and_concat_contiguous_lines(lines) {
         Some(line) => line,
         None => return Err(ParseError::IteratorEndedEarly(String::from("url"))),
@@ -270,7 +277,7 @@ mod tests {
         <https://example.com>"#
             .parse::<Entity>()?;
 
-        assert_eq!(entity.url(), "https://example.com");
+        assert_eq!(entity.url().as_str(), "https://example.com/");
 
         Ok(())
     }
@@ -372,7 +379,7 @@ mod tests {
             ParseError::InvalidURLFormat(String::from("Link:<https://example.com>"))
         );
 
-        assert_eq!(err.to_string(), "entity's URL line does not match expected format: \"Link:<https://example.com>\". The following format is expected: \"Link: <URL>\"");
+        assert_eq!(err.to_string(), "the entity's url line does not match expected format: \"Link:<https://example.com>\". The following format is expected: \"Link: <URL>\"");
 
         // Ensure that we must have code backticks in the standard name.
 
@@ -390,8 +397,22 @@ mod tests {
             ParseError::InvalidURLFormat(String::from("Link: https://example.com"))
         );
 
-        assert_eq!(err.to_string(), "entity's URL line does not match expected format: \"Link: https://example.com\". The following format is expected: \"Link: <URL>\"");
+        assert_eq!(err.to_string(), "the entity's url line does not match expected format: \"Link: https://example.com\". The following format is expected: \"Link: <URL>\"");
 
         Ok(())
+    }
+
+    #[test]
+    fn it_fails_to_parse_an_invalid_url() {
+        let err = r#"**`A Standard`**
+    
+        A description that spans
+        multiple lines.
+    
+        Link: <example.com>"#
+            .parse::<Entity>()
+            .unwrap_err();
+
+        assert!(matches!(err, ParseError::InvalidURL(_)));
     }
 }

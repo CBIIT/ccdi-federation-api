@@ -4,6 +4,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use crate::Url;
+
 /// An unharmonized metadata field description.
 ///
 /// Unharmonized keys may be any valid JSON string.
@@ -36,8 +38,9 @@ pub struct Unharmonized {
     /// should be [`None`].
     standard: Option<String>,
 
-    /// A url that describes more about the metadata field, if available.
-    url: Option<String>,
+    /// A URL that describes more about the metadata field, if available.
+    #[schema(value_type = Option<models::Url>)]
+    url: Option<Url>,
 }
 
 impl Unharmonized {
@@ -51,27 +54,27 @@ impl Unharmonized {
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
     ///     None,
     ///     None,
     /// );
     /// ```
-    pub fn new<S: Into<String>, O: Into<Option<String>>>(
-        name: O,
-        description: O,
-        path: S,
-        standard: O,
-        url: O,
+    pub fn new(
+        name: Option<String>,
+        description: Option<String>,
+        path: String,
+        standard: Option<String>,
+        url: Option<Url>,
     ) -> Self {
         Unharmonized {
             harmonized: false,
-            name: name.into(),
-            description: description.into(),
-            path: path.into(),
-            standard: standard.into(),
-            url: url.into(),
+            name,
+            description,
+            path,
+            standard,
+            url,
         }
     }
 
@@ -85,9 +88,9 @@ impl Unharmonized {
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
     ///     None,
     ///     None,
     /// );
@@ -108,9 +111,9 @@ impl Unharmonized {
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
     ///     None,
     ///     None,
     /// );
@@ -131,9 +134,9 @@ impl Unharmonized {
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
     ///     None,
     ///     None,
     /// );
@@ -155,10 +158,10 @@ impl Unharmonized {
     /// use models::metadata::field::description::Unharmonized;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
-    ///     Some("US Census Bureau".into()),
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
+    ///     Some(String::from("US Census Bureau")),
     ///     None,
     /// );
     ///
@@ -177,18 +180,19 @@ impl Unharmonized {
     /// use ccdi_models as models;
     ///
     /// use models::metadata::field::description::Unharmonized;
+    /// use models::Url;
     ///
     /// let field = Unharmonized::new(
-    ///     Some("test".into()),
-    ///     Some("A description.".into()),
-    ///     "test",
+    ///     Some(String::from("test")),
+    ///     Some(String::from("A description.")),
+    ///     String::from("test"),
     ///     None,
-    ///     Some("https://cancer.gov".into()),
+    ///     Some(Url::try_from("https://cancer.gov").unwrap()),
     /// );
     ///
-    /// assert_eq!(field.url().unwrap(), &String::from("https://cancer.gov"))
+    /// assert_eq!(field.url().unwrap().as_str(), "https://cancer.gov/")
     /// ```
-    pub fn url(&self) -> Option<&String> {
+    pub fn url(&self) -> Option<&Url> {
         self.url.as_ref()
     }
 }

@@ -6,12 +6,15 @@ edition.workspace = true
 
 [dependencies]
 ccdi-cde = { path = "../ccdi-cde" }
+chrono.workspace = true
 indexmap.workspace = true
 lazy_static.workspace = true
 macropol = "0.1.3"
+nonempty.workspace = true
 rand.workspace = true
 regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_test.workspace = true
+url.workspace = true
 utoipa.workspace = true

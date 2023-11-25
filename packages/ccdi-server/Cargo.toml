@@ -11,8 +11,8 @@ ccdi-models = { path = "../ccdi-models" }
 chrono.workspace = true
 clap.workspace = true
 indexmap.workspace = true
-itertools = "0.11.0"
 introspect.workspace = true
+itertools = "0.11.0"
 lazy_static = "1.4.0"
 log.workspace = true
 mime.workspace = true
@@ -20,5 +20,8 @@ rand.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_with.workspace = true
-url = { version = "2", features = ["serde"] }
+url.workspace = true
 utoipa.workspace = true
+
+[dev-dependencies]
+nonempty.workspace = true

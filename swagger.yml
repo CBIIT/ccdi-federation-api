@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: CCDI Pediatric Cancer Data Catalog
-  description: "The CCDI Pediatric Cancer Data Catalog is an API that \nsupports the querying of federated pediatric cancer within the broader \ncommunity. The goal of the API is to support identification of pediatric cancer \nsamples of interest via a variety of query parameters. \n\n### Invalid Routes\n\nAll responses that do not match an endpoint below should return a Not Found \n(`404`) response. The body of this response should be the `responses.Errors` \nJSON object with one `responses.error.Kind` where the `Kind` matches the \n`InvalidRoute` error."
+  description: "The CCDI Pediatric Cancer Data Catalog is an API that\nsupports the querying of federated pediatric cancer within the broader\ncommunity. The goal of the API is to support identification of pediatric cancer\nsamples of interest via a variety of query parameters.\n\n## Definitions\n\n**Authentication** is defined as being identified in any manner.\nAuthentication, by definition, requires prior registration of identifiable\ncharacteristics. Typically, this in the form of an account, though the\ndefinition of authentication includes any condition under which you are\nregistered and identified (e.g., allowlisted via IP address).\n\n**Authorization** is defined as permission explicitly granted or withheld from\nan authenticated individual by a controlling entity based on a set of\nnon-authentication-based criteria (irrespective of the time period for which\naccess is granted or denied). Note that this definition of authorization always\nrequires prior authentication, so simply requiring authentication to gain\naccess to a resource is not considered authorization. For example, gaining\npermission to a dataset via an explicit decision from a data access committee\nis considered authorization while making data available after simply completing\na universally accessible account registration process is not.\n\n## Invalid Routes\n\nAll responses that do not match an endpoint below should return a Not Found \n(`404`) response. The body of this response should be the `responses.Errors` \nJSON object with one `responses.error.Kind` where the `Kind` matches the \n`InvalidRoute` error.\n\n## Accessing External Files\n\nA **gateway** notifies end users of resources that exist outside of the API\nalong with the conditions under which those resources may or may not be\naccessed. Gateways can be open access (open to anyone—even anonymously),\nregistered access (requires authentication but not authorization),\ncontrolled access (requires both authentication and authorization), or\nclosed access (not available). Gateways do not, in and of themselves,\ncommunicate the location of or mechanism(s) by which resources can be accessed.\nInstead, gateways wrap `Link`s to communicate that information.\n\nA **link** defines the mechanism for locating (referred to here as \"navigating\nto\") an external resource. Links can be direct (for navigating to precisely the\nrequested resource(s)—no more and no less), approximate (a link which, when\nfollowed, requires prior manual intervention in the form of instructions to\nproceed to the otherwise immediately navigable desired resource(s)),\ninformational (a link that does not navigate to a desired resource directly but\ncan be followed to find out more information on how to access the desired\nresource(s) out-of-band), or mailing (an email address to contact with\naccompanying instructions to access the desired resource(s)) in nature.\nAgain, a link does not, in and of itself, communicate the requirements to\naccess desired resources—it must be used in conjunction with a gateway to\ncommunicate that information.\n\nPut simply, a **link** tells you where you need to go to attempt to access a\ndesired resource and the **gateway** wrapping the link tells you what the\nrequirements for accessing the resource are once you get there. By separating\nthe concepts of the requirements to access a desired resource (gateways) from\nthe mechanism to access the desired resource (links), we create an expressive,\ncombinatorial system for capturing a broad spectrum of situations.\n\n**Note:** a _closed_ gateway is special and does not include links. Instead, \nits purpose is to describe where a resource originated from and to communicate\nthat the resource is otherwise unavailable. Various closed gateway statuses are\nprovided to indicate if and when the resources will become available.\n\n### Examples\n\nBelow are some examples using pseudocode to illustrate these concepts. Note\nthat some fields have been left out of the definitions for brevity.\n\n* A `Gateway::Controlled { Link::Exact { url: \n  \"https://example.com/files?sample=Sample001\" } }` communicates \"all of the\n  resources you requested are available at \n  https://example.com/files?sample=Sample001, but be advised that the data found\n  at that link is controlled access and requires authorization\".\n* A `Gateway::Open { Link::MailTo { uri: \"mailto:data@example.com\" } }`\n  communicates \"anyone can request the resource by emailing the provided email\n  address—even if we haven't identified (authenticated) the individual\n  requesting the data. In contrast, if the data provider required\n  identification of the individual before sending the data (say, via a verified\n  university email address), then a `Gateway::Registered` should be used\n  instead. \n* A `Gateway::Registered { Link::Approximate { url: \n  \"https://example.com/data\", instructions: \"Filter data by ...\" } }`\n  communicates \"the data is available to anyone who registers an account at\n  https://example.com/data, but manual filtering (by following the provided\n  instructions) is required to select the exact subset of desired data\"."
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
@@ -486,6 +486,105 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.Summary'
+  /file:
+    get:
+      tags:
+      - File
+      summary: Gets the files known by this server.
+      description: |-
+        Gets the files known by this server.
+
+        ### Pagination
+
+        This endpoint supports pagination. Pagination is enabled by providing one of
+        the pagination-related query parameters below.
+
+        ### Ordering
+
+        This endpoint has default ordering requirements—those details are documented
+        in the `responses::Files` schema.
+      operationId: file_index
+      parameters:
+      - name: page
+        in: query
+        description: |-
+          The page to retrieve.
+
+          This is a 1-based index of a page within a page set. The value of `page`
+          **must** default to `1` when pagination is enabled but this parameter is
+          not provided. Pagination is enabled if this parameter is provided to the
+          endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: per_page
+        in: query
+        description: |-
+          The number of results per page.
+
+          Each server can select its own default value for `per_page` if
+          pagination is enabled but this parameter is not provided. A default
+          value of `100` is recommended if all values are equally reasonable.
+          Pagination is enabled if this parameter is provided to the endpoint.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            link:
+              schema:
+                type: string
+              description: "Links to URLs that may be of interest when paging through paginated responses. This header contains two or more links of interest. The format of the field is as follows: \n\n`Link: <URL>; rel=\"REL\"` \n### Relationships\n\nIn the format above, `URL` represents a valid URL for the link of interest and `REL` is one of four values: \n- `first` (_Required_). A link to the first page in the results (can be the same as `last` if there is only one page).\n- `last` (_Required_). A link to the first page in the results (can be the same as `first` if there is only one page).\n- `next` (_Optional_). A link to the next page (if it exists).\n- `prev` (_Optional_). A link to the previous page (if it exists).\n\n### Requirements\n\n- This header is required to exist when pagination is enabled.\n- It is also required _not_ to exist when pagination is not enabled.\n- When the header is present, this header must provide links for at least the `first` and `last` rels.\n - When the header is present, the `prev` and `next` links must exist only (a) when there are multiple pages in the result page set and (b) when the current page is not the first or last page, respectively.\n- This list of links is unordered.\n\n ### Notes\n\n- HTTP 1.1 and HTTP 2.0 dictate that response headers are case insensitive. Though not required, we recommend an all lowercase name of `link` for this response header."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Files'
+        '404':
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: UnshareableData
+                  entity: Files
+                  reason: Our agreement with data providers prohibits us from sharing file-level data.
+                  message: 'Unable to share data for files: our agreement with data providers prohibits us from sharing file-level data.'
+        '422':
+          description: Invalid query or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: InvalidParameters
+                  parameters:
+                  - page
+                  - per_page
+                  reason: Unable to calculate offset.
+                  message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
+  /file/summary:
+    get:
+      tags:
+      - File
+      summary: Reports summary information for the files known by this server.
+      description: Reports summary information for the files known by this server.
+      operationId: file_summary
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Summary'
   /metadata/fields/subject:
     get:
       tags:
@@ -909,6 +1008,149 @@ components:
         A map of unharmonized metadata fields.
 
         Unharmonized keys may be any valid JSON string.
+    models.File:
+      type: object
+      description: |-
+        A file.
+
+        **Note:** the `samples` key **must** include only identifiers for
+        [`Samples`](super::Sample) that both (a) are listed in the
+        [`Sample`](super::Sample) index endpoint (`/sample`) and (b) are able to be
+        shown with the [`Sample`](super::Sample) show endpoint
+        (`/sample/{namespace}/{name}`).
+      required:
+      - id
+      - samples
+      - gateways
+      properties:
+        id:
+          $ref: '#/components/schemas/models.file.Identifier'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.sample.Identifier'
+          description: |-
+            One or more samples that are associated with this [`File`] referred to
+            by their identifier(s).
+
+            Each file must be associated with at least one
+            [`Sample`](super::Sample)—files that are not associated with any sample
+            are disallowed. Files may be associated with as many samples as is
+            necessary.
+
+            **Note:** each identifier **must** match a [`Sample`](super::Sample)
+            that both (a) is listed in the [`Sample`](super::Sample) index endpoint
+            (`/sample`) and (b) is able to be shown with the
+            [`Sample`](super::Sample) show endpoint (`/sample/{namespace}/{name}`).
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.AnonymousOrReference'
+          description: |-
+            One or more [gateways](AnonymousOrReference) through which this file can
+            be accessed.
+
+            Gateways can be either [anonymous](AnonymousOrReference::Anonymous)
+            ([gateways](crate::Gateway) with no name) or a
+            [refererence](AnonymousOrReference::Reference) to a [named
+            gateway](gateway::Named) ([gateways](crate::Gateway) with a name).
+
+            **Anonymous** gateways are intended to be embedded directly within a
+            returned file in the `/file` response object. They have no name and are
+            only referred to by the file within which they are embedded.
+
+            **Named** gateways, on the other hand, are included in the `gateways`
+            key in the `/file` response object and referred to by name within a
+            returned file in the `/file` response object. They are intended to be
+            used when more than one file references the same gateway. This mechanism
+            is available to ensure that they gateway object does not need to be
+            duplicated mulitple times in the response in these cases.
+
+            This field can contain multiple gateways to support scenarios where a
+            file is available through more than one mechanism. We expect that only
+            one gateway will be returned in most responses.
+
+            **Note:** a file must have at least one gateway. If the file has no
+            gateway, then it should not be returned as part of this API.
+    models.Gateway:
+      oneOf:
+      - type: object
+        description: |-
+          An open access gateway.
+
+          This gateway notifies of resources that are accessible without any
+          authentication or authorization.
+        required:
+        - link
+        - kind
+        properties:
+          link:
+            $ref: '#/components/schemas/models.gateway.Link'
+          kind:
+            type: string
+            enum:
+            - Open
+      - type: object
+        description: |-
+          A registered access gateway.
+
+          This gateway notifies of resources that are accessible after successful
+          authenication but _without_ any required authorization.
+
+          The term "registered" is used here instead of "authenticated" because
+          (a) identification first requires registerion of some information that
+          is used to identify an individual (such as a username or IP address),
+          and (b) the term "registered" is used more commonly in a colloquial
+          context.
+        required:
+        - link
+        - kind
+        properties:
+          link:
+            $ref: '#/components/schemas/models.gateway.Link'
+          kind:
+            type: string
+            enum:
+            - Registered
+      - type: object
+        description: |-
+          A controlled access gateway.
+
+          This gateway notifies of resources that are accessible after successful
+          authentication _and_ and explicit authorization to view the resources.
+
+          The term "controlled" is used here instead of "authorized" because (a)
+          authorization must be explicitly granted by some entity which controls
+          the resource, and (b) the term "controlled" is used more commonly in a
+          colloquial context.
+
+          Note that, if authorization is not explicitly granted by some entity
+          controlling the resource, OR if authorization is given to _all_
+          authenticated individuals, then a [`Gateway::Registered`] should be used
+          instead.
+        required:
+        - link
+        - kind
+        properties:
+          link:
+            $ref: '#/components/schemas/models.gateway.Link'
+          kind:
+            type: string
+            enum:
+            - Controlled
+      - allOf:
+        - $ref: '#/components/schemas/models.gateway.Closed'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - Closed
+      description: Gateways, which notify of resources that are external to the API.
+      discriminator:
+        propertyName: kind
     models.Namespace:
       type: object
       description: A response for describing metadata fields for a subject.
@@ -995,6 +1237,335 @@ components:
           allOf:
           - $ref: '#/components/schemas/models.subject.Metadata'
           nullable: true
+    models.Url:
+      type: string
+      description: |-
+        A uniform resource locator (URL) according to the [URL
+        Standard](https://url.spec.whatwg.org/).
+    models.file.Identifier:
+      type: object
+      description: A name and namespace for a [`File`](crate::File).
+      required:
+      - namespace
+      - name
+      properties:
+        namespace:
+          type: string
+          description: The namespace of the identifier.
+          example: organization
+        name:
+          type: string
+          description: The name of the file.
+          example: File001.txt
+    models.gateway.AnonymousOrReference:
+      oneOf:
+      - type: object
+        description: An anonymous gateway.
+        required:
+        - gateway
+        - kind
+        properties:
+          gateway:
+            $ref: '#/components/schemas/models.Gateway'
+          kind:
+            type: string
+            enum:
+            - Anonymous
+      - type: object
+        description: A reference to a named gateway.
+        required:
+        - gateway
+        - kind
+        properties:
+          gateway:
+            type: string
+            description: The reference to a [`Named`] gateway.
+          kind:
+            type: string
+            enum:
+            - Reference
+      description: An anonymous [`Gateway`] or a reference to a named [`Gateway`].
+      discriminator:
+        propertyName: kind
+    models.gateway.Closed:
+      allOf:
+      - $ref: '#/components/schemas/models.gateway.closed.Status'
+      - type: object
+        required:
+        - description
+        properties:
+          description:
+            type: string
+            description: |-
+              A Markdown field (formatted according to the [CommonMark] standard) that
+              describes the gateway.
+
+              At a minimum, a description what the gateway is and why it is closed is
+              recommended.
+
+              **Note:** this field is required for a closed gateway. This was an
+              intentional decision: gateways are intended to point users to external
+              resources. When that is not possible, a gateway's only purpose can be to
+              provide further information about the data source. Put another way, if
+              one is attempting to construct a closed gateway with no description, it
+              should be considered why a gateway is needed at all.
+
+              [CommonMark]: https://commonmark.org
+      description: A closed gateway.
+    models.gateway.Link:
+      oneOf:
+      - type: object
+        description: |-
+          A link that points precisely to the desired resource.
+
+          [`Link::Direct`] is used when the resource pointed to by the URL
+          exactly matches the desired content—no more and no less.
+
+          For example, if a user wants the RNA-Seq BAM files for a particular
+          sample and the source server can provide a link that filters down to
+          only those files using query parameters, [`Link::Direct`] should be
+          used.
+        required:
+        - url
+        - kind
+        properties:
+          url:
+            $ref: '#/components/schemas/models.Url'
+          kind:
+            type: string
+            enum:
+            - Direct
+      - type: object
+        description: |-
+          A link that points _approximately_ to the desired resource.
+
+          [`Link::Approximate`] is used when an direct link to a desired resource
+          cannot be constructed by the server, but a link to _approximately_ the
+          desired resource followed by following some manual instructions will
+          deliver the desired resources.
+
+          For example, if a user wants the RNA-Seq BAM files for a particular
+          sample, but the server can only construct a link to the particular
+          sample and file type and/or sequencing type must be filtered manually in
+          the user interface, then a [`Link::Approximate`] should be constructed
+          with (a) the `url` field pointing to the sample link and (b) the
+          `instructions` field telling the end user how to filter to their desired
+          content within the user interface.
+        required:
+        - url
+        - instructions
+        - kind
+        properties:
+          url:
+            $ref: '#/components/schemas/models.Url'
+          instructions:
+            type: string
+            description: |-
+              The manual instructions to follow after navigating to the URL.
+
+              As much as is practical, instructions should be as specific as
+              possible to the desired data. We expect that generating dynamic
+              instrucions based on the user's selection will require a
+              non-trivial amount of development effort rather than returning
+              generic set of instructions. The reason for this is because this
+              field is intended to be surfaced as tailored instructions with a
+              user interface detailing to the user _exactly_ how to retrieve their
+              desired data.
+
+              For example, if a user is requesting whole-genome sequence BAM files
+              for a particular sample but the server can only construct a link to
+              _all_ files for the sample, the instructions should specify how to
+              filter down to only the whole-genome sequence BAM files
+              specifically—not how to operate filters within the interface
+              generally).
+          kind:
+            type: string
+            enum:
+            - Approximate
+      - type: object
+        description: |-
+          A link that points to information about how to retrieve the desired
+          resource.
+
+          [`Link::Informational`] is used when a link to the desired content
+          cannot be constructed by the server, but a link describing how to gain
+          access to the resource is known. This [`Link`] is reserved for
+          situations where the data is not accessible except via an out-of-band
+          process—if the resource can be reached (not necessarily accessed) by
+          following a URL and a subsequent set of instructions, a
+          [`Link::Approximate`] should be used instead.
+
+          For example, if a request form exists where, once approved, some data is
+          sent to the user in a manual fashion, then a [`Link::Informational`]
+          should be used (the distinguishing factor being that the user cannot
+          complete the request process without some out-of-band or manual
+          process).
+
+          **Note:** no further informational field is provided within the API
+          because the expectation is that the information on what steps should be
+          taken next will be available at the specified URL.
+        required:
+        - url
+        - kind
+        properties:
+          url:
+            $ref: '#/components/schemas/models.Url'
+          kind:
+            type: string
+            enum:
+            - Informational
+      - type: object
+        description: |-
+          A link that points to an email address to request access to the
+          resource.
+
+          [`Link::MailTo`] is used when the process of requesting data access is
+          to email
+        required:
+        - url
+        - instructions
+        - kind
+        properties:
+          url:
+            $ref: '#/components/schemas/models.Url'
+          instructions:
+            type: string
+            description: |-
+              The instructions to follow when constructing the email request. At a
+              minimum, explaining what criteria are used in determining access,
+              what information is requested, and what to expect after the
+              email in terms of communication and timeline is recommended.
+          kind:
+            type: string
+            enum:
+            - MailTo
+      description: |-
+        A link to an external resource.
+
+        A link communicates information about where a resource is location alongside
+        additional context regarding how the link should be interpreted (via the
+        `kind` field). All [`Link`]s include a `url` field pointing to the external
+        resource. In the case of [`Link::Approximate`] and [`Link::MailTo`], a
+        required `instructions` field is included to instruct the user of what steps
+        to take after the link has been followed (see the definition of
+        [`Link::Approximate`] and [`Link::MailTo`] for more details, respectively).
+
+        **Note:** the context of what resources are desired compared with what
+        resources the link represents is an important consideration when
+        constructing the correct [`Link`]. For example, if the desired resource is a
+        specific file, but the server can only construct a link to a cohort of
+        files, a [`Link::Approximate`] should be used. In contrast, if the desired
+        resource is the entire cohort of files, a [`Link::Direct`] should be used.
+
+        **Note:** the link does not imply the access level or immediate availability
+        of the data—it only points a user to where they can _attempt_ to access the
+        data. Instead, [`Link`]s are always wrapped in a [`Gateway`](super::Gateway)
+        that communicates the access level or requirements. In other words, a
+        [`Link`] can absolutely require authentication or authorization before data
+        becomes accessible (and the corresponding [`Gateway`](super::Gateway) within
+        which the [`Link`] is embedded should reflect this).
+
+        ## Examples
+
+        * If the data is contained within a file where a direct link can be
+        constructed, whether that file is open access or controlled, then a
+        [`Link::Direct`] should be constructed with a link directly to that file.
+        * In the event that study data is deposited as a study within a larger data
+        repository, such as the database of Genotypes and Phenotypes (dbGaP) or
+        the European Genome-phenome Archive (EGA), and the `url` points to the
+        study page:
+        * If the desired resource is a specific file or subset of (but not all)
+        files within the study, a [`Link::Approximate`] should be returned.
+        This is because the link includes more files than what was
+        specifically requested—thus, instructions on how to filter to the
+        files requested must be communicated.
+        * If the desired resource is _every_ file in the study, then a
+        [`Link::Direct`] should be returned pointing to the study page.
+        * If the data is not immediately requestable through a webpage but there
+        exists an informational page on how to request the data using an
+        out-of-band process, then a [`Link::Informational`] should be used.
+        * If the data is available after contacting an email address, then a
+        [`Link::MailTo`] should be used.
+      discriminator:
+        propertyName: kind
+    models.gateway.Named:
+      allOf:
+      - $ref: '#/components/schemas/models.Gateway'
+      - type: object
+        required:
+        - name
+        properties:
+          name:
+            type: string
+            description: The name.
+      description: |-
+        A named gateway.
+
+        A named gateway is simply a [`Gateway`] with a name. Named gateways exist so
+        that multiple files in a response can refer to the same gateway (by name)
+        without duplicating the information for that gateway multiple times.
+
+        **Note:** a _named_ gateway can only be included in a `gateways` response
+        object—they cannot be embedded directly within a [`File`](crate::File) in
+        the response.
+    models.gateway.closed.Status:
+      oneOf:
+      - type: object
+        required:
+        - status
+        properties:
+          status:
+            type: string
+            enum:
+            - IndefinitelyClosed
+      - type: object
+        description: A gateway that is closed while awaiting publication.
+        required:
+        - status
+        properties:
+          available_at:
+            type: string
+            format: date-time
+            description: |-
+              If known, the ISO 8601 formatted, UTC-based date and time when the
+              the resource will become available.
+
+              This field is intented to indicate to the consumer that they should
+              retry their request on or after the listed time to gain an updated
+              gateway definition.
+            nullable: true
+          status:
+            type: string
+            enum:
+            - AwaitingPublication
+      - type: object
+        description: A gateway that is closed while awaiting publication.
+        required:
+        - available_at
+        - status
+        properties:
+          available_at:
+            type: string
+            format: date-time
+            description: |-
+              The ISO 8601 formatted, UTC-based date and time when the the
+              resource will become available.
+
+              This field is intented to indicate to the consumer that they should
+              retry their request on or after the listed time to gain an updated
+              gateway definition.
+
+              **Note:** for the gateway to have a kind of [`Status::Embargoed`],
+              by definition, a date at which the resource becomes available _must_
+              be known. If a date is not known, then the resource does not fit the
+              API's definition of "embargoed".
+          status:
+            type: string
+            enum:
+            - Embargoed
+      description: The status of a closed gateway.
+      discriminator:
+        propertyName: status
     models.metadata.field.Description:
       oneOf:
       - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
@@ -1030,10 +1601,7 @@ components:
             The proper name of the standard to which this field is harmonized (defined
             by the documentation for the CCDI metadata fields).
         url:
-          type: string
-          description: |-
-            A URL to the CCDI documentation where the definition of this harmonized
-            field resides.
+          $ref: '#/components/schemas/models.Url'
     models.metadata.field.description.Unharmonized:
       type: object
       description: |-
@@ -1078,8 +1646,8 @@ components:
             should be [`None`].
           nullable: true
         url:
-          type: string
-          description: A url that describes more about the metadata field, if available.
+          allOf:
+          - $ref: '#/components/schemas/models.Url'
           nullable: true
     models.namespace.Description:
       type: string
@@ -1194,6 +1762,27 @@ components:
           items:
             $ref: '#/components/schemas/responses.error.Kind'
           description: The errors within this response.
+    responses.Files:
+      type: object
+      description: |-
+        A response representing multiple files known about by the server.
+
+        When no sort order is provided, files **must** be ordered by the primary
+        identifier. This means that, when comparing two identifiers:
+
+        1. The `namespace` field should be sorted alphabetically. If there is a
+        clear order, return that. Else, if the namespaces are equal,
+        2. The `name` field should be sorted alphabetically. Since the `namespace`
+        and the `name` should always uniquely apply to a single entity, this
+        should always resolve to an ordering.
+
+        Of course, if there is a provided sort order, use that instead.
+      required:
+      - data
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/responses.file.Data'
     responses.Information:
       type: object
       description: A response for information regarding the server.
@@ -1441,6 +2030,34 @@ components:
               needed. Please use this field if you intend to pass the error along to a
               user.
       description: A response indicating an error from the API.
+    responses.file.Data:
+      allOf:
+      - $ref: '#/components/schemas/responses.file.data.Files'
+      - $ref: '#/components/schemas/responses.file.data.Gateways'
+      - type: object
+      description: |-
+        The `data` key within a [`Files`](super::Files)
+        response.
+    responses.file.data.Files:
+      type: object
+      description: Files within a [`Data`](super::Data) response.
+      required:
+      - files
+      properties:
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.File'
+          description: The files.
+    responses.file.data.Gateways:
+      type: object
+      description: Named gateways within a [`Data`](super::Data) response.
+      properties:
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.Named'
+          description: The gateways.
     responses.info.api.Information:
       type: object
       description: Information that is specific to the API that the server implements.
@@ -1477,7 +2094,8 @@ components:
           type: string
           format: date-time
           description: |-
-            The ISO 8601 formatted date and time when the data was last updated.
+            The ISO 8601 formatted, UTC-based date and time when the data was last
+            updated.
 
             This represents the last _update_ time. In contrast to the
             `data_version` field, this field is updated whenever a data update is
@@ -1638,6 +2256,8 @@ tags:
   description: Subjects within the CCDI federated ecosystem.
 - name: Sample
   description: Samples within the CCDI federated ecosystem.
+- name: File
+  description: Files within the CCDI federated ecosystem.
 - name: Metadata
   description: List and describe provided metadata fields.
 - name: Namespace
