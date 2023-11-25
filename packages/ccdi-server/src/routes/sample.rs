@@ -57,14 +57,14 @@ impl Store {
                             // SAFETY: this is hardcoded to work and is tested
                             // statically below.
                             NAMESPACES.get("organization").unwrap(),
-                            format!("Subject{}", i + 1),
+                            format!("Sample{}", i + 1),
                         );
 
                         let subject = models::subject::Identifier::new(
                             // SAFETY: this is hardcoded to work and is tested
                             // statically below.
                             NAMESPACES.get("organization").unwrap(),
-                            format!("organization:Subject{}", i + 1),
+                            format!("Subject{}", i + 1),
                         );
 
                         Sample::random(identifier, subject)
