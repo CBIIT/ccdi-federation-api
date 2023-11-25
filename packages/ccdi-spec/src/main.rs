@@ -17,6 +17,7 @@ use clap::Parser;
 use clap::Subcommand;
 use log::info;
 use log::LevelFilter;
+use server::routes::file;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -75,8 +76,16 @@ pub struct GenerateArgs {
 #[derive(Debug, Parser)]
 pub struct ServeArgs {
     /// Number of subjects for the server to generate.
-    #[arg(short = 'n', default_value_t = 100)]
+    #[arg(default_value_t = 100)]
     number_of_subjects: usize,
+
+    /// Number of samples for the server to generate.
+    #[arg(default_value_t = 100)]
+    number_of_samples: usize,
+
+    /// Number of files for the server to generate.
+    #[arg(default_value_t = 1000)]
+    number_of_files: usize,
 
     /// A path to write the output to.
     #[arg(short = 'p', default_value_t = 8000)]
@@ -155,7 +164,11 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
             rt::System::new().block_on(
                 HttpServer::new(move || {
                     let subjects = Data::new(subject::Store::random(args.number_of_subjects));
-                    let samples = Data::new(sample::Store::random(args.number_of_subjects));
+                    let samples = Data::new(sample::Store::random(args.number_of_samples));
+                    let files = Data::new(file::Store::random(
+                        args.number_of_files,
+                        args.number_of_samples,
+                    ));
 
                     App::new()
                         .app_data(QueryConfig::default().error_handler(|err, _| {
@@ -173,6 +186,7 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                         .wrap(Logger::default())
                         .configure(subject::configure(subjects))
                         .configure(sample::configure(samples))
+                        .configure(file::configure(files))
                         .configure(metadata::configure())
                         .configure(namespace::configure())
                         .configure(info::configure())
@@ -219,5 +233,16 @@ fn main() {
             eprintln!("error: {err}");
             std::process::exit(ERROR_EXIT_CODE);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn verify_cli() {
+        use clap::CommandFactory;
+        Args::command().debug_assert()
     }
 }

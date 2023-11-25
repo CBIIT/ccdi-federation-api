@@ -2,6 +2,7 @@
 
 pub mod by;
 pub mod error;
+pub mod file;
 pub mod info;
 pub mod metadata;
 mod namespace;
@@ -10,6 +11,7 @@ mod subject;
 pub mod summary;
 
 pub use error::Errors;
+pub use file::Files;
 pub use info::Information;
 pub use namespace::Namespace;
 pub use namespace::Namespaces;

@@ -22,12 +22,14 @@ introspect = { git = "https://github.com/claymcleod/introspect.git" }
 lazy_static = "1.4.0"
 log = "0.4.20"
 mime = "0.3.17"
+nonempty = { version = "0.9.0", features = ["serialize"] }
 rand = "0.8.5"
 regex = "1.10.2"
 serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"
 serde_with = "3.4.0"
+url = { version = "2", features = ["serde"] }
 utoipa = { version = "4.0.0", features = [
     "actix_extras",
     "chrono",

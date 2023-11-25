@@ -7,6 +7,7 @@ use cde::CDE;
 use crate::metadata::field::description;
 use crate::metadata::field::description::r#trait::Description as _;
 use crate::metadata::field::description::Harmonized;
+use crate::Url;
 
 /// Gets the harmonized fields for samples.
 pub fn get_field_descriptions() -> Vec<description::Description> {
@@ -25,9 +26,9 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "disease_phase",
+            String::from("disease_phase"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))
@@ -42,9 +43,9 @@ impl description::r#trait::Description for cde::v2::sample::TissueType {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "tissue_type",
+            String::from("tissue_type"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))
@@ -59,9 +60,9 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "tumor_classification",
+            String::from("tumor_classification"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))

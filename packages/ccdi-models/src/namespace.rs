@@ -35,6 +35,11 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[schema(as = models::Namespace)]
 pub struct Namespace {
     /// The name of this namespace.
+    ///
+    /// The name **must** conform to
+    /// [`kebab-casing`](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case),
+    /// matching the pattern `^[a-z0-9-]+$`. Any name that does not match this
+    /// pattern should be considered invalid by clients.
     #[schema(
         value_type = models::namespace::Name,
         example = "organization"

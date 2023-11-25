@@ -5,6 +5,7 @@ use ccdi_cde as cde;
 use cde::CDE;
 
 use crate::metadata::field::description;
+use crate::Url;
 
 use crate::metadata::field::description::r#trait::Description;
 use crate::metadata::field::description::Harmonized;
@@ -27,9 +28,9 @@ impl Description for cde::v1::subject::Sex {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "sex",
+            String::from("sex"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))
@@ -44,9 +45,9 @@ impl Description for cde::v1::subject::Race {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "race",
+            String::from("race"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))
@@ -61,9 +62,9 @@ impl Description for cde::v2::subject::Ethnicity {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "ethnicity",
+            String::from("ethnicity"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))
@@ -78,9 +79,9 @@ impl Description for cde::v1::subject::Identifier {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            "identifiers",
+            String::from("identifiers"),
             entity.standard().to_string(),
-            entity.url().to_string(),
+            Url::from(entity.url().clone()),
             entity,
             members,
         ))

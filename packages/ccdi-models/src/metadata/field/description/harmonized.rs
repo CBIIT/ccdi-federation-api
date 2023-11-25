@@ -9,6 +9,8 @@ use ccdi_cde as cde;
 use cde::parse::cde::Entity;
 use cde::parse::cde::Member;
 
+use crate::Url;
+
 pub mod sample;
 pub mod subject;
 
@@ -34,7 +36,8 @@ pub struct Harmonized {
 
     /// A URL to the CCDI documentation where the definition of this harmonized
     /// field resides.
-    url: String,
+    #[schema(value_type = models::Url)]
+    url: Url,
 
     /// The parsed [`Entity`].
     #[serde(skip_serializing)]
@@ -58,11 +61,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.
@@ -84,17 +88,17 @@ impl Harmonized {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn new(
-        path: impl Into<String>,
-        standard: impl Into<String>,
-        url: impl Into<String>,
+        path: String,
+        standard: String,
+        url: Url,
         entity: Entity,
         members: Vec<(String, Member)>,
     ) -> Self {
         Harmonized {
             harmonized: true,
-            path: path.into(),
-            standard: standard.into(),
-            url: url.into(),
+            path,
+            standard,
+            url,
             entity,
             members,
         }
@@ -112,11 +116,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.
@@ -156,11 +161,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.
@@ -200,11 +206,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.
@@ -223,11 +230,11 @@ impl Harmonized {
     ///     )],
     /// );
     ///
-    /// assert_eq!(description.url(), &String::from("https://cancer.gov"));
+    /// assert_eq!(description.url().as_str(), "https://cancer.gov/");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn url(&self) -> &String {
+    pub fn url(&self) -> &Url {
         &self.url
     }
 
@@ -243,11 +250,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.
@@ -271,7 +279,7 @@ impl Harmonized {
     ///     description.entity().description(),
     ///     "A description for the entity."
     /// );
-    /// assert_eq!(description.entity().url(), "https://example.com");
+    /// assert_eq!(description.entity().url().as_str(), "https://example.com/");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -291,11 +299,12 @@ impl Harmonized {
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
     /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     "test",
-    ///     "caDSR ------ v1.00",
-    ///     "https://cancer.gov",
+    ///     String::from("test"),
+    ///     String::from("caDSR ------ v1.00"),
+    ///     Url::try_from("https://cancer.gov").unwrap(),
     ///     "**`A Standard`**
     ///     
     ///     A description for the entity.

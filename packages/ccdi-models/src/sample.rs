@@ -28,7 +28,8 @@ pub struct Sample {
     /// This namespace pointed to by this identifier must also **ALWAYS** be
     /// included in results provided by the `/namespace` endpoint (and the
     /// subsequent `/namespace/<name>` endpoint). Failure to include the
-    /// namespace there signifies non-compliance with the API.
+    /// namespace in the results at that endpoint signifies non-compliance with
+    /// the API.
     #[schema(value_type = models::sample::Identifier)]
     id: Identifier,
 

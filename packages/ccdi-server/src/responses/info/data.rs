@@ -18,7 +18,8 @@ pub struct Information {
     #[schema(value_type = responses::info::data::Version)]
     version: Version,
 
-    /// The ISO 8601 formatted date and time when the data was last updated.
+    /// The ISO 8601 formatted, UTC-based date and time when the data was last
+    /// updated.
     ///
     /// This represents the last _update_ time. In contrast to the
     /// `data_version` field, this field is updated whenever a data update is

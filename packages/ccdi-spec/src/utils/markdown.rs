@@ -45,7 +45,7 @@ fn display_harmonized(
         f,
         "**Formal Name: `{}`** ([Link]({}))\n",
         harmonized.standard(),
-        harmonized.url()
+        harmonized.url().as_str()
     )?;
 
     // Write the documentation for the metadata element.
