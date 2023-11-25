@@ -30,7 +30,7 @@ The specification is generated using the [Rust] packages contained with `package
 ### Repository Details
 
 - This repository uses the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) style for commit messages. Please make sure all commits conform to this style.
-- This repository, as well as the API itself, are versioned using the latest version of [Semantic Versioning](https://semver.org/).
+- This tooling that produces the API specification are versioned using the latest version of [Semantic Versioning](https://semver.org/). The API itself is versioned according to the tooling that produced the specification (i.e., v1.0.0 of the tooling produces v1.0.0 of the specification).
 - All changes will either be squashed and merged or rebased off of the `main` branch—no merge commits are allowed in this repository.
 
 [Actix Web]: https://actix.rs/
