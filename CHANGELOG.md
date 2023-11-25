@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0 — 11-25-2023
+
+### Added
+
+* Formalizes the `Namespace` entity and adds `/info` endpoint ([#27](https://github.com/CBIIT/ccdi-federation-api/pull/27)).
+  * `/info`: Gets information about the server.
+  * `/namespace`: Lists namespaces known by this server.
+  * `/namespace/{name}`: Gets the namespace matching the provided name (if it exists).
+* Adds a `InvalidRoute` error to give feedback in the response body when a route is not available ([#28](https://github.com/CBIIT/ccdi-federation-api/pull/28)).
+* Adds an `UnshareableData` error to explain why data is not shareable ([#29](https://github.com/CBIIT/ccdi-federation-api/pull/29)).
+
 ## 0.4.0 — 11-02-2023
 
 ### Added
