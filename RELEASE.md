@@ -1,7 +1,7 @@
 # Release
 
   * [ ] Update `CHANGELOG.md` with version and publication date.
-  * Within `/packages`, do the following:
+  * [ ] Within `/packages`, do the following:
     * [ ] Update version in the top-level `Cargo.toml`.
     * [ ] Run tests: `cargo test --all-features`.
     * [ ] Run linting: `cargo clippy --all-features`.
