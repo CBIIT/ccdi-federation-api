@@ -38,6 +38,7 @@ pub struct Information {
     ///
     /// This is intended to be a server-specification documentation link, not
     /// any link that is developed by the federation.
+    #[schema(default = "https://docs.example.com")]
     documentation_url: Option<String>,
 }
 

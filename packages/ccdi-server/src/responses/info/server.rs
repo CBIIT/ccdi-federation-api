@@ -57,7 +57,7 @@ pub struct Information {
 
     /// If your code base is open source and you want to advertise that, a link
     /// to the repository where the code is stored.
-    #[schema(example = "https://github.com/CBIIT/ccdi-federation/api")]
+    #[schema(example = "https://github.com/CBIIT/ccdi-federation-api")]
     repository_url: Option<String>,
 
     /// If available, a URL where users can report issues.

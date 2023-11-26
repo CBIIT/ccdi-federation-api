@@ -5,7 +5,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: '0.5'
+  version: v0.5.0
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -1451,7 +1451,7 @@ components:
         api_version:
           type: string
           description: The version of the API that this server supports.
-          example: v0.3
+          example: v0.5.0
         documentation_url:
           type: string
           description: |-
@@ -1499,6 +1499,7 @@ components:
 
             This is intended to be a server-specification documentation link, not
             any link that is developed by the federation.
+          default: https://docs.example.com
           nullable: true
     responses.info.data.Version:
       allOf:
@@ -1605,7 +1606,7 @@ components:
           description: |-
             If your code base is open source and you want to advertise that, a link
             to the repository where the code is stored.
-          example: https://github.com/CBIIT/ccdi-federation/api
+          example: https://github.com/CBIIT/ccdi-federation-api
           nullable: true
         issues_url:
           type: string

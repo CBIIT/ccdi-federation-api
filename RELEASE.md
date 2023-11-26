@@ -7,7 +7,10 @@
     * [ ] Run linting: `cargo clippy --all-features`.
     * [ ] Run fmt: `cargo fmt --check`.
     * [ ] Run doc: `cargo doc`.
-  * [ ] Update the `swagger.yml` specification to match the new version.
+  * [ ] Search and update the (`v0.1.0`) in the code. In particular,
+      * [ ] Update the API version in the main `api.rs`.
+      * [ ] Update the example API version in the `/info` example response.
+      * [ ] Regenerate the `swagger.yml` specification.
   * [ ] Stage changes: `git add packages/Cargo.lock packages/Cargo.toml
     CHANGELOG.md swagger.yml`.
   * [ ] Create git commit: `git commit -m "release: bumps version to v0.1.0"`.

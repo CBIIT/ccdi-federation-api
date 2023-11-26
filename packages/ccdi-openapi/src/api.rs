@@ -30,7 +30,7 @@ JSON object with one `responses.error.Kind` where the `Kind` matches the
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "0.3",
+        version = "v0.5.0",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",
