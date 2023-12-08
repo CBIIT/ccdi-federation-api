@@ -24,7 +24,7 @@ samples of interest via a variety of query parameters.
 
 **Authentication** is defined as being identified in any manner.
 Authentication, by definition, requires prior registration of identifiable
-characteristics. Typically, this in the form of an account, though the
+characteristics. Typically, this is in the form of an account, though the
 definition of authentication includes any condition under which you are
 registered and identified (e.g., allowlisted via IP address).
 
@@ -63,8 +63,8 @@ followed, requires prior manual intervention in the form of instructions to
 proceed to the otherwise immediately navigable desired resource(s)),
 informational (a link that does not navigate to a desired resource directly but
 can be followed to find out more information on how to access the desired
-resource(s) out-of-band), or mailing (an email address to contact with
-accompanying instructions to access the desired resource(s)) in nature.
+resource(s) out-of-band), or mailing (an email address to contact, accompanied
+by instructions to access the desired resource(s)) in nature.
 Again, a link does not, in and of itself, communicate the requirements to
 access desired resources—it must be used in conjunction with a gateway to
 communicate that information.

@@ -30,10 +30,10 @@ pub enum Gateway {
     /// A registered access gateway.
     ///
     /// This gateway notifies of resources that are accessible after successful
-    /// authenication but _without_ any required authorization.
+    /// authentication but _without_ any required authorization.
     ///
     /// The term "registered" is used here instead of "authenticated" because
-    /// (a) identification first requires registerion of some information that
+    /// (a) identification first requires registration of some information that
     /// is used to identify an individual (such as a username or IP address),
     /// and (b) the term "registered" is used more commonly in a colloquial
     /// context.

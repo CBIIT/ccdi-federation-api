@@ -20,7 +20,7 @@ pub enum Status {
         /// If known, the ISO 8601 formatted, UTC-based date and time when the
         /// the resource will become available.
         ///
-        /// This field is intented to indicate to the consumer that they should
+        /// This field is intended to indicate to the consumer that they should
         /// retry their request on or after the listed time to gain an updated
         /// gateway definition.
         available_at: Option<DateTime<Utc>>,
@@ -31,7 +31,7 @@ pub enum Status {
         /// The ISO 8601 formatted, UTC-based date and time when the the
         /// resource will become available.
         ///
-        /// This field is intented to indicate to the consumer that they should
+        /// This field is intended to indicate to the consumer that they should
         /// retry their request on or after the listed time to gain an updated
         /// gateway definition.
         ///

@@ -15,8 +15,8 @@ pub struct Closed {
     /// A Markdown field (formatted according to the [CommonMark] standard) that
     /// describes the gateway.
     ///
-    /// At a minimum, a description what the gateway is and why it is closed is
-    /// recommended.
+    /// At a minimum, a description of what the gateway is and why it is closed
+    /// is recommended.
     ///
     /// **Note:** this field is required for a closed gateway. This was an
     /// intentional decision: gateways are intended to point users to external

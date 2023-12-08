@@ -6,7 +6,7 @@ use crate::Url;
 
 /// A link to an external resource.
 ///
-/// A link communicates information about where a resource is location alongside
+/// A link communicates information about where a resource is located, alongside
 /// additional context regarding how the link should be interpreted (via the
 /// `kind` field). All [`Link`]s include a `url` field pointing to the external
 /// resource. In the case of [`Link::Approximate`] and [`Link::MailTo`], a
@@ -92,7 +92,7 @@ pub enum Link {
         ///
         /// As much as is practical, instructions should be as specific as
         /// possible to the desired data. We expect that generating dynamic
-        /// instrucions based on the user's selection will require a
+        /// instructions based on the user's selection will require a
         /// non-trivial amount of development effort rather than returning
         /// generic set of instructions. The reason for this is because this
         /// field is intended to be surfaced as tailored instructions with a
@@ -104,7 +104,7 @@ pub enum Link {
         /// _all_ files for the sample, the instructions should specify how to
         /// filter down to only the whole-genome sequence BAM files
         /// specifically—not how to operate filters within the interface
-        /// generally).
+        /// generally.
         instructions: String,
     },
 
@@ -138,7 +138,7 @@ pub enum Link {
     /// resource.
     ///
     /// [`Link::MailTo`] is used when the process of requesting data access is
-    /// to email
+    /// to email.
     MailTo {
         /// A url beginning with `mailto:` to a monitored email address.
         #[schema(value_type = models::Url)]

@@ -68,7 +68,7 @@ pub struct File {
     /// key in the `/file` response object and referred to by name within a
     /// returned file in the `/file` response object. They are intended to be
     /// used when more than one file references the same gateway. This mechanism
-    /// is available to ensure that they gateway object does not need to be
+    /// is available to ensure that the gateway object does not need to be
     /// duplicated mulitple times in the response in these cases.
     ///
     /// This field can contain multiple gateways to support scenarios where a
