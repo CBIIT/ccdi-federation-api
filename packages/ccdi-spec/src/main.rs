@@ -41,6 +41,15 @@ use utils::markdown;
 
 const ERROR_EXIT_CODE: i32 = 1;
 
+#[derive(Clone, Debug, clap::ValueEnum)]
+pub enum Entity {
+    /// A subject.
+    Subject,
+
+    /// A sample.
+    Sample,
+}
+
 /// An error related to the main program.
 #[derive(Debug)]
 pub enum Error {
@@ -73,6 +82,83 @@ pub struct GenerateArgs {
     force: bool,
 }
 
+#[derive(Clone, Debug, clap::ValueEnum)]
+#[clap(rename_all = "PascalCase")]
+pub enum ResponseType {
+    Samples,
+    Sample,
+    SamplesByCount,
+    Subjects,
+    Subject,
+    SubjectsByCount,
+    Files,
+    Namespaces,
+    Namespace,
+    Summary,
+    Information,
+    FieldDescriptions,
+    Errors,
+}
+
+fn parse_response(
+    text: &str,
+    response_type: ResponseType,
+) -> Result<(), Box<dyn std::error::Error>> {
+    match response_type {
+        ResponseType::Samples => {
+            serde_json::from_str::<server::responses::Samples>(text).map(|_| ())?;
+        }
+        ResponseType::Sample => {
+            serde_json::from_str::<server::responses::Sample>(text).map(|_| ())?;
+        }
+        ResponseType::SamplesByCount => {
+            serde_json::from_str::<server::responses::by::count::Samples>(text).map(|_| ())?;
+        }
+        ResponseType::Subjects => {
+            serde_json::from_str::<server::responses::Subjects>(text).map(|_| ())?;
+        }
+        ResponseType::Subject => {
+            serde_json::from_str::<server::responses::Subject>(text).map(|_| ())?;
+        }
+        ResponseType::SubjectsByCount => {
+            serde_json::from_str::<server::responses::by::count::Subjects>(text).map(|_| ())?;
+        }
+        ResponseType::Files => {
+            serde_json::from_str::<server::responses::Files>(text).map(|_| ())?;
+        }
+        ResponseType::Namespaces => {
+            serde_json::from_str::<server::responses::Namespaces>(text).map(|_| ())?;
+        }
+        ResponseType::Namespace => {
+            serde_json::from_str::<server::responses::Namespace>(text).map(|_| ())?;
+        }
+        ResponseType::Summary => {
+            serde_json::from_str::<server::responses::Summary>(text).map(|_| ())?;
+        }
+        ResponseType::Information => {
+            serde_json::from_str::<server::responses::Information>(text).map(|_| ())?;
+        }
+        ResponseType::FieldDescriptions => {
+            serde_json::from_str::<server::responses::metadata::FieldDescriptions>(text)
+                .map(|_| ())?;
+        }
+        ResponseType::Errors => {
+            serde_json::from_str::<server::responses::Errors>(text).map(|_| ())?;
+        }
+    }
+
+    Ok(())
+}
+
+#[derive(Debug, Parser)]
+pub struct CheckArgs {
+    /// The URL to retreive.
+    url: String,
+
+    /// The type of response to parse.
+    response_type: ResponseType,
+}
+
 #[derive(Debug, Parser)]
 pub struct ServeArgs {
     /// Number of subjects for the server to generate.
@@ -92,30 +178,24 @@ pub struct ServeArgs {
     port: u16,
 }
 
-#[derive(Clone, Debug, clap::ValueEnum)]
-pub enum WikiEntity {
-    /// A subject.
-    Subject,
-
-    /// A sample.
-    Sample,
-}
-
 #[derive(Debug, Parser)]
 pub struct WikiArgs {
     /// The API entity for which to generate a wiki page.
-    entity: WikiEntity,
+    entity: Entity,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
-    /// Generate the OpenAPI specification as YAML.
+    /// Checks that a URL matches the specification.
+    Check(CheckArgs),
+
+    /// Generate the OpenAPI specification.
     Generate(GenerateArgs),
 
     /// Runs the test server.
     Serve(ServeArgs),
 
-    /// Generates the documentation for a wiki page covering an API entity.
+    /// Generates the documentation for the wiki page.
     Wiki(WikiArgs),
 }
 
@@ -153,6 +233,12 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
         .init();
 
     match args.command {
+        Command::Check(args) => {
+            let response = reqwest::blocking::get(&args.url)?;
+            let text = response.text()?;
+            parse_response(&text, args.response_type)?;
+            println!("Success!");
+        }
         Command::Generate(args) => {
             let api = Api::openapi();
             let mut writer = get_output(args.output, args.force)?;
@@ -207,10 +293,10 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
         }
         Command::Wiki(args) => {
             let fields = match args.entity {
-                WikiEntity::Subject => {
+                Entity::Subject => {
                     models::metadata::field::description::harmonized::subject::get_field_descriptions()
                 }
-                WikiEntity::Sample => {
+                Entity::Sample => {
                     models::metadata::field::description::harmonized::sample::get_field_descriptions(
                     )
                 }
