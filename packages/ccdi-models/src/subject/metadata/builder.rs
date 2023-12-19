@@ -19,6 +19,12 @@ pub struct Builder {
     /// The identifiers for the subject.
     identifiers: Option<Vec<field::owned::subject::Identifier>>,
 
+    /// The vital status for the subject.
+    vital_status: Option<field::unowned::subject::VitalStatus>,
+
+    /// The approximate age at vital status.
+    age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
+
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
 }
@@ -116,6 +122,51 @@ impl Builder {
         self
     }
 
+    /// Sets the `vital_status` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::VitalStatus;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = VitalStatus::new(cde::v1::subject::VitalStatus::Unknown, None, None);
+    /// let builder = Builder::default().vital_status(field);
+    /// ```
+    pub fn vital_status(mut self, vital_status: field::unowned::subject::VitalStatus) -> Self {
+        self.vital_status = Some(vital_status);
+        self
+    }
+
+    /// Sets the `age_at_vital_status` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::subject::AgeAtVitalStatus;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = AgeAtVitalStatus::new(
+    ///     models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().age_at_vital_status(field);
+    /// ```
+    pub fn age_at_vital_status(
+        mut self,
+        age_at_vital_status: field::unowned::subject::AgeAtVitalStatus,
+    ) -> Self {
+        self.age_at_vital_status = Some(age_at_vital_status);
+        self
+    }
+
     /// Inserts an [`UnharmonizedField`](field::UnharmonizedField) into the
     /// `unharmonized` map.
     ///
@@ -185,6 +236,8 @@ impl Builder {
             race: self.race,
             ethnicity: self.ethnicity,
             identifiers: self.identifiers,
+            vital_status: self.vital_status,
+            age_at_vital_status: self.age_at_vital_status,
             unharmonized: self.unharmonized,
         }
     }

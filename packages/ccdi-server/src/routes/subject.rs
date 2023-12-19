@@ -391,6 +391,20 @@ fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
             }),
             None => None,
         },
+        "vital_status" => match subject.metadata() {
+            Some(metadata) => metadata
+                .vital_status()
+                .as_ref()
+                .map(|vital_status| Value::String(vital_status.value().to_string())),
+            None => None,
+        },
+        "age_at_vital_status" => match subject.metadata() {
+            Some(metadata) => metadata
+                .age_at_vital_status()
+                .as_ref()
+                .map(|age_at_vital_status| Value::String(age_at_vital_status.value().to_string())),
+            None => None,
+        },
         _ => None,
     }
 }

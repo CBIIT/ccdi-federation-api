@@ -7,6 +7,9 @@ use crate::sample::Metadata;
 /// A builder for [`Metadata`].
 #[derive(Clone, Debug, Default)]
 pub struct Builder {
+    /// The approximate age at diagnosis.
+    age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
+
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
 
@@ -17,11 +20,40 @@ pub struct Builder {
     /// characteristics.
     tumor_classification: Option<field::unowned::sample::TumorClassification>,
 
+    /// The ICD-O-3 morphology code for the tumor tissue.
+    tumor_tissue_morphology: Option<field::unowned::sample::TumorTissueMorphology>,
+
+    /// The approximate age at collection.
+    age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
+
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
 }
 
 impl Builder {
+    /// Sets the `age_at_diagnosis` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::sample::AgeAtDiagnosis;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = AgeAtDiagnosis::new(
+    ///     models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().age_at_diagnosis(field);
+    /// ```
+    pub fn age_at_diagnosis(mut self, field: field::unowned::sample::AgeAtDiagnosis) -> Self {
+        self.age_at_diagnosis = Some(field);
+        self
+    }
+
     /// Sets the `disease_phase` field of the [`Builder`].
     ///
     /// # Examples
@@ -79,6 +111,55 @@ impl Builder {
         field: field::unowned::sample::TumorClassification,
     ) -> Self {
         self.tumor_classification = Some(field);
+        self
+    }
+
+    /// Sets the `tumor_tissue_morphology` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::TumorTissueMorphology;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = TumorTissueMorphology::new(
+    ///     cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().tumor_tissue_morphology(field);
+    /// ```
+    pub fn tumor_tissue_morphology(
+        mut self,
+        field: field::unowned::sample::TumorTissueMorphology,
+    ) -> Self {
+        self.tumor_tissue_morphology = Some(field);
+        self
+    }
+
+    /// Sets the `age_at_collection` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::sample::AgeAtCollection;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = AgeAtCollection::new(
+    ///     models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().age_at_collection(field);
+    /// ```
+    pub fn age_at_collection(mut self, field: field::unowned::sample::AgeAtCollection) -> Self {
+        self.age_at_collection = Some(field);
         self
     }
 
@@ -147,9 +228,12 @@ impl Builder {
     /// ```
     pub fn build(self) -> Metadata {
         Metadata {
+            age_at_diagnosis: self.age_at_diagnosis,
+            age_at_collection: self.age_at_collection,
             disease_phase: self.disease_phase,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
+            tumor_tissue_morphology: self.tumor_tissue_morphology,
             unharmonized: self.unharmonized,
         }
     }

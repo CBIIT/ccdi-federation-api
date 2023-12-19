@@ -711,6 +711,18 @@ components:
       - Primary
       - Regional
       - Unknown
+    cde.v1.sample.TumorTissueMorphology:
+      type: string
+      description: |-
+        **`caDSR CDE 11326261 v1.00`**
+
+        This metadata element is defined by the caDSR as "The microscopic anatomy of
+        normal and abnormal cells and tissues of the specimen as captured in the
+        morphology codes of the International Classification of Diseases for
+        Oncology, 3rd Edition (ICD-O-3)."
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11326261%20and%20ver_nr=1>
     cde.v1.subject.Identifier:
       type: object
       description: |-
@@ -775,6 +787,22 @@ components:
       - F
       - M
       - UNDIFFERENTIATED
+    cde.v1.subject.VitalStatus:
+      type: string
+      description: |-
+        **`caDSR CDE 2847330 v1.00`**
+
+        This metadata element is defined by the caDSR as "The response to a question
+        that describes a participant's survival status."
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2847330%20and%20ver_nr=1>
+      enum:
+      - Not reported
+      - Alive
+      - Dead
+      - Unknown
+      - Unspecified
     cde.v2.sample.TissueType:
       type: string
       description: |-
@@ -883,6 +911,44 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.sample.AgeAtCollection:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.sample.metadata.AgeAtCollection'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.AgeAtDiagnosis:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.sample.metadata.AgeAtDiagnosis'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.sample.DiseasePhase:
       type: object
       required:
@@ -940,6 +1006,44 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.sample.TumorTissueMorphology:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.TumorTissueMorphology'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.AgeAtVitalStatus:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.subject.metadata.AgeAtVitalStatus'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.subject.Ethnicity:
       type: object
       required:
@@ -985,6 +1089,25 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/cde.v1.subject.Sex'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.VitalStatus:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.subject.VitalStatus'
         ancestors:
           type: array
           items:
@@ -1580,8 +1703,7 @@ components:
       required:
       - harmonized
       - path
-      - standard
-      - url
+      - wiki_url
       properties:
         harmonized:
           type: boolean
@@ -1595,13 +1717,12 @@ components:
           description: |-
             A comma (`.`) delimited path to the field's location on the `metadata`
             objects returned by the various subject endpoints.
-        standard:
-          type: string
-          description: |-
-            The proper name of the standard to which this field is harmonized (defined
-            by the documentation for the CCDI metadata fields).
-        url:
+        wiki_url:
           $ref: '#/components/schemas/models.Url'
+        standard:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.description.harmonized.Standard'
+          nullable: true
     models.metadata.field.description.Unharmonized:
       type: object
       description: |-
@@ -1649,6 +1770,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/models.Url'
           nullable: true
+    models.metadata.field.description.harmonized.Standard:
+      type: object
+      description: A standard to which a field is harmonized.
+      required:
+      - name
+      - url
+      properties:
+        name:
+          type: string
+          description: The name.
+        url:
+          $ref: '#/components/schemas/models.Url'
     models.namespace.Description:
       type: string
       description: |-
@@ -1688,10 +1821,17 @@ components:
       type: object
       description: Metadata associated with a sample.
       required:
+      - age_at_diagnosis
       - disease_phase
       - tissue_type
       - tumor_classification
+      - tumor_tissue_morphology
+      - age_at_collection
       properties:
+        age_at_diagnosis:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.AgeAtDiagnosis'
+          nullable: true
         disease_phase:
           allOf:
           - $ref: '#/components/schemas/field.unowned.sample.DiseasePhase'
@@ -1704,8 +1844,38 @@ components:
           allOf:
           - $ref: '#/components/schemas/field.unowned.sample.TumorClassification'
           nullable: true
+        tumor_tissue_morphology:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.TumorTissueMorphology'
+          nullable: true
+        age_at_collection:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.AgeAtCollection'
+          nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
+    models.sample.metadata.AgeAtCollection:
+      type: number
+      format: float
+      description: |-
+        The approximate age of collection in days.
+
+        * When the age at collection is collected by the source server in days, the
+        number of days is reported directly.
+        * When the age at collection is collected by the source server in years, the
+        number of years is multiplied by 365.25 to arrive at an approximate number
+        of days.
+    models.sample.metadata.AgeAtDiagnosis:
+      type: number
+      format: float
+      description: |-
+        The approximate age of diagnosis in days.
+
+        * When the age at diagnosis is collected by the source server in days, the
+        number of days is reported directly.
+        * When the age at diagnosis is collected by the source server in years, the
+        number of years is multiplied by 365.25 to arrive at an approximate number
+        of days.
     models.subject.Identifier:
       $ref: '#/components/schemas/cde.v1.subject.Identifier'
     models.subject.Kind:
@@ -1724,6 +1894,8 @@ components:
       - race
       - ethnicity
       - identifiers
+      - vital_status
+      - age_at_vital_status
       properties:
         sex:
           allOf:
@@ -1749,8 +1921,27 @@ components:
             Note that this list of identifiers *must* include the main identifier
             for the [`Subject`].
           nullable: true
+        vital_status:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.subject.VitalStatus'
+          nullable: true
+        age_at_vital_status:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.subject.AgeAtVitalStatus'
+          nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
+    models.subject.metadata.AgeAtVitalStatus:
+      type: number
+      format: float
+      description: |-
+        The approximate age at vital status in days.
+
+        * When the age at vital status is collected by the source server in days,
+        the number of days is reported directly.
+        * When the age at vital status is collected by the source server in years,
+        the number of years is multiplied by 365.25 to arrive at an approximate
+        number of days.
     responses.Errors:
       type: object
       description: A wrapper around one or more [errors](Kind).

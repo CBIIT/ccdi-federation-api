@@ -186,27 +186,37 @@ that some fields have been left out of the definitions for brevity.
         server::routes::info::info_index,
     ),
     components(schemas(
-        // Subject common data elements (CDEs).
+        // Harmonized subject metadata elements.
         cde::v1::subject::Race,
         cde::v1::subject::Sex,
         cde::v2::subject::Ethnicity,
         cde::v1::subject::Identifier,
+        cde::v1::subject::VitalStatus,
+        models::subject::metadata::AgeAtVitalStatus,
 
-        // Sample common data elements (CDEs).
+        // Harmonized sample metadata elements.
+        models::sample::metadata::AgeAtDiagnosis,
         cde::v1::sample::DiseasePhase,
         cde::v2::sample::TissueType,
         cde::v1::sample::TumorClassification,
+        cde::v1::sample::TumorTissueMorphology,
+        models::sample::metadata::AgeAtCollection,
 
         // Harmonized subject fields.
         field::unowned::subject::Sex,
         field::unowned::subject::Race,
         field::unowned::subject::Ethnicity,
         field::owned::subject::Identifier,
+        field::unowned::subject::VitalStatus,
+        field::unowned::subject::AgeAtVitalStatus,
 
         // Harmonized sample fields.
+        field::unowned::sample::AgeAtDiagnosis,
         field::unowned::sample::DiseasePhase,
         field::unowned::sample::TissueType,
         field::unowned::sample::TumorClassification,
+        field::unowned::sample::TumorTissueMorphology,
+        field::unowned::sample::AgeAtCollection,
 
         // Unharmonized fields.
         field::owned::Field,
@@ -241,6 +251,7 @@ that some fields have been left out of the definitions for brevity.
         models::metadata::field::Description,
         models::metadata::field::description::Harmonized,
         models::metadata::field::description::Unharmonized,
+        models::metadata::field::description::harmonized::Standard,
 
         // Namespace models.
         models::Namespace,
@@ -249,7 +260,6 @@ that some fields have been left out of the definitions for brevity.
 
         // Url model.
         models::Url,
-
 
         // General responses.
         responses::Errors,

@@ -3,10 +3,14 @@
 use ccdi_cde as cde;
 
 use cde::CDE;
+use introspect::Entity;
+use introspect::IntrospectedEntity as _;
 
 use crate::metadata::field::description;
 use crate::Url;
 
+use crate::metadata::field::description::harmonized::Kind;
+use crate::metadata::field::description::harmonized::Standard;
 use crate::metadata::field::description::r#trait::Description;
 use crate::metadata::field::description::Harmonized;
 
@@ -17,6 +21,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v1::subject::Race::description(),
         cde::v2::subject::Ethnicity::description(),
         cde::v1::subject::Identifier::description(),
+        cde::v1::subject::VitalStatus::description(),
     ]
 }
 
@@ -28,11 +33,18 @@ impl Description for cde::v1::subject::Sex {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("sex"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from(
+                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#sex",
+            )
+            .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
+            Some(members),
         ))
     }
 }
@@ -45,11 +57,18 @@ impl Description for cde::v1::subject::Race {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("race"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from(
+                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#race",
+            )
+            .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
+            Some(members),
         ))
     }
 }
@@ -62,11 +81,12 @@ impl Description for cde::v2::subject::Ethnicity {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("ethnicity"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#ethnicity").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
         ))
     }
 }
@@ -79,11 +99,48 @@ impl Description for cde::v1::subject::Identifier {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
             String::from("identifiers"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#identifiers").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
+        ))
+    }
+}
+
+impl Description for cde::v1::subject::VitalStatus {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().unwrap();
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("vital_status"),
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#vital_status").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
+        ))
+    }
+}
+
+impl description::r#trait::Description for crate::subject::metadata::AgeAtVitalStatus {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("age_at_vital_status"),
+            description,
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_vital_status").unwrap(),
+            None,
+            None,
         ))
     }
 }

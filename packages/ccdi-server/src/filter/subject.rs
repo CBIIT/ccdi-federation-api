@@ -14,6 +14,8 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
             "race" => params.race.as_ref(),
             "ethnicity" => params.ethnicity.as_ref(),
             "identifiers" => params.identifiers.as_ref(),
+            "vital_status" => params.vital_status.as_ref(),
+            "age_at_vital_status" => params.age_at_vital_status.as_ref(),
             _ => unreachable!("unhandled subject metadata field: {field}"),
         };
 
@@ -54,6 +56,14 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
                                 .map(|r| r.to_string())
                                 .collect::<Vec<String>>()
                         }),
+                    "vital_status" => subject
+                        .metadata()
+                        .and_then(|metadata| metadata.vital_status())
+                        .map(|vital_status| vec![vital_status.to_string()]),
+                    "age_at_vital_status" => subject
+                        .metadata()
+                        .and_then(|metadata| metadata.age_at_vital_status())
+                        .map(|age_at_vital_status| vec![age_at_vital_status.to_string()]),
                     _ => unreachable!("unhandled subject metadata field: {field}"),
                 };
 

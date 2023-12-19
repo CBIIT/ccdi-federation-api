@@ -359,6 +359,20 @@ pub async fn samples_by_count(path: Path<String>, samples: Data<Store>) -> impl 
 
 fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
     match field {
+        "age_at_diagnosis" => match sample.metadata() {
+            Some(metadata) => metadata
+                .age_at_diagnosis()
+                .as_ref()
+                .map(|age_at_diagnosis| Value::String(age_at_diagnosis.value().to_string())),
+            None => None,
+        },
+        "age_at_collection" => match sample.metadata() {
+            Some(metadata) => metadata
+                .age_at_collection()
+                .as_ref()
+                .map(|age_at_collection| Value::String(age_at_collection.value().to_string())),
+            None => None,
+        },
         "disease_phase" => match sample.metadata() {
             Some(metadata) => metadata
                 .disease_phase()
@@ -376,6 +390,13 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
         "tumor_classification" => match sample.metadata() {
             Some(metadata) => metadata
                 .tumor_classification()
+                .as_ref()
+                .map(|value| Value::String(value.value().to_string())),
+            None => None,
+        },
+        "tumor_tissue_morphology" => match sample.metadata() {
+            Some(metadata) => metadata
+                .tumor_tissue_morphology()
                 .as_ref()
                 .map(|value| Value::String(value.value().to_string())),
             None => None,

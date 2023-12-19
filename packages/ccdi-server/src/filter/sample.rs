@@ -13,6 +13,9 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
             "disease_phase" => params.disease_phase.as_ref(),
             "tissue_type" => params.tissue_type.as_ref(),
             "tumor_classification" => params.tumor_classification.as_ref(),
+            "age_at_diagnosis" => params.age_at_diagnosis.as_ref(),
+            "age_at_collection" => params.age_at_collection.as_ref(),
+            "tumor_tissue_morphology" => params.tumor_tissue_morphology.as_ref(),
             _ => unreachable!("unhandled sample metadata field: {field}"),
         };
 
@@ -38,6 +41,18 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                         .metadata()
                         .and_then(|metadata| metadata.tumor_classification())
                         .map(|tumor_classification| vec![tumor_classification.to_string()]),
+                    "age_at_diagnosis" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.age_at_diagnosis())
+                        .map(|age_at_diagnosis| vec![age_at_diagnosis.to_string()]),
+                    "age_at_collection" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.age_at_collection())
+                        .map(|age_at_collection| vec![age_at_collection.to_string()]),
+                    "tumor_tissue_morphology" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.tumor_tissue_morphology())
+                        .map(|tumor_tissue_morphology| vec![tumor_tissue_morphology.to_string()]),
                     _ => unreachable!("unhandled sample metadata field: {field}"),
                 };
 

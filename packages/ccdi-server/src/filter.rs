@@ -103,6 +103,8 @@ where
 ///         race: None,
 ///         ethnicity: None,
 ///         identifiers: None,
+///         vital_status: None,
+///         age_at_vital_status: None,
 ///     },
 /// );
 ///
@@ -118,6 +120,8 @@ where
 ///         race: Some(String::from("Asian")),
 ///         ethnicity: None,
 ///         identifiers: None,
+///         vital_status: None,
+///         age_at_vital_status: None,
 ///     },
 /// );
 ///
@@ -132,6 +136,8 @@ where
 ///         race: None,
 ///         ethnicity: None,
 ///         identifiers: None,
+///         vital_status: None,
+///         age_at_vital_status: None,
 ///     },
 /// );
 ///
