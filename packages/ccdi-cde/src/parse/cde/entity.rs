@@ -72,37 +72,12 @@ pub type Result<T> = std::result::Result<T, ParseError>;
 /// `struct` or an `enum` (both can be used to describe common data elements).
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Entity {
-    standard: String,
     description: String,
-    url: Url,
+    standard_name: String,
+    standard_url: Url,
 }
 
 impl Entity {
-    /// Gets the standard for the [`Entity`] by reference.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use ccdi_cde as cde;
-    ///
-    /// use cde::parse::cde::Entity;
-    ///
-    /// let entity = r#"**`A Standard`**
-    ///
-    /// A description that spans
-    /// multiple lines.
-    ///
-    /// Link: <https://example.com>"#
-    ///     .parse::<Entity>()?;
-    ///
-    /// assert_eq!(entity.standard(), "A Standard");
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn standard(&self) -> &str {
-        self.standard.as_str()
-    }
-
     /// Gets the description for the [`Entity`] by reference.
     ///
     /// # Examples
@@ -131,7 +106,7 @@ impl Entity {
         self.description.as_str()
     }
 
-    /// Gets the URL for the [`Entity`] by reference.
+    /// Gets the standard name for the [`Entity`] by reference.
     ///
     /// # Examples
     ///
@@ -148,12 +123,37 @@ impl Entity {
     /// Link: <https://example.com>"#
     ///     .parse::<Entity>()?;
     ///
-    /// assert_eq!(entity.url().as_str(), "https://example.com/");
+    /// assert_eq!(entity.standard_name(), "A Standard");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn url(&self) -> &Url {
-        &self.url
+    pub fn standard_name(&self) -> &str {
+        self.standard_name.as_str()
+    }
+
+    /// Gets the standard URL for the [`Entity`] by reference.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    ///
+    /// use cde::parse::cde::Entity;
+    ///
+    /// let entity = r#"**`A Standard`**
+    ///
+    /// A description that spans
+    /// multiple lines.
+    ///
+    /// Link: <https://example.com>"#
+    ///     .parse::<Entity>()?;
+    ///
+    /// assert_eq!(entity.standard_url().as_str(), "https://example.com/");
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn standard_url(&self) -> &Url {
+        &self.standard_url
     }
 }
 
@@ -173,9 +173,9 @@ impl std::str::FromStr for Entity {
         let url = Url::parse(&url).map_err(ParseError::InvalidURL)?;
 
         Ok(Self {
-            standard,
+            standard_name: standard,
             description,
-            url,
+            standard_url: url,
         })
     }
 }
@@ -261,7 +261,10 @@ mod tests {
         Link: <https://example.com>"#
             .parse::<Entity>()?;
 
-        assert_eq!(entity.standard(), "A Standard That Spans Multiple Lines");
+        assert_eq!(
+            entity.standard_name(),
+            "A Standard That Spans Multiple Lines"
+        );
 
         Ok(())
     }
@@ -277,7 +280,7 @@ mod tests {
         <https://example.com>"#
             .parse::<Entity>()?;
 
-        assert_eq!(entity.url().as_str(), "https://example.com/");
+        assert_eq!(entity.standard_url().as_str(), "https://example.com/");
 
         Ok(())
     }

@@ -1,4 +1,3 @@
-use std::iter::Peekable;
 use std::slice::Iter;
 
 use ccdi_cde as cde;
@@ -6,6 +5,7 @@ use ccdi_models as models;
 
 use cde::parse::cde::Member;
 use models::metadata::field::description;
+use models::metadata::field::description::harmonized::Kind;
 use models::metadata::field::description::Description;
 
 const METADATA_TABLE_FIELDS: &[&str] =
@@ -41,30 +41,31 @@ fn display_harmonized(
     writeln!(f, "### **`{}`**\n", harmonized.path())?;
 
     // Write the header line for the metadata element.
-    writeln!(
-        f,
-        "**Formal Name: `{}`** ([Link]({}))\n",
-        harmonized.standard(),
-        harmonized.url().as_str()
-    )?;
+    if let Some(standard) = harmonized.standard() {
+        writeln!(
+            f,
+            "**Formal Name: `{}`** ([Link]({}))\n",
+            standard.name(),
+            standard.url()
+        )?;
+    }
 
     // Write the documentation for the metadata element.
-    writeln!(f, "{}\n", harmonized.entity().description())?;
+    writeln!(f, "{}\n", harmonized.description())?;
 
-    let mut members = harmonized.members().iter().peekable();
-
-    match members.peek() {
-        Some((_, member)) => match member {
-            Member::Field(_) => write_field_members(f, members),
-            Member::Variant(_) => write_variant_members(f, members),
-        },
-        None => Ok(()),
+    if let Some(members) = harmonized.members() {
+        match harmonized.kind() {
+            Kind::Enum => write_variant_members(f, members.iter())?,
+            Kind::Struct => write_field_members(f, members.iter())?,
+        }
     }
+
+    Ok(())
 }
 
 fn write_field_members(
     f: &mut std::fmt::Formatter<'_>,
-    members: Peekable<Iter<'_, (String, Member)>>,
+    members: Iter<'_, (String, Member)>,
 ) -> std::fmt::Result {
     for (identifier, member) in members {
         let field = match member {
@@ -83,7 +84,7 @@ fn write_field_members(
 
 fn write_variant_members(
     f: &mut std::fmt::Formatter<'_>,
-    members: Peekable<Iter<'_, (String, Member)>>,
+    members: Iter<'_, (String, Member)>,
 ) -> std::fmt::Result {
     // Write table header.
     write!(f, "| Permissible Value | Description |")?;

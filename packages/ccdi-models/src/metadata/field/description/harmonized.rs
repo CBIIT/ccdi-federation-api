@@ -6,13 +6,25 @@ use utoipa::ToSchema;
 
 use ccdi_cde as cde;
 
-use cde::parse::cde::Entity;
 use cde::parse::cde::Member;
 
 use crate::Url;
 
 pub mod sample;
+mod standard;
 pub mod subject;
+
+pub use standard::Standard;
+
+/// A kind of harmonized value.
+#[derive(Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
+pub enum Kind {
+    /// An enum.
+    Enum,
+
+    /// A struct.
+    Struct,
+}
 
 /// A harmonized metadata field description.
 ///
@@ -26,26 +38,36 @@ pub struct Harmonized {
     #[schema(default = true)]
     harmonized: bool,
 
+    /// The kind of harmonized metadata field.
+    #[serde(skip_serializing)]
+    kind: Kind,
+
     /// A comma (`.`) delimited path to the field's location on the `metadata`
     /// objects returned by the various subject endpoints.
     path: String,
 
-    /// The proper name of the standard to which this field is harmonized (defined
-    /// by the documentation for the CCDI metadata fields).
-    standard: String,
+    /// A description of the harmonized metadata field.
+    #[serde(skip_serializing)]
+    description: String,
 
-    /// A URL to the CCDI documentation where the definition of this harmonized
-    /// field resides.
+    /// A URL to the CCDI wiki documentation where the definition of this
+    /// harmonized field resides.
     #[schema(value_type = models::Url)]
-    url: Url,
+    wiki_url: Url,
 
-    /// The parsed [`Entity`].
-    #[serde(skip_serializing)]
-    entity: Entity,
+    /// If available, the standard to which this field is harmonized (this field
+    /// is defined by the documentation for the CCDI metadata fields when the
+    /// field is backed by a CDE).
+    #[schema(value_type = Option<models::metadata::field::description::harmonized::Standard>)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    standard: Option<Standard>,
 
-    /// The parsed [`Member`]s and their respective identifiers of the entity.
+    /// If present, the parsed [`Member`]s and their respective identifiers of
+    /// the entity. For a `struct`, this equates to each of the members within
+    /// the `struct`. For an `enum`, this is all of the available variants for
+    /// the `enum`.
     #[serde(skip_serializing)]
-    members: Vec<(String, Member)>,
+    members: Option<Vec<(String, Member)>>,
 }
 
 impl Harmonized {
@@ -60,20 +82,21 @@ impl Harmonized {
     /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
     /// use models::metadata::field::description::Harmonized;
     /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
     ///         String::from("Unknown"),
     ///         Member::Variant(
     ///             "`Unknown`
@@ -82,26 +105,73 @@ impl Harmonized {
     ///                 .parse::<Variant>()
     ///                 .unwrap(),
     ///         ),
-    ///     )],
+    ///     )]),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn new(
+        kind: Kind,
         path: String,
-        standard: String,
-        url: Url,
-        entity: Entity,
-        members: Vec<(String, Member)>,
+        description: String,
+        wiki_url: Url,
+        standard: Option<Standard>,
+        members: Option<Vec<(String, Member)>>,
     ) -> Self {
         Harmonized {
             harmonized: true,
+            kind,
             path,
+            description,
+            wiki_url,
             standard,
-            url,
-            entity,
             members,
         }
+    }
+
+    /// Gets the [`Kind`] of the [`Harmonized`] by reference.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use cde::parse::cde::member::Variant;
+    /// use cde::parse::cde::Entity;
+    /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
+    /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
+    ///
+    /// let description = Harmonized::new(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
+    ///              
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )]),
+    /// );
+    ///
+    /// assert_eq!(description.kind(), &Kind::Enum);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn kind(&self) -> &Kind {
+        &self.kind
     }
 
     /// Gets the path of the [`Harmonized`] by reference.
@@ -115,20 +185,21 @@ impl Harmonized {
     /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
     /// use models::metadata::field::description::Harmonized;
     /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
     ///         String::from("Unknown"),
     ///         Member::Variant(
     ///             "`Unknown`
@@ -137,19 +208,18 @@ impl Harmonized {
     ///                 .parse::<Variant>()
     ///                 .unwrap(),
     ///         ),
-    ///     )],
+    ///     )]),
     /// );
     ///
-    /// assert_eq!(description.path(), &String::from("test"));
+    /// assert_eq!(description.path(), "entity");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn path(&self) -> &String {
-        &self.path
+    pub fn path(&self) -> &str {
+        self.path.as_str()
     }
 
-    /// Gets the harmonization standard name of the [`Harmonized`] by
-    /// reference.
+    /// Gets the description for the [`Harmonized`] by reference.
     ///
     /// # Examples
     ///
@@ -160,20 +230,21 @@ impl Harmonized {
     /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
     /// use models::metadata::field::description::Harmonized;
     /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
     ///         String::from("Unknown"),
     ///         Member::Variant(
     ///             "`Unknown`
@@ -182,19 +253,18 @@ impl Harmonized {
     ///                 .parse::<Variant>()
     ///                 .unwrap(),
     ///         ),
-    ///     )],
+    ///     )]),
     /// );
     ///
-    /// assert_eq!(description.standard(), &String::from("caDSR ------ v1.00"));
+    /// assert_eq!(description.description(), "A description for the entity.");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn standard(&self) -> &String {
-        &self.standard
+    pub fn description(&self) -> &str {
+        self.description.as_str()
     }
 
-    /// Gets the URL for which one can learn more about the [`Harmonized`] by
-    /// reference.
+    /// Gets the wiki URL for the [`Harmonized`] by reference.
     ///
     /// # Examples
     ///
@@ -205,20 +275,21 @@ impl Harmonized {
     /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
     /// use models::metadata::field::description::Harmonized;
     /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
     ///         String::from("Unknown"),
     ///         Member::Variant(
     ///             "`Unknown`
@@ -227,64 +298,65 @@ impl Harmonized {
     ///                 .parse::<Variant>()
     ///                 .unwrap(),
     ///         ),
-    ///     )],
+    ///     )]),
     /// );
     ///
-    /// assert_eq!(description.url().as_str(), "https://cancer.gov/");
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn url(&self) -> &Url {
-        &self.url
-    }
-
-    /// Gets the entity for the [`Harmonized`] by reference.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use ccdi_cde as cde;
-    /// use ccdi_models as models;
-    ///
-    /// use cde::parse::cde::member::Variant;
-    /// use cde::parse::cde::Entity;
-    /// use cde::parse::cde::Member;
-    /// use models::metadata::field::description::Harmonized;
-    /// use models::Url;
-    ///
-    /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
-    ///         String::from("Unknown"),
-    ///         Member::Variant(
-    ///             "`Unknown`
-    ///              
-    ///             A description for the variant."
-    ///                 .parse::<Variant>()
-    ///                 .unwrap(),
-    ///         ),
-    ///     )],
-    /// );
-    ///
-    /// assert_eq!(description.entity().standard(), "A Standard");
     /// assert_eq!(
-    ///     description.entity().description(),
-    ///     "A description for the entity."
+    ///     description.wiki_url(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
     /// );
-    /// assert_eq!(description.entity().url().as_str(), "https://example.com/");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn entity(&self) -> &Entity {
-        &self.entity
+    pub fn wiki_url(&self) -> &str {
+        self.wiki_url.as_ref()
+    }
+
+    /// Gets the harmonization standard of the [`Harmonized`] by reference (if
+    /// it exists).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use cde::parse::cde::member::Variant;
+    /// use cde::parse::cde::Entity;
+    /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
+    /// use models::metadata::field::description::Harmonized;
+    /// use models::Url;
+    ///
+    /// let description = Harmonized::new(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
+    ///         String::from("Unknown"),
+    ///         Member::Variant(
+    ///             "`Unknown`
+    ///              
+    ///             A description for the variant."
+    ///                 .parse::<Variant>()
+    ///                 .unwrap(),
+    ///         ),
+    ///     )]),
+    /// );
+    ///
+    /// assert_eq!(description.standard().unwrap().name(), "caDSR ------ v1.00");
+    /// assert_eq!(description.standard().unwrap().url(), "https://cancer.gov/");
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn standard(&self) -> Option<&Standard> {
+        self.standard.as_ref()
     }
 
     /// Gets the members for the [`Harmonized`] by reference.
@@ -298,20 +370,21 @@ impl Harmonized {
     /// use cde::parse::cde::member::Variant;
     /// use cde::parse::cde::Entity;
     /// use cde::parse::cde::Member;
+    /// use models::metadata::field::description::harmonized::Kind;
+    /// use models::metadata::field::description::harmonized::Standard;
     /// use models::metadata::field::description::Harmonized;
     /// use models::Url;
     ///
     /// let description = Harmonized::new(
-    ///     String::from("test"),
-    ///     String::from("caDSR ------ v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
-    ///     "**`A Standard`**
-    ///     
-    ///     A description for the entity.
-    ///
-    ///     Link: <https://example.com>"
-    ///         .parse::<Entity>()?,
-    ///     vec![(
+    ///     Kind::Enum,
+    ///     String::from("entity"),
+    ///     String::from("A description for the entity."),
+    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     Some(Standard::new(
+    ///         String::from("caDSR ------ v1.00"),
+    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///     )),
+    ///     Some(vec![(
     ///         String::from("Unknown"),
     ///         Member::Variant(
     ///             "`Unknown`
@@ -320,12 +393,12 @@ impl Harmonized {
     ///                 .parse::<Variant>()
     ///                 .unwrap(),
     ///         ),
-    ///     )],
+    ///     )]),
     /// );
     ///
-    /// assert_eq!(description.members().len(), 1);
+    /// assert_eq!(description.members().unwrap().len(), 1);
     ///
-    /// let (identifier, variant) = description.members().first().unwrap();
+    /// let (identifier, variant) = description.members().unwrap().first().unwrap();
     ///
     /// assert_eq!(identifier.as_str(), "Unknown");
     /// assert_eq!(
@@ -339,7 +412,7 @@ impl Harmonized {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn members(&self) -> &Vec<(String, Member)> {
-        &self.members
+    pub fn members(&self) -> Option<&Vec<(String, Member)>> {
+        self.members.as_ref()
     }
 }

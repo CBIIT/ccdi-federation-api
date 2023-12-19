@@ -23,6 +23,7 @@ lazy_static = "1.4.0"
 log = "0.4.20"
 mime = "0.3.17"
 nonempty = { version = "0.9.0", features = ["serialize"] }
+ordered-float = { version = "4.0", features = ["serde"] }
 rand = "0.8.5"
 regex = "1.10.2"
 reqwest = { version = "0.11.22", features = ["blocking", "json"] }

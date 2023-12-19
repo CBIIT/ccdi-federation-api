@@ -30,7 +30,7 @@ pub struct Subject {
     #[param(required = false, nullable = false)]
     pub race: Option<String>,
 
-    /// matches any subject where the `ethnicity` field matches the string provided.
+    /// Matches any subject where the `ethnicity` field matches the string provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub ethnicity: Option<String>,
@@ -43,6 +43,16 @@ pub struct Subject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub identifiers: Option<String>,
+
+    /// Matches any subject where the `vital_status` field matches the string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub vital_status: Option<String>,
+
+    /// Matches any subject where the `age_at_vital_status` field matches the string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub age_at_vital_status: Option<String>,
 }
 
 /// Parameters for filtering subjects.
@@ -56,21 +66,36 @@ pub struct Subject {
 #[derive(Debug, Default, Deserialize, IntoParams, Introspect, Serialize)]
 #[into_params(parameter_in = Query)]
 pub struct Sample {
-    /// Matches any subject where the `disease_phase` field matches the string
+    /// Matches any sample where the `disease_phase` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub disease_phase: Option<String>,
 
-    /// Matches any subject where the `tissue_type` field matches the string
+    /// Matches any sample where the `tissue_type` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub tissue_type: Option<String>,
 
-    /// Matches any subject where the `tumor_classification` field matches the
+    /// Matches any sample where the `tumor_classification` field matches the
     /// string provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub tumor_classification: Option<String>,
+
+    /// Matches any sample where the `age_at_diagnosis` field matches the string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub age_at_diagnosis: Option<String>,
+
+    /// Matches any sample where the `age_at_collection` field matches the string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub age_at_collection: Option<String>,
+
+    /// Matches any sample where the `tumor_tissue_morphology` field matches the string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub tumor_tissue_morphology: Option<String>,
 }

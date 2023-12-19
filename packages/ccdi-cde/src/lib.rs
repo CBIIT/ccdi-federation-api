@@ -110,7 +110,7 @@ mod tests {
     fn entity_parsing_works_correctly() {
         let entity = Sex::entity().unwrap();
 
-        assert_eq!(entity.standard(), "caDSR CDE 6343385 v1.00");
+        assert_eq!(entity.standard_name(), "caDSR CDE 6343385 v1.00");
     }
 
     #[test]

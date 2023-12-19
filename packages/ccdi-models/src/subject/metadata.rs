@@ -1,5 +1,6 @@
 //! Metadata for a [`Subject`](super::Subject).
 
+use ordered_float::OrderedFloat;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -8,8 +9,10 @@ use crate::metadata::field;
 use crate::metadata::fields;
 use crate::subject::Identifier;
 
-pub mod builder;
+mod age_at_vital_status;
+mod builder;
 
+pub use age_at_vital_status::AgeAtVitalStatus;
 pub use builder::Builder;
 
 /// Metadata associated with a subject.
@@ -34,6 +37,14 @@ pub struct Metadata {
     /// for the [`Subject`].
     #[schema(value_type = Vec<field::owned::subject::Identifier>, nullable = true)]
     identifiers: Option<Vec<field::owned::subject::Identifier>>,
+
+    /// The vital status of the subject.
+    #[schema(value_type = field::unowned::subject::VitalStatus, nullable = true)]
+    vital_status: Option<field::unowned::subject::VitalStatus>,
+
+    /// The approximate age at vital status.
+    #[schema(value_type = field::unowned::subject::AgeAtVitalStatus, nullable = true)]
+    age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
@@ -156,6 +167,70 @@ impl Metadata {
         self.identifiers.as_ref()
     }
 
+    /// Gets the approximate age at vital status for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::subject::AgeAtVitalStatus;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .age_at_vital_status(AgeAtVitalStatus::new(
+    ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.age_at_vital_status(),
+    ///     Some(&AgeAtVitalStatus::new(
+    ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///         None,
+    ///         None
+    ///     ))
+    /// );
+    /// ```
+    pub fn age_at_vital_status(&self) -> Option<&field::unowned::subject::AgeAtVitalStatus> {
+        self.age_at_vital_status.as_ref()
+    }
+
+    /// Gets the vital status for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::VitalStatus;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .vital_status(VitalStatus::new(
+    ///         cde::v1::subject::VitalStatus::Unknown,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.vital_status(),
+    ///     Some(&VitalStatus::new(
+    ///         cde::v1::subject::VitalStatus::Unknown,
+    ///         None,
+    ///         None
+    ///     ))
+    /// );
+    /// ```
+    pub fn vital_status(&self) -> Option<&field::unowned::subject::VitalStatus> {
+        self.vital_status.as_ref()
+    }
+
     /// Gets the unharmonized fields for the [`Metadata`].
     ///
     /// # Examples
@@ -241,6 +316,12 @@ impl Metadata {
                 None,
                 Some(true),
             )]),
+            vital_status: Some(rand::random()),
+            age_at_vital_status: Some(field::unowned::subject::AgeAtVitalStatus::new(
+                crate::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+                None,
+                None,
+            )),
             unharmonized: Default::default(),
         }
     }
@@ -255,7 +336,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null}"
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null}"
         );
     }
 }

@@ -3,8 +3,12 @@
 use ccdi_cde as cde;
 
 use cde::CDE;
+use introspect::Entity;
+use introspect::IntrospectedEntity as _;
 
 use crate::metadata::field::description;
+use crate::metadata::field::description::harmonized::Kind;
+use crate::metadata::field::description::harmonized::Standard;
 use crate::metadata::field::description::r#trait::Description as _;
 use crate::metadata::field::description::Harmonized;
 use crate::Url;
@@ -12,10 +16,31 @@ use crate::Url;
 /// Gets the harmonized fields for samples.
 pub fn get_field_descriptions() -> Vec<description::Description> {
     vec![
+        crate::sample::metadata::AgeAtDiagnosis::description(),
         cde::v1::sample::DiseasePhase::description(),
         cde::v2::sample::TissueType::description(),
         cde::v1::sample::TumorClassification::description(),
+        cde::v1::sample::TumorTissueMorphology::description(),
+        crate::sample::metadata::AgeAtCollection::description(),
     ]
+}
+
+impl description::r#trait::Description for crate::sample::metadata::AgeAtDiagnosis {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("age_at_diagnosis"),
+            description,
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_diagnosis").unwrap(),
+            None,
+            None,
+        ))
+    }
 }
 
 impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
@@ -26,11 +51,12 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("disease_phase"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
         ))
     }
 }
@@ -43,11 +69,12 @@ impl description::r#trait::Description for cde::v2::sample::TissueType {
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("tissue_type"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tissue_type").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
         ))
     }
 }
@@ -60,11 +87,48 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
             String::from("tumor_classification"),
-            entity.standard().to_string(),
-            Url::from(entity.url().clone()),
-            entity,
-            members,
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_classification").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
+        ))
+    }
+}
+
+impl description::r#trait::Description for cde::v1::sample::TumorTissueMorphology {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().unwrap();
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("tumor_tissue_morphology"),
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_tissue_morphology").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Some(members),
+        ))
+    }
+}
+
+impl description::r#trait::Description for crate::sample::metadata::AgeAtCollection {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("age_at_collection"),
+            description,
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_collection").unwrap(),
+            None,
+            None,
         ))
     }
 }

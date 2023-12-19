@@ -15,12 +15,13 @@ use utoipa::ToSchema;
 
 #[macropol::macropol]
 macro_rules! unowned_field {
-    ($name: ident, $as: ty, $inner: ty, $value: expr, $import: expr) => {
+    ($name: ident, $as: ty, $inner: ty, $inner_as: ty, $value: expr, $import: expr) => {
         #[derive(Clone, Debug, Deserialize, Eq, Serialize, PartialEq, ToSchema)]
         #[schema(as = $as)]
         /// An unowned field representing a [`${stringify!($name)}`].
         pub struct $name {
             /// The value of the metadata field.
+            #[schema(value_type = $inner_as)]
             value: $inner,
 
             /// The ancestors from which this field was derived.
@@ -155,6 +156,7 @@ unowned_field!(
     Field,
     field::unowned::Field,
     Value,
+    Value,
     Value::Null,
     serde_json::Value
 );
@@ -165,8 +167,27 @@ pub mod sample {
     use ccdi_cde as cde;
 
     unowned_field!(
+        AgeAtDiagnosis,
+        field::unowned::sample::AgeAtDiagnosis,
+        crate::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
+        ordered_float::OrderedFloat
+    );
+
+    unowned_field!(
+        AgeAtCollection,
+        field::unowned::sample::AgeAtCollection,
+        crate::sample::metadata::AgeAtCollection,
+        models::sample::metadata::AgeAtCollection,
+        models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
+        ordered_float::OrderedFloat
+    );
+
+    unowned_field!(
         DiseasePhase,
         field::unowned::sample::DiseasePhase,
+        cde::v1::sample::DiseasePhase,
         cde::v1::sample::DiseasePhase,
         cde::v1::sample::DiseasePhase::InitialDiagnosis,
         ccdi_cde as cde
@@ -176,6 +197,7 @@ pub mod sample {
         TissueType,
         field::unowned::sample::TissueType,
         cde::v2::sample::TissueType,
+        cde::v2::sample::TissueType,
         cde::v2::sample::TissueType::Tumor,
         ccdi_cde as cde
     );
@@ -184,7 +206,17 @@ pub mod sample {
         TumorClassification,
         field::unowned::sample::TumorClassification,
         cde::v1::sample::TumorClassification,
+        cde::v1::sample::TumorClassification,
         cde::v1::sample::TumorClassification::Primary,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        TumorTissueMorphology,
+        field::unowned::sample::TumorTissueMorphology,
+        cde::v1::sample::TumorTissueMorphology,
+        cde::v1::sample::TumorTissueMorphology,
+        cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
         ccdi_cde as cde
     );
 }
@@ -198,6 +230,7 @@ pub mod subject {
         Sex,
         field::unowned::subject::Sex,
         cde::v1::subject::Sex,
+        cde::v1::subject::Sex,
         cde::v1::subject::Sex::Unknown,
         ccdi_cde as cde
     );
@@ -205,6 +238,7 @@ pub mod subject {
     unowned_field!(
         Race,
         field::unowned::subject::Race,
+        cde::v1::subject::Race,
         cde::v1::subject::Race,
         cde::v1::subject::Race::Unknown,
         ccdi_cde as cde
@@ -214,7 +248,26 @@ pub mod subject {
         Ethnicity,
         field::unowned::subject::Ethnicity,
         cde::v2::subject::Ethnicity,
+        cde::v2::subject::Ethnicity,
         cde::v2::subject::Ethnicity::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        AgeAtVitalStatus,
+        field::unowned::subject::AgeAtVitalStatus,
+        crate::subject::metadata::AgeAtVitalStatus,
+        models::subject::metadata::AgeAtVitalStatus,
+        models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+        ordered_float::OrderedFloat
+    );
+
+    unowned_field!(
+        VitalStatus,
+        field::unowned::subject::VitalStatus,
+        cde::v1::subject::VitalStatus,
+        cde::v1::subject::VitalStatus,
+        cde::v1::subject::VitalStatus::Unknown,
         ccdi_cde as cde
     );
 }

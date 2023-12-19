@@ -26,14 +26,12 @@ pub enum Description {
 
 /// Traits related to a [`Description`].
 pub mod r#trait {
-    use ccdi_cde as cde;
+    use introspect::Introspected;
 
-    use cde::CDE;
-
-    /// A trait to get a [`Description`] for a [`CDE`].
+    /// A trait to get a [`Description`] for an [`Introspected`] entity.
     pub trait Description
     where
-        Self: CDE + Sized,
+        Self: Introspected + Sized,
     {
         /// Gets the [`Description`].
         fn description() -> super::Description;
