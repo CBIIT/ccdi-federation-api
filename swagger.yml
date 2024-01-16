@@ -5,7 +5,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: v0.5.0
+  version: v0.6.0
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -75,7 +75,7 @@ paths:
           type: string
       - name: ethnicity
         in: query
-        description: matches any subject where the `ethnicity` field matches the string provided.
+        description: Matches any subject where the `ethnicity` field matches the string provided.
         required: false
         schema:
           type: string
@@ -87,6 +87,18 @@ paths:
 
           **Note:** a logical OR (`||`) is performed across the values when
           determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: vital_status
+        in: query
+        description: Matches any subject where the `vital_status` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: age_at_vital_status
+        in: query
+        description: Matches any subject where the `age_at_vital_status` field matches the string provided.
         required: false
         schema:
           type: string
@@ -299,7 +311,7 @@ paths:
       - name: disease_phase
         in: query
         description: |-
-          Matches any subject where the `disease_phase` field matches the string
+          Matches any sample where the `disease_phase` field matches the string
           provided.
         required: false
         schema:
@@ -307,7 +319,7 @@ paths:
       - name: tissue_type
         in: query
         description: |-
-          Matches any subject where the `tissue_type` field matches the string
+          Matches any sample where the `tissue_type` field matches the string
           provided.
         required: false
         schema:
@@ -315,8 +327,26 @@ paths:
       - name: tumor_classification
         in: query
         description: |-
-          Matches any subject where the `tumor_classification` field matches the
+          Matches any sample where the `tumor_classification` field matches the
           string provided.
+        required: false
+        schema:
+          type: string
+      - name: age_at_diagnosis
+        in: query
+        description: Matches any sample where the `age_at_diagnosis` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: age_at_collection
+        in: query
+        description: Matches any sample where the `age_at_collection` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: tumor_tissue_morphology
+        in: query
+        description: Matches any sample where the `tumor_tissue_morphology` field matches the string provided.
         required: false
         schema:
           type: string
@@ -2259,7 +2289,7 @@ components:
         api_version:
           type: string
           description: The version of the API that this server supports.
-          example: v0.5.0
+          example: v0.6.0
         documentation_url:
           type: string
           description: |-

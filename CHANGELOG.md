@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 — 01-16-2024
+
+### Added
+
+* Adds five new harmonized metadata elements ([#49](https://github.com/CBIIT/ccdi-federation-api/pull/49)).
+  * Subjects now support vital status ([#42](https://github.com/CBIIT/ccdi-federation-api/discussions/42)) and age at vital status ([#45](https://github.com/CBIIT/ccdi-federation-api/discussions/45)).
+  * Samples now support age at diagnosis ([#37](https://github.com/CBIIT/ccdi-federation-api/discussions/370)), age at collection ([#44](https://github.com/CBIIT/ccdi-federation-api/discussions/44)), and tumor tissue morphology ([#43](https://github.com/CBIIT/ccdi-federation-api/discussions/43)).
+
 ## 0.5.0 — 11-25-2023
 
 ### Added

@@ -107,7 +107,7 @@ that some fields have been left out of the definitions for brevity.
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "v0.5.0",
+        version = "v0.6.0",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",
