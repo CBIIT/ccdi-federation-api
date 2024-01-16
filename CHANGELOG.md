@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.6.1] — 01-16-2024
+
+### Changed
+
+* Corrects two issues with the v0.6.0 release
+  ([#51](https://github.com/CBIIT/ccdi-federation-api/pull/51)).
+  * Corrects the description of the sample metadata `tumor_tissue_morphology` to be specified as a
+    struct. Additionally, add the `icd_o_3` code as a named struct field so that it will be named in
+    the wiki.
+  * Adds the `age_at_vital_status` subject metadata to `get_field_descriptions()` so that it will be
+    included in the wiki page generation.
+
 ## [v0.6.0] — 01-16-2024
 
 ### Added
@@ -89,7 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
 * Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...HEAD
+[v0.6.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.3.0...v0.4.0
