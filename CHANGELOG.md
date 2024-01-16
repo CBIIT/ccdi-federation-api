@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.6.0 — 01-16-2024
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [v0.6.0] — 01-16-2024
 
 ### Added
 
@@ -8,7 +15,7 @@
   * Subjects now support vital status ([#42](https://github.com/CBIIT/ccdi-federation-api/discussions/42)) and age at vital status ([#45](https://github.com/CBIIT/ccdi-federation-api/discussions/45)).
   * Samples now support age at diagnosis ([#37](https://github.com/CBIIT/ccdi-federation-api/discussions/370)), age at collection ([#44](https://github.com/CBIIT/ccdi-federation-api/discussions/44)), and tumor tissue morphology ([#43](https://github.com/CBIIT/ccdi-federation-api/discussions/43)).
 
-## 0.5.0 — 11-25-2023
+## [v0.5.0] — 11-25-2023
 
 ### Added
 
@@ -19,7 +26,7 @@
 * Adds a `InvalidRoute` error to give feedback in the response body when a route is not available ([#28](https://github.com/CBIIT/ccdi-federation-api/pull/28)).
 * Adds an `UnshareableData` error to explain why data is not shareable ([#29](https://github.com/CBIIT/ccdi-federation-api/pull/29)).
 
-## 0.4.0 — 11-17-2023
+## [v0.4.0] — 11-17-2023
 
 ### Added
 
@@ -29,18 +36,18 @@
 * New server endpoints.
   * Adds Kids First Data Resource Center endpoint ([#30](https://github.com/CBIIT/ccdi-federation-api/pull/30)).
 
-### Fixes
+### Fixed
 
 * Applies the `Refactory` -> `Refractory` typo present in the CDE 12217251 v1.00 ([#23](https://github.com/CBIIT/ccdi-federation-api/pull/23)).
 
-## 0.3.0 — 11-02-2023
+## [v0.3.0] — 11-02-2023
 
-### Revise
+### Changed
 
 * Adds identifier with namespace to sample.
   * `/sample/{name}` now updated to `/sample/{namespace}/{name}`.
 
-## 0.2.0 — 11-02-2023
+## [v0.2.0] — 11-02-2023
 
 ### Added
 
@@ -52,21 +59,18 @@
 * Adds unharmonized metadata fields.
 * Adds linting with [`spectral`](https://github.com/stoplightio/spectral).
 
-### Revised
+### Changed
 
 * Removes `null`-based metadata fields.
 * Supports full set of subject fields in group by count.
 * Unharmonized keys can be any json string.
+* Versions are now workspace-wide and in sync with API version
 
-### Fixes
+### Fixed
 
 * Fixed swapping of server descriptions ([#18](https://github.com/CBIIT/ccdi-federation-api/pull/18)).
 
-### Important Chores
-
-* Versions are now workspace-wide and in sync with API version
-
-## 0.1.0 — 10-15-2023
+## [v0.1.0] — 10-15-2023
 
 ### Added
 
@@ -82,3 +86,11 @@
   * Adds UCSC Treehouse endpoint ([#6](https://github.com/CBIIT/ccdi-federation-api/pull/6)).
   * Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
 * Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
+
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...HEAD
+[v0.6.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.5.0...v0.6.0
+[v0.5.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.4.0...v0.5.0
+[v0.4.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.3.0...v0.4.0
+[v0.3.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.1.0...v0.2.0
+[v0.1.0]: https://github.com/cbiit/ccdi-federation-api/releases/tag/v0.0.1
