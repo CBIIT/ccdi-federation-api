@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Adds the files and gateways API ([#31](https://github.com/CBIIT/ccdi-federation-api/pull/31)).
+* Adds the `check` command for checking conformance with the API specification ([`c092b06`](https://github.com/CBIIT/ccdi-federation-api/commit/c092b064e4060471bdb6628b26a4099632c2089b)).
 * Adds five new harmonized metadata elements ([#49](https://github.com/CBIIT/ccdi-federation-api/pull/49)).
   * Subjects now support vital status ([#42](https://github.com/CBIIT/ccdi-federation-api/discussions/42)) and age at vital status ([#45](https://github.com/CBIIT/ccdi-federation-api/discussions/45)).
   * Samples now support age at diagnosis ([#37](https://github.com/CBIIT/ccdi-federation-api/discussions/370)), age at collection ([#44](https://github.com/CBIIT/ccdi-federation-api/discussions/44)), and tumor tissue morphology ([#43](https://github.com/CBIIT/ccdi-federation-api/discussions/43)).
