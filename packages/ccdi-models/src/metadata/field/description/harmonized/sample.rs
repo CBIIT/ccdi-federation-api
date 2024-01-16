@@ -105,7 +105,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorTissueMorpholog
         let members = Self::members().unwrap();
 
         description::Description::Harmonized(Harmonized::new(
-            Kind::Enum,
+            Kind::Struct,
             String::from("tumor_tissue_morphology"),
             entity.description().to_string(),
             Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_tissue_morphology").unwrap(),

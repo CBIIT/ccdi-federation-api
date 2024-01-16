@@ -22,6 +22,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v2::subject::Ethnicity::description(),
         cde::v1::subject::Identifier::description(),
         cde::v1::subject::VitalStatus::description(),
+        crate::subject::metadata::AgeAtVitalStatus::description(),
     ]
 }
 

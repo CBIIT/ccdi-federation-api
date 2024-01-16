@@ -111,7 +111,7 @@ fn write_variant_members(
             // member in the `members` list is a [`Member::Variant`]. If the
             // first element is a [`Member::Variant`], then all of them should
             // be.
-            _ => unreachable!(),
+            v => unreachable!("{:?}", v),
         };
 
         // Write the row.
