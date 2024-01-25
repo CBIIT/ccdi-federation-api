@@ -17,13 +17,13 @@ pub use links::Relationship;
 
 pub(crate) fn response<T, R>(
     params: PaginationParams,
-    entities: Vec<T>,
+    all_entities: Vec<T>,
     base_url: &str,
 ) -> HttpResponse
 where
     T: Clone,
     R: Serialize,
-    R: From<Vec<T>>,
+    R: From<(Vec<T>, usize)>,
 {
     let page = match NonZeroUsize::try_from(params.page().unwrap_or(pagination::DEFAULT_PAGE)) {
         Ok(value) => value,
@@ -50,14 +50,14 @@ where
             }
         };
 
-    if entities.is_empty() {
+    if all_entities.is_empty() {
         // If this error occurs, there is likely some misconfiguration that
         // allows zero entities to be generated for the server. This should be
         // caught before we get to this point and reported to the user.
         panic!("there must be at least one entity to paginate.");
     }
 
-    let pages = entities.chunks(per_page.get()).collect::<Vec<_>>();
+    let pages = all_entities.chunks(per_page.get()).collect::<Vec<_>>();
 
     let links = links::Builder::try_new(base_url, page, per_page, pages.clone())
         .unwrap_or_else(|err| {
@@ -80,9 +80,9 @@ where
         .insert_link(Relationship::Last)
         .build();
 
-    let entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
+    let this_page_entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
 
-    if entities.is_empty() {
+    if this_page_entities.is_empty() {
         return HttpResponse::UnprocessableEntity().json(Errors::from(
             error::Kind::invalid_parameters(
                 Some(vec![String::from("page"), String::from("per_page")]),
@@ -93,5 +93,5 @@ where
 
     HttpResponse::Ok()
         .insert_header(("link", links.to_string()))
-        .json(R::from(entities.to_vec()))
+        .json(R::from((this_page_entities.to_vec(), all_entities.len())))
 }

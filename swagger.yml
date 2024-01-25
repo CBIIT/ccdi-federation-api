@@ -2287,8 +2287,11 @@ components:
 
         Of course, if there is a provided sort order, use that instead.
       required:
+      - summary
       - data
       properties:
+        summary:
+          $ref: '#/components/schemas/responses.entity.Summary'
         data:
           type: array
           items:
@@ -2315,8 +2318,11 @@ components:
 
         Of course, if there is a provided sort order, use that instead.
       required:
+      - summary
       - data
       properties:
+        summary:
+          $ref: '#/components/schemas/responses.entity.Summary'
         data:
           type: array
           items:
@@ -2364,6 +2370,29 @@ components:
           additionalProperties:
             type: integer
             minimum: 0
+    responses.entity.Counts:
+      type: object
+      description: Counts that summarize the contents of a paged entity response.
+      required:
+      - current
+      - all
+      properties:
+        current:
+          type: integer
+          description: The number of entities within the currently selected page in the result set.
+          minimum: 0
+        all:
+          type: integer
+          description: The number of entities across all pages in the result set.
+          minimum: 0
+    responses.entity.Summary:
+      type: object
+      description: A summary of a paged entity response.
+      required:
+      - counts
+      properties:
+        counts:
+          $ref: '#/components/schemas/responses.entity.Counts'
     responses.error.Kind:
       allOf:
       - oneOf:
@@ -2504,8 +2533,11 @@ components:
       type: object
       description: Files within a [`Data`](super::Data) response.
       required:
+      - summary
       - files
       properties:
+        summary:
+          $ref: '#/components/schemas/responses.entity.Summary'
         files:
           type: array
           items:

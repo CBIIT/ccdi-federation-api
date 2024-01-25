@@ -227,8 +227,6 @@ fn parse_url_line(lines: &mut Peekable<Lines<'_>>) -> Result<String> {
 
 #[cfg(test)]
 mod tests {
-    use regex::Regex;
-
     use super::*;
 
     #[test]

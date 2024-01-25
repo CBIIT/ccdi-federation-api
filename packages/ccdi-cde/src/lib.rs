@@ -7,7 +7,6 @@
 #![warn(rust_2021_compatibility)]
 #![warn(missing_debug_implementations)]
 #![deny(rustdoc::broken_intra_doc_links)]
-#![feature(trivial_bounds)]
 
 use introspect::Entity;
 use introspect::Introspected;

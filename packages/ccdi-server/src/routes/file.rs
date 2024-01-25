@@ -182,11 +182,11 @@ pub async fn file_index(
     pagination_params: Query<PaginationParams>,
     files: Data<Store>,
 ) -> impl Responder {
-    let mut files = files.files.lock().unwrap().clone();
+    let mut all_files = files.files.lock().unwrap().clone();
 
     // See the note in the documentation for this endpoint: the results must be
     // sorted by identifier by default.
-    files.sort();
+    all_files.sort();
 
     let page = match NonZeroUsize::try_from(
         pagination_params
@@ -222,14 +222,14 @@ pub async fn file_index(
         }
     };
 
-    if files.is_empty() {
+    if all_files.is_empty() {
         // If this error occurs, there is likely some misconfiguration that
         // allows zero entities to be generated for the server. This should be
         // caught before we get to this point and reported to the user.
         panic!("there must be at least one entity to paginate.");
     }
 
-    let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
+    let pages = all_files.chunks(per_page.get()).collect::<Vec<_>>();
 
     let links =
         links::Builder::try_new("http://localhost:8000/file", page, per_page, pages.clone())
@@ -253,9 +253,13 @@ pub async fn file_index(
             .insert_link(Relationship::Last)
             .build();
 
-    let entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
+    let this_page_files = pages
+        .into_iter()
+        .nth(page.get() - 1)
+        .unwrap_or_default()
+        .to_vec();
 
-    if entities.is_empty() {
+    if this_page_files.is_empty() {
         return HttpResponse::UnprocessableEntity().json(Errors::from(
             error::Kind::invalid_parameters(
                 Some(vec![String::from("page"), String::from("per_page")]),
@@ -264,9 +268,7 @@ pub async fn file_index(
         ));
     }
 
-    let (files, links) = (files, Some(links));
-
-    let files = data::Files::from(files);
+    let files = data::Files::from((this_page_files, all_files.len()));
     let gateways = files
         .expected_gateways()
         .into_iter()
@@ -285,10 +287,7 @@ pub async fn file_index(
         .collect::<Vec<_>>();
 
     let mut response = &mut HttpResponse::Ok();
-
-    if let Some(links) = links {
-        response = response.insert_header(("link", links.to_string()));
-    }
+    response = response.insert_header(("link", links.to_string()));
 
     // SAFETY: this will only error when the named gateways and references to
     // gateways from files do not perfectly match (i.e., there is a reference to

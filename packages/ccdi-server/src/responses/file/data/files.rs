@@ -7,10 +7,17 @@ use ccdi_models as models;
 
 use models::gateway::AnonymousOrReference;
 
+use crate::responses::entity::Counts;
+use crate::responses::entity::Summary;
+
 /// Files within a [`Data`](super::Data) response.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = responses::file::data::Files)]
 pub struct Files {
+    /// A summary of this paged result set.
+    #[schema(value_type = responses::entity::Summary)]
+    summary: Summary,
+
     /// The files.
     #[schema(nullable = false)]
     files: Vec<models::File>,
@@ -42,24 +49,27 @@ impl Files {
     /// )
     /// .unwrap();
     ///
-    /// let files = Files::from(vec![
-    ///     File::new(
-    ///         Identifier::new(&namespace, "Foo.txt"),
-    ///         NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
-    ///         NonEmpty::new(AnonymousOrReference::Reference {
-    ///             gateway: String::from("name"),
-    ///         }),
-    ///         Some(Metadata::random()),
-    ///     ),
-    ///     File::new(
-    ///         Identifier::new(&namespace, "Bar.txt"),
-    ///         NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
-    ///         NonEmpty::new(AnonymousOrReference::Reference {
-    ///             gateway: String::from("name"),
-    ///         }),
-    ///         Some(Metadata::random()),
-    ///     ),
-    /// ]);
+    /// let files = Files::from((
+    ///     vec![
+    ///         File::new(
+    ///             Identifier::new(&namespace, "Foo.txt"),
+    ///             NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///             NonEmpty::new(AnonymousOrReference::Reference {
+    ///                 gateway: String::from("name"),
+    ///             }),
+    ///             Some(Metadata::random()),
+    ///         ),
+    ///         File::new(
+    ///             Identifier::new(&namespace, "Bar.txt"),
+    ///             NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///             NonEmpty::new(AnonymousOrReference::Reference {
+    ///                 gateway: String::from("name"),
+    ///             }),
+    ///             Some(Metadata::random()),
+    ///         ),
+    ///     ],
+    ///     10usize,
+    /// ));
     ///
     /// let mut expected_gateways = files.expected_gateways();
     /// assert_eq!(expected_gateways.len(), 1);
@@ -86,8 +96,13 @@ impl std::ops::Deref for Files {
     }
 }
 
-impl From<Vec<models::File>> for Files {
-    fn from(files: Vec<models::File>) -> Self {
-        Self { files }
+impl From<(Vec<models::File>, usize)> for Files {
+    fn from((files, count): (Vec<models::File>, usize)) -> Self {
+        let counts = Counts::new(files.len(), count);
+
+        Self {
+            summary: Summary::new(counts),
+            files,
+        }
     }
 }
