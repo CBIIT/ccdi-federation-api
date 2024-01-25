@@ -1,3 +1,5 @@
+**PR Close Date:** [ENTER DATE HERE]
+
 _Describe the problem or feature in addition to a link to the issues._
 
 Before submitting this PR, please make sure:
