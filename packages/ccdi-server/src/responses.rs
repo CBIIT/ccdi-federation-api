@@ -1,6 +1,7 @@
 //! Responses for the server.
 
 pub mod by;
+pub mod entity;
 pub mod error;
 pub mod file;
 pub mod info;

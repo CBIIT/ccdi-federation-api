@@ -106,7 +106,8 @@ impl Files {
     ///     },
     /// );
     ///
-    /// let response = server::responses::Files::try_new(vec![file], vec![gateway]).unwrap();
+    /// let files = server::responses::file::data::Files::from((vec![file], 10usize));
+    /// let response = server::responses::Files::try_new(files, vec![gateway]).unwrap();
     /// ```
     pub fn try_new(
         files: impl Into<data::Files>,
@@ -159,8 +160,6 @@ mod tests {
     use ccdi_models::Url;
     use nonempty::NonEmpty;
 
-    use crate::responses::Files;
-
     #[test]
     fn missing_gateways() {
         let namespace = Namespace::try_new(
@@ -189,7 +188,8 @@ mod tests {
             },
         );
 
-        let err = Files::try_new(vec![file], vec![gateway]).unwrap_err();
+        let err =
+            Files::try_new(data::Files::from((vec![file], 10usize)), vec![gateway]).unwrap_err();
         assert!(matches!(err, Error::MissingGateways(_)));
         assert_eq!(err.to_string(), String::from("missing gateways: name"));
     }
@@ -232,7 +232,7 @@ mod tests {
             ),
         ];
 
-        let err = Files::try_new(vec![file], gateways).unwrap_err();
+        let err = Files::try_new(data::Files::from((vec![file], 10usize)), gateways).unwrap_err();
         assert!(matches!(err, Error::ExtraneousGateways(_)));
         assert_eq!(
             err.to_string(),

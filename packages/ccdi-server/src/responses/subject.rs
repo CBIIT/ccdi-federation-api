@@ -4,6 +4,9 @@ use utoipa::ToSchema;
 
 use ccdi_models as models;
 
+use crate::responses::entity::Counts;
+use crate::responses::entity::Summary;
+
 /// A response representing a single [`Subject`](models::Subject).
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = responses::Subject)]
@@ -28,13 +31,22 @@ pub struct Subject {
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = responses::Subjects)]
 pub struct Subjects {
+    /// A summary of this paged result set.
+    #[schema(value_type = responses::entity::Summary)]
+    summary: Summary,
+
     /// The subjects.
     #[schema(nullable = false)]
     data: Vec<models::Subject>,
 }
 
-impl From<Vec<models::Subject>> for Subjects {
-    fn from(subjects: Vec<models::Subject>) -> Self {
-        Self { data: subjects }
+impl From<(Vec<models::Subject>, usize)> for Subjects {
+    fn from((subjects, count): (Vec<models::Subject>, usize)) -> Self {
+        let counts = Counts::new(subjects.len(), count);
+
+        Self {
+            summary: Summary::new(counts),
+            data: subjects,
+        }
     }
 }

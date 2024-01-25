@@ -425,12 +425,9 @@ impl Ord for File {
 mod tests {
     use std::cmp::Ordering;
 
-    use crate::gateway::AnonymousOrReference;
-    use crate::gateway::Link;
     use crate::sample;
     use crate::Gateway;
     use crate::Namespace;
-    use crate::Url;
 
     use super::*;
 

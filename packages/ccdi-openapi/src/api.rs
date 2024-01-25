@@ -291,6 +291,10 @@ that some fields have been left out of the definitions for brevity.
         responses::summary::Counts,
         responses::Summary,
 
+        // Cross-entity responses.
+        responses::entity::Summary,
+        responses::entity::Counts,
+
         // Subject responses.
         responses::Subject,
         responses::Subjects,
