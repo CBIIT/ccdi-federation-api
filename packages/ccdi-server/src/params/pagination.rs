@@ -31,19 +31,17 @@ pub struct Pagination {
     /// The page to retrieve.
     ///
     /// This is a 1-based index of a page within a page set. The value of `page`
-    /// **must** default to `1` when pagination is enabled but this parameter is
-    /// not provided. Pagination is enabled if this parameter is provided to the
-    /// endpoint.
+    /// **must** default to `1` when this parameter is not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     page: Option<usize>,
 
     /// The number of results per page.
     ///
-    /// Each server can select its own default value for `per_page` if
-    /// pagination is enabled but this parameter is not provided. A default
-    /// value of `100` is recommended if all values are equally reasonable.
-    /// Pagination is enabled if this parameter is provided to the endpoint.
+    /// Each server can select its own default value for `per_page` when this
+    /// parameter is not provided. That said, the convention within the
+    /// community is to use `100` as a default value if any value is equally
+    /// reasonable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     per_page: Option<usize>,

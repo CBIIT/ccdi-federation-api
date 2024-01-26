@@ -91,8 +91,9 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 ///
 /// ### Pagination
 ///
-/// This endpoint supports pagination. Pagination is enabled by providing one of
-/// the pagination-related query parameters below.
+/// This endpoint is paginated. Users may override the default pagination
+/// parameters by providing one or more of the pagination-related query
+/// parameters below.
 ///
 /// ### Ordering
 ///
@@ -132,16 +133,11 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
                     - `prev` (_Optional_). A link to the previous page (if it \
                     exists).\n\n\
                     ### Requirements\n\n\
-                    - This header is required to exist when pagination is \
-                    enabled.\n\
-                    - It is also required _not_ to exist \
-                    when pagination is not enabled.\n\
-                    - When the header is present, this header must provide \
-                    links for at least the `first` and `last` rels.\n \
-                    - When the header is present, the `prev` and `next` links \
-                    must exist only (a) when there are multiple pages in the \
-                    result page set and (b) when the current page is not the \
-                    first or last page, respectively.\n\
+                    - This header _must_ provide links for at least the `first` \
+                    and `last` rels.\n \
+                    - The `prev` and `next` links must exist only (a) when there \
+                    are multiple pages in the result page set and (b) when the \
+                    current page is not the first or last page, respectively.\n\
                     - This list of links is unordered.\n\n \
                     ### Notes\n\n\
                     - HTTP 1.1 and HTTP 2.0 dictate that response \
@@ -192,87 +188,82 @@ pub async fn file_index(
     // sorted by identifier by default.
     files.sort();
 
-    let (files, links) =
-        if pagination_params.0.page().is_some() || pagination_params.0.per_page().is_some() {
-            let page = match NonZeroUsize::try_from(
-                pagination_params
-                    .0
-                    .page()
-                    .unwrap_or(pagination::DEFAULT_PAGE),
-            ) {
-                Ok(value) => value,
-                Err(_) => {
-                    return HttpResponse::UnprocessableEntity().json(Errors::from(
-                        error::Kind::invalid_parameters(
-                            Some(vec![String::from("page")]),
-                            String::from("must be a non-zero usize"),
-                        ),
-                    ))
-                }
-            };
+    let page = match NonZeroUsize::try_from(
+        pagination_params
+            .0
+            .page()
+            .unwrap_or(pagination::DEFAULT_PAGE),
+    ) {
+        Ok(value) => value,
+        Err(_) => {
+            return HttpResponse::UnprocessableEntity().json(Errors::from(
+                error::Kind::invalid_parameters(
+                    Some(vec![String::from("page")]),
+                    String::from("must be a non-zero usize"),
+                ),
+            ))
+        }
+    };
 
-            let per_page = match NonZeroUsize::try_from(
-                pagination_params
-                    .0
-                    .per_page()
-                    .unwrap_or(pagination::DEFAULT_PER_PAGE),
-            ) {
-                Ok(value) => value,
-                Err(_) => {
-                    return HttpResponse::UnprocessableEntity().json(Errors::from(
-                        error::Kind::invalid_parameters(
-                            Some(vec![String::from("per_page")]),
-                            String::from("must be a non-zero usize"),
-                        ),
-                    ))
-                }
-            };
+    let per_page = match NonZeroUsize::try_from(
+        pagination_params
+            .0
+            .per_page()
+            .unwrap_or(pagination::DEFAULT_PER_PAGE),
+    ) {
+        Ok(value) => value,
+        Err(_) => {
+            return HttpResponse::UnprocessableEntity().json(Errors::from(
+                error::Kind::invalid_parameters(
+                    Some(vec![String::from("per_page")]),
+                    String::from("must be a non-zero usize"),
+                ),
+            ))
+        }
+    };
 
-            if files.is_empty() {
-                // If this error occurs, there is likely some misconfiguration that
-                // allows zero entities to be generated for the server. This should be
-                // caught before we get to this point and reported to the user.
-                panic!("there must be at least one entity to paginate.");
-            }
+    if files.is_empty() {
+        // If this error occurs, there is likely some misconfiguration that
+        // allows zero entities to be generated for the server. This should be
+        // caught before we get to this point and reported to the user.
+        panic!("there must be at least one entity to paginate.");
+    }
 
-            let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
+    let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
 
-            let links = links::Builder::try_new("http://localhost:8000/file", page, pages.clone())
-                .unwrap_or_else(|err| {
+    let links = links::Builder::try_new("http://localhost:8000/file", page, pages.clone())
+        .unwrap_or_else(|err| {
+            match err {
+                links::builder::Error::ParseError(err) => {
                     match err {
-                        links::builder::Error::ParseError(err) => {
-                            match err {
-                                links::builder::ParseError::UrlParseError(_) => {
-                                    // If this error occurs, there is something wrong
-                                    // with the code that generates the base URL for the
-                                    // links. This cannot be a user issue.
-                                    panic!("provided URL is not parsable")
-                                }
-                            }
+                        links::builder::ParseError::UrlParseError(_) => {
+                            // If this error occurs, there is something wrong
+                            // with the code that generates the base URL for the
+                            // links. This cannot be a user issue.
+                            panic!("provided URL is not parsable")
                         }
                     }
-                })
-                .insert_link(Relationship::First)
-                .insert_link(Relationship::Prev)
-                .insert_link(Relationship::Next)
-                .insert_link(Relationship::Last)
-                .build();
-
-            let entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
-
-            if entities.is_empty() {
-                return HttpResponse::UnprocessableEntity().json(Errors::from(
-                    error::Kind::invalid_parameters(
-                        Some(vec![String::from("page"), String::from("per_page")]),
-                        format!("no {}s selected", stringify!(T).to_lowercase()),
-                    ),
-                ));
+                }
             }
+        })
+        .insert_link(Relationship::First)
+        .insert_link(Relationship::Prev)
+        .insert_link(Relationship::Next)
+        .insert_link(Relationship::Last)
+        .build();
 
-            (files, Some(links))
-        } else {
-            (files, None)
-        };
+    let entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
+
+    if entities.is_empty() {
+        return HttpResponse::UnprocessableEntity().json(Errors::from(
+            error::Kind::invalid_parameters(
+                Some(vec![String::from("page"), String::from("per_page")]),
+                format!("no {}s selected", stringify!(T).to_lowercase()),
+            ),
+        ));
+    }
+
+    let (files, links) = (files, Some(links));
 
     let files = data::Files::from(files);
     let gateways = files
