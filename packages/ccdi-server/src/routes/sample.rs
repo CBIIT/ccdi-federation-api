@@ -91,8 +91,9 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 ///
 /// ### Pagination
 ///
-/// This endpoint supports pagination. Pagination is enabled by providing one of
-/// the pagination-related query parameters below.
+/// This endpoint is paginated. Users may override the default pagination
+/// parameters by providing one or more of the pagination-related query
+/// parameters below.
 ///
 /// ### Filtering
 ///
@@ -178,16 +179,11 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
                     - `prev` (_Optional_). A link to the previous page (if it \
                     exists).\n\n\
                     ### Requirements\n\n\
-                    - This header is required to exist when pagination is \
-                    enabled.\n\
-                    - It is also required _not_ to exist \
-                    when pagination is not enabled.\n\
-                    - When the header is present, this header must provide \
-                    links for at least the `first` and `last` rels.\n \
-                    - When the header is present, the `prev` and `next` links \
-                    must exist only (a) when there are multiple pages in the \
-                    result page set and (b) when the current page is not the \
-                    first or last page, respectively.\n\
+                    - This header _must_ provide links for at least the `first` \
+                    and `last` rels.\n \
+                    - The `prev` and `next` links must exist only (a) when there \
+                    are multiple pages in the result page set and (b) when the \
+                    current page is not the first or last page, respectively.\n\
                     - This list of links is unordered.\n\n \
                     ### Notes\n\n\
                     - HTTP 1.1 and HTTP 2.0 dictate that response \
@@ -241,15 +237,11 @@ pub async fn sample_index(
 
     let samples = filter::<Sample, FilterSampleParams>(samples, filter_params.0);
 
-    if pagination_params.0.page().is_some() || pagination_params.0.per_page().is_some() {
-        paginate::response::<Sample, Samples>(
-            pagination_params.0,
-            samples,
-            "http://localhost:8000/sample",
-        )
-    } else {
-        HttpResponse::Ok().json(Samples::from(samples))
-    }
+    paginate::response::<Sample, Samples>(
+        pagination_params.0,
+        samples,
+        "http://localhost:8000/sample",
+    )
 }
 
 /// Gets the sample matching the provided name (if the sample exists).
