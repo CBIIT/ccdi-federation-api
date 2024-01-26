@@ -742,7 +742,7 @@ components:
       - Regional
       - Unknown
     cde.v1.sample.TumorTissueMorphology:
-      type: string
+      type: object
       description: |-
         **`caDSR CDE 11326261 v1.00`**
 
@@ -753,6 +753,12 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11326261%20and%20ver_nr=1>
+      required:
+      - icd_o_3
+      properties:
+        icd_o_3:
+          type: string
+          description: The ICD-O-3 code.
     cde.v1.subject.Identifier:
       type: object
       description: |-
