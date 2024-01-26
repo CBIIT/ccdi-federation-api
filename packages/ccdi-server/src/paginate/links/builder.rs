@@ -53,7 +53,8 @@ pub struct Page {
     /// The index of this page.
     index: NonZeroUsize,
 
-    /// The number of entities within this page.
+    /// The requested number of entities within this page.
+    /// The actual number may be fewer if this is the last page.
     page_size: NonZeroUsize,
 }
 
@@ -188,7 +189,7 @@ impl<'a, T> Builder<'a, T> {
 
                     // SAFETY: we just checked to make sure that there is (a)
                     // more than one page and (b) we are not currently pointed
-                    // at page one. As such, there will always be a next page
+                    // at page one. As such, there will always be a prev page
                     // that we can unwrap.
                     //
                     // Recall that the index starts at 0, so to get the prev
@@ -198,8 +199,8 @@ impl<'a, T> Builder<'a, T> {
                     self.links.insert(
                         rel,
                         Page::new(
-                            // SAFETY: this is the first page, so the page value should
-                            // always be `1`. That will always unwrap a [`NonZeroUsize`].
+                            // SAFETY: we just checked that current_page is > 1, so
+                            // prev_page will be >= 1 thus always unwrap a [`NonZeroUsize`].
                             NonZeroUsize::try_from(prev_page).unwrap(),
                             // SAFETY: similarly, because we know that the contents
                             // are not empty, this will always have at least one
@@ -216,35 +217,50 @@ impl<'a, T> Builder<'a, T> {
                 if self.pages.len() > 1 && self.current_page.get() != self.pages.len() {
                     let next_page = self.current_page.get() + 1;
 
-                    // SAFETY: we just checked to make sure that there is (a)
-                    // more than one page and (b) we are not currently pointed
-                    // at the last page. As such, there will always be a
-                    // previous page that we can unwrap.
+                    // We retrieve contents here only to calculate a per_page value.
+                    // However, we cannot use self.pages.get(next_page - 1) for this purpose:
+                    // if next_page is the last page, and the overall number of entities isn't
+                    // evenly divisible by the per_page value, then the count of entities
+                    // on that page will be less than the requested per_page value.
+                    // Instead, get the length of the contents of the first page, which will
+                    // always be a full page unless per_page > total count of entities.
+                    // (In which case it's ok to change per_page to the total count.)
                     //
-                    // Recall that the index starts at 0, so to get the next
-                    // page, we have to get the `next_page - 1` nth item.
-                    let contents = self.pages.get(next_page - 1).unwrap();
+                    // SAFETY: we check to ensure that `self.pages` is not empty at
+                    // [`Builder`] creation time. As such, this call to `first()`
+                    // will always unwrap, as at least one page exists.
+                    let first_page_contents = self.pages.first().unwrap();
 
                     self.links.insert(
                         rel,
                         Page::new(
-                            // SAFETY: this is the first page, so the page value should
-                            // always be `1`. That will always unwrap a [`NonZeroUsize`].
+                            // SAFETY: next_page is a NonZeroUsize plus 1.
+                            // This could fail to unrap if it goes past usize::MAX.
+                            // In its practical context as a page number, this is unlikely.
                             NonZeroUsize::try_from(next_page).unwrap(),
-                            // SAFETY: similarly, because we know that the contents
-                            // are not empty, this will always have at least one
-                            // element (and, thus, will unwrap).
-                            NonZeroUsize::try_from(contents.len()).unwrap(),
+                            // SAFETY: because there is more than one page, there must be at
+                            // least one element on the first page, so this will unwrap.
+                            NonZeroUsize::try_from(first_page_contents.len()).unwrap(),
                         ),
                     );
                 }
             }
             Relationship::Last => {
-                // SAFETY: we check to ensure that `self.pages` is not empty at
-                // [`Builder`] creation time. As such, this call to `last()`
-                // will always unwrap, as at least one page exists.
-                let contents = self.pages.last().unwrap();
                 let last_page = self.pages.len();
+
+                // We retrieve contents here only to calculate a per_page value.
+                // However, we cannot use self.pages.last.unwrap() for this purpose:
+                // when we are on the last page and the overall number of entities isn't
+                // evenly divisible by the per_page value, then the count of entities
+                // on that page will be less than the requested per_page value.
+                // Instead, get the length of the contents of the first page, which will
+                // always be a full page unless per_page > total count of entities.
+                // (In which case it's ok to change per_page to the total count.)
+                //
+                // SAFETY: we check to ensure that `self.pages` is not empty at
+                // [`Builder`] creation time. As such, this call to `first()`
+                // will always unwrap, as at least one page exists.
+                let first_page_contents = self.pages.first().unwrap();
 
                 self.links.insert(
                     rel,
@@ -253,10 +269,9 @@ impl<'a, T> Builder<'a, T> {
                         // empty, the last page will be, at least, one. Thus,
                         // this will always unwrap.
                         NonZeroUsize::try_from(last_page).unwrap(),
-                        // SAFETY: similarly, because we know that the contents
-                        // are not empty, this will always have at least one
-                        // element (and, thus, will unwrap).
-                        NonZeroUsize::try_from(contents.len()).unwrap(),
+                        // SAFETY: because there is more than one page, there must be at
+                        // least one element on the first page, so this will unwrap.
+                        NonZeroUsize::try_from(first_page_contents.len()).unwrap(),
                     ),
                 );
             }
