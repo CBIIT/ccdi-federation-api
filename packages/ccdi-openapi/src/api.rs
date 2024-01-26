@@ -38,6 +38,14 @@ permission to a dataset via an explicit decision from a data access committee
 is considered authorization while making data available after simply completing
 a universally accessible account registration process is not.
 
+## Security Requirements
+
+All API endpoints must be served over HTTPS (port 443) with a certificate signed
+by a recognized certificate authority. In particular, self-signed certificates
+are not permitted. Further, while an API _may_ be available over HTTP (port 80),
+HTTPS must always be available. We highly recommend you redirect HTTP to HTTPS
+rather than serve your API on two separate ports.
+
 ## Invalid Routes
 
 All responses that do not match an endpoint below should return a Not Found 
