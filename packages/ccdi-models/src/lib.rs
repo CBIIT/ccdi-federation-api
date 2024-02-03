@@ -32,7 +32,7 @@ pub use url::Url;
 ///
 /// We accept non-empty string comprised of any lowercase character (`[a-z]`)
 /// and an underscore.
-pub const HARMONIZED_KEY_REGEX: &str = r"^[a-z_]+$";
+pub const HARMONIZED_KEY_REGEX: &str = r"^[a-z0-9_.]+$";
 
 #[cfg(test)]
 mod tests {

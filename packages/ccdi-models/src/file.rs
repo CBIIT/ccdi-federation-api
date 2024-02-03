@@ -8,8 +8,10 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 mod identifier;
+pub mod metadata;
 
 pub use identifier::Identifier;
+pub use metadata::Metadata;
 
 use crate::gateway;
 use crate::gateway::AnonymousOrReference;
@@ -79,6 +81,11 @@ pub struct File {
     /// gateway, then it should not be returned as part of this API.
     #[schema(value_type = Vec<models::gateway::AnonymousOrReference>)]
     gateways: NonEmpty<gateway::AnonymousOrReference>,
+
+    /// Metadata associated with this [`File`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(value_type = Option<models::file::Metadata>)]
+    metadata: Option<Metadata>,
 }
 
 impl File {
@@ -91,6 +98,7 @@ impl File {
     /// use ccdi_models as models;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::sample;
@@ -118,6 +126,7 @@ impl File {
     ///             },
     ///         },
     ///     }),
+    ///     Some(Metadata::random()),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -126,11 +135,13 @@ impl File {
         id: Identifier,
         samples: NonEmpty<crate::sample::Identifier>,
         gateways: NonEmpty<gateway::AnonymousOrReference>,
+        metadata: Option<Metadata>,
     ) -> Self {
         Self {
             id,
             samples,
             gateways,
+            metadata,
         }
     }
 
@@ -143,6 +154,7 @@ impl File {
     /// use ccdi_models as models;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::sample;
@@ -170,6 +182,7 @@ impl File {
     ///             },
     ///         },
     ///     }),
+    ///     Some(Metadata::random()),
     /// );
     ///
     /// assert_eq!(file.id().namespace(), "organization");
@@ -191,6 +204,7 @@ impl File {
     /// use ccdi_models as models;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::sample;
@@ -218,6 +232,7 @@ impl File {
     ///             },
     ///         },
     ///     }),
+    ///     Some(Metadata::random()),
     /// );
     ///
     /// assert_eq!(file.samples().len(), 1);
@@ -241,6 +256,7 @@ impl File {
     /// use ccdi_models as models;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::sample;
@@ -268,6 +284,7 @@ impl File {
     ///             },
     ///         },
     ///     }),
+    ///     Some(Metadata::random()),
     /// );
     ///
     /// assert_eq!(file.gateways().len(), 1);
@@ -278,6 +295,54 @@ impl File {
     /// ```
     pub fn gateways(&self) -> &NonEmpty<gateway::AnonymousOrReference> {
         &self.gateways
+    }
+
+    /// Gets the [`Metadata`] for the [`File`] (if it exists, by reference).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::file::Identifier;
+    /// use models::file::Metadata;
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::sample;
+    /// use models::File;
+    /// use models::Gateway;
+    /// use models::Namespace;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
+    ///
+    /// let namespace = Namespace::try_new(
+    ///     "organization",
+    ///     "Example Organization",
+    ///     "support@example.com",
+    ///     None,
+    /// )
+    /// .unwrap();
+    ///
+    /// let file = File::new(
+    ///     Identifier::new(&namespace, "Foo.txt"),
+    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///             },
+    ///         },
+    ///     }),
+    ///     Some(Metadata::random()),
+    /// );
+    ///
+    /// assert!(file.metadata().is_some());
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn metadata(&self) -> Option<&Metadata> {
+        self.metadata.as_ref()
     }
 
     /// Generates a random [`File`].
@@ -330,6 +395,10 @@ impl File {
                 false => NonEmpty::new(AnonymousOrReference::Reference {
                     gateway: String::from("gateway"),
                 }),
+            },
+            metadata: match rng.gen_bool(0.7) {
+                true => Some(Metadata::random()),
+                false => None,
             },
         }
     }
@@ -387,6 +456,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
         let b = File::new(
             Identifier::new(&namespace, "B.txt"),
@@ -398,6 +468,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
 
         assert_eq!(a.cmp(&b), Ordering::Less);
@@ -412,6 +483,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
         let b = File::new(
             Identifier::new(&namespace, "B.txt"),
@@ -423,6 +495,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
 
         assert_eq!(c.cmp(&b), Ordering::Greater);
@@ -437,6 +510,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
         let bar = File::new(
             Identifier::new(&namespace, "Foo.txt"),
@@ -448,6 +522,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
 
         assert_eq!(foo.cmp(&bar), Ordering::Equal);
@@ -475,6 +550,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
         let bar = File::new(
             Identifier::new(&namespace, "Foo.txt"),
@@ -486,6 +562,7 @@ mod tests {
                     },
                 },
             }),
+            None,
         );
 
         assert!(foo == bar);

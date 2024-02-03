@@ -19,6 +19,7 @@ chrono = { version = "0.4.31", features = ["serde"] }
 clap = { version = "4.4.6", features = ["cargo", "derive"] }
 indexmap = "2.0.2"
 introspect = { git = "https://github.com/claymcleod/introspect.git" }
+itertools = "0.12.1"
 lazy_static = "1.4.0"
 log = "0.4.20"
 mime = "0.3.17"

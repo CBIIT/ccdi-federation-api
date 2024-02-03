@@ -210,6 +210,14 @@ that some fields have been left out of the definitions for brevity.
         cde::v1::sample::TumorTissueMorphology,
         models::sample::metadata::AgeAtCollection,
 
+        // Harmonized file metadata elements.
+        cde::v1::file::Identifier,
+        cde::v1::file::Type,
+        cde::v1::file::Size,
+        models::file::metadata::Checksums,
+        cde::v1::file::checksum::MD5,
+        cde::v1::file::Description,
+
         // Harmonized subject fields.
         field::unowned::subject::Sex,
         field::unowned::subject::Race,
@@ -225,6 +233,12 @@ that some fields have been left out of the definitions for brevity.
         field::unowned::sample::TumorClassification,
         field::unowned::sample::TumorTissueMorphology,
         field::unowned::sample::AgeAtCollection,
+
+        // Harmonized file fields.
+        field::unowned::file::Type,
+        field::unowned::file::Size,
+        field::unowned::file::Checksums,
+        field::unowned::file::Description,
 
         // Unharmonized fields.
         field::owned::Field,
@@ -246,6 +260,7 @@ that some fields have been left out of the definitions for brevity.
         // File models.
         models::File,
         models::file::Identifier,
+        models::file::Metadata,
 
         // Gateway models.
         models::gateway::Link,
