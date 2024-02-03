@@ -69,6 +69,7 @@ impl Files {
     /// use ccdi_server as server;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::gateway::Named;
@@ -93,6 +94,7 @@ impl Files {
     ///     NonEmpty::new(AnonymousOrReference::Reference {
     ///         gateway: String::from("name"),
     ///     }),
+    ///     Some(Metadata::random()),
     /// );
     ///
     /// let gateway = Named::new(
@@ -175,6 +177,7 @@ mod tests {
             NonEmpty::new(AnonymousOrReference::Reference {
                 gateway: String::from("name"),
             }),
+            None,
         );
 
         let gateway = Named::new(
@@ -207,6 +210,7 @@ mod tests {
             NonEmpty::new(AnonymousOrReference::Reference {
                 gateway: String::from("name"),
             }),
+            None,
         );
 
         let gateways = vec![

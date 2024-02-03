@@ -702,6 +702,142 @@ paths:
                 $ref: '#/components/schemas/responses.Information'
 components:
   schemas:
+    cde.v1.file.Description:
+      type: string
+      description: |-
+        **`caDSR CDE 11280338 v1.00`**
+
+        This metadata element is defined by the caDSR as "A free text field that can
+        be used to document the content and other details about an electronic file
+        that may not be captured elsewhere.". No permissible values are defined for
+        this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11280338%20and%20ver_nr=1>
+    cde.v1.file.Identifier:
+      type: object
+      description: |-
+        **`caDSR CDE 11284037 v1.00`**
+
+        This metadata element is defined by the caDSR as "The literal label for an
+        electronic data file.". No permissible values are defined for this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11284037%20and%20ver_nr=1>
+      required:
+      - namespace
+      - name
+      properties:
+        namespace:
+          type: string
+          description: The namespace of the identifier.
+          example: organization
+        name:
+          type: string
+          description: The name of the identifier.
+          example: File001.txt
+    cde.v1.file.Size:
+      type: integer
+      description: |-
+        **`caDSR CDE 11479876 v1.00`**
+
+        This metadata element is defined by the caDSR as "The measure (in bytes) of
+        how much space a data file takes up on a storage medium.". No permissible
+        values are defined for this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11479876%20and%20ver_nr=1>
+      minimum: 0
+    cde.v1.file.Type:
+      type: string
+      description: |-
+        **`caDSR CDE 11416926 v1.00`**
+
+        This metadata element is defined by the caDSR as "A defined organization or
+        layout representing and structuring data in a computer file.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11416926%20and%20ver_nr=1>
+      enum:
+      - HIC
+      - BEDPE Format
+      - mtx
+      - mzIdentML
+      - MEX
+      - CRAI
+      - CEL
+      - mzXML
+      - IDAT
+      - IDF
+      - JPEG
+      - JPEG 2000
+      - JSON
+      - MAF
+      - YAML
+      - ZIP
+      - SVS
+      - TAR
+      - Thermo RAW
+      - TIFF
+      - TSV
+      - TXT
+      - VCF
+      - XLS
+      - XLSX
+      - XML
+      - MATLAB Script
+      - NIFTI Format
+      - R Markdown
+      - R File Format
+      - Python Script Format
+      - Sequence Record Format
+      - SVG
+      - OME-TIFF
+      - PDF
+      - Plain Text Data Format
+      - PNG
+      - SDRF
+      - MAGE-TAB
+      - MAT
+      - MPEG-4
+      - mzML
+      - GenBank Format
+      - GFF3
+      - GPR
+      - GTF
+      - GZIP Format
+      - HDF5
+      - HTML
+      - BIOM
+      - CRAM
+      - CSV
+      - DICOM
+      - DOCX
+      - DSV
+      - FASTA
+      - FASTQ
+      - GCT/Res Format
+      - AVI
+      - BAI
+      - BAM
+      - BCR Biotab
+      - BED
+      - bedgraph
+      - bigBed
+      - bigWig
+      - Binary Format
+      - ADF
+    cde.v1.file.checksum.MD5:
+      type: string
+      description: |-
+        **`caDSR CDE 11556150 v1.00`**
+
+        This metadata element is defined by the caDSR as "A 32-character hexadecimal
+        number that is computed on a file.". No permissible values are defined for
+        this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11556150%20and%20ver_nr=1>
     cde.v1.sample.DiseasePhase:
       type: string
       description: |-
@@ -932,6 +1068,82 @@ components:
       properties:
         value:
           description: The value of the metadata field.
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.file.Checksums:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.file.metadata.Checksums'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.file.Description:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.file.Description'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.file.Size:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.file.Size'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.file.Type:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.file.Type'
         ancestors:
           type: array
           items:
@@ -1228,6 +1440,10 @@ components:
 
             **Note:** a file must have at least one gateway. If the file has no
             gateway, then it should not be returned as part of this API.
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/models.file.Metadata'
+          nullable: true
     models.Gateway:
       oneOf:
       - type: object
@@ -1399,20 +1615,42 @@ components:
         A uniform resource locator (URL) according to the [URL
         Standard](https://url.spec.whatwg.org/).
     models.file.Identifier:
+      $ref: '#/components/schemas/cde.v1.file.Identifier'
+    models.file.Metadata:
       type: object
-      description: A name and namespace for a [`File`](crate::File).
+      description: Metadata associated with a file.
       required:
-      - namespace
-      - name
+      - type
+      - size
+      - checksums
+      - description
       properties:
-        namespace:
-          type: string
-          description: The namespace of the identifier.
-          example: organization
-        name:
-          type: string
-          description: The name of the file.
-          example: File001.txt
+        type:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.file.Type'
+          nullable: true
+        size:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.file.Size'
+          nullable: true
+        checksums:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.file.Checksums'
+          nullable: true
+        description:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.file.Description'
+          nullable: true
+        unharmonized:
+          $ref: '#/components/schemas/fields.Unharmonized'
+    models.file.metadata.Checksums:
+      type: object
+      description: A list of checksums for a file.
+      properties:
+        md5:
+          allOf:
+          - $ref: '#/components/schemas/cde.v1.file.checksum.MD5'
+          nullable: true
     models.gateway.AnonymousOrReference:
       oneOf:
       - type: object

@@ -1,44 +1,39 @@
-//! Harmonized metadata field descriptions for subjects.
+//! Harmonized metadata field descriptions for files.
 
 use ccdi_cde as cde;
 
 use cde::CDE;
-use introspect::Entity;
-use introspect::IntrospectedEntity as _;
 
 use crate::metadata::field::description;
-use crate::Url;
-
 use crate::metadata::field::description::harmonized::Kind;
 use crate::metadata::field::description::harmonized::Standard;
-use crate::metadata::field::description::r#trait::Description;
+use crate::metadata::field::description::r#trait::Description as _;
 use crate::metadata::field::description::Harmonized;
+use crate::Url;
 
-/// Gets the harmonized fields for subjects.
+/// Gets the harmonized fields for files.
 pub fn get_field_descriptions() -> Vec<description::Description> {
     vec![
-        cde::v1::subject::Sex::description(),
-        cde::v1::subject::Race::description(),
-        cde::v2::subject::Ethnicity::description(),
-        cde::v1::subject::Identifier::description(),
-        cde::v1::subject::VitalStatus::description(),
-        crate::subject::metadata::AgeAtVitalStatus::description(),
+        cde::v1::file::Type::description(),
+        cde::v1::file::Size::description(),
+        cde::v1::file::checksum::MD5::description(),
+        cde::v1::file::Description::description(),
     ]
 }
 
-impl Description for cde::v1::subject::Sex {
+impl description::r#trait::Description for cde::v1::file::Type {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().map(|member| member.unwrap());
+        let members = Self::members().map(|x| x.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Enum,
-            String::from("sex"),
+            String::from("type"),
             entity.description().to_string(),
             Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#sex",
+                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#type",
             )
             .unwrap(),
             Some(Standard::new(
@@ -50,19 +45,19 @@ impl Description for cde::v1::subject::Sex {
     }
 }
 
-impl Description for cde::v1::subject::Race {
+impl description::r#trait::Description for cde::v1::file::Size {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().map(|member| member.unwrap());
+        let members = Self::members().map(|x| x.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
-            Kind::Enum,
-            String::from("race"),
+            Kind::Struct,
+            String::from("size"),
             entity.description().to_string(),
             Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#race",
+                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#size",
             )
             .unwrap(),
             Some(Standard::new(
@@ -74,74 +69,44 @@ impl Description for cde::v1::subject::Race {
     }
 }
 
-impl Description for cde::v2::subject::Ethnicity {
+impl description::r#trait::Description for cde::v1::file::checksum::MD5 {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().map(|member| member.unwrap());
-
-        description::Description::Harmonized(Harmonized::new(
-            Kind::Enum,
-            String::from("ethnicity"),
-            entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#ethnicity").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            members,
-        ))
-    }
-}
-
-impl Description for cde::v1::subject::Identifier {
-    fn description() -> description::Description {
-        // SAFETY: these two unwraps are tested statically below in the test
-        // that constructs the description using `get_fields()`.
-        let entity = Self::entity().unwrap();
-        let members = Self::members().map(|member| member.unwrap());
+        let members = Self::members().map(|x| x.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Struct,
-            String::from("identifiers"),
+            String::from("checksums.md5"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#identifiers").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            Url::try_from(
+                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#checksumsmd5",
+            )
+            .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }
 }
 
-impl Description for cde::v1::subject::VitalStatus {
+impl description::r#trait::Description for cde::v1::file::Description {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().map(|member| member.unwrap());
-
-        description::Description::Harmonized(Harmonized::new(
-            Kind::Enum,
-            String::from("vital_status"),
-            entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#vital_status").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            members,
-        ))
-    }
-}
-
-impl description::r#trait::Description for crate::subject::metadata::AgeAtVitalStatus {
-    fn description() -> description::Description {
-        let description = match Self::introspected_entity() {
-            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
-            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
-        };
+        let members = Self::members().map(|x| x.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Struct,
-            String::from("age_at_vital_status"),
-            description,
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_vital_status").unwrap(),
-            None,
-            None,
+            String::from("description"),
+            entity.description().to_string(),
+            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#description").unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            members,
         ))
     }
 }

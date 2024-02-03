@@ -26,6 +26,7 @@ impl Files {
     /// use ccdi_server as server;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::sample;
     /// use models::File;
@@ -48,6 +49,7 @@ impl Files {
     ///         NonEmpty::new(AnonymousOrReference::Reference {
     ///             gateway: String::from("name"),
     ///         }),
+    ///         Some(Metadata::random()),
     ///     ),
     ///     File::new(
     ///         Identifier::new(&namespace, "Bar.txt"),
@@ -55,6 +57,7 @@ impl Files {
     ///         NonEmpty::new(AnonymousOrReference::Reference {
     ///             gateway: String::from("name"),
     ///         }),
+    ///         Some(Metadata::random()),
     ///     ),
     /// ]);
     ///

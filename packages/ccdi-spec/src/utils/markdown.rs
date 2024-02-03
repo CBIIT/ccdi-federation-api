@@ -1,9 +1,8 @@
-use std::slice::Iter;
-
 use ccdi_cde as cde;
 use ccdi_models as models;
 
 use cde::parse::cde::Member;
+use itertools::Itertools;
 use models::metadata::field::description;
 use models::metadata::field::description::harmonized::Kind;
 use models::metadata::field::description::Description;
@@ -51,12 +50,14 @@ fn display_harmonized(
     }
 
     // Write the documentation for the metadata element.
-    writeln!(f, "{}\n", harmonized.description())?;
+    writeln!(f, "{}", harmonized.description())?;
 
-    if let Some(members) = harmonized.members() {
+    if let Some(members) = harmonized.members().cloned() {
+        writeln!(f)?;
+
         match harmonized.kind() {
-            Kind::Enum => write_variant_members(f, members.iter())?,
-            Kind::Struct => write_field_members(f, members.iter())?,
+            Kind::Enum => write_variant_members(f, members)?,
+            Kind::Struct => write_field_members(f, members)?,
         }
     }
 
@@ -65,26 +66,53 @@ fn display_harmonized(
 
 fn write_field_members(
     f: &mut std::fmt::Formatter<'_>,
-    members: Iter<'_, (String, Member)>,
+    mut members: Vec<(Option<String>, Member)>,
 ) -> std::fmt::Result {
-    for (identifier, member) in members {
-        let field = match member {
-            Member::Field(field) => field,
-            // SAFETY: this function is only called when we check that the first
-            // member in the `members` list is a [`Member::Field`]. If the first
-            // element is a [`Member::Field`], then all of them should be.
-            _ => unreachable!(),
-        };
+    // NOTE: this block catches the special case where we have a tuple struct
+    // that has a single, unnamed field. In this case, it makes the
+    // documentation look bad under the more general strategy below, so we
+    // simply print out the description
+    if members.len() == 1 {
+        // SAFETY: we just ensured there was exactly one element.
+        let (identifier, member) = members.pop().unwrap();
 
-        writeln!(f, "* **{}.** {}", identifier, field.description())?;
+        if let Member::Field(field) = member {
+            if identifier.is_none() {
+                writeln!(f, "{}", field.description())?;
+                return Ok(());
+            }
+        }
     }
+
+    write!(
+        f,
+        "{}",
+        members
+            .into_iter()
+            .map(|(identifier, member)| {
+                let field = match member {
+                    Member::Field(field) => field,
+                    // SAFETY: this function is only called when we check that the first
+                    // member in the `members` list is a [`Member::Field`]. If the first
+                    // element is a [`Member::Field`], then all of them should be.
+                    _ => unreachable!(),
+                };
+
+                format!(
+                    "* **{}.** {}",
+                    identifier.unwrap_or(String::from("<unnamed>")),
+                    field.description()
+                )
+            })
+            .join("\n")
+    )?;
 
     Ok(())
 }
 
 fn write_variant_members(
     f: &mut std::fmt::Formatter<'_>,
-    members: Iter<'_, (String, Member)>,
+    members: Vec<(Option<String>, Member)>,
 ) -> std::fmt::Result {
     // Write table header.
     write!(f, "| Permissible Value | Description |")?;
@@ -104,41 +132,47 @@ fn write_variant_members(
 
     writeln!(f)?;
 
-    for (_, member) in members {
-        let variant = match member {
-            Member::Variant(variant) => variant,
-            // SAFETY: this function is only called when we check that the first
-            // member in the `members` list is a [`Member::Variant`]. If the
-            // first element is a [`Member::Variant`], then all of them should
-            // be.
-            v => unreachable!("{:?}", v),
-        };
+    writeln!(
+        f,
+        "{}",
+        members
+            .into_iter()
+            .map(|(_, member)| {
+                let variant = match member {
+                    Member::Variant(variant) => variant,
+                    // SAFETY: this function is only called when we check that the first
+                    // member in the `members` list is a [`Member::Variant`]. If the
+                    // first element is a [`Member::Variant`], then all of them should
+                    // be.
+                    v => unreachable!("{:?}", v),
+                };
 
-        // Write the row.
-        write!(
-            f,
-            "| `{}` | {} |",
-            variant.permissible_value(),
-            variant.description()
-        )?;
+                // Write the row.
+                let mut result: String = format!(
+                    "| `{}` | {} |",
+                    variant.permissible_value(),
+                    variant.description()
+                );
 
-        for field in METADATA_TABLE_FIELDS {
-            let key = field.to_string();
-            let value = variant
-                .metadata()
-                .map(|metadata| {
-                    metadata
-                        .get(&key)
-                        .map(|value| value.to_string())
-                        .unwrap_or(String::new())
-                })
-                .unwrap_or(String::new());
+                for field in METADATA_TABLE_FIELDS {
+                    let key = field.to_string();
+                    let value = variant
+                        .metadata()
+                        .map(|metadata| {
+                            metadata
+                                .get(&key)
+                                .map(|value| value.to_string())
+                                .unwrap_or(String::new())
+                        })
+                        .unwrap_or(String::new());
 
-            write!(f, " {} |", value)?;
-        }
+                    result.push_str(&format!(" {} |", value));
+                }
 
-        writeln!(f)?;
-    }
+                result
+            })
+            .join("\n")
+    )?;
 
     Ok(())
 }

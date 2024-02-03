@@ -15,6 +15,7 @@ use actix_web::HttpResponse;
 use actix_web::HttpServer;
 use clap::Parser;
 use clap::Subcommand;
+use itertools::Itertools as _;
 use log::info;
 use log::LevelFilter;
 use server::routes::file;
@@ -48,6 +49,9 @@ pub enum Entity {
 
     /// A sample.
     Sample,
+
+    /// A file.
+    File,
 }
 
 /// An error related to the main program.
@@ -299,12 +303,16 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                     models::metadata::field::description::harmonized::sample::get_field_descriptions(
                     )
                 }
+                Entity::File => {
+                    models::metadata::field::description::harmonized::file::get_field_descriptions(
+                    )
+                }
             };
 
-            for field in fields {
-                let section = markdown::Section::from(field);
-                println!("{}\n", section);
-            }
+            print!(
+                "{}",
+                fields.into_iter().map(markdown::Section::from).join("\n")
+            );
         }
     }
 

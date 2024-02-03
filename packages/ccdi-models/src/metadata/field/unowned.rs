@@ -271,3 +271,45 @@ pub mod subject {
         ccdi_cde as cde
     );
 }
+
+pub mod file {
+    use super::*;
+
+    use ccdi_cde as cde;
+
+    unowned_field!(
+        Type,
+        field::unowned::file::Type,
+        cde::v1::file::Type,
+        cde::v1::file::Type,
+        cde::v1::file::Type::TXT,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Size,
+        field::unowned::file::Size,
+        cde::v1::file::Size,
+        cde::v1::file::Size,
+        cde::v1::file::Size::new(42),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Checksums,
+        field::unowned::file::Checksums,
+        crate::file::metadata::Checksums,
+        models::file::metadata::Checksums,
+        models::file::metadata::Checksums::default(),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Description,
+        field::unowned::file::Description,
+        cde::v1::file::Description,
+        cde::v1::file::Description,
+        cde::v1::file::Description::new("Hello, world!"),
+        ccdi_cde as cde
+    );
+}

@@ -48,7 +48,7 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Enum,
@@ -56,7 +56,7 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
             entity.description().to_string(),
             Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase").unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            Some(members),
+            members,
         ))
     }
 }
@@ -66,7 +66,7 @@ impl description::r#trait::Description for cde::v2::sample::TissueType {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Enum,
@@ -74,7 +74,7 @@ impl description::r#trait::Description for cde::v2::sample::TissueType {
             entity.description().to_string(),
             Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tissue_type").unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            Some(members),
+            members,
         ))
     }
 }
@@ -84,7 +84,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Enum,
@@ -92,7 +92,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
             entity.description().to_string(),
             Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_classification").unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            Some(members),
+            members,
         ))
     }
 }
@@ -102,7 +102,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorTissueMorpholog
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
         let entity = Self::entity().unwrap();
-        let members = Self::members().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Struct,
@@ -110,7 +110,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorTissueMorpholog
             entity.description().to_string(),
             Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_tissue_morphology").unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
-            Some(members),
+            members,
         ))
     }
 }

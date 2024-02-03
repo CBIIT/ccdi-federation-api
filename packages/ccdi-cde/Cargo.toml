@@ -7,6 +7,7 @@ edition.workspace = true
 [dependencies]
 indexmap.workspace = true
 introspect.workspace = true
+lazy_static.workspace = true
 rand.workspace = true
 regex.workspace = true
 serde.workspace = true

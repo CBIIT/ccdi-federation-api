@@ -10,6 +10,7 @@ use cde::parse::cde::Member;
 
 use crate::Url;
 
+pub mod file;
 pub mod sample;
 mod standard;
 pub mod subject;
@@ -67,7 +68,7 @@ pub struct Harmonized {
     /// the `struct`. For an `enum`, this is all of the available variants for
     /// the `enum`.
     #[serde(skip_serializing)]
-    members: Option<Vec<(String, Member)>>,
+    members: Option<Vec<(Option<String>, Member)>>,
 }
 
 impl Harmonized {
@@ -97,7 +98,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -116,7 +117,7 @@ impl Harmonized {
         description: String,
         wiki_url: Url,
         standard: Option<Standard>,
-        members: Option<Vec<(String, Member)>>,
+        members: Option<Vec<(Option<String>, Member)>>,
     ) -> Self {
         Harmonized {
             harmonized: true,
@@ -155,7 +156,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -200,7 +201,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -245,7 +246,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -290,7 +291,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -339,7 +340,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -385,7 +386,7 @@ impl Harmonized {
     ///         Url::try_from("https://cancer.gov").unwrap(),
     ///     )),
     ///     Some(vec![(
-    ///         String::from("Unknown"),
+    ///         Some(String::from("Unknown")),
     ///         Member::Variant(
     ///             "`Unknown`
     ///              
@@ -398,9 +399,15 @@ impl Harmonized {
     ///
     /// assert_eq!(description.members().unwrap().len(), 1);
     ///
-    /// let (identifier, variant) = description.members().unwrap().first().unwrap();
+    /// let (identifier, variant) = description
+    ///     .members()
+    ///     .unwrap()
+    ///     .clone()
+    ///     .into_iter()
+    ///     .next()
+    ///     .unwrap();
     ///
-    /// assert_eq!(identifier.as_str(), "Unknown");
+    /// assert_eq!(identifier.unwrap().as_str(), "Unknown");
     /// assert_eq!(
     ///     variant.get_variant().unwrap().permissible_value(),
     ///     "Unknown"
@@ -412,7 +419,7 @@ impl Harmonized {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn members(&self) -> Option<&Vec<(String, Member)>> {
+    pub fn members(&self) -> Option<&Vec<(Option<String>, Member)>> {
         self.members.as_ref()
     }
 }

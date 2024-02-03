@@ -12,6 +12,7 @@ ccdi-models = { path = "../ccdi-models" }
 ccdi-openapi = { path = "../ccdi-openapi" }
 ccdi-server = { path = "../ccdi-server" }
 clap.workspace = true
+itertools.workspace = true
 log.workspace = true
 reqwest.workspace = true
 serde_json.workspace = true

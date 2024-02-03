@@ -68,7 +68,8 @@ pub trait CDE: std::fmt::Display + Eq + PartialEq + Introspected {
 
     /// Gets the parsed members of an entity from the corresponding member's
     /// documentation.
-    fn members() -> Result<Vec<(String, parse::cde::Member)>> {
+    #[allow(clippy::type_complexity)]
+    fn members() -> Option<Result<Vec<(Option<String>, parse::cde::Member)>>> {
         Self::introspected_members()
             .into_iter()
             .map(|member| match member {
@@ -77,7 +78,7 @@ pub trait CDE: std::fmt::Display + Eq + PartialEq + Introspected {
                         .documentation()
                         .map(|doc| match doc.parse::<member::Field>() {
                             Ok(field) => Ok((
-                                member.identifier().unwrap_or("<unnamed>").to_string(),
+                                member.identifier().map(|identifier| identifier.to_string()),
                                 crate::parse::cde::Member::Field(field),
                             )),
                             Err(err) => {
@@ -89,14 +90,14 @@ pub trait CDE: std::fmt::Display + Eq + PartialEq + Introspected {
                     .parse::<member::Variant>()
                 {
                     Ok(variant) => Ok((
-                        member.identifier().to_string(),
+                        Some(member.identifier().to_string()),
                         crate::parse::cde::Member::Variant(variant),
                     )),
                     Err(err) => Err(Error::MemberError(member::ParseError::VariantError(err))),
                 }),
             })
-            .map(|member| member.unwrap_or(Err(Error::MissingDocumentation)))
-            .collect::<Result<Vec<_>>>()
+            // .map(|member| member.unwrap_or(Err(Error::MissingDocumentation)))
+            .collect::<Option<Result<Vec<_>>>>()
     }
 }
 
@@ -115,22 +116,22 @@ mod tests {
 
     #[test]
     fn member_parsing_works_correctly() {
-        let mut entity = Sex::members().unwrap().into_iter();
+        let mut entity = Sex::members().unwrap().unwrap().into_iter();
 
         let (identifer, variant) = entity.next().unwrap();
-        assert_eq!(identifer, "Unknown");
+        assert_eq!(identifer.as_deref(), Some("Unknown"));
         assert_eq!(variant.get_variant().unwrap().permissible_value(), "U");
 
         let (identifer, variant) = entity.next().unwrap();
-        assert_eq!(identifer, "Female");
+        assert_eq!(identifer.as_deref(), Some("Female"));
         assert_eq!(variant.get_variant().unwrap().permissible_value(), "F");
 
         let (identifer, variant) = entity.next().unwrap();
-        assert_eq!(identifer, "Male");
+        assert_eq!(identifer.as_deref(), Some("Male"));
         assert_eq!(variant.get_variant().unwrap().permissible_value(), "M");
 
         let (identifer, variant) = entity.next().unwrap();
-        assert_eq!(identifer, "Undifferentiated");
+        assert_eq!(identifer.as_deref(), Some("Undifferentiated"));
         assert_eq!(
             variant.get_variant().unwrap().permissible_value(),
             "UNDIFFERENTIATED"
