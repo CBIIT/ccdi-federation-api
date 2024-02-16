@@ -231,26 +231,27 @@ pub async fn file_index(
 
     let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
 
-    let links = links::Builder::try_new("http://localhost:8000/file", page, pages.clone())
-        .unwrap_or_else(|err| {
-            match err {
-                links::builder::Error::ParseError(err) => {
-                    match err {
-                        links::builder::ParseError::UrlParseError(_) => {
-                            // If this error occurs, there is something wrong
-                            // with the code that generates the base URL for the
-                            // links. This cannot be a user issue.
-                            panic!("provided URL is not parsable")
+    let links =
+        links::Builder::try_new("http://localhost:8000/file", page, per_page, pages.clone())
+            .unwrap_or_else(|err| {
+                match err {
+                    links::builder::Error::ParseError(err) => {
+                        match err {
+                            links::builder::ParseError::UrlParseError(_) => {
+                                // If this error occurs, there is something wrong
+                                // with the code that generates the base URL for the
+                                // links. This cannot be a user issue.
+                                panic!("provided URL is not parsable")
+                            }
                         }
                     }
                 }
-            }
-        })
-        .insert_link(Relationship::First)
-        .insert_link(Relationship::Prev)
-        .insert_link(Relationship::Next)
-        .insert_link(Relationship::Last)
-        .build();
+            })
+            .insert_link(Relationship::First)
+            .insert_link(Relationship::Prev)
+            .insert_link(Relationship::Next)
+            .insert_link(Relationship::Last)
+            .build();
 
     let entities = pages.into_iter().nth(page.get() - 1).unwrap_or_default();
 

@@ -53,7 +53,9 @@ pub struct Page {
     /// The index of this page.
     index: NonZeroUsize,
 
-    /// The number of entities within this page.
+    /// The requested number of entities within this page.
+    ///
+    /// The actual number may be fewer if this is the last page.
     page_size: NonZeroUsize,
 }
 
@@ -85,6 +87,7 @@ impl Page {
 pub struct Builder<'a, T> {
     base: Url,
     current_page: NonZeroUsize,
+    per_page: NonZeroUsize,
     pages: Vec<&'a [T]>,
     links: HashMap<Relationship, Page>,
 }
@@ -107,12 +110,18 @@ impl<'a, T> Builder<'a, T> {
     /// let builder = Builder::<String>::try_new(
     ///     "https://example.com",
     ///     NonZeroUsize::try_from(1).unwrap(),
+    ///     NonZeroUsize::try_from(10).unwrap(),
     ///     pages,
     /// )?;
     ///
     /// Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn try_new(base: &str, current_page: NonZeroUsize, pages: Vec<&'a [T]>) -> Result<Self> {
+    pub fn try_new(
+        base: &str,
+        current_page: NonZeroUsize,
+        per_page: NonZeroUsize,
+        pages: Vec<&'a [T]>,
+    ) -> Result<Self> {
         let base = base
             .parse::<Url>()
             .map_err(ParseError::UrlParseError)
@@ -121,6 +130,7 @@ impl<'a, T> Builder<'a, T> {
         Ok(Self {
             base,
             current_page,
+            per_page,
             pages,
             links: Default::default(),
         })
@@ -151,6 +161,7 @@ impl<'a, T> Builder<'a, T> {
     /// let builder = Builder::<String>::try_new(
     ///     "https://example.com",
     ///     NonZeroUsize::try_from(1).unwrap(),
+    ///     NonZeroUsize::try_from(10).unwrap(),
     ///     pages,
     /// )?;
     ///
@@ -161,21 +172,13 @@ impl<'a, T> Builder<'a, T> {
     pub fn insert_link(mut self, rel: Relationship) -> Self {
         match rel {
             Relationship::First => {
-                // SAFETY: we check to ensure that `self.pages` is not empty at
-                // [`Builder`] creation time. As such, this call to `first()`
-                // will always unwrap, as at least one page exists.
-                let contents = self.pages.first().unwrap();
-
                 self.links.insert(
                     rel,
                     Page::new(
                         // SAFETY: this is the first page, so the page value should
                         // always be `1`. That will always unwrap a [`NonZeroUsize`].
                         NonZeroUsize::try_from(1).unwrap(),
-                        // SAFETY: similarly, because we know that the contents
-                        // are not empty, this will always have at least one
-                        // element (and, thus, will unwrap).
-                        NonZeroUsize::try_from(contents.len()).unwrap(),
+                        self.per_page,
                     ),
                 );
             }
@@ -186,25 +189,13 @@ impl<'a, T> Builder<'a, T> {
                 if self.pages.len() > 1 && self.current_page.get() != 1 {
                     let prev_page = self.current_page.get() - 1;
 
-                    // SAFETY: we just checked to make sure that there is (a)
-                    // more than one page and (b) we are not currently pointed
-                    // at page one. As such, there will always be a next page
-                    // that we can unwrap.
-                    //
-                    // Recall that the index starts at 0, so to get the prev
-                    // page, we have to get the `prev_page - 1` nth item.
-                    let contents = self.pages.get(prev_page - 1).unwrap();
-
                     self.links.insert(
                         rel,
                         Page::new(
                             // SAFETY: this is the first page, so the page value should
                             // always be `1`. That will always unwrap a [`NonZeroUsize`].
                             NonZeroUsize::try_from(prev_page).unwrap(),
-                            // SAFETY: similarly, because we know that the contents
-                            // are not empty, this will always have at least one
-                            // element (and, thus, will unwrap).
-                            NonZeroUsize::try_from(contents.len()).unwrap(),
+                            self.per_page,
                         ),
                     );
                 }
@@ -216,34 +207,18 @@ impl<'a, T> Builder<'a, T> {
                 if self.pages.len() > 1 && self.current_page.get() != self.pages.len() {
                     let next_page = self.current_page.get() + 1;
 
-                    // SAFETY: we just checked to make sure that there is (a)
-                    // more than one page and (b) we are not currently pointed
-                    // at the last page. As such, there will always be a
-                    // previous page that we can unwrap.
-                    //
-                    // Recall that the index starts at 0, so to get the next
-                    // page, we have to get the `next_page - 1` nth item.
-                    let contents = self.pages.get(next_page - 1).unwrap();
-
                     self.links.insert(
                         rel,
                         Page::new(
                             // SAFETY: this is the first page, so the page value should
                             // always be `1`. That will always unwrap a [`NonZeroUsize`].
                             NonZeroUsize::try_from(next_page).unwrap(),
-                            // SAFETY: similarly, because we know that the contents
-                            // are not empty, this will always have at least one
-                            // element (and, thus, will unwrap).
-                            NonZeroUsize::try_from(contents.len()).unwrap(),
+                            self.per_page,
                         ),
                     );
                 }
             }
             Relationship::Last => {
-                // SAFETY: we check to ensure that `self.pages` is not empty at
-                // [`Builder`] creation time. As such, this call to `last()`
-                // will always unwrap, as at least one page exists.
-                let contents = self.pages.last().unwrap();
                 let last_page = self.pages.len();
 
                 self.links.insert(
@@ -253,10 +228,7 @@ impl<'a, T> Builder<'a, T> {
                         // empty, the last page will be, at least, one. Thus,
                         // this will always unwrap.
                         NonZeroUsize::try_from(last_page).unwrap(),
-                        // SAFETY: similarly, because we know that the contents
-                        // are not empty, this will always have at least one
-                        // element (and, thus, will unwrap).
-                        NonZeroUsize::try_from(contents.len()).unwrap(),
+                        self.per_page,
                     ),
                 );
             }
@@ -283,6 +255,7 @@ impl<'a, T> Builder<'a, T> {
     /// let links = Builder::<String>::try_new(
     ///     "https://example.com",
     ///     NonZeroUsize::try_from(1).unwrap(),
+    ///     NonZeroUsize::try_from(10).unwrap(),
     ///     pages,
     /// )?
     /// .insert_link(Relationship::First)
@@ -290,7 +263,7 @@ impl<'a, T> Builder<'a, T> {
     ///
     /// assert_eq!(
     ///     links.to_string(),
-    ///     String::from("<https://example.com/?page=1&per_page=1>; rel=\"first\"")
+    ///     String::from("<https://example.com/?page=1&per_page=10>; rel=\"first\"")
     /// );
     ///
     /// Ok::<(), Box<dyn std::error::Error>>(())

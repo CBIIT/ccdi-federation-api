@@ -59,7 +59,7 @@ where
 
     let pages = entities.chunks(per_page.get()).collect::<Vec<_>>();
 
-    let links = links::Builder::try_new(base_url, page, pages.clone())
+    let links = links::Builder::try_new(base_url, page, per_page, pages.clone())
         .unwrap_or_else(|err| {
             match err {
                 links::builder::Error::ParseError(err) => {
