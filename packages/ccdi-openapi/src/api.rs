@@ -14,8 +14,8 @@ use utoipa::openapi;
 #[derive(Debug, OpenApi)]
 #[openapi(
     info(
-        title = "CCDI Pediatric Cancer Data Catalog",
-        description = "The CCDI Pediatric Cancer Data Catalog is an API that
+        title = "CCDI Federation Pediatric Cancer Data Catalog",
+        description = "The CCDI Federation Pediatric Cancer Data Catalog is an API that
 supports the querying of federated pediatric cancer within the broader
 community. The goal of the API is to support identification of pediatric cancer
 samples of interest via a variety of query parameters.

@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">
-  CCDI Pediatric Cancer Data Catalog
+  CCDI Federation Pediatric Cancer Data Catalog
   </h1>
 </p>
 
