@@ -9,3 +9,4 @@ Before submitting this PR, please make sure:
 - [ ] You have added the relevant groups/individuals to the reviewers.
 - [ ] Your commit messages conform to the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
 - [ ] You have updated the README or other documentation to account for these changes (when appropriate).
+- [ ] You have added a line describing the change in the `CHANGELOG.md` under `[Unreleased]`.
