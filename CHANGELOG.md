@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Updates the name of the API to be the "CCDI Data Federation API".
+
 ## [v0.6.1] — 01-16-2024
 
 ### Changed
