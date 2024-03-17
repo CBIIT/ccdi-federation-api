@@ -42,7 +42,7 @@ impl Named {
     ///
     /// let gateway = Gateway::Open {
     ///     link: Link::Direct {
-    ///         url: Url::try_from("https://example.com").unwrap(),
+    ///         url: "https://example.com".parse::<Url>().unwrap(),
     ///     },
     /// };
     ///
@@ -68,7 +68,7 @@ impl Named {
     ///
     /// let gateway = Gateway::Open {
     ///     link: Link::Direct {
-    ///         url: Url::try_from("https://example.com").unwrap(),
+    ///         url: "https://example.com".parse::<Url>().unwrap(),
     ///     },
     /// };
     ///
@@ -93,7 +93,7 @@ impl Named {
     ///
     /// let gateway = Gateway::Open {
     ///     link: Link::Direct {
-    ///         url: Url::try_from("https://example.com").unwrap(),
+    ///         url: "https://example.com".parse::<Url>().unwrap(),
     ///     },
     /// };
     ///

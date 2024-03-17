@@ -36,7 +36,7 @@ impl description::r#trait::Description for crate::sample::metadata::AgeAtDiagnos
             Kind::Struct,
             String::from("age_at_diagnosis"),
             description,
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_diagnosis").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_diagnosis".parse::<Url>().unwrap(),
             None,
             None,
         ))
@@ -54,7 +54,7 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
             Kind::Enum,
             String::from("disease_phase"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
             members,
         ))
@@ -72,8 +72,13 @@ impl description::r#trait::Description for cde::v2::sample::TissueType {
             Kind::Enum,
             String::from("tissue_type"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tissue_type").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tissue_type"
+                .parse::<Url>()
+                .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }
@@ -90,7 +95,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorClassification 
             Kind::Enum,
             String::from("tumor_classification"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_classification").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_classification".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
             members,
         ))
@@ -108,7 +113,7 @@ impl description::r#trait::Description for cde::v1::sample::TumorTissueMorpholog
             Kind::Struct,
             String::from("tumor_tissue_morphology"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_tissue_morphology").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tumor_tissue_morphology".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
             members,
         ))
@@ -126,7 +131,7 @@ impl description::r#trait::Description for crate::sample::metadata::AgeAtCollect
             Kind::Struct,
             String::from("age_at_collection"),
             description,
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_collection").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_collection".parse::<Url>().unwrap(),
             None,
             None,
         ))

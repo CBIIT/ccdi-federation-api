@@ -187,7 +187,7 @@ impl Unharmonized {
     ///     Some(String::from("A description.")),
     ///     String::from("test"),
     ///     None,
-    ///     Some(Url::try_from("https://cancer.gov").unwrap()),
+    ///     Some("https://cancer.gov".parse::<Url>().unwrap()),
     /// );
     ///
     /// assert_eq!(field.url().unwrap().as_str(), "https://cancer.gov/")

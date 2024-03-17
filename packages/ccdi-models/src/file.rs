@@ -101,28 +101,43 @@ impl File {
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
-    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
     ///     }),
@@ -157,36 +172,55 @@ impl File {
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
-    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
     ///     }),
     ///     Some(Metadata::random()),
     /// );
     ///
-    /// assert_eq!(file.id().namespace(), "organization");
-    /// assert_eq!(file.id().name(), "Foo.txt");
+    /// assert_eq!(
+    ///     file.id().namespace().organization().as_str(),
+    ///     "example-organization"
+    /// );
+    /// assert_eq!(file.id().namespace().name().as_str(), "ExampleNamespace");
+    /// assert_eq!(file.id().name().as_str(), "Foo.txt");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -194,8 +228,8 @@ impl File {
         &self.id
     }
 
-    /// Gets the identifier(s) for the [`Sample(s)`](super::Subject) that are
-    /// associated with this [`File`] (by reference).
+    /// Gets the identifier(s) for the [`Sample(s)`](super::Sample) that are associated
+    /// with this [`File`] (by reference).
     ///
     /// # Examples
     ///
@@ -207,28 +241,43 @@ impl File {
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
-    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
     ///     }),
@@ -259,28 +308,43 @@ impl File {
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
-    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
     ///     }),
@@ -309,28 +373,43 @@ impl File {
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
-    ///                 url: Url::try_from("https://example.com").unwrap(),
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
     ///     }),
@@ -354,26 +433,42 @@ impl File {
     /// use ccdi_models as models;
     ///
     /// use models::file::Identifier;
+    /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::random(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     sample::Identifier::new(&namespace, "SampleName001"),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     sample_id,
     /// );
     ///
     /// assert_eq!(file.gateways().len(), 1);
@@ -388,7 +483,7 @@ impl File {
                 true => NonEmpty::new(AnonymousOrReference::Anonymous {
                     gateway: crate::Gateway::Open {
                         link: Link::Direct {
-                            url: Url::try_from("https://example.com").unwrap(),
+                            url: "https://example.com".parse::<Url>().unwrap(),
                         },
                     },
                 }),
@@ -425,6 +520,10 @@ impl Ord for File {
 mod tests {
     use std::cmp::Ordering;
 
+    use ccdi_cde as cde;
+
+    use crate::namespace;
+    use crate::organization;
     use crate::sample;
     use crate::Gateway;
     use crate::Namespace;
@@ -435,33 +534,44 @@ mod tests {
     fn it_orders_samples_correctly() {
         // SAFETY: this is manually crafted to unwrap every time, as the
         // organization name conforms to the correct pattern.
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let a = File::new(
-            Identifier::new(&namespace, "A.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("A.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
             None,
         );
         let b = File::new(
-            Identifier::new(&namespace, "B.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("B.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
@@ -471,24 +581,30 @@ mod tests {
         assert_eq!(a.cmp(&b), Ordering::Less);
 
         let c = File::new(
-            Identifier::new(&namespace, "C.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("C.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
             None,
         );
         let b = File::new(
-            Identifier::new(&namespace, "B.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("B.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
@@ -498,24 +614,30 @@ mod tests {
         assert_eq!(c.cmp(&b), Ordering::Greater);
 
         let foo = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
             None,
         );
         let bar = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
@@ -529,33 +651,44 @@ mod tests {
     fn it_tests_equality_correctly() {
         // SAFETY: this is manually crafted to unwrap every time, as the
         // organization name conforms to the correct pattern.
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let foo = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),
             None,
         );
         let bar = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Anonymous {
                 gateway: Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             }),

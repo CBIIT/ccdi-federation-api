@@ -27,7 +27,7 @@ pub const DEFAULT_PER_PAGE: usize = 100;
 /// parameters to an endpoint that supports pagination.
 #[derive(Debug, Default, Deserialize, IntoParams, Serialize)]
 #[into_params(parameter_in = Query)]
-pub struct Pagination {
+pub struct PaginationParams {
     /// The page to retrieve.
     ///
     /// This is a 1-based index of a page within a page set. The value of `page`
@@ -47,29 +47,29 @@ pub struct Pagination {
     per_page: Option<usize>,
 }
 
-impl Pagination {
-    /// Gets the page number from the [`Pagination`].
+impl PaginationParams {
+    /// Gets the page number from the [`PaginationParams`].
     ///
     /// # Examples
     ///
     /// ```
     /// use ccdi_server as server;
     ///
-    /// let params = server::params::Pagination::default();
+    /// let params = server::params::PaginationParams::default();
     /// assert_eq!(params.page(), None);
     /// ```
     pub fn page(&self) -> Option<usize> {
         self.page
     }
 
-    /// Gets the page number from the [`Pagination`].
+    /// Gets the page number from the [`PaginationParams`].
     ///
     /// # Examples
     ///
     /// ```
     /// use ccdi_server as server;
     ///
-    /// let params = server::params::Pagination::default();
+    /// let params = server::params::PaginationParams::default();
     /// assert_eq!(params.per_page(), None);
     /// ```
     pub fn per_page(&self) -> Option<usize> {

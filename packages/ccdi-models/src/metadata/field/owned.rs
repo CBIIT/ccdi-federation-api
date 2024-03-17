@@ -15,12 +15,13 @@ use utoipa::ToSchema;
 
 #[macropol::macropol]
 macro_rules! owned_field {
-    ($name: ident, $as: ty, $inner: ty, $value: expr, $import: expr) => {
+    ($name: ident, $as: ty, $inner: ty, $inner_as: ty, $value: expr, $import: expr) => {
         #[derive(Clone, Debug, Deserialize, Eq, Serialize, PartialEq, ToSchema)]
         #[schema(as = $as)]
         /// An owned field representing a [`${stringify!($name)}`].
         pub struct $name {
             /// The value of the metadata field.
+            #[schema(value_type = $inner_as)]
             value: $inner,
 
             /// The ancestors from which this field was derived.
@@ -189,19 +190,7 @@ owned_field!(
     Field,
     field::owned::Field,
     Value,
+    Value,
     Value::Null,
     serde_json::Value
 );
-
-pub mod subject {
-    use super::*;
-    use ccdi_cde as cde;
-
-    owned_field!(
-        Identifier,
-        field::owned::subject::Identifier,
-        cde::v1::subject::Identifier,
-        cde::v1::subject::Identifier::new("organization", "Name"),
-        ccdi_cde as cde
-    );
-}

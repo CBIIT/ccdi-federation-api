@@ -8,6 +8,6 @@ mod size;
 mod r#type;
 
 pub use description::Description;
-pub use identifier::Identifier;
+pub use identifier::Name;
 pub use r#type::Type;
 pub use size::Size;

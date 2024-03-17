@@ -2,6 +2,7 @@
 
 use std::num::NonZeroUsize;
 use std::sync::Mutex;
+use std::sync::MutexGuard;
 
 use actix_web::get;
 use actix_web::web::Data;
@@ -9,7 +10,8 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
-use rand::Rng as _;
+use ccdi_cde::v1::file;
+use rand::prelude::*;
 
 use ccdi_models as models;
 
@@ -23,18 +25,18 @@ use models::Url;
 use crate::paginate::links;
 use crate::paginate::links::Relationship;
 use crate::params::pagination;
-use crate::params::Pagination as PaginationParams;
+use crate::params::PaginationParams;
 use crate::responses::error;
 use crate::responses::file::data;
 use crate::responses::Errors;
 use crate::responses::Files;
 use crate::responses::Summary;
-use crate::routes::namespace::NAMESPACES;
 
 /// A store for [`File`]s.
 #[derive(Debug)]
 pub struct Store {
-    files: Mutex<Vec<File>>,
+    /// The inner [`Files`](ccdi_models::File).
+    pub files: Mutex<Vec<File>>,
 }
 
 impl Store {
@@ -45,28 +47,28 @@ impl Store {
     /// ```
     /// use ccdi_server as server;
     ///
-    /// use server::routes::file::Store;
+    /// use server::routes::file;
+    /// use server::routes::sample;
+    /// use server::routes::subject;
     ///
-    /// let store = Store::random(100, 1000);
+    /// let subjects = subject::Store::random(100);
+    /// let samples = sample::Store::random(100, subjects.subjects.lock().unwrap());
+    /// let files = file::Store::random(100, samples.samples.lock().unwrap());
     /// ```
-    pub fn random(count: usize, number_of_samples: usize) -> Self {
+    pub fn random(count: usize, samples: MutexGuard<'_, Vec<ccdi_models::Sample>>) -> Self {
         Self {
             files: Mutex::new(
                 (0..count)
                     .map(|i| {
-                        let identifier = Identifier::new(
-                            // SAFETY: this is hardcoded to work and is tested
-                            // statically below.
-                            NAMESPACES.get("organization").unwrap(),
-                            format!("File{}.txt", i + 1),
-                        );
+                        let mut rng = rand::thread_rng();
 
-                        let sample = rand::thread_rng().gen_range(0..number_of_samples) + 1;
-                        let sample = models::sample::Identifier::new(
-                            // SAFETY: this is hardcoded to work and is tested
-                            // statically below.
-                            NAMESPACES.get("organization").unwrap(),
-                            format!("Sample{}", sample),
+                        // SAFETY: this should always unwrap because we manually ensure
+                        // that subjects is never empty.
+                        let sample = samples.choose(&mut rng).unwrap().id().clone();
+
+                        let identifier = Identifier::new(
+                            sample.namespace().clone(),
+                            file::Name::new(format!("File{}.txt", i + 1)),
                         );
 
                         File::random(identifier, sample)
@@ -279,7 +281,7 @@ pub async fn file_index(
                     link: Link::Direct {
                         // SAFETY: this is manually crafted to unwrap
                         // successfully every time.
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             )
@@ -316,10 +318,10 @@ pub async fn file_summary(files: Data<Store>) -> impl Responder {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::routes::namespace::random_namespace;
 
     #[test]
-    fn it_unwraps_the_default_namespace() {
-        NAMESPACES.get("organization").unwrap();
+    fn it_generates_a_random_namespace() {
+        random_namespace();
     }
 }

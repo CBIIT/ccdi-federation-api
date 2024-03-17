@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -28,11 +30,11 @@ impl From<url::Url> for Url {
     }
 }
 
-impl TryFrom<&str> for Url {
-    type Error = url::ParseError;
+impl FromStr for Url {
+    type Err = url::ParseError;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        let url = url::Url::parse(value)?;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let url = url::Url::parse(s)?;
         Ok(Self(url))
     }
 }

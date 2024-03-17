@@ -6,7 +6,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-mod identifier;
+pub mod identifier;
 mod kind;
 pub mod metadata;
 
@@ -33,14 +33,6 @@ pub struct Subject {
     #[schema(value_type = models::subject::Identifier)]
     id: Identifier,
 
-    /// The primary name for a subject used within the source server.
-    ///
-    /// Note that this field is not namespaced like an `identifier` is, and,
-    /// instead, is intended to represent a colloquial or display name for the
-    /// sample (without indicating the scope of the name).
-    #[schema(example = "SubjectName001")]
-    name: String,
-
     /// The kind of [`Subject`].
     #[schema(value_type = models::subject::Kind)]
     kind: Kind,
@@ -57,112 +49,96 @@ impl Subject {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
-    /// use models::subject::Identifier;
     /// use models::subject::Kind;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Subject;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
     ///
     /// Subject::new(
-    ///     Identifier::new(&namespace, "Name"),
-    ///     String::from("Name"),
+    ///     subject_id,
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
     /// );
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn new(id: Identifier, name: String, kind: Kind, metadata: Option<Metadata>) -> Self {
-        Self {
-            id,
-            name,
-            kind,
-            metadata,
-        }
+    pub fn new(id: Identifier, kind: Kind, metadata: Option<Metadata>) -> Self {
+        Self { id, kind, metadata }
     }
 
-    /// Gets the primary identifier for this [`Subject`] by reference.
+    /// Gets the identifier for this [`Subject`] by reference.
     ///
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
-    /// use models::subject::Identifier;
     /// use models::subject::Kind;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Subject;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
     ///
     /// let subject = Subject::new(
-    ///     Identifier::new(&namespace, "Name"),
-    ///     String::from("Name"),
+    ///     subject_id,
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
     /// );
     ///
-    /// assert_eq!(subject.id().namespace(), "organization");
-    /// assert_eq!(subject.id().name(), "Name");
+    /// assert_eq!(subject.id().namespace().name().as_str(), "ExampleNamespace");
+    /// assert_eq!(subject.id().name().as_str(), "SubjectName001");
     /// ```
     pub fn id(&self) -> &Identifier {
         &self.id
-    }
-
-    /// Gets the name for this [`Subject`] by reference.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use ccdi_cde as cde;
-    /// use ccdi_models as models;
-    ///
-    /// use models::subject::metadata::Builder;
-    /// use models::subject::Identifier;
-    /// use models::subject::Kind;
-    /// use models::Namespace;
-    /// use models::Subject;
-    ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
-    ///     "Example Organization",
-    ///     "support@example.com",
-    ///     None,
-    /// )
-    /// .unwrap();
-    ///
-    /// let subject = Subject::new(
-    ///     Identifier::new(&namespace, "Name"),
-    ///     String::from("Name"),
-    ///     Kind::Participant,
-    ///     Some(Builder::default().build()),
-    /// );
-    ///
-    /// assert_eq!(subject.name(), "Name");
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn name(&self) -> &str {
-        self.name.as_str()
     }
 
     /// Gets the kind for this [`Subject`] by reference.
@@ -170,26 +146,39 @@ impl Subject {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
-    /// use models::subject::Identifier;
     /// use models::subject::Kind;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Subject;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
     ///
     /// let subject = Subject::new(
-    ///     Identifier::new(&namespace, "Name"),
-    ///     String::from("Name"),
+    ///     subject_id,
     ///     Kind::Participant,
     ///     Some(Builder::default().build()),
     /// );
@@ -207,31 +196,38 @@ impl Subject {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
-    /// use models::subject::Identifier;
     /// use models::subject::Kind;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Subject;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
-    ///
-    /// let metadata = Builder::default().build();
-    ///
-    /// let subject = Subject::new(
-    ///     Identifier::new(&namespace, "Name"),
-    ///     String::from("Name"),
-    ///     Kind::Participant,
-    ///     Some(metadata.clone()),
     /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
+    /// let metadata = Builder::default().build();
+    /// let subject = Subject::new(subject_id, Kind::Participant, Some(metadata.clone()));
     ///
     /// assert_eq!(subject.metadata(), Some(&metadata));
     ///
@@ -246,30 +242,43 @@ impl Subject {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::subject::Identifier;
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Subject;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
     ///
-    /// let identifier = Identifier::new(&namespace, "Name");
-    /// let subject = Subject::random(identifier);
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
+    /// let subject = Subject::random(subject_id);
     /// ```
     pub fn random(identifier: Identifier) -> Self {
         let mut rng = thread_rng();
 
         Self {
             id: identifier.clone(),
-            name: identifier.name().to_string(),
             kind: rand::random(),
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random(identifier)),
@@ -300,6 +309,10 @@ impl Ord for Subject {
 mod tests {
     use std::cmp::Ordering;
 
+    use ccdi_cde::v1::subject::Name;
+
+    use crate::namespace;
+    use crate::organization;
     use crate::Namespace;
 
     use super::*;
@@ -308,23 +321,26 @@ mod tests {
     fn it_orders_samples_correctly() {
         // SAFETY: this is manually crafted to unwrap every time, as the
         // organization name conforms to the correct pattern.
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let a = Subject::new(
-            Identifier::new(&namespace, "A"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("A")),
             Kind::Participant,
             None,
         );
         let b = Subject::new(
-            Identifier::new(&namespace, "B"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
             None,
         );
@@ -332,14 +348,12 @@ mod tests {
         assert_eq!(a.cmp(&b), Ordering::Less);
 
         let c = Subject::new(
-            Identifier::new(&namespace, "C"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("C")),
             Kind::Participant,
             None,
         );
         let b = Subject::new(
-            Identifier::new(&namespace, "B"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
             None,
         );
@@ -347,14 +361,12 @@ mod tests {
         assert_eq!(c.cmp(&b), Ordering::Greater);
 
         let foo = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
         );
@@ -366,23 +378,26 @@ mod tests {
     fn it_tests_equality_correctly() {
         // SAFETY: this is manually crafted to unwrap every time, as the
         // organization name conforms to the correct pattern.
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let foo = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
         );
@@ -390,14 +405,12 @@ mod tests {
         assert!(foo == bar);
 
         let foo = Subject::new(
-            Identifier::new(&namespace, "A"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("A")),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::new(&namespace, "B"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
             None,
         );
@@ -405,14 +418,12 @@ mod tests {
         assert!(foo != bar);
 
         let foo = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
         );
         let bar = Subject::new(
-            Identifier::new(&namespace, "Name"),
-            String::from("Name"),
+            Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             Some(metadata::Builder::default().build()),
         );

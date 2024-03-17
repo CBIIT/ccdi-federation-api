@@ -16,8 +16,8 @@ pub struct Builder {
     /// The ethnicity of the subject.
     ethnicity: Option<field::unowned::subject::Ethnicity>,
 
-    /// The identifiers for the subject.
-    identifiers: Option<Vec<field::owned::subject::Identifier>>,
+    /// The alternate identifiers for the subject.
+    identifiers: Option<Vec<field::unowned::subject::Identifier>>,
 
     /// The vital status for the subject.
     vital_status: Option<field::unowned::subject::VitalStatus>,
@@ -96,24 +96,48 @@ impl Builder {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::owned::subject::Identifier;
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
+    /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let field = Identifier::new(
-    ///     cde::v1::subject::Identifier::parse("organization:Name", ":")?,
-    ///     None,
-    ///     None,
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
     ///     None,
     /// );
     ///
+    /// let subject_id = models::subject::identifier::referenced::Identifier::Linked(
+    ///     models::subject::identifier::linked::Identifier::new(
+    ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName001"),
+    ///         "https://ccdi.example.com/api/v0"
+    ///             .parse::<models::Url>()
+    ///             .unwrap(),
+    ///     ),
+    /// );
+    ///
+    /// let field = Identifier::new(subject_id, None, None);
     /// let builder = Builder::default().append_identifier(field);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn append_identifier(mut self, identifier: field::owned::subject::Identifier) -> Self {
+    pub fn append_identifier(mut self, identifier: field::unowned::subject::Identifier) -> Self {
         let mut inner = self.identifiers.unwrap_or_default();
         inner.push(identifier);
 

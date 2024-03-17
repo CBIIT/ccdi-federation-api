@@ -1,6 +1,7 @@
 //! Routes related to samples.
 
 use std::sync::Mutex;
+use std::sync::MutexGuard;
 
 use actix_web::get;
 use actix_web::web::Data;
@@ -10,7 +11,10 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use indexmap::IndexMap;
+use itertools::Itertools as _;
+use models::namespace;
 use models::sample::Identifier;
+use rand::prelude::*;
 use serde_json::Value;
 
 use ccdi_models as models;
@@ -20,20 +24,24 @@ use models::Sample;
 use crate::filter::filter;
 use crate::paginate;
 use crate::params::filter::Sample as FilterSampleParams;
-use crate::params::Pagination as PaginationParams;
+use crate::params::PaginationParams;
+use crate::params::PartitionParams;
+use crate::params::Partitionable;
+use crate::responses;
 use crate::responses::by;
+use crate::responses::by::count::sample::NamespacePartitionedResult;
 use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Samples;
 use crate::responses::Summary;
-use crate::routes::namespace::NAMESPACES;
 use crate::routes::MISSING_GROUP_BY_KEY;
 use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`Sample`]s.
 #[derive(Debug)]
 pub struct Store {
-    samples: Mutex<Vec<Sample>>,
+    /// The inner [`Samples`](ccdi_models::Sample).
+    pub samples: Mutex<Vec<Sample>>,
 }
 
 impl Store {
@@ -44,27 +52,26 @@ impl Store {
     /// ```
     /// use ccdi_server as server;
     ///
-    /// use server::routes::sample::Store;
+    /// use server::routes::sample;
+    /// use server::routes::subject;
     ///
-    /// let store = Store::random(100);
+    /// let subjects = subject::Store::random(100);
+    /// let samples = sample::Store::random(100, subjects.subjects.lock().unwrap());
     /// ```
-    pub fn random(count: usize) -> Self {
+    pub fn random(count: usize, subjects: MutexGuard<'_, Vec<ccdi_models::Subject>>) -> Self {
         Self {
             samples: Mutex::new(
                 (0..count)
                     .map(|i| {
-                        let identifier = Identifier::new(
-                            // SAFETY: this is hardcoded to work and is tested
-                            // statically below.
-                            NAMESPACES.get("organization").unwrap(),
-                            format!("Sample{}", i + 1),
-                        );
+                        let mut rng = rand::thread_rng();
 
-                        let subject = models::subject::Identifier::new(
-                            // SAFETY: this is hardcoded to work and is tested
-                            // statically below.
-                            NAMESPACES.get("organization").unwrap(),
-                            format!("Subject{}", i + 1),
+                        // SAFETY: this should always unwrap because we manually ensure
+                        // that subjects is never empty.
+                        let subject = subjects.choose(&mut rng).unwrap().id().clone();
+
+                        let identifier = Identifier::new(
+                            subject.namespace().clone(),
+                            format!("Sample{}", i + 1),
                         );
 
                         Sample::random(identifier, subject)
@@ -81,8 +88,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
         config
             .app_data(store)
             .service(sample_index)
-            .service(sample_show)
             .service(samples_by_count)
+            .service(sample_show)
             .service(sample_summary);
     }
 }
@@ -247,11 +254,15 @@ pub async fn sample_index(
 /// Gets the sample matching the provided name (if the sample exists).
 #[utoipa::path(
     get,
-    path = "/sample/{namespace}/{name}",
+    path = "/sample/{organization}/{namespace}/{name}",
     params(
         (
+            "organization" = String,
+            description = "The organization of the namespace to which the sample belongs.",
+        ),
+        (
             "namespace" = String,
-            description = "The namespace portion of the sample identifier.",
+            description = "The name of the namespace to which the sample belongs.",
         ),
         (
             "name" = String,
@@ -274,14 +285,21 @@ pub async fn sample_index(
         )
     )
 )]
-#[get("/sample/{namespace}/{name}")]
-pub async fn sample_show(path: Path<(String, String)>, samples: Data<Store>) -> impl Responder {
+#[get("/sample/{organization}/{namespace}/{name}")]
+pub async fn sample_show(
+    path: Path<(String, String, String)>,
+    samples: Data<Store>,
+) -> impl Responder {
     let samples = samples.samples.lock().unwrap();
-    let (namespace, name) = path.into_inner();
+    let (organization, namespace, name) = path.into_inner();
 
     samples
         .iter()
-        .find(|sample| sample.id().namespace() == namespace && sample.id().name() == name)
+        .find(|sample| {
+            sample.id().namespace().organization().as_str() == organization
+                && sample.id().namespace().name().as_str() == namespace
+                && sample.id().name() == name
+        })
         .map(|sample| HttpResponse::Ok().json(sample))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
@@ -296,11 +314,12 @@ pub async fn sample_show(path: Path<(String, String)>, samples: Data<Store>) -> 
     get,
     path = "/sample/by/{field}/count",
     params(
-        ("field" = String, description = "The field to group by and count."),
+        ("field" = String, description = "The field to group by and count with."),
+        PartitionParams,
     ),
     tag = "Sample",
     responses(
-        (status = 200, description = "Successful operation.", body = responses::by::count::Samples),
+        (status = 200, description = "Successful operation.", body = responses::by::count::sample::Response),
         (
             status = 422,
             description = "Unsupported field.",
@@ -315,13 +334,74 @@ pub async fn sample_show(path: Path<(String, String)>, samples: Data<Store>) -> 
     )
 )]
 #[get("/sample/by/{field}/count")]
-pub async fn samples_by_count(path: Path<String>, samples: Data<Store>) -> impl Responder {
+pub async fn samples_by_count(
+    path: Path<String>,
+    partition_params: Query<PartitionParams>,
+    samples: Data<Store>,
+) -> impl Responder {
     let samples = samples.samples.lock().unwrap().clone();
     let field = path.into_inner();
 
+    if let Some(Partitionable::Namespace) = partition_params.0.partition {
+        let namespaces = samples
+            .iter()
+            .map(|s| s.id().namespace())
+            .unique()
+            .cloned()
+            .sorted()
+            .collect::<Vec<namespace::Identifier>>();
+
+        let mut results = Vec::new();
+
+        for namespace in namespaces {
+            let namespace_samples = samples
+                .iter()
+                .filter(|s| s.id().namespace() == &namespace)
+                .cloned()
+                .collect::<Vec<Sample>>();
+
+            let namespace_results = group_by(namespace_samples, &field);
+
+            if namespace_results.values.len() == 1
+                && namespace_results.values.get(MISSING_GROUP_BY_KEY).is_some()
+            {
+                return HttpResponse::UnprocessableEntity().json(Errors::from(
+                    error::Kind::unsupported_field(
+                        field.to_string(),
+                        String::from("This field is not present for samples."),
+                    ),
+                ));
+            }
+
+            let namespace_partitioned_result =
+                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+            results.push(namespace_partitioned_result);
+        }
+
+        HttpResponse::Ok().json(by::count::sample::Response::NamespacePartitioned(
+            by::count::sample::NamespacePartitionedResults::from(results),
+        ))
+    } else {
+        let results = group_by(samples, &field);
+
+        if results.values.len() == 1 && results.values.get(MISSING_GROUP_BY_KEY).is_some() {
+            return HttpResponse::UnprocessableEntity().json(Errors::from(
+                error::Kind::unsupported_field(
+                    field.to_string(),
+                    String::from("This field is not present for samples."),
+                ),
+            ));
+        }
+
+        HttpResponse::Ok().json(by::count::sample::Response::Unpartitioned(results))
+    }
+}
+
+fn group_by(samples: Vec<Sample>, field: &str) -> responses::by::count::sample::Results {
     let values = samples
         .iter()
-        .map(|sample| parse_field(&field, sample))
+        .map(|sample| parse_field(field, sample))
         .collect::<Vec<_>>();
 
     let result = values
@@ -337,16 +417,7 @@ pub async fn samples_by_count(path: Path<String>, samples: Data<Store>) -> impl 
             map
         });
 
-    if result.len() == 1 && result.get(MISSING_GROUP_BY_KEY).is_some() {
-        return HttpResponse::UnprocessableEntity().json(Errors::from(
-            error::Kind::unsupported_field(
-                field,
-                String::from("This field is not present for samples."),
-            ),
-        ));
-    }
-
-    HttpResponse::Ok().json(by::count::Samples::from(result))
+    responses::by::count::sample::Results::from(result)
 }
 
 fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
@@ -414,10 +485,10 @@ pub async fn sample_summary(samples: Data<Store>) -> impl Responder {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::routes::namespace::random_namespace;
 
     #[test]
-    fn it_unwraps_the_default_namespace() {
-        NAMESPACES.get("organization").unwrap();
+    fn it_generates_a_random_namespace() {
+        random_namespace();
     }
 }

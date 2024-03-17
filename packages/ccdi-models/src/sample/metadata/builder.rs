@@ -26,6 +26,9 @@ pub struct Builder {
     /// The approximate age at collection.
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
+    /// The alternate identifiers for the sample.
+    identifiers: Option<Vec<field::unowned::sample::Identifier>>,
+
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
 }
@@ -163,6 +166,61 @@ impl Builder {
         self
     }
 
+    /// Append a value to the `identifier` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
+    /// use models::Namespace;
+    /// use models::Organization;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    /// );
+    ///
+    /// let sample_id = models::sample::identifier::referenced::Identifier::Linked(
+    ///     models::sample::identifier::linked::Identifier::new(
+    ///         models::sample::Identifier::new(namespace.id().clone(), "SampleName001"),
+    ///         "https://ccdi.example.com/api/v0"
+    ///             .parse::<models::Url>()
+    ///             .unwrap(),
+    ///     ),
+    /// );
+    ///
+    /// let field = Identifier::new(sample_id, None, None);
+    /// let builder = Builder::default().append_identifier(field);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn append_identifier(mut self, identifier: field::unowned::sample::Identifier) -> Self {
+        let mut inner = self.identifiers.unwrap_or_default();
+        inner.push(identifier);
+
+        self.identifiers = Some(inner);
+
+        self
+    }
+
     /// Inserts an [`UnharmonizedField`](field::UnharmonizedField) into the
     /// `unharmonized` map.
     ///
@@ -234,6 +292,7 @@ impl Builder {
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
             tumor_tissue_morphology: self.tumor_tissue_morphology,
+            identifiers: self.identifiers,
             unharmonized: self.unharmonized,
         }
     }

@@ -8,6 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Updates the name of the API to be the "CCDI Data Federation API".
+- A `Namespace` now represents a top-level governance grouping of entities
+  within the CCDI Federation API. See the new "Organizations", "Namespaces",
+  and "Assigning Organizations and Namespaces" sections in the Swagger
+  specification to learn about how your design might need to change to account
+  for these new definitions
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+- Introduces `Organization` as a supporting entity with the corresponding
+  `/organization` and `/organization/{name}` endpoints
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+- For all primary entities, an `Identifier` is now represented as both a
+  `Namespace` identifier and a `Name` of the entity.
+- Identifiers, when referenced from within metadata blocks (but not when specified as
+  the top-level identifiers for subjects/samples/files) are now known as **referenced**
+  identifiers. Their body type has changed to include `linked::Identifier`s and
+  `unlinked::Identifier`s, which are wrapped in an `identifier::Referenced` enum
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+- The `identifiers` metadata field for a `Subject` was changed from an _owned_
+  metadata field to an _unowned_ metadata field
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+- A new `identifiers` metadata field was added to `Sample` to support adding other
+  known identifiers at the sample level
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+- For both samples and subjects, there is a new `partition` query parameter that needs
+  to be supported for the `/{entity}/by/{field}/count` endpoint
+  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+    - The only current valid value for the `partition` query parameter at the moment is
+      `namespace`, though this may be expanded in the future. 
 
 ## [v0.6.1] — 01-16-2024
 

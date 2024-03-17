@@ -37,7 +37,7 @@ pub struct Metadata {
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
-    #[serde(skip_serializing_if = "fields::Unharmonized::is_empty")]
+    #[serde(default, skip_serializing_if = "fields::Unharmonized::is_empty")]
     unharmonized: fields::Unharmonized,
 }
 

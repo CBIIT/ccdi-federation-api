@@ -10,8 +10,11 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use indexmap::IndexMap;
+use itertools::Itertools as _;
+use models::namespace;
 use serde_json::Value;
 
+use ccdi_cde as cde;
 use ccdi_models as models;
 
 use models::subject::Identifier;
@@ -20,20 +23,25 @@ use models::Subject;
 use crate::filter::filter;
 use crate::paginate;
 use crate::params::filter::Subject as FilterSubjectParams;
-use crate::params::Pagination as PaginationParams;
+use crate::params::PaginationParams;
+use crate::params::PartitionParams;
+use crate::params::Partitionable;
+use crate::responses;
 use crate::responses::by;
+use crate::responses::by::count::subject::NamespacePartitionedResult;
 use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Subjects;
 use crate::responses::Summary;
-use crate::routes::namespace::NAMESPACES;
+use crate::routes::namespace::random_namespace;
 use crate::routes::MISSING_GROUP_BY_KEY;
 use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`Subject`]s.
 #[derive(Debug)]
 pub struct Store {
-    subjects: Mutex<Vec<Subject>>,
+    /// The inner [`Subjects`](ccdi_models::Subject).
+    pub subjects: Mutex<Vec<Subject>>,
 }
 
 impl Store {
@@ -44,9 +52,9 @@ impl Store {
     /// ```
     /// use ccdi_server as server;
     ///
-    /// use server::routes::subject::Store;
+    /// use server::routes::subject;
     ///
-    /// let store = Store::random(100);
+    /// let subjects = subject::Store::random(100);
     /// ```
     pub fn random(count: usize) -> Self {
         Self {
@@ -54,10 +62,8 @@ impl Store {
                 (0..count)
                     .map(|i| {
                         let identifier = Identifier::new(
-                            // SAFETY: this is hardcoded to work and is tested
-                            // statically below.
-                            NAMESPACES.get("organization").unwrap(),
-                            format!("Subject{}", i + 1),
+                            random_namespace().id().clone(),
+                            cde::v1::subject::Name::new(format!("Subject{}", i + 1)),
                         );
 
                         Subject::random(identifier)
@@ -74,8 +80,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
         config
             .app_data(store)
             .service(subject_index)
-            .service(subject_show)
             .service(subjects_by_count)
+            .service(subject_show)
             .service(subject_summary);
     }
 }
@@ -240,11 +246,15 @@ pub async fn subject_index(
 /// Gets the subject matching the provided id (if the subject exists).
 #[utoipa::path(
     get,
-    path = "/subject/{namespace}/{name}",
+    path = "/subject/{organization}/{namespace}/{name}",
     params(
         (
+            "organization" = String,
+            description = "The organization of the namespace to which the subject belongs.",
+        ),
+        (
             "namespace" = String,
-            description = "The namespace portion of the subject identifier.",
+            description = "The name of the namespace to which the subject belongs.",
         ),
         (
             "name" = String,
@@ -265,14 +275,21 @@ pub async fn subject_index(
         )
     )
 )]
-#[get("/subject/{namespace}/{name}")]
-pub async fn subject_show(path: Path<(String, String)>, subjects: Data<Store>) -> impl Responder {
+#[get("/subject/{organization}/{namespace}/{name}")]
+pub async fn subject_show(
+    path: Path<(String, String, String)>,
+    subjects: Data<Store>,
+) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap();
-    let (namespace, name) = path.into_inner();
+    let (organization, namespace, name) = path.into_inner();
 
     subjects
         .iter()
-        .find(|subject| subject.id().namespace() == namespace && subject.id().name() == name)
+        .find(|subject| {
+            subject.id().namespace().organization().as_str() == organization
+                && subject.id().namespace().name().as_str() == namespace
+                && subject.id().name().as_str() == name
+        })
         .map(|subject| HttpResponse::Ok().json(subject))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
@@ -287,15 +304,12 @@ pub async fn subject_show(path: Path<(String, String)>, subjects: Data<Store>) -
     get,
     path = "/subject/by/{field}/count",
     params(
-        ("field" = String, description = "The field to group by and count."),
+        ("field" = String, description = "The field to group by and count with."),
+        PartitionParams,
     ),
     tag = "Subject",
     responses(
-        (
-            status = 200,
-            description = "Successful operation.",
-            body = responses::by::count::Subjects,
-        ),
+        (status = 200, description = "Successful operation.", body = responses::by::count::subject::Response),
         (
             status = 422,
             description = "Unsupported field.",
@@ -310,13 +324,74 @@ pub async fn subject_show(path: Path<(String, String)>, subjects: Data<Store>) -
     )
 )]
 #[get("/subject/by/{field}/count")]
-pub async fn subjects_by_count(path: Path<String>, subjects: Data<Store>) -> impl Responder {
+pub async fn subjects_by_count(
+    path: Path<String>,
+    partition_params: Query<PartitionParams>,
+    subjects: Data<Store>,
+) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap().clone();
     let field = path.into_inner();
 
+    if let Some(Partitionable::Namespace) = partition_params.0.partition {
+        let namespaces = subjects
+            .iter()
+            .map(|s| s.id().namespace())
+            .unique()
+            .cloned()
+            .sorted()
+            .collect::<Vec<namespace::Identifier>>();
+
+        let mut results = Vec::new();
+
+        for namespace in namespaces {
+            let namespace_subjects = subjects
+                .iter()
+                .filter(|s| s.id().namespace() == &namespace)
+                .cloned()
+                .collect::<Vec<Subject>>();
+
+            let namespace_results = group_by(namespace_subjects, &field);
+
+            if namespace_results.values.len() == 1
+                && namespace_results.values.get(MISSING_GROUP_BY_KEY).is_some()
+            {
+                return HttpResponse::UnprocessableEntity().json(Errors::from(
+                    error::Kind::unsupported_field(
+                        field.to_string(),
+                        String::from("This field is not present for subjects."),
+                    ),
+                ));
+            }
+
+            let namespace_partitioned_result =
+                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+            results.push(namespace_partitioned_result);
+        }
+
+        HttpResponse::Ok().json(by::count::subject::Response::NamespacePartitioned(
+            by::count::subject::NamespacePartitionedResults::from(results),
+        ))
+    } else {
+        let results = group_by(subjects, &field);
+
+        if results.values.len() == 1 && results.values.get(MISSING_GROUP_BY_KEY).is_some() {
+            return HttpResponse::UnprocessableEntity().json(Errors::from(
+                error::Kind::unsupported_field(
+                    field.to_string(),
+                    String::from("This field is not present for subjects."),
+                ),
+            ));
+        }
+
+        HttpResponse::Ok().json(by::count::subject::Response::Unpartitioned(results))
+    }
+}
+
+fn group_by(subjects: Vec<Subject>, field: &str) -> responses::by::count::subject::Results {
     let values = subjects
         .iter()
-        .map(|subject| parse_field(&field, subject))
+        .map(|subject| parse_field(field, subject))
         .collect::<Vec<_>>();
 
     let result = values
@@ -332,16 +407,7 @@ pub async fn subjects_by_count(path: Path<String>, subjects: Data<Store>) -> imp
             map
         });
 
-    if result.len() == 1 && result.get(MISSING_GROUP_BY_KEY).is_some() {
-        return HttpResponse::UnprocessableEntity().json(Errors::from(
-            error::Kind::unsupported_field(
-                field,
-                String::from("This field is not present for subjects."),
-            ),
-        ));
-    }
-
-    HttpResponse::Ok().json(by::count::Subjects::from(result))
+    responses::by::count::subject::Results::from(result)
 }
 
 fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
@@ -421,7 +487,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_unwraps_the_default_namespace() {
-        NAMESPACES.get("organization").unwrap();
+    fn it_generates_a_random_namespace() {
+        random_namespace();
     }
 }

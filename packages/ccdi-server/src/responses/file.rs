@@ -65,6 +65,7 @@ impl Files {
     /// # Examples
     ///
     /// ```
+    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
@@ -73,24 +74,39 @@ impl Files {
     /// use models::gateway::AnonymousOrReference;
     /// use models::gateway::Link;
     /// use models::gateway::Named;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let file = File::new(
-    ///     Identifier::new(&namespace, "Foo.txt"),
-    ///     NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Reference {
     ///         gateway: String::from("name"),
     ///     }),
@@ -101,7 +117,7 @@ impl Files {
     ///     String::from("name"),
     ///     Gateway::Open {
     ///         link: Link::Direct {
-    ///             url: Url::try_from("https://example.com").unwrap(),
+    ///             url: "https://example.com".parse::<Url>().unwrap(),
     ///         },
     ///     },
     /// );
@@ -153,6 +169,8 @@ mod tests {
     use ccdi_models::gateway::AnonymousOrReference;
     use ccdi_models::gateway::Link;
     use ccdi_models::gateway::Named;
+    use ccdi_models::namespace;
+    use ccdi_models::organization;
     use ccdi_models::sample;
     use ccdi_models::File;
     use ccdi_models::Gateway;
@@ -162,17 +180,30 @@ mod tests {
 
     #[test]
     fn missing_gateways() {
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        // SAFETY: this is manually crafted to unwrap every time, as the
+        // organization name conforms to the correct pattern.
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let file = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(
+                namespace.id().clone(),
+                ccdi_cde::v1::file::Name::new("Foo.txt"),
+            ),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Reference {
                 gateway: String::from("name"),
             }),
@@ -183,7 +214,7 @@ mod tests {
             String::from("another-name"),
             Gateway::Open {
                 link: Link::Direct {
-                    url: Url::try_from("https://example.com").unwrap(),
+                    url: "https://example.com".parse::<Url>().unwrap(),
                 },
             },
         );
@@ -196,17 +227,28 @@ mod tests {
 
     #[test]
     fn extraneous_gateways() {
-        let namespace = Namespace::try_new(
-            "organization",
-            "Example Organization",
+        let namespace = Namespace::new(
+            namespace::Identifier::new(
+                organization::Identifier::try_new("example-organization").unwrap(),
+                namespace::identifier::Name::try_new("ExampleNamespace").unwrap(),
+            ),
             "support@example.com",
-            None,
-        )
-        .unwrap();
+            Some(
+                "ExampleNamespace"
+                    .parse::<namespace::Description>()
+                    .unwrap(),
+            ),
+        );
 
         let file = File::new(
-            Identifier::new(&namespace, "Foo.txt"),
-            NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+            Identifier::new(
+                namespace.id().clone(),
+                ccdi_cde::v1::file::Name::new("Foo.txt"),
+            ),
+            NonEmpty::new(sample::Identifier::new(
+                namespace.id().clone(),
+                "SampleName001",
+            )),
             NonEmpty::new(AnonymousOrReference::Reference {
                 gateway: String::from("name"),
             }),
@@ -218,7 +260,7 @@ mod tests {
                 String::from("name"),
                 Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             ),
@@ -226,7 +268,7 @@ mod tests {
                 String::from("another-name"),
                 Gateway::Open {
                     link: Link::Direct {
-                        url: Url::try_from("https://example.com").unwrap(),
+                        url: "https://example.com".parse::<Url>().unwrap(),
                     },
                 },
             ),
