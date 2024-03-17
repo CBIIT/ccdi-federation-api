@@ -29,7 +29,7 @@ impl Standard {
     ///
     /// let standard = Standard::new(
     ///     String::from("caDSR CDE ------- v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
+    ///     "https://cancer.gov".parse::<Url>().unwrap(),
     /// );
     ///
     /// assert_eq!(standard.name(), "caDSR CDE ------- v1.00");
@@ -51,7 +51,7 @@ impl Standard {
     ///
     /// let standard = Standard::new(
     ///     String::from("caDSR CDE ------- v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
+    ///     "https://cancer.gov".parse::<Url>().unwrap(),
     /// );
     ///
     /// assert_eq!(standard.name(), "caDSR CDE ------- v1.00");
@@ -72,7 +72,7 @@ impl Standard {
     ///
     /// let standard = Standard::new(
     ///     String::from("caDSR CDE ------- v1.00"),
-    ///     Url::try_from("https://cancer.gov").unwrap(),
+    ///     "https://cancer.gov".parse::<Url>().unwrap(),
     /// );
     ///
     /// assert_eq!(standard.url(), "https://cancer.gov/");

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: CCDI Data Federation API
-  description: "The CCDI Data Federation API supports the querying of\nfederated pediatric cancer within the broader community. The goal of the API\nis to support identification of pediatric cancer samples of interest via a\nvariety of query parameters.\n\n## Definitions\n\n**Authentication** is defined as being identified in any manner.\nAuthentication, by definition, requires prior registration of identifiable\ncharacteristics. Typically, this is in the form of an account, though the\ndefinition of authentication includes any condition under which you are\nregistered and identified (e.g., allowlisted via IP address).\n\n**Authorization** is defined as permission explicitly granted or withheld from\nan authenticated individual by a controlling entity based on a set of\nnon-authentication-based criteria (irrespective of the time period for which\naccess is granted or denied). Note that this definition of authorization always\nrequires prior authentication, so simply requiring authentication to gain\naccess to a resource is not considered authorization. For example, gaining\npermission to a dataset via an explicit decision from a data access committee\nis considered authorization while making data available after simply completing\na universally accessible account registration process is not.\n\n## Security Requirements\n\nAll API endpoints must be served over HTTPS (port 443) with a certificate signed\nby a recognized certificate authority. In particular, self-signed certificates\nare not permitted. Further, while an API _may_ be available over HTTP (port 80),\nHTTPS must always be available. We highly recommend you redirect HTTP to HTTPS\nrather than serve your API on two separate ports.\n\n## Invalid Routes\n\nAll responses that do not match an endpoint below should return a Not Found \n(`404`) response. The body of this response should be the `responses.Errors` \nJSON object with one `responses.error.Kind` where the `Kind` matches the \n`InvalidRoute` error.\n\n## Accessing External Files\n\nA **gateway** notifies end users of resources that exist outside of the API\nalong with the conditions under which those resources may or may not be\naccessed. Gateways can be open access (open to anyone—even anonymously),\nregistered access (requires authentication but not authorization),\ncontrolled access (requires both authentication and authorization), or\nclosed access (not available). Gateways do not, in and of themselves,\ncommunicate the location of or mechanism(s) by which resources can be accessed.\nInstead, gateways wrap `Link`s to communicate that information.\n\nA **link** defines the mechanism for locating (referred to here as \"navigating\nto\") an external resource. Links can be direct (for navigating to precisely the\nrequested resource(s)—no more and no less), approximate (a link which, when\nfollowed, requires prior manual intervention in the form of instructions to\nproceed to the otherwise immediately navigable desired resource(s)),\ninformational (a link that does not navigate to a desired resource directly but\ncan be followed to find out more information on how to access the desired\nresource(s) out-of-band), or mailing (an email address to contact, accompanied\nby instructions to access the desired resource(s)) in nature.\nAgain, a link does not, in and of itself, communicate the requirements to\naccess desired resources—it must be used in conjunction with a gateway to\ncommunicate that information.\n\nPut simply, a **link** tells you where you need to go to attempt to access a\ndesired resource and the **gateway** wrapping the link tells you what the\nrequirements for accessing the resource are once you get there. By separating\nthe concepts of the requirements to access a desired resource (gateways) from\nthe mechanism to access the desired resource (links), we create an expressive,\ncombinatorial system for capturing a broad spectrum of situations.\n\n**Note:** a _closed_ gateway is special and does not include links. Instead, \nits purpose is to describe where a resource originated from and to communicate\nthat the resource is otherwise unavailable. Various closed gateway statuses are\nprovided to indicate if and when the resources will become available.\n\n### Examples\n\nBelow are some examples using pseudocode to illustrate these concepts. Note\nthat some fields have been left out of the definitions for brevity.\n\n* A `Gateway::Controlled { Link::Exact { url: \n  \"https://example.com/files?sample=Sample001\" } }` communicates \"all of the\n  resources you requested are available at \n  https://example.com/files?sample=Sample001, but be advised that the data found\n  at that link is controlled access and requires authorization\".\n* A `Gateway::Open { Link::MailTo { uri: \"mailto:data@example.com\" } }`\n  communicates \"anyone can request the resource by emailing the provided email\n  address—even if we haven't identified (authenticated) the individual\n  requesting the data. In contrast, if the data provider required\n  identification of the individual before sending the data (say, via a verified\n  university email address), then a `Gateway::Registered` should be used\n  instead. \n* A `Gateway::Registered { Link::Approximate { url: \n  \"https://example.com/data\", instructions: \"Filter data by ...\" } }`\n  communicates \"the data is available to anyone who registers an account at\n  https://example.com/data, but manual filtering (by following the provided\n  instructions) is required to select the exact subset of desired data\"."
+  description: "The CCDI Data Federation API supports the querying of\nfederated pediatric cancer within the broader community. The goal of the API\nis to support identification of pediatric cancer samples of interest via a\nvariety of query parameters.\n\n### Definitions\n\n**Authentication** is defined as being identified in any manner.\nAuthentication, by definition, requires prior registration of identifiable\ncharacteristics. Typically, this is in the form of an account, though the\ndefinition of authentication includes any condition under which you are\nregistered and identified (e.g., allowlisted via IP address).\n\n**Authorization** is defined as permission explicitly granted or withheld from\nan authenticated individual by a controlling entity based on a set of\nnon-authentication-based criteria (irrespective of the time period for which\naccess is granted or denied). Note that this definition of authorization always\nrequires prior authentication, so simply requiring authentication to gain\naccess to a resource is not considered authorization. For example, gaining\npermission to a dataset via an explicit decision from a data access committee\nis considered authorization while making data available after simply completing\na universally accessible account registration process is not.\n\n**Primary Entities** are defined as classes of information for which the API\nspecification was created to share. In other words, the sharing of primary \nentities is the most important goal of the specification.\n\n**Supporting Entities** are defined as classes of information that are necessary\nto share alongside to make sense of primary entities. Sharing information on\nthese entities is not a top-level goal of the API specification.\n\n### Security Requirements\n\nAll API endpoints must be served over HTTPS (port 443) with a certificate signed\nby a recognized certificate authority. In particular, self-signed certificates\nare not permitted. Further, while an API _may_ be available over HTTP (port 80),\nHTTPS must always be available. We highly recommend servers redirect HTTP to\nHTTPS rather than serve your API on two separate ports.\n\n### Invalid Routes\n\nAll responses that do not match an endpoint below should return a Not Found \n(`404`) response. The body of this response should be the `responses.Errors` \nJSON object with one `responses.error.Kind` where the `Kind` matches the \n`InvalidRoute` error.\n\n## Primary Entities\n\nPrimary entities represent information that this API specification was created\nto share as a top-level goal. Primary entities have a common API surface and,\ngenerally, will work relatively similar to one another within the specification.\nAll primary entities are referred to by their _identifier_, which is the\ncombination of (a) a namespace identifier pointing to the namespace that owns\nthis entity along with (b) a name for the entity.\n\nThe following entities are considered primary entities within the API\nspecification.\n\n- Subjects\n- Samples\n- Files\n\n\nIn addition to merely existing in a common level of prominence within the API,\nprimary entities have a hierarchical structure following these rules.\n\n- Subjects are the highest-level primary entity within the API specification.\n- Samples **must** be associated with one and only one subject.\n- Files **must** be associated with one or more samples.\n\n### Subjects\n\nTODO\n\n### Samples\n\nTODO\n\n### Files\n\nTODO\n\n#### Accessing External Files\n\nA **gateway** notifies end users of resources that exist outside of the API\nalong with the conditions under which those resources may or may not be\naccessed. Gateways can be open access (open to anyone—even anonymously),\nregistered access (requires authentication but not authorization),\ncontrolled access (requires both authentication and authorization), or\nclosed access (not available). Gateways do not, in and of themselves,\ncommunicate the location of or mechanism(s) by which resources can be accessed.\nInstead, gateways wrap `Link`s to communicate that information.\n\nA **link** defines the mechanism for locating (referred to here as \"navigating\nto\") an external resource. Links can be direct (for navigating to precisely the\nrequested resource(s)—no more and no less), approximate (a link which, when\nfollowed, requires prior manual intervention in the form of instructions to\nproceed to the otherwise immediately navigable desired resource(s)),\ninformational (a link that does not navigate to a desired resource directly but\ncan be followed to find out more information on how to access the desired\nresource(s) out-of-band), or mailing (an email address to contact, accompanied\nby instructions to access the desired resource(s)) in nature.\nAgain, a link does not, in and of itself, communicate the requirements to\naccess desired resources—it must be used in conjunction with a gateway to\ncommunicate that information.\n\nPut simply, a **link** tells you where you need to go to attempt to access a\ndesired resource and the **gateway** wrapping the link tells you what the\nrequirements for accessing the resource are once you get there. By separating\nthe concepts of the requirements to access a desired resource (gateways) from\nthe mechanism to access the desired resource (links), we create an expressive,\ncombinatorial system for capturing a broad spectrum of situations.\n\n**Note:** a _closed_ gateway is special and does not include links. Instead, \nits purpose is to describe where a resource originated from and to communicate\nthat the resource is otherwise unavailable. Various closed gateway statuses are\nprovided to indicate if and when the resources will become available.\n\n##### Examples\n\nBelow are some examples using pseudocode to illustrate these concepts. Note\nthat some fields have been left out of the definitions for brevity.\n\n* A `Gateway::Controlled { Link::Exact { url: \n  \"https://example.com/files?sample=Sample001\" } }` communicates \"all of the\n  resources you requested are available at \n  https://example.com/files?sample=Sample001, but be advised that the data found\n  at that link is controlled access and requires authorization\".\n* A `Gateway::Open { Link::MailTo { uri: \"mailto:data@example.com\" } }`\n  communicates \"anyone can request the resource by emailing the provided email\n  address—even if we haven't identified (authenticated) the individual\n  requesting the data. In contrast, if the data provider required\n  identification of the individual before sending the data (say, via a verified\n  university email address), then a `Gateway::Registered` should be used\n  instead. \n* A `Gateway::Registered { Link::Approximate { url: \n  \"https://example.com/data\", instructions: \"Filter data by ...\" } }`\n  communicates \"the data is available to anyone who registers an account at\n  https://example.com/data, but manual filtering (by following the provided\n  instructions) is required to select the exact subset of desired data\".\n\n## Supporting Entities\n\nSupporting entities provide supporting information necessary to make sense of\nthe primary entities supported by the API. Supporting entities are not, in and\nof themselves, a primary sharing goal for the API.\n\nThe following entities are considered supporting entities within the API\nspecification.\n\n- Organizations\n- Namespaces\n\n### Organizations\n\nOrganizations are self-reported, non-authoritative descriptions of organizations\nthat are sharing data through an API endpoint. There is no formal definition or\ncriteria for what constitutes an organization in this context. Some examples of\nwhat an organization might represent include (but are not limited to) \nfor-profit companies, non-profit organizations, consortiums, informal bodies, or\nany combination of these concepts.\n\n### Namespaces\n\nNamespaces represent top-level governance groupings of primary entities within\nthe CCDI Federation API. Each namespace is owned by an existing\norganization entity, contains information about the governance unit, and \nprovides information on how to contact the body that governs this namespace.\n\n### Assigning Organizations and Namespaces\n\nWhen assigning namespaces within a source server, one should consider making a\nnamespace entity for each grouping of primary entities that are governed under\na common model. \n\nHere are some common situations followed by instructive examples of how you\npartition primary entities to a set of namespaces under that situation:\n\n- If all of the primary entities within your source server are governed by a\n  singular governing body (say, a single data access committee), then you may\n  only need one namespace for all of the primaries entities within your server.\n- If you have multiple data access committees governing different groupings of\n  primary entities from the same institution, you should create multiple \n  namespaces that are backed by a common organization.\n- If your server serves data from various governing bodies spread across\n  multiple, independent organizations, you should create multiple namespaces\n  backed by multiple organizations."
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
@@ -180,7 +180,7 @@ paths:
                   - per_page
                   reason: Unable to calculate offset.
                   message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
-  /subject/{namespace}/{name}:
+  /subject/{organization}/{namespace}/{name}:
     get:
       tags:
       - Subject
@@ -188,9 +188,15 @@ paths:
       description: Gets the subject matching the provided id (if the subject exists).
       operationId: subject_show
       parameters:
+      - name: organization
+        in: path
+        description: The organization of the namespace to which the subject belongs.
+        required: true
+        schema:
+          type: string
       - name: namespace
         in: path
-        description: The namespace portion of the subject identifier.
+        description: The name of the namespace to which the subject belongs.
         required: true
         schema:
           type: string
@@ -230,17 +236,24 @@ paths:
       parameters:
       - name: field
         in: path
-        description: The field to group by and count.
+        description: The field to group by and count with.
         required: true
         schema:
           type: string
+      - name: partition
+        in: query
+        description: The method to partition results.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/params.Partitionable'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.by.count.Subjects'
+                $ref: '#/components/schemas/responses.by.count.subject.Response'
         '422':
           description: Unsupported field.
           content:
@@ -427,7 +440,7 @@ paths:
                   - per_page
                   reason: Unable to calculate offset.
                   message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
-  /sample/{namespace}/{name}:
+  /sample/{organization}/{namespace}/{name}:
     get:
       tags:
       - Sample
@@ -435,9 +448,15 @@ paths:
       description: Gets the sample matching the provided name (if the sample exists).
       operationId: sample_show
       parameters:
+      - name: organization
+        in: path
+        description: The organization of the namespace to which the sample belongs.
+        required: true
+        schema:
+          type: string
       - name: namespace
         in: path
-        description: The namespace portion of the sample identifier.
+        description: The name of the namespace to which the sample belongs.
         required: true
         schema:
           type: string
@@ -477,17 +496,24 @@ paths:
       parameters:
       - name: field
         in: path
-        description: The field to group by and count.
+        description: The field to group by and count with.
         required: true
         schema:
           type: string
+      - name: partition
+        in: query
+        description: The method to partition results.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/params.Partitionable'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.by.count.Samples'
+                $ref: '#/components/schemas/responses.by.count.sample.Response'
         '422':
           description: Unsupported field.
           content:
@@ -654,7 +680,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.Namespaces'
-  /namespace/{name}:
+  /namespace/{organization}/{namespace}:
     get:
       tags:
       - Namespace
@@ -662,7 +688,13 @@ paths:
       description: Gets the namespace matching the provided name (if it exists).
       operationId: namespace_show
       parameters:
-      - name: name
+      - name: organization
+        in: path
+        description: The organization of the namespace.
+        required: true
+        schema:
+          type: string
+      - name: namespace
         in: path
         description: The name of the namespace.
         required: true
@@ -686,6 +718,52 @@ paths:
                 - kind: NotFound
                   entity: Namespaces
                   message: Namespaces not found.
+  /organization:
+    get:
+      tags:
+      - Organization
+      summary: Gets the organizations known by this server.
+      description: Gets the organizations known by this server.
+      operationId: organization_index
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Organizations'
+  /organization/{name}:
+    get:
+      tags:
+      - Organization
+      summary: Gets the organization matching the provided name (if it exists).
+      description: Gets the organization matching the provided name (if it exists).
+      operationId: organization_show
+      parameters:
+      - name: name
+        in: path
+        description: The name of the organization.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Organization'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: NotFound
+                  entity: Organizations
+                  message: Organizations not found.
   /info:
     get:
       tags:
@@ -714,8 +792,8 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11280338%20and%20ver_nr=1>
-    cde.v1.file.Identifier:
-      type: object
+    cde.v1.file.Name:
+      type: string
       description: |-
         **`caDSR CDE 11284037 v1.00`**
 
@@ -724,18 +802,7 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11284037%20and%20ver_nr=1>
-      required:
-      - namespace
-      - name
-      properties:
-        namespace:
-          type: string
-          description: The namespace of the identifier.
-          example: organization
-        name:
-          type: string
-          description: The name of the identifier.
-          example: File001.txt
+      example: File001.txt
     cde.v1.file.Size:
       type: integer
       description: |-
@@ -892,8 +959,8 @@ components:
         icd_o_3:
           type: string
           description: The ICD-O-3 code.
-    cde.v1.subject.Identifier:
-      type: object
+    cde.v1.subject.Name:
+      type: string
       description: |-
         **`caDSR CDE 6380049 v1.00`**
 
@@ -903,18 +970,7 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380049%20and%20ver_nr=1>
-      required:
-      - namespace
-      - name
-      properties:
-        namespace:
-          type: string
-          description: The namespace of the identifier.
-          example: organization
-        name:
-          type: string
-          description: The name of the identifier.
-          example: SubjectName001
+      example: SubjectName001
     cde.v1.subject.Race:
       type: string
       description: |-
@@ -1024,28 +1080,6 @@ components:
       properties:
         value:
           description: The value of the metadata field.
-        ancestors:
-          type: array
-          items:
-            type: string
-          description: |-
-            The ancestors from which this field was derived.
-
-            Ancestors should be provided as period (`.`) delimited paths
-            from the `metadata` key in the subject response object.
-        comment:
-          type: string
-          description: A free-text comment field.
-        owned:
-          type: boolean
-          description: Whether or not the field is owned by the source server.
-    field.owned.subject.Identifier:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/cde.v1.subject.Identifier'
         ancestors:
           type: array
           items:
@@ -1213,6 +1247,25 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.sample.Identifier:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.sample.identifier.referenced.Identifier'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.sample.TissueType:
       type: object
       required:
@@ -1296,6 +1349,25 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/cde.v2.subject.Ethnicity'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.Identifier:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.subject.identifier.referenced.Identifier'
         ancestors:
           type: array
           items:
@@ -1527,32 +1599,14 @@ components:
       type: object
       description: A response for describing metadata fields for a subject.
       required:
-      - name
-      - owner
-      - contact_email
+      - id
       - description
+      - contact_email
       properties:
-        name:
-          $ref: '#/components/schemas/models.namespace.Name'
-        owner:
-          type: string
-          description: |-
-            A free-text string describing the owner of the namespace.
-
-            This field is intended to be the proper name of the organization that
-            mints identifiers within a given namespace. That said, we have
-            intentionally not required this restriction, as there may be exceptions
-            to this guideline. We recommend that you use an organization name here
-            if you can, but you may put whatever value is appropriate to describe
-            the owner of the namespace.
-
-            It is recommended that you use title case for this field, though that is
-            not strictly required.
-
-            **Note:** this field is asserted by the source server, but it is not
-            guaranteed to be authoritative across the federation (due to the
-            decentralized nature of namespace allocation).
-          example: Example Organization
+        id:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        description:
+          $ref: '#/components/schemas/models.namespace.Description'
         contact_email:
           type: string
           description: |-
@@ -1561,8 +1615,37 @@ components:
             This field is required to be a valid email address (both in format and
             in terms of the email address being actively monitored).
           example: support@example.com
-        description:
-          $ref: '#/components/schemas/models.namespace.Description'
+    models.Organization:
+      type: object
+      description: |-
+        An organization.
+
+        Organizations own [`Namespaces`](super::Namespace) within a source server.
+      required:
+      - identifier
+      - name
+      properties:
+        identifier:
+          $ref: '#/components/schemas/models.organization.Identifier'
+        name:
+          type: string
+          description: |-
+            The proper name of the organization as it should be displayed by clients.
+
+            This field is intended to be the proper name of the organization that mints
+            identifiers within a given namespace. That said, we have intentionally not
+            required that this be an organization specifically, as there may be exceptions
+            to this guideline. We recommend that you use an organization name here if you
+            can, but you may put whatever value is appropriate to describe the owner of the
+            namespace.
+
+            It is recommended that you use title case for this field, though that is not
+            required.
+
+            **Note:** this field is asserted by the source server, but it is not guaranteed
+            to be authoritative across the federation (due to the decentralized nature of
+            organization and namespace allocation).
+          example: Example Organization
     models.Sample:
       type: object
       description: |-
@@ -1589,20 +1672,10 @@ components:
       description: A subject.
       required:
       - id
-      - name
       - kind
       properties:
         id:
           $ref: '#/components/schemas/models.subject.Identifier'
-        name:
-          type: string
-          description: |-
-            The primary name for a subject used within the source server.
-
-            Note that this field is not namespaced like an `identifier` is, and,
-            instead, is intended to represent a colloquial or display name for the
-            sample (without indicating the scope of the name).
-          example: SubjectName001
         kind:
           $ref: '#/components/schemas/models.subject.Kind'
         metadata:
@@ -1615,7 +1688,16 @@ components:
         A uniform resource locator (URL) according to the [URL
         Standard](https://url.spec.whatwg.org/).
     models.file.Identifier:
-      $ref: '#/components/schemas/cde.v1.file.Identifier'
+      type: object
+      description: The primary name and namespace for a file within the source server.
+      required:
+      - namespace
+      - name
+      properties:
+        namespace:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        name:
+          $ref: '#/components/schemas/cde.v1.file.Name'
     models.file.Metadata:
       type: object
       description: Metadata associated with a file.
@@ -2060,30 +2142,56 @@ components:
 
         This description cannot exceed 2048 characters.
       example: A namespace owned by Example Organization.
-    models.namespace.Name:
+    models.namespace.Identifier:
+      type: object
+      description: An identifier for a namespace.
+      required:
+      - organization
+      - name
+      properties:
+        organization:
+          $ref: '#/components/schemas/models.organization.Identifier'
+        name:
+          $ref: '#/components/schemas/models.organization.Name'
+    models.organization.Identifier:
       type: string
       description: |-
-        The name of a namespace.
+        The identifier of an organization.
 
-        The name **must** conform to
+        The identifier **must** conform to
         [`kebab-casing`](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case),
-        matching the pattern `^[a-z0-9-]+$`. Any name that does not match this
+        matching the pattern `^[a-z0-9-]+$`. Any identifier that does not match this
         pattern should be considered invalid by clients.
 
         **Note:** this field is asserted by the source server, but it is not
         guaranteed to be authoritative across the federation (due to the
-        decentralized nature of namespace allocation).
+        decentralized nature of organization and namespace allocation).
+
+        **Note**: the regex for this field does not allow for any spaces because it is
+        anticipated that the field will be displayable as a repository (e.g.,
+        `example-organization/ExampleNamespace`).
+    models.organization.Name:
+      type: string
+      description: |-
+        An organization name.
+
+        This name name cannot exceed 256 characters.
+      example: Example Organization
     models.sample.Identifier:
       type: object
-      description: The primary name and namespace for a sample used within the source server.
+      description: |-
+        An identifier for a [`Sample`](crate::Sample).
+
+        [`Identifiers`](Identifier) serve two main purposes:
+
+        1. They represent the primary identifier for a [`Sample`](crate::Sample).
+        2. They extended when referenced as [linked identifiers](linked::Identifier).
       required:
       - namespace
       - name
       properties:
         namespace:
-          type: string
-          description: The namespace of the identifier.
-          example: organization
+          $ref: '#/components/schemas/models.namespace.Identifier'
         name:
           type: string
           description: The name of the identifier.
@@ -2098,6 +2206,7 @@ components:
       - tumor_classification
       - tumor_tissue_morphology
       - age_at_collection
+      - identifiers
       properties:
         age_at_diagnosis:
           allOf:
@@ -2123,8 +2232,79 @@ components:
           allOf:
           - $ref: '#/components/schemas/field.unowned.sample.AgeAtCollection'
           nullable: true
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/field.unowned.sample.Identifier'
+          description: |-
+            The alternate identifiers for the sample.
+
+            Note that this list of identifiers *must* include the main identifier
+            for the [`Sample`].
+          nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
+    models.sample.identifier.linked.Identifier:
+      allOf:
+      - $ref: '#/components/schemas/models.sample.Identifier'
+      - type: object
+        required:
+        - server
+        properties:
+          server:
+            $ref: '#/components/schemas/models.Url'
+      description: |-
+        A linked identifier for a [`Sample`](crate::Sample).
+
+        Linked identifiers are identifiers that are able to be linked back to servers within
+        the federated ecosystem (i.e., the server that owns this identifier within the
+        ecosystem is known).
+    models.sample.identifier.referenced.Identifier:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/models.sample.identifier.linked.Identifier'
+        - type: object
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              enum:
+              - Linked
+      - allOf:
+        - $ref: '#/components/schemas/models.sample.identifier.unlinked.Identifier'
+        - type: object
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              enum:
+              - Unlinked
+      description: |-
+        A referenced identifier for a [`Sample`](crate::Sample).
+
+        A referenced identifier is a reference to either an identifier whose owner is known
+        and operates an authoritative federation server containing that identifier (i.e., a
+        [linked identifier](linked::Identifier)) _or_ a reference to an identifier that is
+        generally known to be associated with the sample but does not have an associated
+        server that asserts ownership of the identifier (i.e., an [unlinked
+        identifier](unlinked::Identifier)).
+      discriminator:
+        propertyName: type
+    models.sample.identifier.unlinked.Identifier:
+      type: object
+      description: |-
+        An unlinked identifier for a [`Sample`](crate::Sample).
+
+        This represents an arbitrary identitier that cannot be linked to any source server
+        in the broader federated ecosystem. There are no restricted values for this
+        identifier.
+      required:
+      - name
+      properties:
+        name:
+          type: string
     models.sample.metadata.AgeAtCollection:
       type: number
       format: float
@@ -2148,7 +2328,22 @@ components:
         number of years is multiplied by 365.25 to arrive at an approximate number
         of days.
     models.subject.Identifier:
-      $ref: '#/components/schemas/cde.v1.subject.Identifier'
+      type: object
+      description: |-
+        An identifier for a [`Subject`](crate::Subject).
+
+        [`Identifiers`](Identifier) serve two main purposes:
+
+        1. They represent the primary identifier for a [`Subject`](crate::Subject).
+        2. They extended when referenced as [linked identifiers](linked::Identifier).
+      required:
+      - namespace
+      - name
+      properties:
+        namespace:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        name:
+          $ref: '#/components/schemas/cde.v1.subject.Name'
     models.subject.Kind:
       type: string
       description: A kind of [`Subject`](super::Subject).
@@ -2185,9 +2380,9 @@ components:
         identifiers:
           type: array
           items:
-            $ref: '#/components/schemas/field.owned.subject.Identifier'
+            $ref: '#/components/schemas/field.unowned.subject.Identifier'
           description: |-
-            The identifiers for the subject.
+            The alternate identifiers for the subject.
 
             Note that this list of identifiers *must* include the main identifier
             for the [`Subject`].
@@ -2202,6 +2397,67 @@ components:
           nullable: true
         unharmonized:
           $ref: '#/components/schemas/fields.Unharmonized'
+    models.subject.identifier.linked.Identifier:
+      allOf:
+      - $ref: '#/components/schemas/models.subject.Identifier'
+      - type: object
+        required:
+        - server
+        properties:
+          server:
+            $ref: '#/components/schemas/models.Url'
+      description: |-
+        A linked identifier for a [`Subject`](crate::Subject).
+
+        Linked identifiers are identifiers that are able to be linked back to servers within
+        the federated ecosystem (i.e., the server that owns this identifier within the
+        ecosystem is known).
+    models.subject.identifier.referenced.Identifier:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/models.subject.identifier.linked.Identifier'
+        - type: object
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              enum:
+              - Linked
+      - allOf:
+        - $ref: '#/components/schemas/models.subject.identifier.unlinked.Identifier'
+        - type: object
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              enum:
+              - Unlinked
+      description: |-
+        A referenced identifier for a [`Subject`](crate::Subject).
+
+        A referenced identifier is a reference to either an identifier whose owner is known
+        and operates an authoritative federation server containing that identifier (i.e., a
+        [linked identifier](linked::Identifier)) _or_ a reference to an identifier that is
+        generally known to be associated with the subject but does not have an associated
+        server that asserts ownership of the identifier (i.e., an [unlinked
+        identifier](unlinked::Identifier)).
+      discriminator:
+        propertyName: type
+    models.subject.identifier.unlinked.Identifier:
+      type: object
+      description: |-
+        An unlinked identifier for a [`Subject`](crate::Subject).
+
+        This represents an arbitrary identitier that cannot be linked to any source server
+        in the broader federated ecosystem. There are no restricted values for this
+        identifier.
+      required:
+      - name
+      properties:
+        name:
+          type: string
     models.subject.metadata.AgeAtVitalStatus:
       type: number
       format: float
@@ -2213,6 +2469,11 @@ components:
         * When the age at vital status is collected by the source server in years,
         the number of years is multiplied by 365.25 to arrive at an approximate
         number of days.
+    params.Partitionable:
+      type: string
+      description: The different methods a result can be partitioned by.
+      enum:
+      - namespace
     responses.Errors:
       type: object
       description: A wrapper around one or more [errors](Kind).
@@ -2266,6 +2527,13 @@ components:
       items:
         $ref: '#/components/schemas/models.Namespace'
       description: A response for describing namespaces.
+    responses.Organization:
+      $ref: '#/components/schemas/models.Organization'
+    responses.Organizations:
+      type: array
+      items:
+        $ref: '#/components/schemas/models.Organization'
+      description: A response for describing organizations.
     responses.Sample:
       allOf:
       - $ref: '#/components/schemas/models.Sample'
@@ -2336,24 +2604,77 @@ components:
       properties:
         counts:
           $ref: '#/components/schemas/responses.summary.Counts'
-    responses.by.count.Samples:
+    responses.by.count.sample.NamespacePartitionedResult:
       type: object
       description: |-
-        A response for grouping [`Sample`](ccdi_models::Sample)s by a metadata field
-        and then summing the counts.
+        A result that associates a namespace with the [`Results`] belonging to that
+        [`Namespace`](ccdi_models::Namespace).
+      required:
+      - namespace
+      - results
+      properties:
+        namespace:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        results:
+          $ref: '#/components/schemas/responses.by.count.sample.Results'
+    responses.by.count.sample.NamespacePartitionedResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/responses.by.count.sample.NamespacePartitionedResult'
+      description: A set of [`NamespacePartitionedResults`].
+    responses.by.count.sample.Response:
+      oneOf:
+      - $ref: '#/components/schemas/responses.by.count.sample.Results'
+      - $ref: '#/components/schemas/responses.by.count.sample.NamespacePartitionedResults'
+      description: |-
+        A unified response for counting by a particular field for
+        [`Samples`](ccdi_models::Sample).
+    responses.by.count.sample.Results:
+      type: object
+      description: |-
+        A set of results from grouping [`Samples`](ccdi_models::Sample) by a specified
+        metadata field and then summing the counts for each value (along with computing a
+        total count).
       required:
       - total
       - values
       properties:
         total:
           type: integer
+          description: The total number of counts in this result set.
           minimum: 0
         values:
           type: object
+          description: The counts per value observed for the result set.
           additionalProperties:
             type: integer
             minimum: 0
-    responses.by.count.Subjects:
+    responses.by.count.subject.NamespacePartitionedResult:
+      type: object
+      description: |-
+        A result that associates a namespace with the [`Results`] belonging to that
+        [`Namespace`](ccdi_models::Namespace).
+      required:
+      - namespace
+      - results
+      properties:
+        namespace:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        results:
+          $ref: '#/components/schemas/responses.by.count.subject.Results'
+    responses.by.count.subject.NamespacePartitionedResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/responses.by.count.subject.NamespacePartitionedResult'
+      description: A set of [`NamespacePartitionedResults`].
+    responses.by.count.subject.Response:
+      oneOf:
+      - $ref: '#/components/schemas/responses.by.count.subject.Results'
+      - $ref: '#/components/schemas/responses.by.count.subject.NamespacePartitionedResults'
+      description: |-
+        A unified response for counting by a particular field for
+        [`Subjects`](ccdi_models::Subject).
+    responses.by.count.subject.Results:
       type: object
       description: |-
         A response for grouping [`Subject`](ccdi_models::Subject)s by a metadata field
@@ -2364,9 +2685,11 @@ components:
       properties:
         total:
           type: integer
+          description: The total number of counts in this result set.
           minimum: 0
         values:
           type: object
+          description: The counts per value observed for the result set.
           additionalProperties:
             type: integer
             minimum: 0
@@ -2755,7 +3078,9 @@ tags:
 - name: Metadata
   description: List and describe provided metadata fields.
 - name: Namespace
-  description: List and describe namespaces supported by this server.
+  description: List and describe namespaces known by this server.
+- name: Organization
+  description: List and describe organizations known by this server.
 - name: Info
   description: Information about the API implementation itself.
 externalDocs:

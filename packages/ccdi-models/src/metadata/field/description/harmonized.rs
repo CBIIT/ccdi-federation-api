@@ -92,10 +92,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -150,10 +152,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -195,10 +199,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -240,10 +246,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -285,10 +293,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -334,10 +344,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),
@@ -380,10 +392,12 @@ impl Harmonized {
     ///     Kind::Enum,
     ///     String::from("entity"),
     ///     String::from("A description for the entity."),
-    ///     Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki").unwrap(),
+    ///     "https://github.com/CBIIT/ccdi-federation-api/wiki"
+    ///         .parse::<Url>()
+    ///         .unwrap(),
     ///     Some(Standard::new(
     ///         String::from("caDSR ------ v1.00"),
-    ///         Url::try_from("https://cancer.gov").unwrap(),
+    ///         "https://cancer.gov".parse::<Url>().unwrap(),
     ///     )),
     ///     Some(vec![(
     ///         Some(String::from("Unknown")),

@@ -13,7 +13,7 @@ use utoipa::ToSchema;
 #[schema(as = models::file::metadata::Checksums)]
 pub struct Checksums {
     /// The namespace of the identifier.
-    #[schema(example = "organization")]
+    #[schema(example = "example-organization")]
     md5: Option<cde::v1::file::checksum::MD5>,
 }
 

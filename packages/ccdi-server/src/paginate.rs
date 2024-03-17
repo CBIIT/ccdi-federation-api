@@ -6,7 +6,7 @@ use actix_web::HttpResponse;
 use serde::Serialize;
 
 use crate::params::pagination;
-use crate::params::Pagination as PaginationParams;
+use crate::params::PaginationParams;
 use crate::responses::error;
 use crate::responses::Errors;
 

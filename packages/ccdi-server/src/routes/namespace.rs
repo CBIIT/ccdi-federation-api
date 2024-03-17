@@ -10,34 +10,81 @@ use lazy_static::lazy_static;
 
 use ccdi_models as models;
 
-use models::namespace::Description;
+use models::namespace;
+use rand::distributions::Distribution as _;
+use rand::distributions::Uniform;
+use rand::thread_rng;
 
 use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Namespace;
 use crate::responses::Namespaces;
+use crate::routes::organization::ORGANIZATIONS;
 
 lazy_static! {
     /// Namespaces supported by this server.
     pub static ref NAMESPACES: IndexMap<&'static str, models::Namespace> = {
         let mut hm = IndexMap::new();
+
         hm.insert(
-            "organization",
+            "example-organization-namespace-one",
             // SAFETY: this is manually crafted to unwrap every time, as the
             // organization name conforms to the correct pattern.
-            models::Namespace::try_new(
-                "organization",
-                "Example Organization",
+            models::Namespace::new(
+                namespace::Identifier::new(
+                    ORGANIZATIONS.get("example-organization").unwrap().id().clone(),
+                    namespace::identifier::Name::try_new("ExampleNamespaceOne").unwrap(),
+                ),
                 "support@example.com",
                 Some(
-                    "An example organization owned by Example Organization."
-                        .parse::<Description>()
+                "The first example namespace owned by Example Organization."
+                        .parse::<namespace::Description>()
                         .unwrap(),
                 ),
-            ).unwrap(),
+            )
         );
+
+        hm.insert(
+            "example-organization-namespace-two",
+            // SAFETY: this is manually crafted to unwrap every time, as the
+            // organization name conforms to the correct pattern.
+            models::Namespace::new(
+                namespace::Identifier::new(
+                    ORGANIZATIONS.get("example-organization").unwrap().id().clone(),
+                    namespace::identifier::Name::try_new("ExampleNamespaceTwo").unwrap(),
+                ),
+                "support@example.com",
+                Some(
+                "The second example namespace owned by Example Organization."
+                        .parse::<namespace::Description>()
+                        .unwrap(),
+                ),
+            )
+        );
+
         hm
     };
+}
+
+/// Picks a random namespace from the provided [`Namespaces`](ccdi_models::Namespace);
+///
+/// # Examples
+///
+/// ```
+/// use ccdi_server as server;
+///
+/// use server::routes::namespace::random_namespace;
+///
+/// let ns = random_namespace();
+/// ```
+pub fn random_namespace() -> &'static ccdi_models::Namespace {
+    let mut rng = thread_rng();
+    let index_dist = Uniform::from(0..NAMESPACES.len());
+    let index = index_dist.sample(&mut rng);
+
+    // SAFETY: this is manually crafted to always return an element.
+    let (_, namespace) = NAMESPACES.get_index(index).unwrap();
+    namespace
 }
 
 /// Configures the [`ServiceConfig`] with the namespace paths.
@@ -70,12 +117,16 @@ pub async fn namespace_index() -> impl Responder {
 /// Gets the namespace matching the provided name (if it exists).
 #[utoipa::path(
     get,
-    path = "/namespace/{name}",
+    path = "/namespace/{organization}/{namespace}",
     params(
         (
-            "name" = String,
-            description = "The name of the namespace."
-        )
+            "organization" = String,
+            description = "The organization of the namespace.",
+        ),
+        (
+            "namespace" = String,
+            description = "The name of the namespace.",
+        ),
     ),
     tag = "Namespace",
     responses(
@@ -88,18 +139,21 @@ pub async fn namespace_index() -> impl Responder {
         )
     )
 )]
-#[get("/namespace/{name}")]
-pub async fn namespace_show(path: Path<String>) -> impl Responder {
-    let name = path.into_inner();
+#[get("/namespace/{organization}/{namespace}")]
+pub async fn namespace_show(path: Path<(String, String)>) -> impl Responder {
+    let (organization, namespace_name) = path.into_inner();
 
     NAMESPACES
         .iter()
-        .find(|(_, namespace)| namespace.name() == name)
+        .find(|(_, namespace)| {
+            namespace.id().organization().as_str() == organization
+                && namespace.id().name().as_str() == namespace_name
+        })
         .map(|(_, namespace)| HttpResponse::Ok().json(Namespace::from(namespace.clone())))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "Namespace with name '{}'",
-                name
+                "Namespace with organization '{}' and name '{}'",
+                organization, namespace_name
             ))))
         })
 }

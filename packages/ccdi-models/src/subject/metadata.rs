@@ -1,6 +1,9 @@
 //! Metadata for a [`Subject`](super::Subject).
 
 use ordered_float::OrderedFloat;
+use rand::distributions::Alphanumeric;
+use rand::thread_rng;
+use rand::Rng as _;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -31,12 +34,12 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::subject::Ethnicity, nullable = true)]
     ethnicity: Option<field::unowned::subject::Ethnicity>,
 
-    /// The identifiers for the subject.
+    /// The alternate identifiers for the subject.
     ///
     /// Note that this list of identifiers *must* include the main identifier
     /// for the [`Subject`].
-    #[schema(value_type = Vec<field::owned::subject::Identifier>, nullable = true)]
-    identifiers: Option<Vec<field::owned::subject::Identifier>>,
+    #[schema(value_type = Vec<field::unowned::subject::Identifier>, nullable = true)]
+    identifiers: Option<Vec<field::unowned::subject::Identifier>>,
 
     /// The vital status of the subject.
     #[schema(value_type = field::unowned::subject::VitalStatus, nullable = true)]
@@ -48,7 +51,7 @@ pub struct Metadata {
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
-    #[serde(skip_serializing_if = "fields::Unharmonized::is_empty")]
+    #[serde(default, skip_serializing_if = "fields::Unharmonized::is_empty")]
     unharmonized: fields::Unharmonized,
 }
 
@@ -138,32 +141,48 @@ impl Metadata {
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::metadata::field::owned::subject::Identifier;
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::metadata::Builder;
+    /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let metadata = Builder::default()
-    ///     .append_identifier(Identifier::new(
-    ///         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
-    ///         None,
-    ///         None,
-    ///         Some(true),
-    ///     ))
-    ///     .build();
-    ///
-    /// assert_eq!(
-    ///     metadata.identifiers(),
-    ///     Some(&vec![Identifier::new(
-    ///         cde::v1::subject::Identifier::parse("organization:Name", ":").unwrap(),
-    ///         None,
-    ///         None,
-    ///         Some(true)
-    ///     )])
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization",
     /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    /// );
+    ///
+    /// let subject_id = models::subject::identifier::referenced::Identifier::Linked(
+    ///     models::subject::identifier::linked::Identifier::new(
+    ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName001"),
+    ///         "https://ccdi.example.com/api/v0"
+    ///             .parse::<models::Url>()
+    ///             .unwrap(),
+    ///     ),
+    /// );
+    ///
+    /// let field = Identifier::new(subject_id, None, None);
+    /// let metadata = Builder::default().append_identifier(field.clone()).build();
+    ///
+    /// assert_eq!(metadata.identifiers(), Some(&vec![field]));
     /// ```
-    pub fn identifiers(&self) -> Option<&Vec<field::owned::subject::Identifier>> {
+    pub fn identifiers(&self) -> Option<&Vec<field::unowned::subject::Identifier>> {
         self.identifiers.as_ref()
     }
 
@@ -281,41 +300,74 @@ impl Metadata {
         &self.unharmonized
     }
 
-    /// Generates a random [`Metadata`] based on a particular
-    /// [`Identifier`](ccdi_cde::v1::subject::Identifier).
+    /// Generates a random [`Metadata`] based on a particular [`Identifier`].
     ///
     /// # Examples
     ///
     /// ```
-    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     ///
-    /// use models::subject::Identifier;
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::subject::Metadata;
     /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
     ///
-    /// let identifier = Identifier::new(&namespace, "Name");
-    /// let metadata = Metadata::random(identifier);
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
+    /// let metadata = Metadata::random(subject_id);
     /// ```
     pub fn random(identifier: Identifier) -> Metadata {
+        let mut rng = thread_rng();
+
         Metadata {
             sex: Some(rand::random()),
             race: Some(vec![rand::random()]),
             ethnicity: Some(rand::random()),
-            identifiers: Some(vec![field::owned::subject::Identifier::new(
-                identifier.into_inner(),
-                None,
-                None,
-                Some(true),
-            )]),
+            identifiers: Some(vec![
+                field::unowned::subject::Identifier::new(
+                    crate::subject::identifier::referenced::Identifier::Linked(
+                        crate::subject::identifier::linked::Identifier::new(
+                            identifier.clone(),
+                            "https://ccdi.example.com/api/v0"
+                                .parse::<crate::Url>()
+                                .unwrap(),
+                        ),
+                    ),
+                    None,
+                    None,
+                ),
+                field::unowned::subject::Identifier::new(
+                    crate::subject::identifier::referenced::Identifier::Unlinked(
+                        crate::subject::identifier::unlinked::Identifier::from(format!(
+                            "Subject-{}",
+                            (0..8)
+                                .map(|_| rng.sample(Alphanumeric).to_ascii_uppercase() as char)
+                                .collect::<String>()
+                        )),
+                    ),
+                    None,
+                    None,
+                ),
+            ]),
             vital_status: Some(rand::random()),
             age_at_vital_status: Some(field::unowned::subject::AgeAtVitalStatus::new(
                 crate::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),

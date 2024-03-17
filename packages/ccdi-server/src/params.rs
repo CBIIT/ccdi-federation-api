@@ -2,5 +2,8 @@
 
 pub mod filter;
 pub mod pagination;
+mod partition;
 
-pub use pagination::Pagination;
+pub use pagination::PaginationParams;
+pub use partition::PartitionParams;
+pub use partition::Partitionable;

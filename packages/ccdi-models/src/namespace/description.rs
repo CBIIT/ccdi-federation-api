@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use std::str::FromStr;
 
 use serde::Deserialize;
@@ -40,12 +41,39 @@ type Result<T> = std::result::Result<T, Error>;
 /// A description of a namespace.
 ///
 /// This description cannot exceed 2048 characters.
-#[derive(Clone, Debug, Deserialize, Serialize, ToSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, ToSchema)]
 #[schema(
     as = models::namespace::Description,
     example = "A namespace owned by Example Organization."
 )]
 pub struct Description(String);
+
+impl Description {
+    /// Creates a new [`Description`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::namespace::Description;
+    ///
+    /// let description = Description::try_new("Here is a description").unwrap();
+    /// ```
+    pub fn try_new(value: impl Into<String>) -> Result<Self> {
+        let value = value.into();
+
+        if value.is_empty() {
+            return Err(Error::Empty);
+        }
+
+        if value.len() > MAX_CHARACTERS {
+            return Err(Error::TooLong(value.len()));
+        }
+
+        Ok(Self(value))
+    }
+}
 
 impl std::fmt::Display for Description {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -57,7 +85,7 @@ impl TryFrom<String> for Description {
     type Error = Error;
 
     fn try_from(value: String) -> std::result::Result<Self, Self::Error> {
-        parse(value)
+        Self::try_new(value)
     }
 }
 
@@ -65,20 +93,16 @@ impl FromStr for Description {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        parse(s.to_string())
+        Self::try_new(s.to_string())
     }
 }
 
-pub fn parse(value: String) -> Result<Description> {
-    if value.is_empty() {
-        return Err(Error::Empty);
-    }
+impl Deref for Description {
+    type Target = String;
 
-    if value.len() > MAX_CHARACTERS {
-        return Err(Error::TooLong(value.len()));
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
-
-    Ok(Description(value))
 }
 
 #[cfg(test)]
@@ -91,7 +115,7 @@ mod tests {
         let description = "Hello, world!".parse::<Description>()?;
         assert_eq!(description.to_string(), "Hello, world!");
 
-        let description = Description::try_from(String::from("Hello, world!"))?;
+        let description = Description::try_new("Hello, world!")?;
         assert_eq!(description.to_string(), "Hello, world!");
 
         Ok(())

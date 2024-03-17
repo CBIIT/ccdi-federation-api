@@ -1,5 +1,6 @@
 use models::metadata::field;
 use models::metadata::fields;
+use server::params;
 use utoipa::Modify;
 use utoipa::OpenApi;
 
@@ -20,7 +21,7 @@ federated pediatric cancer within the broader community. The goal of the API
 is to support identification of pediatric cancer samples of interest via a
 variety of query parameters.
 
-## Definitions
+### Definitions
 
 **Authentication** is defined as being identified in any manner.
 Authentication, by definition, requires prior registration of identifiable
@@ -38,22 +39,66 @@ permission to a dataset via an explicit decision from a data access committee
 is considered authorization while making data available after simply completing
 a universally accessible account registration process is not.
 
-## Security Requirements
+**Primary Entities** are defined as classes of information for which the API
+specification was created to share. In other words, the sharing of primary 
+entities is the most important goal of the specification.
+
+**Supporting Entities** are defined as classes of information that are necessary
+to share alongside to make sense of primary entities. Sharing information on
+these entities is not a top-level goal of the API specification.
+
+### Security Requirements
 
 All API endpoints must be served over HTTPS (port 443) with a certificate signed
 by a recognized certificate authority. In particular, self-signed certificates
 are not permitted. Further, while an API _may_ be available over HTTP (port 80),
-HTTPS must always be available. We highly recommend you redirect HTTP to HTTPS
-rather than serve your API on two separate ports.
+HTTPS must always be available. We highly recommend servers redirect HTTP to
+HTTPS rather than serve your API on two separate ports.
 
-## Invalid Routes
+### Invalid Routes
 
 All responses that do not match an endpoint below should return a Not Found 
 (`404`) response. The body of this response should be the `responses.Errors` 
 JSON object with one `responses.error.Kind` where the `Kind` matches the 
 `InvalidRoute` error.
 
-## Accessing External Files
+## Primary Entities
+
+Primary entities represent information that this API specification was created
+to share as a top-level goal. Primary entities have a common API surface and,
+generally, will work relatively similar to one another within the specification.
+All primary entities are referred to by their _identifier_, which is the
+combination of (a) a namespace identifier pointing to the namespace that owns
+this entity along with (b) a name for the entity.
+
+The following entities are considered primary entities within the API
+specification.
+
+- Subjects
+- Samples
+- Files
+
+
+In addition to merely existing in a common level of prominence within the API,
+primary entities have a hierarchical structure following these rules.
+
+- Subjects are the highest-level primary entity within the API specification.
+- Samples **must** be associated with one and only one subject.
+- Files **must** be associated with one or more samples.
+
+### Subjects
+
+TODO
+
+### Samples
+
+TODO
+
+### Files
+
+TODO
+
+#### Accessing External Files
 
 A **gateway** notifies end users of resources that exist outside of the API
 along with the conditions under which those resources may or may not be
@@ -89,7 +134,7 @@ its purpose is to describe where a resource originated from and to communicate
 that the resource is otherwise unavailable. Various closed gateway statuses are
 provided to indicate if and when the resources will become available.
 
-### Examples
+##### Examples
 
 Below are some examples using pseudocode to illustrate these concepts. Note
 that some fields have been left out of the definitions for brevity.
@@ -110,7 +155,54 @@ that some fields have been left out of the definitions for brevity.
   \"https://example.com/data\", instructions: \"Filter data by ...\" } }`
   communicates \"the data is available to anyone who registers an account at
   https://example.com/data, but manual filtering (by following the provided
-  instructions) is required to select the exact subset of desired data\".",
+  instructions) is required to select the exact subset of desired data\".
+
+## Supporting Entities
+
+Supporting entities provide supporting information necessary to make sense of
+the primary entities supported by the API. Supporting entities are not, in and
+of themselves, a primary sharing goal for the API.
+
+The following entities are considered supporting entities within the API
+specification.
+
+- Organizations
+- Namespaces
+
+### Organizations
+
+Organizations are self-reported, non-authoritative descriptions of organizations
+that are sharing data through an API endpoint. There is no formal definition or
+criteria for what constitutes an organization in this context. Some examples of
+what an organization might represent include (but are not limited to) 
+for-profit companies, non-profit organizations, consortiums, informal bodies, or
+any combination of these concepts.
+
+### Namespaces
+
+Namespaces represent top-level governance groupings of primary entities within
+the CCDI Federation API. Each namespace is owned by an existing
+organization entity, contains information about the governance unit, and 
+provides information on how to contact the body that governs this namespace.
+
+### Assigning Organizations and Namespaces
+
+When assigning namespaces within a source server, one should consider making a
+namespace entity for each grouping of primary entities that are governed under
+a common model. 
+
+Here are some common situations followed by instructive examples of how you
+partition primary entities to a set of namespaces under that situation:
+
+- If all of the primary entities within your source server are governed by a
+  singular governing body (say, a single data access committee), then you may
+  only need one namespace for all of the primaries entities within your server.
+- If you have multiple data access committees governing different groupings of
+  primary entities from the same institution, you should create multiple 
+  namespaces that are backed by a common organization.
+- If your server serves data from various governing bodies spread across
+  multiple, independent organizations, you should create multiple namespaces
+  backed by multiple organizations.",
         contact(
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
@@ -158,7 +250,11 @@ that some fields have been left out of the definitions for brevity.
         ),
         (
             name = "Namespace",
-            description = "List and describe namespaces supported by this server."
+            description = "List and describe namespaces known by this server."
+        ),
+        (
+            name = "Organization",
+            description = "List and describe organizations known by this server."
         ),
         (
             name = "Info",
@@ -190,6 +286,10 @@ that some fields have been left out of the definitions for brevity.
         server::routes::namespace::namespace_index,
         server::routes::namespace::namespace_show,
 
+        // Organizations.
+        server::routes::organization::organization_index,
+        server::routes::organization::organization_show,
+
         // Information.
         server::routes::info::info_index,
     ),
@@ -198,7 +298,7 @@ that some fields have been left out of the definitions for brevity.
         cde::v1::subject::Race,
         cde::v1::subject::Sex,
         cde::v2::subject::Ethnicity,
-        cde::v1::subject::Identifier,
+        cde::v1::subject::Name,
         cde::v1::subject::VitalStatus,
         models::subject::metadata::AgeAtVitalStatus,
 
@@ -211,7 +311,7 @@ that some fields have been left out of the definitions for brevity.
         models::sample::metadata::AgeAtCollection,
 
         // Harmonized file metadata elements.
-        cde::v1::file::Identifier,
+        cde::v1::file::Name,
         cde::v1::file::Type,
         cde::v1::file::Size,
         models::file::metadata::Checksums,
@@ -222,7 +322,7 @@ that some fields have been left out of the definitions for brevity.
         field::unowned::subject::Sex,
         field::unowned::subject::Race,
         field::unowned::subject::Ethnicity,
-        field::owned::subject::Identifier,
+        field::unowned::subject::Identifier,
         field::unowned::subject::VitalStatus,
         field::unowned::subject::AgeAtVitalStatus,
 
@@ -233,6 +333,7 @@ that some fields have been left out of the definitions for brevity.
         field::unowned::sample::TumorClassification,
         field::unowned::sample::TumorTissueMorphology,
         field::unowned::sample::AgeAtCollection,
+        field::unowned::sample::Identifier,
 
         // Harmonized file fields.
         field::unowned::file::Type,
@@ -248,12 +349,18 @@ that some fields have been left out of the definitions for brevity.
 
         // Subject models.
         models::Subject,
+        models::subject::identifier::referenced::Identifier,
+        models::subject::identifier::linked::Identifier,
+        models::subject::identifier::unlinked::Identifier,
         models::subject::Identifier,
         models::subject::Kind,
         models::subject::Metadata,
 
         // Sample models.
         models::Sample,
+        models::sample::identifier::referenced::Identifier,
+        models::sample::identifier::linked::Identifier,
+        models::sample::identifier::unlinked::Identifier,
         models::sample::Identifier,
         models::sample::Metadata,
 
@@ -278,11 +385,19 @@ that some fields have been left out of the definitions for brevity.
 
         // Namespace models.
         models::Namespace,
-        models::namespace::Name,
+        models::namespace::Identifier,
         models::namespace::Description,
+
+        // Organization models.
+        models::Organization,
+        models::organization::Identifier,
+        models::organization::Name,
 
         // Url model.
         models::Url,
+
+        // Params.
+        params::Partitionable,
 
         // General responses.
         responses::Errors,
@@ -298,12 +413,18 @@ that some fields have been left out of the definitions for brevity.
         // Subject responses.
         responses::Subject,
         responses::Subjects,
-        responses::by::count::Subjects,
+        responses::by::count::subject::Results,
+        responses::by::count::subject::NamespacePartitionedResult,
+        responses::by::count::subject::NamespacePartitionedResults,
+        responses::by::count::subject::Response,
 
         // Sample responses.
         responses::Sample,
         responses::Samples,
-        responses::by::count::Samples,
+        responses::by::count::sample::Results,
+        responses::by::count::sample::NamespacePartitionedResult,
+        responses::by::count::sample::NamespacePartitionedResults,
+        responses::by::count::sample::Response,
 
         // File responses.
         responses::Files,
@@ -318,7 +439,11 @@ that some fields have been left out of the definitions for brevity.
         responses::Namespace,
         responses::Namespaces,
 
-        // Namespace responses.
+        // Organization responses.
+        responses::Organization,
+        responses::Organizations,
+
+        // Information responses.
         responses::Information,
         responses::info::api::Information,
         responses::info::data::Information,

@@ -33,41 +33,51 @@ where
 ///
 /// use models::metadata::field::unowned::subject::Race;
 /// use models::metadata::field::unowned::subject::Sex;
+/// use models::namespace;
+/// use models::organization;
 /// use models::subject::metadata::Builder;
 /// use models::subject::Identifier;
 /// use models::subject::Kind;
 /// use models::Namespace;
+/// use models::Organization;
 /// use models::Subject;
 /// use server::filter::filter;
 /// use server::params::filter::Subject as SubjectFilterParams;
 ///
-/// let namespace = Namespace::try_new(
-///     "organization",
+/// let organization = Organization::new(
+///     "example-organization"
+///         .parse::<organization::Identifier>()
+///         .unwrap(),
 ///     "Example Organization",
+/// );
+///
+/// let namespace = Namespace::new(
+///     namespace::Identifier::new(
+///         organization.id().clone(),
+///         "ExampleNamespace"
+///             .parse::<namespace::identifier::Name>()
+///             .unwrap(),
+///     ),
 ///     "support@example.com",
 ///     None,
-/// )
-/// .unwrap();
+/// );
 ///
 /// let subjects = vec![
 ///     // A subject with no metadata.
 ///     Subject::new(
-///         Identifier::new(&namespace, "SubjectName001"),
-///         String::from("SubjectName001"),
+///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName001"),
 ///         Kind::Participant,
-///         Some(Builder::default().build()),
+///         None,
 ///     ),
 ///     // A subject with metadata but no specified sex.
 ///     Subject::new(
-///         Identifier::new(&namespace, "SubjectName002"),
-///         String::from("SubjectName002"),
+///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName002"),
 ///         Kind::Participant,
 ///         Some(Builder::default().build()),
 ///     ),
 ///     // A subject with sex 'F'.
 ///     Subject::new(
-///         Identifier::new(&namespace, "SubjectName003"),
-///         String::from("SubjectName003"),
+///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName003"),
 ///         Kind::Participant,
 ///         Some(
 ///             Builder::default()
@@ -77,8 +87,7 @@ where
 ///     ),
 ///     // A subject with sex 'F' and race 'Asian'.
 ///     Subject::new(
-///         Identifier::new(&namespace, "SubjectName004"),
-///         String::from("SubjectName004"),
+///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName004"),
 ///         Kind::Participant,
 ///         Some(
 ///             Builder::default()
@@ -109,8 +118,14 @@ where
 /// );
 ///
 /// assert_eq!(results.len(), 2);
-/// assert_eq!(results.first().unwrap().name(), "SubjectName003");
-/// assert_eq!(results.last().unwrap().name(), "SubjectName004");
+/// assert_eq!(
+///     results.first().unwrap().id().name().as_str(),
+///     "SubjectName003"
+/// );
+/// assert_eq!(
+///     results.last().unwrap().id().name().as_str(),
+///     "SubjectName004"
+/// );
 ///
 /// // Filtering of subjects with "F" in sex field and "Asi" in race field.
 /// let mut results = filter::<Subject, SubjectFilterParams>(
@@ -126,7 +141,10 @@ where
 /// );
 ///
 /// assert_eq!(results.len(), 1);
-/// assert_eq!(results.pop().unwrap().name(), "SubjectName004");
+/// assert_eq!(
+///     results.pop().unwrap().id().name().as_str(),
+///     "SubjectName004"
+/// );
 ///
 /// // Filtering of subjects is case-sensitive.
 /// let mut results = filter::<Subject, SubjectFilterParams>(

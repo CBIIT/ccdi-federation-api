@@ -20,7 +20,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v1::subject::Sex::description(),
         cde::v1::subject::Race::description(),
         cde::v2::subject::Ethnicity::description(),
-        cde::v1::subject::Identifier::description(),
+        cde::v1::subject::Name::description(),
         cde::v1::subject::VitalStatus::description(),
         crate::subject::metadata::AgeAtVitalStatus::description(),
     ]
@@ -37,10 +37,9 @@ impl Description for cde::v1::subject::Sex {
             Kind::Enum,
             String::from("sex"),
             entity.description().to_string(),
-            Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#sex",
-            )
-            .unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#sex"
+                .parse::<Url>()
+                .unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),
@@ -61,10 +60,9 @@ impl Description for cde::v1::subject::Race {
             Kind::Enum,
             String::from("race"),
             entity.description().to_string(),
-            Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#race",
-            )
-            .unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#race"
+                .parse::<Url>()
+                .unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),
@@ -85,14 +83,19 @@ impl Description for cde::v2::subject::Ethnicity {
             Kind::Enum,
             String::from("ethnicity"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#ethnicity").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#ethnicity"
+                .parse::<Url>()
+                .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }
 }
 
-impl Description for cde::v1::subject::Identifier {
+impl Description for cde::v1::subject::Name {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.
@@ -103,8 +106,13 @@ impl Description for cde::v1::subject::Identifier {
             Kind::Struct,
             String::from("identifiers"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#identifiers").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#identifiers"
+                .parse::<Url>()
+                .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }
@@ -121,7 +129,7 @@ impl Description for cde::v1::subject::VitalStatus {
             Kind::Enum,
             String::from("vital_status"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#vital_status").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#vital_status".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
             members,
         ))
@@ -139,7 +147,7 @@ impl description::r#trait::Description for crate::subject::metadata::AgeAtVitalS
             Kind::Struct,
             String::from("age_at_vital_status"),
             description,
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_vital_status").unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_vital_status".parse::<Url>().unwrap(),
             None,
             None,
         ))

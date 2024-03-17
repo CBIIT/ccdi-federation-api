@@ -19,6 +19,7 @@ use itertools::Itertools as _;
 use log::info;
 use log::LevelFilter;
 use server::routes::file;
+use server::routes::organization;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -98,6 +99,8 @@ pub enum ResponseType {
     Files,
     Namespaces,
     Namespace,
+    Organizations,
+    Organization,
     Summary,
     Information,
     FieldDescriptions,
@@ -116,7 +119,8 @@ fn parse_response(
             serde_json::from_str::<server::responses::Sample>(text).map(|_| ())?;
         }
         ResponseType::SamplesByCount => {
-            serde_json::from_str::<server::responses::by::count::Samples>(text).map(|_| ())?;
+            serde_json::from_str::<server::responses::by::count::sample::Response>(text)
+                .map(|_| ())?;
         }
         ResponseType::Subjects => {
             serde_json::from_str::<server::responses::Subjects>(text).map(|_| ())?;
@@ -125,7 +129,8 @@ fn parse_response(
             serde_json::from_str::<server::responses::Subject>(text).map(|_| ())?;
         }
         ResponseType::SubjectsByCount => {
-            serde_json::from_str::<server::responses::by::count::Subjects>(text).map(|_| ())?;
+            serde_json::from_str::<server::responses::by::count::subject::Results>(text)
+                .map(|_| ())?;
         }
         ResponseType::Files => {
             serde_json::from_str::<server::responses::Files>(text).map(|_| ())?;
@@ -135,6 +140,12 @@ fn parse_response(
         }
         ResponseType::Namespace => {
             serde_json::from_str::<server::responses::Namespace>(text).map(|_| ())?;
+        }
+        ResponseType::Organizations => {
+            serde_json::from_str::<server::responses::Organizations>(text).map(|_| ())?;
+        }
+        ResponseType::Organization => {
+            serde_json::from_str::<server::responses::Organization>(text).map(|_| ())?;
         }
         ResponseType::Summary => {
             serde_json::from_str::<server::responses::Summary>(text).map(|_| ())?;
@@ -252,12 +263,19 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
 
             rt::System::new().block_on(
                 HttpServer::new(move || {
-                    let subjects = Data::new(subject::Store::random(args.number_of_subjects));
-                    let samples = Data::new(sample::Store::random(args.number_of_samples));
-                    let files = Data::new(file::Store::random(
-                        args.number_of_files,
+                    let subjects = subject::Store::random(args.number_of_subjects);
+
+                    let samples = sample::Store::random(
                         args.number_of_samples,
-                    ));
+                        subjects.subjects.lock().unwrap(),
+                    );
+
+                    let files =
+                        file::Store::random(args.number_of_files, samples.samples.lock().unwrap());
+
+                    let subjects = Data::new(subjects);
+                    let samples = Data::new(samples);
+                    let files = Data::new(files);
 
                     App::new()
                         .app_data(QueryConfig::default().error_handler(|err, _| {
@@ -278,6 +296,7 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                         .configure(file::configure(files))
                         .configure(metadata::configure())
                         .configure(namespace::configure())
+                        .configure(organization::configure())
                         .configure(info::configure())
                         .service(
                             SwaggerUi::new("/swagger-ui/{_:.*}")

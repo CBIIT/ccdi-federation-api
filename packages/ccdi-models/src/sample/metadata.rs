@@ -1,12 +1,16 @@
 //! Metadata for a [`Sample`](super::Sample).
 
 use ordered_float::OrderedFloat;
+use rand::distributions::Alphanumeric;
+use rand::thread_rng;
+use rand::Rng as _;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::metadata::field;
 use crate::metadata::fields;
+use crate::sample::Identifier;
 
 mod age_at_collection;
 mod age_at_diagnosis;
@@ -45,9 +49,16 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::AgeAtCollection, nullable = true)]
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
+    /// The alternate identifiers for the sample.
+    ///
+    /// Note that this list of identifiers *must* include the main identifier
+    /// for the [`Sample`].
+    #[schema(value_type = Vec<field::unowned::sample::Identifier>, nullable = true)]
+    identifiers: Option<Vec<field::unowned::sample::Identifier>>,
+
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
-    #[serde(skip_serializing_if = "fields::Unharmonized::is_empty")]
+    #[serde(default, skip_serializing_if = "fields::Unharmonized::is_empty")]
     unharmonized: fields::Unharmonized,
 }
 
@@ -246,6 +257,56 @@ impl Metadata {
         self.age_at_collection.as_ref()
     }
 
+    /// Gets the harmonized identifier(s) for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
+    /// use models::Namespace;
+    /// use models::Organization;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    /// );
+    ///
+    /// let sample_id = models::sample::identifier::referenced::Identifier::Linked(
+    ///     models::sample::identifier::linked::Identifier::new(
+    ///         models::sample::Identifier::new(namespace.id().clone(), "SampleName001"),
+    ///         "https://ccdi.example.com/api/v0"
+    ///             .parse::<models::Url>()
+    ///             .unwrap(),
+    ///     ),
+    /// );
+    ///
+    /// let field = Identifier::new(sample_id, None, None);
+    /// let metadata = Builder::default().append_identifier(field.clone()).build();
+    ///
+    /// assert_eq!(metadata.identifiers(), Some(&vec![field]));
+    /// ```
+    pub fn identifiers(&self) -> Option<&Vec<field::unowned::sample::Identifier>> {
+        self.identifiers.as_ref()
+    }
+
     /// Gets the unharmonized fields for the [`Metadata`].
     ///
     /// # Examples
@@ -303,11 +364,38 @@ impl Metadata {
     /// ```
     /// use ccdi_models as models;
     ///
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
     /// use models::sample::Metadata;
+    /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let metadata = Metadata::random();
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    /// );
+    ///
+    /// let sample_id = models::sample::Identifier::new(namespace.id().clone(), "SampleName001");
+    ///
+    /// let metadata = Metadata::random(sample_id);
     /// ```
-    pub fn random() -> Metadata {
+    pub fn random(identifier: Identifier) -> Metadata {
+        let mut rng = thread_rng();
+
         Metadata {
             age_at_diagnosis: Some(field::unowned::sample::AgeAtDiagnosis::new(
                 crate::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
@@ -328,6 +416,32 @@ impl Metadata {
                 None,
                 None,
             )),
+            identifiers: Some(vec![
+                field::unowned::sample::Identifier::new(
+                    crate::sample::identifier::referenced::Identifier::Linked(
+                        crate::sample::identifier::linked::Identifier::new(
+                            identifier.clone(),
+                            "https://ccdi.example.com/api/v0"
+                                .parse::<crate::Url>()
+                                .unwrap(),
+                        ),
+                    ),
+                    None,
+                    None,
+                ),
+                field::unowned::sample::Identifier::new(
+                    crate::sample::identifier::referenced::Identifier::Unlinked(
+                        crate::sample::identifier::unlinked::Identifier::from(format!(
+                            "Sample-{}",
+                            (0..8)
+                                .map(|_| rng.sample(Alphanumeric).to_ascii_uppercase() as char)
+                                .collect::<String>()
+                        )),
+                    ),
+                    None,
+                    None,
+                ),
+            ]),
             unharmonized: Default::default(),
         }
     }
@@ -342,7 +456,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null}"
+            "{\"age_at_diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"identifiers\":null}"
         );
     }
 }

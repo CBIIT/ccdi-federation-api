@@ -29,39 +29,59 @@ impl Files {
     /// # Examples
     ///
     /// ```
+    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
     /// use models::file::Identifier;
     /// use models::file::Metadata;
     /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::gateway::Named;
+    /// use models::namespace;
+    /// use models::organization;
     /// use models::sample;
     /// use models::File;
+    /// use models::Gateway;
     /// use models::Namespace;
+    /// use models::Organization;
+    /// use models::Url;
     /// use nonempty::NonEmpty;
     /// use server::responses::file::data::Files;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
     /// let files = Files::from((
     ///     vec![
     ///         File::new(
-    ///             Identifier::new(&namespace, "Foo.txt"),
-    ///             NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///             Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///             NonEmpty::new(sample_id.clone()),
     ///             NonEmpty::new(AnonymousOrReference::Reference {
     ///                 gateway: String::from("name"),
     ///             }),
     ///             Some(Metadata::random()),
     ///         ),
     ///         File::new(
-    ///             Identifier::new(&namespace, "Bar.txt"),
-    ///             NonEmpty::new(sample::Identifier::new(&namespace, "SampleName001")),
+    ///             Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Bar.txt")),
+    ///             NonEmpty::new(sample_id),
     ///             NonEmpty::new(AnonymousOrReference::Reference {
     ///                 gateway: String::from("name"),
     ///             }),

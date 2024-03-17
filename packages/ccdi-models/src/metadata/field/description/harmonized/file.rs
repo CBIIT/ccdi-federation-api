@@ -32,10 +32,9 @@ impl description::r#trait::Description for cde::v1::file::Type {
             Kind::Enum,
             String::from("type"),
             entity.description().to_string(),
-            Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#type",
-            )
-            .unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#type"
+                .parse::<Url>()
+                .unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),
@@ -56,10 +55,9 @@ impl description::r#trait::Description for cde::v1::file::Size {
             Kind::Struct,
             String::from("size"),
             entity.description().to_string(),
-            Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#size",
-            )
-            .unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#size"
+                .parse::<Url>()
+                .unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),
@@ -80,10 +78,9 @@ impl description::r#trait::Description for cde::v1::file::checksum::MD5 {
             Kind::Struct,
             String::from("checksums.md5"),
             entity.description().to_string(),
-            Url::try_from(
-                "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#checksumsmd5",
-            )
-            .unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#checksumsmd5"
+                .parse::<Url>()
+                .unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),
@@ -104,8 +101,13 @@ impl description::r#trait::Description for cde::v1::file::Description {
             Kind::Struct,
             String::from("description"),
             entity.description().to_string(),
-            Url::try_from("https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#description").unwrap(),
-            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/File-Metadata-Fields#description"
+                .parse::<Url>()
+                .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }

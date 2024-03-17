@@ -219,6 +219,43 @@ pub mod sample {
         cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
         ccdi_cde as cde
     );
+
+    unowned_field!(
+        Identifier,
+        field::unowned::sample::Identifier,
+        crate::sample::identifier::referenced::Identifier,
+        models::sample::identifier::referenced::Identifier,
+        models::sample::identifier::referenced::Identifier::Linked(
+            models::sample::identifier::linked::Identifier::new(
+                models::sample::Identifier::new(
+                    models::Namespace::new(
+                        models::namespace::Identifier::new(
+                            models::Organization::new(
+                                "example-organization"
+                                    .parse::<models::organization::Identifier>()
+                                    .unwrap(),
+                                "Example Organization",
+                            )
+                            .id()
+                            .clone(),
+                            "ExampleNamespace"
+                                .parse::<models::namespace::identifier::Name>()
+                                .unwrap(),
+                        ),
+                        "support@example.com",
+                        None,
+                    )
+                    .id()
+                    .clone(),
+                    "SampleName001"
+                ),
+                "https://ccdi.example.com/api/v0"
+                    .parse::<models::Url>()
+                    .unwrap()
+            )
+        ),
+        ccdi_cde as cde
+    );
 }
 
 pub mod subject {
@@ -268,6 +305,43 @@ pub mod subject {
         cde::v1::subject::VitalStatus,
         cde::v1::subject::VitalStatus,
         cde::v1::subject::VitalStatus::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        Identifier,
+        field::unowned::subject::Identifier,
+        crate::subject::identifier::referenced::Identifier,
+        models::subject::identifier::referenced::Identifier,
+        models::subject::identifier::referenced::Identifier::Linked(
+            models::subject::identifier::linked::Identifier::new(
+                models::subject::Identifier::new(
+                    models::Namespace::new(
+                        models::namespace::Identifier::new(
+                            models::Organization::new(
+                                "example-organization"
+                                    .parse::<models::organization::Identifier>()
+                                    .unwrap(),
+                                "Example Organization",
+                            )
+                            .id()
+                            .clone(),
+                            "ExampleNamespace"
+                                .parse::<models::namespace::identifier::Name>()
+                                .unwrap(),
+                        ),
+                        "support@example.com",
+                        None,
+                    )
+                    .id()
+                    .clone(),
+                    "SubjectName001"
+                ),
+                "https://ccdi.example.com/api/v0"
+                    .parse::<models::Url>()
+                    .unwrap()
+            )
+        ),
         ccdi_cde as cde
     );
 }

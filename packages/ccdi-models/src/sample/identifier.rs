@@ -1,16 +1,26 @@
+//! Identifiers for samples.
+
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use crate::Namespace;
+pub mod linked;
+pub mod referenced;
+pub mod unlinked;
 
-/// The primary name and namespace for a sample used within the source server.
+use crate::namespace;
+
+/// An identifier for a [`Sample`](crate::Sample).
+///
+/// [`Identifiers`](Identifier) serve two main purposes:
+///
+/// 1. They represent the primary identifier for a [`Sample`](crate::Sample).
+/// 2. They extended when referenced as [linked identifiers](linked::Identifier).
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, ToSchema)]
 #[schema(as = models::sample::Identifier)]
 pub struct Identifier {
-    /// The namespace of the identifier.
-    #[schema(example = "organization")]
-    namespace: String,
+    #[schema(value_type = models::namespace::Identifier)]
+    namespace: namespace::Identifier,
 
     /// The name of the identifier.
     #[schema(example = "SampleName001")]
@@ -25,24 +35,42 @@ impl Identifier {
     /// ```
     /// use ccdi_models as models;
     ///
-    /// use models::sample::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
     /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
     ///
-    /// let identifier = Identifier::new(&namespace, "Sample");
-    /// assert_eq!(identifier.namespace(), &String::from("organization"));
-    /// assert_eq!(identifier.name(), &String::from("Sample"));
+    /// let sample_id = models::sample::Identifier::new(namespace.id().clone(), "SampleName001");
+    ///
+    /// assert_eq!(
+    ///     sample_id.namespace().organization().as_str(),
+    ///     "example-organization"
+    /// );
+    /// assert_eq!(sample_id.namespace().name().as_str(), "ExampleNamespace");
+    /// assert_eq!(sample_id.name(), "SampleName001");
     /// ```
-    pub fn new(namespace: &Namespace, name: impl Into<String>) -> Self {
+    pub fn new(namespace: namespace::Identifier, name: impl Into<String>) -> Self {
         Self {
-            namespace: namespace.name().to_string(),
+            namespace,
             name: name.into(),
         }
     }
@@ -54,22 +82,40 @@ impl Identifier {
     /// ```
     /// use ccdi_models as models;
     ///
-    /// use models::sample::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
     /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
     ///
-    /// let identifier = Identifier::new(&namespace, "Name");
-    /// assert_eq!(identifier.namespace(), &String::from("organization"));
+    /// let sample_id = models::sample::Identifier::new(namespace.id().clone(), "SampleName001");
+    ///
+    /// assert_eq!(
+    ///     sample_id.namespace().organization().as_str(),
+    ///     "example-organization"
+    /// );
+    /// assert_eq!(sample_id.namespace().name().as_str(), "ExampleNamespace");
     /// ```
-    pub fn namespace(&self) -> &str {
-        self.namespace.as_str()
+    pub fn namespace(&self) -> &namespace::Identifier {
+        &self.namespace
     }
 
     /// Gets the name for the [`Identifier`] by reference.
@@ -79,19 +125,32 @@ impl Identifier {
     /// ```
     /// use ccdi_models as models;
     ///
-    /// use models::sample::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample::metadata::Builder;
     /// use models::Namespace;
+    /// use models::Organization;
     ///
-    /// let namespace = Namespace::try_new(
-    ///     "organization",
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
     ///     "Example Organization",
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
     ///     "support@example.com",
     ///     None,
-    /// )
-    /// .unwrap();
+    /// );
     ///
-    /// let identifier = Identifier::new(&namespace, "Name");
-    /// assert_eq!(identifier.name(), &String::from("Name"));
+    /// let sample_id = models::sample::Identifier::new(namespace.id().clone(), "SampleName001");
+    /// assert_eq!(sample_id.name(), "SampleName001");
     /// ```
     pub fn name(&self) -> &str {
         self.name.as_str()
