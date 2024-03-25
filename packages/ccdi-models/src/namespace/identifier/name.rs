@@ -56,7 +56,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// anticipated that the field will be displayable as a repository (e.g.,
 /// `example-organization/ExampleNamespace`).
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, ToSchema)]
-#[schema(as = models::organization::Name)]
+#[schema(as = models::namespace::identifier::Name)]
 pub struct Name(String);
 
 impl Name {

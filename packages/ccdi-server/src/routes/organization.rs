@@ -29,7 +29,7 @@ lazy_static! {
             "example-organization",
             models::Organization::new(
          "example-organization".parse::<organization::Identifier>().unwrap(),
-         "Example Organization",
+         "Example Organization".parse::<organization::Name>().unwrap(),
             )
         );
 

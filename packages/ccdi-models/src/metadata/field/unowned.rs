@@ -234,7 +234,9 @@ pub mod sample {
                                 "example-organization"
                                     .parse::<models::organization::Identifier>()
                                     .unwrap(),
-                                "Example Organization",
+                                "Example Organization"
+                                    .parse::<models::organization::Name>()
+                                    .unwrap(),
                             )
                             .id()
                             .clone(),
@@ -322,7 +324,9 @@ pub mod subject {
                                 "example-organization"
                                     .parse::<models::organization::Identifier>()
                                     .unwrap(),
-                                "Example Organization",
+                                "Example Organization"
+                                    .parse::<models::organization::Name>()
+                                    .unwrap(),
                             )
                             .id()
                             .clone(),

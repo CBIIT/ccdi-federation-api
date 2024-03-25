@@ -40,7 +40,7 @@ pub struct Identifier {
     /// NOTE: the regex for this field does not allow for any spaces because it is
     /// anticipated that the field will be displayable as a repository (e.g.,
     /// `example-organization/ExampleNamespace`).
-    #[schema(example = "ExampleNamespace", value_type = models::organization::Name)]
+    #[schema(example = "ExampleNamespace", value_type = models::namespace::identifier::Name)]
     name: Name,
 }
 
@@ -61,7 +61,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -93,7 +95,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -125,7 +129,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let identifier = Identifier::new(

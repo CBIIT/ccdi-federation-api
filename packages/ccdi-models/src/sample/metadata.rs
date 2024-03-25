@@ -275,7 +275,9 @@ impl Metadata {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -375,7 +377,9 @@ impl Metadata {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(

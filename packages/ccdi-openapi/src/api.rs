@@ -385,6 +385,7 @@ partition primary entities to a set of namespaces under that situation:
 
         // Namespace models.
         models::Namespace,
+        models::namespace::identifier::Name,
         models::namespace::Identifier,
         models::namespace::Description,
 
