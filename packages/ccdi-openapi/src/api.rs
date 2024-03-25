@@ -207,7 +207,7 @@ partition primary entities to a set of namespaces under that situation:
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "v0.6.1",
+        version = "v0.7.0",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",

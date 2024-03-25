@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Updates the name of the API to be the "CCDI Data Federation API".
+## [v0.7.0] — 03-25-2024
+
+### Added
+
+- Five new metadata elements were added for files ([#63](https://github.com/CBIIT/ccdi-federation-api/pull/63)).
+  - The identifier for the file (CDE 11284037 v1.00, [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/#52))
+  - The type of file (CDE 11416926 v1.00, [#53](https://github.com/CBIIT/ccdi-federation-api/discussions/#53)).
+  - The size of the file (CDE 11479876 v1.00, [#55](https://github.com/CBIIT/ccdi-federation-api/discussions/#55)).
+  - The md5 checksum of the file (CDE 11556150 v1.00, [#56](https://github.com/CBIIT/ccdi-federation-api/discussions/#56)).
+  - A description of the file (CDE 11280338 v1.00, [#54](https://github.com/CBIIT/ccdi-federation-api/discussions/#54)).
 - A `Namespace` now represents a top-level governance grouping of entities
   within the CCDI Federation API. See the new "Organizations", "Namespaces",
   and "Assigning Organizations and Namespaces" sections in the Swagger
@@ -35,6 +44,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
     - The only current valid value for the `partition` query parameter at the moment is
       `namespace`, though this may be expanded in the future. 
+
+## Changed
+
+- Pagination is now required by default for primary entity root endpoints
+  (`/subject`, `/sample`, and `/file`)
+  ([#59](https://github.com/CBIIT/ccdi-federation-api/pull/59)).
+- HTTPS served on port 443 is now required
+  ([#60](https://github.com/CBIIT/ccdi-federation-api/pull/60)).
+- Updates the name of the API to be the "CCDI Data Federation API".
+
+## Fixed
+
+- The pagination via `Link` headers was fixed
+  (Thanks @e-t-k! [#61](https://github.com/CBIIT/ccdi-federation-api/pull/61)).
 
 ## [v0.6.1] — 01-16-2024
 
@@ -129,7 +152,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
 - Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...HEAD
+[v0.7.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.4.0...v0.5.0
