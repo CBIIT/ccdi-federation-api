@@ -47,7 +47,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -105,7 +107,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -159,7 +163,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -212,7 +218,9 @@ impl Identifier {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let namespace = Namespace::new(

@@ -36,9 +36,23 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 type Result<T> = std::result::Result<T, Error>;
 
-/// An organization name.
+/// The proper name of the organization as it should be displayed by clients.
 ///
 /// This name name cannot exceed 256 characters.
+///
+/// This field is intended to be the proper name of the organization that mints
+/// identifiers within a given namespace. That said, we have intentionally not
+/// required that this be an organization specifically, as there may be exceptions
+/// to this guideline. We recommend that you use an organization name here if you
+/// can, but you may put whatever value is appropriate to describe the owner of the
+/// namespace.
+///
+/// It is recommended that you use title case for this field, though that is not
+/// required.
+///
+/// **Note:** this field is asserted by the source server, but it is not guaranteed
+/// to be authoritative across the federation (due to the decentralized nature of
+/// organization and namespace allocation).
 #[derive(Clone, Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = models::organization::Name, example = "Example Organization")]
 pub struct Name(String);
@@ -85,6 +99,14 @@ pub fn parse(value: String) -> Result<Name> {
     }
 
     Ok(Name(value))
+}
+
+impl std::ops::Deref for Name {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.as_str()
+    }
 }
 
 #[cfg(test)]

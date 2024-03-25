@@ -86,7 +86,9 @@ impl NamespacePartitionedResult {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -141,7 +143,9 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     ///     "example-organization"
     ///         .parse::<organization::Identifier>()
     ///         .unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
     /// );
     ///
     /// let identifier = Identifier::new(

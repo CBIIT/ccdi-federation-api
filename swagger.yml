@@ -1628,24 +1628,7 @@ components:
         identifier:
           $ref: '#/components/schemas/models.organization.Identifier'
         name:
-          type: string
-          description: |-
-            The proper name of the organization as it should be displayed by clients.
-
-            This field is intended to be the proper name of the organization that mints
-            identifiers within a given namespace. That said, we have intentionally not
-            required that this be an organization specifically, as there may be exceptions
-            to this guideline. We recommend that you use an organization name here if you
-            can, but you may put whatever value is appropriate to describe the owner of the
-            namespace.
-
-            It is recommended that you use title case for this field, though that is not
-            required.
-
-            **Note:** this field is asserted by the source server, but it is not guaranteed
-            to be authoritative across the federation (due to the decentralized nature of
-            organization and namespace allocation).
-          example: Example Organization
+          $ref: '#/components/schemas/models.organization.Name'
     models.Sample:
       type: object
       description: |-
@@ -2152,7 +2135,19 @@ components:
         organization:
           $ref: '#/components/schemas/models.organization.Identifier'
         name:
-          $ref: '#/components/schemas/models.organization.Name'
+          $ref: '#/components/schemas/models.namespace.identifier.Name'
+    models.namespace.identifier.Name:
+      type: string
+      description: |-
+        The name of a namespace.
+
+        Typically, this is going to represent a particular dataset within the source server.
+        The name **must** conform to the pattern `^[A-Za-z0-9-]+$`. Any name that does not
+        match this pattern should be considered invalid by clients.
+
+        NOTE: the regex for this field does not allow for any spaces because it is
+        anticipated that the field will be displayable as a repository (e.g.,
+        `example-organization/ExampleNamespace`).
     models.organization.Identifier:
       type: string
       description: |-
@@ -2173,9 +2168,23 @@ components:
     models.organization.Name:
       type: string
       description: |-
-        An organization name.
+        The proper name of the organization as it should be displayed by clients.
 
         This name name cannot exceed 256 characters.
+
+        This field is intended to be the proper name of the organization that mints
+        identifiers within a given namespace. That said, we have intentionally not
+        required that this be an organization specifically, as there may be exceptions
+        to this guideline. We recommend that you use an organization name here if you
+        can, but you may put whatever value is appropriate to describe the owner of the
+        namespace.
+
+        It is recommended that you use title case for this field, though that is not
+        required.
+
+        **Note:** this field is asserted by the source server, but it is not guaranteed
+        to be authoritative across the federation (due to the decentralized nature of
+        organization and namespace allocation).
       example: Example Organization
     models.sample.Identifier:
       type: object

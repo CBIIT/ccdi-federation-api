@@ -36,6 +36,8 @@ pub struct Organization {
 
     /// The proper name of the organization as it should be displayed by clients.
     ///
+    /// This name name cannot exceed 256 characters.
+    ///
     /// This field is intended to be the proper name of the organization that mints
     /// identifiers within a given namespace. That said, we have intentionally not
     /// required that this be an organization specifically, as there may be exceptions
@@ -49,8 +51,11 @@ pub struct Organization {
     /// **Note:** this field is asserted by the source server, but it is not guaranteed
     /// to be authoritative across the federation (due to the decentralized nature of
     /// organization and namespace allocation).
-    #[schema(example = "Example Organization")]
-    name: String,
+    #[schema(
+        value_type = models::organization::Name,
+        example = "Example Organization"
+    )]
+    name: Name,
 }
 
 impl Organization {
@@ -60,14 +65,15 @@ impl Organization {
     /// use ccdi_models as models;
     ///
     /// use models::organization::Identifier;
+    /// use models::organization::Name;
     /// use models::Organization;
     ///
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization".parse::<Name>().unwrap(),
     /// );
     /// ```
-    pub fn new(identifier: impl Into<Identifier>, name: impl Into<String>) -> Self {
+    pub fn new(identifier: impl Into<Identifier>, name: impl Into<Name>) -> Self {
         let identifier = identifier.into();
         let name = name.into();
 
@@ -80,11 +86,12 @@ impl Organization {
     /// use ccdi_models as models;
     ///
     /// use models::organization::Identifier;
+    /// use models::organization::Name;
     /// use models::Organization;
     ///
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization".parse::<Name>().unwrap(),
     /// );
     ///
     /// assert_eq!(organization.id().as_str(), "example-organization");
@@ -99,11 +106,12 @@ impl Organization {
     /// use ccdi_models as models;
     ///
     /// use models::organization::Identifier;
+    /// use models::organization::Name;
     /// use models::Organization;
     ///
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
-    ///     "Example Organization",
+    ///     "Example Organization".parse::<Name>().unwrap(),
     /// );
     ///
     /// assert_eq!(organization.name(), "Example Organization");
