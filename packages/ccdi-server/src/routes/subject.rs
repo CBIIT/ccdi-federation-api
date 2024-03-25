@@ -250,7 +250,7 @@ pub async fn subject_index(
     params(
         (
             "organization" = String,
-            description = "The organization of the namespace to which the subject belongs.",
+            description = "The organization identifier of the namespace to which the subject belongs.",
         ),
         (
             "namespace" = String,

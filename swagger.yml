@@ -190,7 +190,7 @@ paths:
       parameters:
       - name: organization
         in: path
-        description: The organization of the namespace to which the subject belongs.
+        description: The organization identifier of the namespace to which the subject belongs.
         required: true
         schema:
           type: string
@@ -450,7 +450,7 @@ paths:
       parameters:
       - name: organization
         in: path
-        description: The organization of the namespace to which the sample belongs.
+        description: The organization identifier of the namespace to which the sample belongs.
         required: true
         schema:
           type: string
