@@ -258,7 +258,7 @@ pub async fn sample_index(
     params(
         (
             "organization" = String,
-            description = "The organization of the namespace to which the sample belongs.",
+            description = "The organization identifier of the namespace to which the sample belongs.",
         ),
         (
             "namespace" = String,
