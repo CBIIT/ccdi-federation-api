@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   In particular, there is now a top-level `missing` key in those responses
   rather than using sentinel values to indicate missing data
   ([#83][https://github.com/CBIIT/ccdi-federation-api/pull/83]).
+- Clarifies the language regarding the meaning of `null` within the API
+  including guidance on when to return `null` and how to interpret `null`
+  results (particularly when combined with enumerated values of CDEs that appear
+  to overlap with this concept)
+  ([#81](https://github.com/CBIIT/ccdi-federation-api/pull/81)).
 
 ## [v0.7.0] — 03-25-2024
 

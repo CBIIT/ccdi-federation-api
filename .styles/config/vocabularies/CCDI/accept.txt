@@ -2,3 +2,4 @@
 (?i)consortiums?
 (?i)namespaces?
 (?i)pseudocode
+CDEs?
