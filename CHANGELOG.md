@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Revises the data model for files to more closely match subjects and samples by
   adding a `ccdi_server::responses::File` object
   ([#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+- Ensures that all primary entities must explicitly exclude missing metadata
+  objects for primary entities (subject, sample, and file) by assigning it a
+  value of `null` rather than simply omitting the key
+  ([#84](https://github.com/CBIIT/ccdi-federation-api/pull/84)).
 
 ## [v0.7.0] — 03-25-2024
 

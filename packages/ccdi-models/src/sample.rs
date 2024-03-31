@@ -42,8 +42,10 @@ pub struct Sample {
     subject: crate::subject::Identifier,
 
     /// Metadata associated with this [`Sample`].
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(value_type = Option<models::sample::Metadata>)]
+    #[schema(
+        value_type = Option<models::sample::Metadata>,
+        nullable = true
+    )]
     metadata: Option<Metadata>,
 }
 
