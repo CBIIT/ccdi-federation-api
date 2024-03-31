@@ -38,8 +38,10 @@ pub struct Subject {
     kind: Kind,
 
     /// Metadata associated with this [`Subject`].
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(value_type = Option<models::subject::Metadata>)]
+    #[schema(
+        value_type = Option<models::subject::Metadata>,
+        nullable = true
+    )]
     metadata: Option<Metadata>,
 }
 

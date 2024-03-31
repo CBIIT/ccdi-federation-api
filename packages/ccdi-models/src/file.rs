@@ -83,8 +83,10 @@ pub struct File {
     gateways: NonEmpty<gateway::AnonymousOrReference>,
 
     /// Metadata associated with this [`File`].
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[schema(value_type = Option<models::file::Metadata>)]
+    #[schema(
+        value_type = Option<models::file::Metadata>,
+        nullable = true
+    )]
     metadata: Option<Metadata>,
 }
 
