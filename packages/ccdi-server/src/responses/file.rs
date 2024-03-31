@@ -8,6 +8,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use ccdi_models as models;
+
 pub mod data;
 
 pub use data::Data;
@@ -38,6 +40,90 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 
 type Result<T> = std::result::Result<T, Error>;
+
+/// A response representing a single [`File`](models::File).
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+#[schema(as = responses::File)]
+pub struct File {
+    /// File.
+    #[serde(flatten)]
+    inner: models::File,
+}
+
+impl File {
+    /// Consumes `self` to return the inner [`File`](models::File).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    /// use ccdi_server as server;
+    ///
+    /// use nonempty::NonEmpty;
+    ///
+    /// use models::file::Identifier;
+    /// use models::file::Metadata;
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample;
+    /// use models::Namespace;
+    /// use models::Organization;
+    /// use server::responses::File;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    /// );
+    ///
+    /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
+    ///
+    /// let raw_file = models::File::new(
+    ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
+    ///     NonEmpty::new(sample_id.clone()),
+    ///     NonEmpty::new(AnonymousOrReference::Reference {
+    ///         gateway: String::from("name"),
+    ///     }),
+    ///     Some(Metadata::random()),
+    /// );
+    ///
+    /// let file = File::from(raw_file.clone());
+    /// assert_eq!(file.into_inner(), raw_file);
+    /// ```
+    pub fn into_inner(self) -> models::File {
+        self.inner
+    }
+}
+
+impl std::ops::Deref for File {
+    type Target = models::File;
+
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+impl From<models::File> for File {
+    fn from(value: models::File) -> Self {
+        Self { inner: value }
+    }
+}
 
 /// A response representing multiple files known about by the server.
 ///
@@ -82,12 +168,12 @@ impl Files {
     /// use models::namespace;
     /// use models::organization;
     /// use models::sample;
-    /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
     /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
+    /// use server::responses::File;
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -111,7 +197,7 @@ impl Files {
     ///
     /// let sample_id = sample::Identifier::new(namespace.id().clone(), "SampleName001");
     ///
-    /// let file = File::new(
+    /// let file = models::File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
     ///     NonEmpty::new(AnonymousOrReference::Reference {
@@ -129,7 +215,7 @@ impl Files {
     ///     },
     /// );
     ///
-    /// let files = server::responses::file::data::Files::from((vec![file], 10usize));
+    /// let files = server::responses::file::data::Files::from((vec![File::from(file)], 10usize));
     /// let response = server::responses::Files::try_new(files, vec![gateway]).unwrap();
     /// ```
     pub fn try_new(
@@ -170,6 +256,8 @@ impl Files {
 
 #[cfg(test)]
 mod tests {
+    use crate::responses;
+
     use super::*;
 
     use ccdi_models::file::Identifier;
@@ -226,8 +314,11 @@ mod tests {
             },
         );
 
-        let err =
-            Files::try_new(data::Files::from((vec![file], 10usize)), vec![gateway]).unwrap_err();
+        let err = Files::try_new(
+            data::Files::from((vec![responses::File::from(file)], 10usize)),
+            vec![gateway],
+        )
+        .unwrap_err();
         assert!(matches!(err, Error::MissingGateways(_)));
         assert_eq!(err.to_string(), String::from("missing gateways: name"));
     }
@@ -281,7 +372,11 @@ mod tests {
             ),
         ];
 
-        let err = Files::try_new(data::Files::from((vec![file], 10usize)), gateways).unwrap_err();
+        let err = Files::try_new(
+            data::Files::from((vec![responses::File::from(file)], 10usize)),
+            gateways,
+        )
+        .unwrap_err();
         assert!(matches!(err, Error::ExtraneousGateways(_)));
         assert_eq!(
             err.to_string(),

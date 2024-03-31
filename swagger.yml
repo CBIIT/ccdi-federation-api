@@ -808,6 +808,92 @@ paths:
                   - per_page
                   reason: Unable to calculate offset.
                   message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
+  /file/{organization}/{namespace}/{name}:
+    get:
+      tags:
+      - File
+      summary: Gets the file matching the provided name (if the file exists).
+      description: Gets the file matching the provided name (if the file exists).
+      operationId: file_show
+      parameters:
+      - name: organization
+        in: path
+        description: The organization identifier of the namespace to which the file belongs.
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: The name of the namespace to which the file belongs.
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: path
+        description: The name portion of the file identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.File'
+        '404':
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: NotFound
+                  entity: File with namespace 'foo' and name 'bar'
+                  message: File with namespace 'foo' and name 'bar' not found.
+  /file/by/{field}/count:
+    get:
+      tags:
+      - File
+      summary: Groups the files by the specified metadata field and returns counts.
+      description: Groups the files by the specified metadata field and returns counts.
+      operationId: files_by_count
+      parameters:
+      - name: field
+        in: path
+        description: The field to group by and count with.
+        required: true
+        schema:
+          type: string
+      - name: partition
+        in: query
+        description: The method to partition results.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/params.Partitionable'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.by.count.file.Response'
+        '422':
+          description: Unsupported field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: UnsupportedField
+                  field: handedness
+                  reason: This field is not present for files.
+                  message: 'Field ''handedness'' is not supported: this field is not present for files.'
   /file/summary:
     get:
       tags:
@@ -2678,6 +2764,11 @@ components:
           items:
             $ref: '#/components/schemas/responses.error.Kind'
           description: The errors within this response.
+    responses.File:
+      allOf:
+      - $ref: '#/components/schemas/models.File'
+      - type: object
+      description: A response representing a single [`File`](models::File).
     responses.Files:
       type: object
       description: |-
@@ -2812,6 +2903,51 @@ components:
       properties:
         counts:
           $ref: '#/components/schemas/responses.summary.Counts'
+    responses.by.count.file.NamespacePartitionedResult:
+      type: object
+      description: |-
+        A result that associates a namespace with the [`Results`] belonging to that
+        [`Namespace`](ccdi_models::Namespace).
+      required:
+      - namespace
+      - results
+      properties:
+        namespace:
+          $ref: '#/components/schemas/models.namespace.Identifier'
+        results:
+          $ref: '#/components/schemas/responses.by.count.file.Results'
+    responses.by.count.file.NamespacePartitionedResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/responses.by.count.file.NamespacePartitionedResult'
+      description: A set of [`NamespacePartitionedResults`].
+    responses.by.count.file.Response:
+      oneOf:
+      - $ref: '#/components/schemas/responses.by.count.file.Results'
+      - $ref: '#/components/schemas/responses.by.count.file.NamespacePartitionedResults'
+      description: |-
+        A unified response for counting by a particular field for
+        [`Files`](ccdi_models::File).
+    responses.by.count.file.Results:
+      type: object
+      description: |-
+        A set of results from grouping [`Files`](ccdi_models::File) by a specified
+        metadata field and then summing the counts for each value (along with computing a
+        total count).
+      required:
+      - total
+      - values
+      properties:
+        total:
+          type: integer
+          description: The total number of counts in this result set.
+          minimum: 0
+        values:
+          type: object
+          description: The counts per value observed for the result set.
+          additionalProperties:
+            type: integer
+            minimum: 0
     responses.by.count.sample.NamespacePartitionedResult:
       type: object
       description: |-
@@ -3072,7 +3208,7 @@ components:
         files:
           type: array
           items:
-            $ref: '#/components/schemas/models.File'
+            $ref: '#/components/schemas/responses.File'
           description: The files.
     responses.file.data.Gateways:
       type: object

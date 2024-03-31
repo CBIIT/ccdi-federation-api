@@ -14,6 +14,7 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
     |config: &mut ServiceConfig| {
         config.service(metadata_fields_subject);
         config.service(metadata_fields_sample);
+        config.service(metadata_fields_file);
     }
 }
 
@@ -46,5 +47,21 @@ pub async fn metadata_fields_subject() -> impl Responder {
 pub async fn metadata_fields_sample() -> impl Responder {
     HttpResponse::Ok().json(FieldDescriptions::from(
         models::metadata::field::description::harmonized::sample::get_field_descriptions(),
+    ))
+}
+
+/// Gets the metadata fields for files that are supported by this server.
+#[utoipa::path(
+    get,
+    path = "/metadata/fields/file",
+    tag = "Metadata",
+    responses(
+        (status = 200, description = "Successful operation.", body = responses::metadata::FieldDescriptions)
+    )
+)]
+#[get("/metadata/fields/file")]
+pub async fn metadata_fields_file() -> impl Responder {
+    HttpResponse::Ok().json(FieldDescriptions::from(
+        models::metadata::field::description::harmonized::file::get_field_descriptions(),
     ))
 }

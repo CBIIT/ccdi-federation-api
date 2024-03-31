@@ -13,6 +13,7 @@ mod subject;
 pub mod summary;
 
 pub use error::Errors;
+pub use file::File;
 pub use file::Files;
 pub use info::Information;
 pub use namespace::Namespace;
