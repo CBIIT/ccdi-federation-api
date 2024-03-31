@@ -1,4 +1,0 @@
-(?i)allowlisted
-(?i)consortiums?
-(?i)namespaces?
-(?i)pseudocode
