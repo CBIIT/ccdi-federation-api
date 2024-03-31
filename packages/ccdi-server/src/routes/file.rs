@@ -41,8 +41,6 @@ use crate::responses::file::data;
 use crate::responses::Errors;
 use crate::responses::Files;
 use crate::responses::Summary;
-use crate::routes::MISSING_GROUP_BY_KEY;
-use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`File`]s.
 #[derive(Debug)]
@@ -426,9 +424,7 @@ pub async fn files_by_count(
 
             let namespace_results = group_by(namespace_files, &field);
 
-            if namespace_results.values.len() == 1
-                && namespace_results.values.get(MISSING_GROUP_BY_KEY).is_some()
-            {
+            if namespace_results.values.is_empty() {
                 return HttpResponse::UnprocessableEntity().json(Errors::from(
                     error::Kind::unsupported_field(
                         field.to_string(),
@@ -449,7 +445,7 @@ pub async fn files_by_count(
     } else {
         let results = group_by(files, &field);
 
-        if results.values.len() == 1 && results.values.get(MISSING_GROUP_BY_KEY).is_some() {
+        if results.values.is_empty() {
             return HttpResponse::UnprocessableEntity().json(Errors::from(
                 error::Kind::unsupported_field(
                     field.to_string(),
@@ -468,12 +464,19 @@ fn group_by(files: Vec<File>, field: &str) -> responses::by::count::file::Result
         .map(|file| parse_field(field, file))
         .collect::<Vec<_>>();
 
+    let mut missing_values = 0usize;
     let result = values
         .into_iter()
-        .map(|value| match value {
-            Some(Value::Null) => String::from(NULL_GROUP_BY_KEY),
-            Some(Value::String(s)) => s,
-            None => String::from(MISSING_GROUP_BY_KEY),
+        .flat_map(|value| match value {
+            Some(Value::Null) => {
+                missing_values += 1;
+                None
+            }
+            Some(Value::String(s)) => Some(s),
+            None => {
+                missing_values += 1;
+                None
+            }
             _ => todo!(),
         })
         .fold(IndexMap::new(), |mut map, value| {
@@ -481,7 +484,7 @@ fn group_by(files: Vec<File>, field: &str) -> responses::by::count::file::Result
             map
         });
 
-    responses::by::count::file::Results::from(result)
+    responses::by::count::file::Results::new(result, missing_values)
 }
 
 fn parse_field(field: &str, file: &File) -> Option<Value> {

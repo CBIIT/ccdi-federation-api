@@ -2950,11 +2950,19 @@ components:
         total count).
       required:
       - total
+      - missing
       - values
       properties:
         total:
           type: integer
           description: The total number of counts in this result set.
+          minimum: 0
+        missing:
+          type: integer
+          description: |-
+            The total number of entries that are missing values. In this context,
+            "missing" means either (a) the individual metadata key is missing or (b)
+            the entire metadata object is missing.
           minimum: 0
         values:
           type: object
@@ -2995,11 +3003,19 @@ components:
         total count).
       required:
       - total
+      - missing
       - values
       properties:
         total:
           type: integer
           description: The total number of counts in this result set.
+          minimum: 0
+        missing:
+          type: integer
+          description: |-
+            The total number of entries that are missing values. In this context,
+            "missing" means either (a) the individual metadata key is missing or (b)
+            the entire metadata object is missing.
           minimum: 0
         values:
           type: object
@@ -3039,11 +3055,19 @@ components:
         and then summing the counts.
       required:
       - total
+      - missing
       - values
       properties:
         total:
           type: integer
           description: The total number of counts in this result set.
+          minimum: 0
+        missing:
+          type: integer
+          description: |-
+            The total number of entries that are missing values. In this context,
+            "missing" means either (a) the individual metadata key is missing or (b)
+            the entire metadata object is missing.
           minimum: 0
         values:
           type: object
