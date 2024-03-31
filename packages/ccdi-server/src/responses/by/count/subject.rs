@@ -14,11 +14,16 @@ pub struct Results {
     /// The total number of counts in this result set.
     pub total: usize,
 
+    /// The total number of entries that are missing values. In this context,
+    /// "missing" means either (a) the individual metadata key is missing or (b)
+    /// the entire metadata object is missing.
+    pub missing: usize,
+
     /// The counts per value observed for the result set.
     pub values: IndexMap<String, usize>,
 }
 
-impl From<IndexMap<String, usize>> for Results {
+impl Results {
     /// Creates a new [`Results`] from an [`IndexMap<String, usize>`].
     ///
     /// # Examples
@@ -37,11 +42,16 @@ impl From<IndexMap<String, usize>> for Results {
     /// map.insert("M".into(), 26);
     /// map.insert("UNDIFFERENTIATED".into(), 31);
     ///
-    /// let results = Results::from(map);
+    /// let results = Results::new(map, 10);
     /// ```
-    fn from(values: IndexMap<String, usize>) -> Self {
-        let total = values.values().sum::<usize>();
-        Self { total, values }
+    pub fn new(values: IndexMap<String, usize>, missing: usize) -> Self {
+        let total = values.values().sum::<usize>() + missing;
+
+        Self {
+            total,
+            missing,
+            values,
+        }
     }
 }
 
@@ -81,7 +91,7 @@ impl NamespacePartitionedResult {
     /// map.insert("M".into(), 26);
     /// map.insert("UNDIFFERENTIATED".into(), 31);
     ///
-    /// let results = Results::from(map);
+    /// let results = Results::new(map, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -139,7 +149,7 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     /// map.insert("M".into(), 26);
     /// map.insert("UNDIFFERENTIATED".into(), 31);
     ///
-    /// let results = Results::from(map);
+    /// let results = Results::new(map, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"

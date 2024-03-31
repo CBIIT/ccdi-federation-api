@@ -34,8 +34,6 @@ use crate::responses::Errors;
 use crate::responses::Subjects;
 use crate::responses::Summary;
 use crate::routes::namespace::random_namespace;
-use crate::routes::MISSING_GROUP_BY_KEY;
-use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`Subject`]s.
 #[derive(Debug)]
@@ -352,9 +350,7 @@ pub async fn subjects_by_count(
 
             let namespace_results = group_by(namespace_subjects, &field);
 
-            if namespace_results.values.len() == 1
-                && namespace_results.values.get(MISSING_GROUP_BY_KEY).is_some()
-            {
+            if namespace_results.values.is_empty() {
                 return HttpResponse::UnprocessableEntity().json(Errors::from(
                     error::Kind::unsupported_field(
                         field.to_string(),
@@ -375,7 +371,7 @@ pub async fn subjects_by_count(
     } else {
         let results = group_by(subjects, &field);
 
-        if results.values.len() == 1 && results.values.get(MISSING_GROUP_BY_KEY).is_some() {
+        if results.values.is_empty() {
             return HttpResponse::UnprocessableEntity().json(Errors::from(
                 error::Kind::unsupported_field(
                     field.to_string(),
@@ -394,12 +390,19 @@ fn group_by(subjects: Vec<Subject>, field: &str) -> responses::by::count::subjec
         .map(|subject| parse_field(field, subject))
         .collect::<Vec<_>>();
 
+    let mut missing_values = 0usize;
     let result = values
         .into_iter()
-        .map(|value| match value {
-            Some(Value::Null) => String::from(NULL_GROUP_BY_KEY),
-            Some(Value::String(s)) => s,
-            None => String::from(MISSING_GROUP_BY_KEY),
+        .flat_map(|value| match value {
+            Some(Value::Null) => {
+                missing_values += 1;
+                None
+            }
+            Some(Value::String(s)) => Some(s),
+            None => {
+                missing_values += 1;
+                None
+            }
             _ => todo!(),
         })
         .fold(IndexMap::new(), |mut map, value| {
@@ -407,7 +410,7 @@ fn group_by(subjects: Vec<Subject>, field: &str) -> responses::by::count::subjec
             map
         });
 
-    responses::by::count::subject::Results::from(result)
+    responses::by::count::subject::Results::new(result, missing_values)
 }
 
 fn parse_field(field: &str, subject: &Subject) -> Option<Value> {

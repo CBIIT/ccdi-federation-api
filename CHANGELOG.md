@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   objects for primary entities (subject, sample, and file) by assigning it a
   value of `null` rather than simply omitting the key
   ([#84](https://github.com/CBIIT/ccdi-federation-api/pull/84)).
+- Revises the way missing or `null` results are displayed in group by endpoints.
+  In particular, there is now a top-level `missing` key in those responses
+  rather than using sentinel values to indicate missing data
+  ([#83][https://github.com/CBIIT/ccdi-federation-api/pull/83]).
 
 ## [v0.7.0] — 03-25-2024
 
@@ -62,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to be supported for the `/{entity}/by/{field}/count` endpoint
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
     - The only current valid value for the `partition` query parameter at the moment is
-      `namespace`, though this may be expanded in the future. 
+      `namespace`, though this may be expanded in the future.
 
 ## Changed
 
