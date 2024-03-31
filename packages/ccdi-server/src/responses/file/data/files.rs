@@ -3,12 +3,11 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use ccdi_models as models;
-
-use models::gateway::AnonymousOrReference;
+use ccdi_models::gateway::AnonymousOrReference;
 
 use crate::responses::entity::Counts;
 use crate::responses::entity::Summary;
+use crate::responses::file::File;
 
 /// Files within a [`Data`](super::Data) response.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -19,8 +18,8 @@ pub struct Files {
     summary: Summary,
 
     /// The files.
-    #[schema(nullable = false)]
-    files: Vec<models::File>,
+    #[schema(nullable = false, value_type = Vec<responses::File>)]
+    files: Vec<File>,
 }
 
 impl Files {
@@ -41,13 +40,13 @@ impl Files {
     /// use models::namespace;
     /// use models::organization;
     /// use models::sample;
-    /// use models::File;
     /// use models::Gateway;
     /// use models::Namespace;
     /// use models::Organization;
     /// use models::Url;
     /// use nonempty::NonEmpty;
     /// use server::responses::file::data::Files;
+    /// use server::responses::File;
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -73,22 +72,22 @@ impl Files {
     ///
     /// let files = Files::from((
     ///     vec![
-    ///         File::new(
+    ///         File::from(models::File::new(
     ///             Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///             NonEmpty::new(sample_id.clone()),
     ///             NonEmpty::new(AnonymousOrReference::Reference {
     ///                 gateway: String::from("name"),
     ///             }),
     ///             Some(Metadata::random()),
-    ///         ),
-    ///         File::new(
+    ///         )),
+    ///         File::from(models::File::new(
     ///             Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Bar.txt")),
     ///             NonEmpty::new(sample_id),
     ///             NonEmpty::new(AnonymousOrReference::Reference {
     ///                 gateway: String::from("name"),
     ///             }),
     ///             Some(Metadata::random()),
-    ///         ),
+    ///         )),
     ///     ],
     ///     10usize,
     /// ));
@@ -111,15 +110,15 @@ impl Files {
 }
 
 impl std::ops::Deref for Files {
-    type Target = Vec<models::File>;
+    type Target = Vec<File>;
 
     fn deref(&self) -> &Self::Target {
         &self.files
     }
 }
 
-impl From<(Vec<models::File>, usize)> for Files {
-    fn from((files, count): (Vec<models::File>, usize)) -> Self {
+impl From<(Vec<File>, usize)> for Files {
+    fn from((files, count): (Vec<File>, usize)) -> Self {
         let counts = Counts::new(files.len(), count);
 
         Self {

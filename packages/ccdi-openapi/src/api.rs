@@ -89,6 +89,8 @@ use utoipa::openapi;
 
         // File routes.
         server::routes::file::file_index,
+        server::routes::file::file_show,
+        server::routes::file::files_by_count,
         server::routes::file::file_summary,
 
         // Metadata.
@@ -241,10 +243,15 @@ use utoipa::openapi;
         responses::by::count::sample::Response,
 
         // File responses.
+        responses::File,
         responses::Files,
         responses::file::Data,
         responses::file::data::Files,
         responses::file::data::Gateways,
+        responses::by::count::file::Results,
+        responses::by::count::file::NamespacePartitionedResult,
+        responses::by::count::file::NamespacePartitionedResults,
+        responses::by::count::file::Response,
 
         // Metadata responses.
         responses::metadata::FieldDescriptions,

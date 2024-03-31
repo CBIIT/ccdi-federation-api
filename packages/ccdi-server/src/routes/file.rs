@@ -6,11 +6,15 @@ use std::sync::MutexGuard;
 
 use actix_web::get;
 use actix_web::web::Data;
+use actix_web::web::Path;
 use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use ccdi_cde::v1::file;
+use indexmap::IndexMap;
+use itertools::Itertools as _;
+use models::namespace;
 use rand::prelude::*;
 
 use ccdi_models as models;
@@ -21,16 +25,24 @@ use models::gateway::Named;
 use models::File;
 use models::Gateway;
 use models::Url;
+use serde_json::Value;
 
 use crate::paginate::links;
 use crate::paginate::links::Relationship;
 use crate::params::pagination;
 use crate::params::PaginationParams;
+use crate::params::PartitionParams;
+use crate::params::Partitionable;
+use crate::responses;
+use crate::responses::by;
+use crate::responses::by::count::file::NamespacePartitionedResult;
 use crate::responses::error;
 use crate::responses::file::data;
 use crate::responses::Errors;
 use crate::responses::Files;
 use crate::responses::Summary;
+use crate::routes::MISSING_GROUP_BY_KEY;
+use crate::routes::NULL_GROUP_BY_KEY;
 
 /// A store for [`File`]s.
 #[derive(Debug)]
@@ -85,6 +97,7 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
         config
             .app_data(store)
             .service(file_index)
+            .service(files_by_count)
             .service(file_summary);
     }
 }
@@ -259,7 +272,10 @@ pub async fn file_index(
         .into_iter()
         .nth(page.get() - 1)
         .unwrap_or_default()
-        .to_vec();
+        .iter()
+        .cloned()
+        .map(crate::responses::File::from)
+        .collect::<Vec<_>>();
 
     if this_page_files.is_empty() {
         return HttpResponse::UnprocessableEntity().json(Errors::from(
@@ -299,6 +315,206 @@ pub async fn file_index(
     // always unwrap.
     let result = Files::try_new(files, gateways).unwrap();
     response.json(result)
+}
+
+/// Gets the file matching the provided name (if the file exists).
+#[utoipa::path(
+    get,
+    path = "/file/{organization}/{namespace}/{name}",
+    params(
+        (
+            "organization" = String,
+            description = "The organization identifier of the namespace to which the file belongs.",
+        ),
+        (
+            "namespace" = String,
+            description = "The name of the namespace to which the file belongs.",
+        ),
+        (
+            "name" = String,
+            description = "The name portion of the file identifier."
+        )
+    ),
+    tag = "File",
+    responses(
+        (status = 200, description = "Successful operation.", body = responses::File),
+        (
+            status = 404,
+            description = "Not found.\nServers that cannot provide line-level \
+            data should use this response rather than Forbidden (403), as \
+            there is no level of authorization that would allow one to access \
+            the information included in the API.",
+            body = responses::Errors,
+            example = json!(Errors::from(error::Kind::not_found(
+                String::from("File with namespace 'foo' and name 'bar'")
+            )))
+        )
+    )
+)]
+#[get("/file/{organization}/{namespace}/{name}")]
+pub async fn file_show(path: Path<(String, String, String)>, files: Data<Store>) -> impl Responder {
+    let files = files.files.lock().unwrap();
+    let (organization, namespace, name) = path.into_inner();
+
+    files
+        .iter()
+        .find(|file| {
+            file.id().namespace().organization().as_str() == organization
+                && file.id().namespace().name().as_str() == namespace
+                && **file.id().name() == name
+        })
+        .map(|file| HttpResponse::Ok().json(file))
+        .unwrap_or_else(|| {
+            HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
+                "File with namespace '{}' and name '{}'",
+                namespace, name
+            ))))
+        })
+}
+
+/// Groups the files by the specified metadata field and returns counts.
+#[utoipa::path(
+    get,
+    path = "/file/by/{field}/count",
+    params(
+        ("field" = String, description = "The field to group by and count with."),
+        PartitionParams,
+    ),
+    tag = "File",
+    responses(
+        (status = 200, description = "Successful operation.", body = responses::by::count::file::Response),
+        (
+            status = 422,
+            description = "Unsupported field.",
+            body = responses::Errors,
+            example = json!(Errors::from(
+                error::Kind::unsupported_field(
+                    String::from("handedness"),
+                    String::from("This field is not present for files."),
+                )
+            ))
+        ),
+    )
+)]
+#[get("/file/by/{field}/count")]
+pub async fn files_by_count(
+    path: Path<String>,
+    partition_params: Query<PartitionParams>,
+    files: Data<Store>,
+) -> impl Responder {
+    let files = files.files.lock().unwrap().clone();
+    let field = path.into_inner();
+
+    if let Some(Partitionable::Namespace) = partition_params.0.partition {
+        let namespaces = files
+            .iter()
+            .map(|s| s.id().namespace())
+            .unique()
+            .cloned()
+            .sorted()
+            .collect::<Vec<namespace::Identifier>>();
+
+        let mut results = Vec::new();
+
+        for namespace in namespaces {
+            let namespace_files = files
+                .iter()
+                .filter(|s| s.id().namespace() == &namespace)
+                .cloned()
+                .collect::<Vec<File>>();
+
+            let namespace_results = group_by(namespace_files, &field);
+
+            if namespace_results.values.len() == 1
+                && namespace_results.values.get(MISSING_GROUP_BY_KEY).is_some()
+            {
+                return HttpResponse::UnprocessableEntity().json(Errors::from(
+                    error::Kind::unsupported_field(
+                        field.to_string(),
+                        String::from("This field is not present for files."),
+                    ),
+                ));
+            }
+
+            let namespace_partitioned_result =
+                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+            results.push(namespace_partitioned_result);
+        }
+
+        HttpResponse::Ok().json(by::count::file::Response::NamespacePartitioned(
+            by::count::file::NamespacePartitionedResults::from(results),
+        ))
+    } else {
+        let results = group_by(files, &field);
+
+        if results.values.len() == 1 && results.values.get(MISSING_GROUP_BY_KEY).is_some() {
+            return HttpResponse::UnprocessableEntity().json(Errors::from(
+                error::Kind::unsupported_field(
+                    field.to_string(),
+                    String::from("This field is not present for files."),
+                ),
+            ));
+        }
+
+        HttpResponse::Ok().json(by::count::file::Response::Unpartitioned(results))
+    }
+}
+
+fn group_by(files: Vec<File>, field: &str) -> responses::by::count::file::Results {
+    let values = files
+        .iter()
+        .map(|file| parse_field(field, file))
+        .collect::<Vec<_>>();
+
+    let result = values
+        .into_iter()
+        .map(|value| match value {
+            Some(Value::Null) => String::from(NULL_GROUP_BY_KEY),
+            Some(Value::String(s)) => s,
+            None => String::from(MISSING_GROUP_BY_KEY),
+            _ => todo!(),
+        })
+        .fold(IndexMap::new(), |mut map, value| {
+            *map.entry(value).or_insert_with(|| 0usize) += 1;
+            map
+        });
+
+    responses::by::count::file::Results::from(result)
+}
+
+fn parse_field(field: &str, file: &File) -> Option<Value> {
+    match field {
+        "type" => match file.metadata() {
+            Some(metadata) => metadata
+                .r#type()
+                .as_ref()
+                .map(|r#type| Value::String(r#type.value().to_string())),
+            None => None,
+        },
+        "size" => match file.metadata() {
+            Some(metadata) => metadata
+                .size()
+                .as_ref()
+                .map(|size| Value::String(size.value().to_string())),
+            None => None,
+        },
+        "checksums" => match file.metadata() {
+            Some(metadata) => metadata
+                .checksums()
+                .as_ref()
+                .map(|value| Value::String(value.value().to_string())),
+            None => None,
+        },
+        "description" => match file.metadata() {
+            Some(metadata) => metadata
+                .description()
+                .as_ref()
+                .map(|value| Value::String(value.value().to_string())),
+            None => None,
+        },
+        _ => None,
+    }
 }
 
 /// Reports summary information for the files known by this server.

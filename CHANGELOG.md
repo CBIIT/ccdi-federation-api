@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Adds an endpoint to show an individual file ([link to
+  card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853714),
+  [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+- Adds an endpoint to partition files by metadata elements and namespace ([link
+  to
+  card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853748),
+  [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+- Adds support for reporting the metadata fields for file at
+  `/metadata/file/fields` ([link to
+  card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853672),
+  [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+- Revises the data model for files to more closely match subjects and samples by
+  adding a `ccdi_server::responses::File` object
+  ([#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+
 ## [v0.7.0] — 03-25-2024
 
 ### Added
