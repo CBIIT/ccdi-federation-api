@@ -10,7 +10,7 @@ pub mod identifier;
 pub use description::Description;
 pub use identifier::Identifier;
 
-/// A response for describing metadata fields for a subject.
+/// A namespace.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Namespace)]
 pub struct Namespace {
