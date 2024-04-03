@@ -8,7 +8,7 @@ use ccdi_models as models;
 
 use models::metadata::field::Description;
 
-/// A response for describing metadata fields for a subject.
+/// A response for describing metadata fields for a subject, sample, or file.
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[schema(as = responses::metadata::FieldDescriptions)]
 pub struct FieldDescriptions {

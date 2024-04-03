@@ -936,6 +936,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
+  /metadata/fields/file:
+    get:
+      tags:
+      - Metadata
+      summary: Gets the metadata fields for files that are supported by this server.
+      description: Gets the metadata fields for files that are supported by this server.
+      operationId: metadata_fields_file
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.metadata.FieldDescriptions'
   /namespace:
     get:
       tags:
@@ -1867,7 +1881,7 @@ components:
         propertyName: kind
     models.Namespace:
       type: object
-      description: A response for describing metadata fields for a subject.
+      description: A namespace.
       required:
       - id
       - description
@@ -3394,7 +3408,7 @@ components:
           nullable: true
     responses.metadata.FieldDescriptions:
       type: object
-      description: A response for describing metadata fields for a subject.
+      description: A response for describing metadata fields for a subject, sample, or file.
       required:
       - fields
       properties:
