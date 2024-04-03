@@ -96,6 +96,7 @@ use utoipa::openapi;
         // Metadata.
         server::routes::metadata::metadata_fields_subject,
         server::routes::metadata::metadata_fields_sample,
+        server::routes::metadata::metadata_fields_file,
 
         // Namespaces.
         server::routes::namespace::namespace_index,
