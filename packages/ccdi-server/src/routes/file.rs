@@ -97,8 +97,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
         config
             .app_data(store)
             .service(file_index)
-            .service(file_show)
             .service(files_by_count)
+            .service(file_show)
             .service(file_summary);
     }
 }
