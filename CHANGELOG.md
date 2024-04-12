@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - Adds an endpoint to show an individual file ([link to
   card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853714),
   [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
@@ -18,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `/metadata/file/fields` ([link to
   card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853672),
   [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+
+### Changed
+
 - Revises the data model for files to more closely match subjects and samples by
   adding a `ccdi_server::responses::File` object
   ([#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
@@ -28,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Revises the way missing or `null` results are displayed in group by endpoints.
   In particular, there is now a top-level `missing` key in those responses
   rather than using sentinel values to indicate missing data
-  ([#83][https://github.com/CBIIT/ccdi-federation-api/pull/83]).
+  ([#83](https://github.com/CBIIT/ccdi-federation-api/pull/83)).
 - Clarifies the language regarding the meaning of `null` within the API
   including guidance on when to return `null` and how to interpret `null`
   results (particularly when combined with enumerated values of CDEs that appear
@@ -73,7 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - The only current valid value for the `partition` query parameter at the moment is
       `namespace`, though this may be expanded in the future.
 
-## Changed
+### Changed
 
 - Pagination is now required by default for primary entity root endpoints
   (`/subject`, `/sample`, and `/file`)
@@ -82,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#60](https://github.com/CBIIT/ccdi-federation-api/pull/60)).
 - Updates the name of the API to be the "CCDI Data Federation API".
 
-## Fixed
+### Fixed
 
 - The pagination via `Link` headers was fixed
   (Thanks @e-t-k! [#61](https://github.com/CBIIT/ccdi-federation-api/pull/61)).
