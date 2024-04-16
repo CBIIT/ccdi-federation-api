@@ -26,6 +26,9 @@ pub struct Builder {
     /// The approximate age at collection.
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
+    /// The library strategy for this sample.
+    library_strategy: Option<field::unowned::sample::LibraryStrategy>,
+
     /// The alternate identifiers for the sample.
     identifiers: Option<Vec<field::unowned::sample::Identifier>>,
 
@@ -166,6 +169,22 @@ impl Builder {
         self
     }
 
+    /// Sets the `library_strategy` field of the [`Builder`].
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    /// use models::metadata::field::unowned::sample::LibraryStrategy;
+    /// use models::sample::metadata::Builder;
+    /// let field = LibraryStrategy::new(cde::v1::sample::LibraryStrategy::RnaSeq, None, None);
+    /// let builder = Builder::default().library_strategy(field);
+    /// ```
+    pub fn library_strategy(mut self, field: field::unowned::sample::LibraryStrategy) -> Self {
+        self.library_strategy = Some(field);
+        self
+    }
+
     /// Append a value to the `identifier` field of the [`Builder`].
     ///
     /// # Examples
@@ -291,6 +310,7 @@ impl Builder {
             age_at_diagnosis: self.age_at_diagnosis,
             age_at_collection: self.age_at_collection,
             disease_phase: self.disease_phase,
+            library_strategy: self.library_strategy,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
             tumor_tissue_morphology: self.tumor_tissue_morphology,

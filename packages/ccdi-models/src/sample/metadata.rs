@@ -49,6 +49,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::AgeAtCollection, nullable = true)]
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
+    /// The sequencing library technique type.
+    #[schema(value_type = field::unowned::sample::LibraryStrategy, nullable = true)]
+    library_strategy: Option<field::unowned::sample::LibraryStrategy>,
+
     /// The alternate identifiers for the sample.
     ///
     /// Note that this list of identifiers *must* include the main identifier
@@ -125,6 +129,38 @@ impl Metadata {
     /// ```
     pub fn disease_phase(&self) -> Option<&field::unowned::sample::DiseasePhase> {
         self.disease_phase.as_ref()
+    }
+
+    /// Gets the harmonized library strategy for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::LibraryStrategy;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .library_strategy(LibraryStrategy::new(
+    ///         cde::v1::sample::LibraryStrategy::RnaSeq,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.library_strategy(),
+    ///     Some(&LibraryStrategy::new(
+    ///         cde::v1::sample::LibraryStrategy::RnaSeq,
+    ///         None,
+    ///         None
+    ///     ))
+    /// );
+    /// ```
+    pub fn library_strategy(&self) -> Option<&field::unowned::sample::LibraryStrategy> {
+        self.library_strategy.as_ref()
     }
 
     /// Gets the harmonized tissue type for the [`Metadata`].
@@ -407,6 +443,7 @@ impl Metadata {
                 None,
             )),
             disease_phase: rand::random(),
+            library_strategy: rand::random(),
             tissue_type: rand::random(),
             tumor_classification: rand::random(),
             tumor_tissue_morphology: Some(field::unowned::sample::TumorTissueMorphology::new(
@@ -460,7 +497,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"identifiers\":null}"
+            "{\"age_at_diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"identifiers\":null}"
         );
     }
 }
