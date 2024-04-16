@@ -18,6 +18,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
     vec![
         crate::sample::metadata::AgeAtDiagnosis::description(),
         cde::v1::sample::DiseasePhase::description(),
+        cde::v1::sample::LibraryStrategy::description(),
         cde::v2::sample::TissueType::description(),
         cde::v1::sample::TumorClassification::description(),
         cde::v1::sample::TumorTissueMorphology::description(),
@@ -56,6 +57,28 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
             entity.description().to_string(),
             "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            members,
+        ))
+    }
+}
+
+impl description::r#trait::Description for cde::v1::sample::LibraryStrategy {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("library_strategy"),
+            entity.description().to_string(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#library_strategy"
+                .parse::<Url>().unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
             members,
         ))
     }

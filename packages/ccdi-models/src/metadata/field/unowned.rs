@@ -221,6 +221,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        LibraryStrategy,
+        field::unowned::sample::LibraryStrategy,
+        cde::v1::sample::LibraryStrategy,
+        cde::v1::sample::LibraryStrategy,
+        cde::v1::sample::LibraryStrategy::Other,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         Identifier,
         field::unowned::sample::Identifier,
         crate::sample::identifier::referenced::Identifier,

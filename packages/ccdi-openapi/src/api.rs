@@ -121,6 +121,7 @@ use utoipa::openapi;
         // Harmonized sample metadata elements.
         models::sample::metadata::AgeAtDiagnosis,
         cde::v1::sample::DiseasePhase,
+        cde::v1::sample::LibraryStrategy,
         cde::v2::sample::TissueType,
         cde::v1::sample::TumorClassification,
         cde::v1::sample::TumorTissueMorphology,
@@ -145,6 +146,7 @@ use utoipa::openapi;
         // Harmonized sample fields.
         field::unowned::sample::AgeAtDiagnosis,
         field::unowned::sample::DiseasePhase,
+        field::unowned::sample::LibraryStrategy,
         field::unowned::sample::TissueType,
         field::unowned::sample::TumorClassification,
         field::unowned::sample::TumorTissueMorphology,

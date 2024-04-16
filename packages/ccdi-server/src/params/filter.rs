@@ -72,6 +72,12 @@ pub struct Sample {
     #[param(required = false, nullable = false)]
     pub disease_phase: Option<String>,
 
+    /// Matches any sample where the `library_strategy` field matches the string
+    /// provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub library_strategy: Option<String>,
+
     /// Matches any sample where the `tissue_type` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
