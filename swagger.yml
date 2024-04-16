@@ -590,6 +590,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: library_strategy
+        in: query
+        description: |-
+          Matches any sample where the `library_strategy` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: tissue_type
         in: query
         description: |-
@@ -1339,6 +1347,55 @@ components:
       - Refractory
       - Relapse
       - Relapse/Progression
+    cde.v1.sample.LibraryStrategy:
+      type: string
+      description: |-
+        **`caDSR CDE 6273393 v1.00`**
+
+        This metadata element is defined by the caDSR as "The overall strategy for
+        the collection of double stranded DNA fragments flanked by oligonucleotide
+        sequence adapters to enable their analysis by high-throughput sequencing.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6273393%20and%20ver_nr=1>
+      enum:
+      - AMPLICON
+      - ATAC-Seq
+      - Bisulfite-Seq
+      - ChIA-PET
+      - ChIP-Seq
+      - CLONE
+      - CLONEEND
+      - CTS
+      - DNA-Seq
+      - DNase-Hypersensitivity
+      - EST
+      - FAIRE-seq
+      - FINISHING
+      - FL-cDNA
+      - Hi-C
+      - MBD-Seq
+      - MeDIP-Seq
+      - miRNA-Seq
+      - MNase-Seq
+      - MRE-Seq
+      - ncRNA-Seq
+      - Other
+      - POOLCLONE
+      - RAD-Seq
+      - RIP-Seq
+      - RNA-Seq
+      - SELEX
+      - snATAC-Seq
+      - ssRNA-seq
+      - Synthetic-Long-Read
+      - Targeted-Capture
+      - Tethered Chromatin Conformation Capture
+      - Tn-Seq
+      - WCS
+      - WGA
+      - WGS
+      - WXS
     cde.v1.sample.TumorClassification:
       type: string
       description: |-
@@ -1668,6 +1725,25 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.sample.identifier.referenced.Identifier'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.LibraryStrategy:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.LibraryStrategy'
         ancestors:
           type: array
           items:
@@ -2629,6 +2705,7 @@ components:
       - tumor_classification
       - tumor_tissue_morphology
       - age_at_collection
+      - library_strategy
       - identifiers
       properties:
         age_at_diagnosis:
@@ -2654,6 +2731,10 @@ components:
         age_at_collection:
           allOf:
           - $ref: '#/components/schemas/field.unowned.sample.AgeAtCollection'
+          nullable: true
+        library_strategy:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.LibraryStrategy'
           nullable: true
         identifiers:
           type: array

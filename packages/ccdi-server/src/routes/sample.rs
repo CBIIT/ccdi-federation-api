@@ -446,6 +446,13 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
                 .map(|value| Value::String(value.value().to_string())),
             None => None,
         },
+        "library_strategy" => match sample.metadata() {
+            Some(metadata) => metadata
+                .library_strategy()
+                .as_ref()
+                .map(|value| Value::String(value.value().to_string())),
+            None => None,
+        },
         "tissue_type" => match sample.metadata() {
             Some(metadata) => metadata
                 .tissue_type()

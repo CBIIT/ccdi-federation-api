@@ -2,9 +2,11 @@
 //! sample.
 
 mod disease_phase;
+mod library_strategy;
 mod tumor_classification;
 mod tumor_tissue_morphology;
 
 pub use disease_phase::DiseasePhase;
+pub use library_strategy::LibraryStrategy;
 pub use tumor_classification::TumorClassification;
 pub use tumor_tissue_morphology::TumorTissueMorphology;
