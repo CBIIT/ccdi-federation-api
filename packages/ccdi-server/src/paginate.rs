@@ -25,6 +25,11 @@ where
     R: Serialize,
     R: From<(Vec<T>, usize)>,
 {
+    if all_entities.is_empty() {
+        // If there are no entities to return, just return an empty array back.
+        return HttpResponse::Ok().json(Vec::<R>::new());
+    }
+
     let page = match NonZeroUsize::try_from(params.page().unwrap_or(pagination::DEFAULT_PAGE)) {
         Ok(value) => value,
         Err(_) => {
@@ -49,13 +54,6 @@ where
                 ))
             }
         };
-
-    if all_entities.is_empty() {
-        // If this error occurs, there is likely some misconfiguration that
-        // allows zero entities to be generated for the server. This should be
-        // caught before we get to this point and reported to the user.
-        panic!("there must be at least one entity to paginate.");
-    }
 
     let pages = all_entities.chunks(per_page.get()).collect::<Vec<_>>();
 

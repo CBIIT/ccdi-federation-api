@@ -27,8 +27,10 @@ use models::Gateway;
 use models::Url;
 use serde_json::Value;
 
+use crate::filter::filter;
 use crate::paginate::links;
 use crate::paginate::links::Relationship;
+use crate::params::filter::File as FilterFileParams;
 use crate::params::pagination;
 use crate::params::PaginationParams;
 use crate::params::PartitionParams;
@@ -117,7 +119,32 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
     get,
     path = "/file",
     tag = "File",
-    params(PaginationParams),
+    params(
+        FilterFileParams,
+        (
+            "metadata.unharmonized.<field>" = Option<String>,
+            Query,
+            nullable = false,
+            description = "All unharmonized fields should be filterable in the \
+            same manner as harmonized fields:\n\n\
+            * Filtering on a singular field should include the `File` in \
+            the results if the query exactly matches the value of that field \
+            for the `File` (case-sensitive).\n\
+            * Filtering on field with multiple values should include the \
+            `File` in the results if the query exactly matches any of the \
+            values of the field for that `File` (case-sensitive).\n\
+            * Unlike harmonized fields, unharmonized fields must be prefixed \
+            with `metadata.unharmonized`.\n\n\
+            **Note:** this query parameter is intended to be symbolic of any \
+            unharmonized field. Because of limitations within Swagger UI, it \
+            will show up as a query parameter that can be optionally be \
+            submitted as part of a request within Swagger UI. Please keep in \
+            mind that the literal query parameter \
+            `?metadata.unharmonized.<field>=value` is not supported, so \
+            attempting to use it within Swagger UI will not work!"
+        ),
+        PaginationParams
+    ),
     responses(
         (
             status = 200,
@@ -193,14 +220,22 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 )]
 #[get("/file")]
 pub async fn file_index(
+    filter_params: Query<FilterFileParams>,
     pagination_params: Query<PaginationParams>,
     files: Data<Store>,
 ) -> impl Responder {
-    let mut all_files = files.files.lock().unwrap().clone();
+    let mut files = files.files.lock().unwrap().clone();
 
     // See the note in the documentation for this endpoint: the results must be
     // sorted by identifier by default.
-    all_files.sort();
+    files.sort();
+
+    let files = filter::<File, FilterFileParams>(files, filter_params.0);
+
+    if files.is_empty() {
+        // If there are no entities to return, just return an empty array back.
+        return HttpResponse::Ok().json(Vec::<responses::File>::new());
+    }
 
     let page = match NonZeroUsize::try_from(
         pagination_params
@@ -236,14 +271,7 @@ pub async fn file_index(
         }
     };
 
-    if all_files.is_empty() {
-        // If this error occurs, there is likely some misconfiguration that
-        // allows zero entities to be generated for the server. This should be
-        // caught before we get to this point and reported to the user.
-        panic!("there must be at least one entity to paginate.");
-    }
-
-    let pages = all_files.chunks(per_page.get()).collect::<Vec<_>>();
+    let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
 
     let links =
         links::Builder::try_new("http://localhost:8000/file", page, per_page, pages.clone())
@@ -285,7 +313,7 @@ pub async fn file_index(
         ));
     }
 
-    let files = data::Files::from((this_page_files, all_files.len()));
+    let files = data::Files::from((this_page_files, files.len()));
     let gateways = files
         .expected_gateways()
         .into_iter()

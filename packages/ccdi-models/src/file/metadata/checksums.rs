@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use ccdi_cde as cde;
 use rand::distributions::Distribution;
 use rand::distributions::Standard;
@@ -12,9 +14,11 @@ use utoipa::ToSchema;
 )]
 #[schema(as = models::file::metadata::Checksums)]
 pub struct Checksums {
-    /// The namespace of the identifier.
-    #[schema(example = "example-organization")]
+    /// An md5 checksum.
+    #[schema(example = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     md5: Option<cde::v1::file::checksum::MD5>,
+    // NOTE: if more checksums are added here, they also need to be added to the
+    // `as_map()` function below.
 }
 
 impl Checksums {
@@ -53,6 +57,35 @@ impl Checksums {
     /// ```
     pub fn md5(&self) -> Option<&cde::v1::file::checksum::MD5> {
         self.md5.as_ref()
+    }
+
+    /// Gets the checksums as a [`HashMap`] where the key is the algorithm name
+    /// and the values are the (optional) checksum values.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// let checksums = models::file::metadata::Checksums::new(Some(
+    ///     cde::v1::file::checksum::MD5::try_new("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA").unwrap(),
+    /// ));
+    ///
+    /// let map = checksums.as_map();
+    /// assert_eq!(
+    ///     map.get("md5").unwrap().as_str(),
+    ///     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    /// );
+    /// ```
+    pub fn as_map(&self) -> HashMap<String, String> {
+        let mut map = HashMap::new();
+
+        if let Some(checksum) = &self.md5 {
+            map.insert(String::from("md5"), checksum.to_string());
+        }
+
+        map
     }
 }
 
