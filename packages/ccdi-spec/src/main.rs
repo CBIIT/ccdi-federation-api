@@ -261,22 +261,19 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
         Command::Serve(args) => {
             info!("Starting server at http://localhost:{}", args.port);
 
+            let subjects = subject::Store::random(args.number_of_subjects);
+
+            let samples =
+                sample::Store::random(args.number_of_samples, subjects.subjects.lock().unwrap());
+
+            let files = file::Store::random(args.number_of_files, samples.samples.lock().unwrap());
+
+            let subjects = Data::new(subjects);
+            let samples = Data::new(samples);
+            let files = Data::new(files);
+
             rt::System::new().block_on(
                 HttpServer::new(move || {
-                    let subjects = subject::Store::random(args.number_of_subjects);
-
-                    let samples = sample::Store::random(
-                        args.number_of_samples,
-                        subjects.subjects.lock().unwrap(),
-                    );
-
-                    let files =
-                        file::Store::random(args.number_of_files, samples.samples.lock().unwrap());
-
-                    let subjects = Data::new(subjects);
-                    let samples = Data::new(samples);
-                    let files = Data::new(files);
-
                     App::new()
                         .app_data(QueryConfig::default().error_handler(|err, _| {
                             match err {
@@ -291,9 +288,11 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }))
                         .wrap(Logger::default())
-                        .configure(subject::configure(subjects))
-                        .configure(sample::configure(samples))
-                        .configure(file::configure(files))
+                        // TODO: these clones could be avoided if the objects
+                        // were referred to by reference.
+                        .configure(subject::configure(subjects.clone()))
+                        .configure(sample::configure(samples.clone()))
+                        .configure(file::configure(files.clone()))
                         .configure(metadata::configure())
                         .configure(namespace::configure())
                         .configure(organization::configure())

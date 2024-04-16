@@ -321,8 +321,8 @@ paths:
       - name: race
         in: query
         description: |-
-          Matches any subject where any member of the `race` fieldmatches
-          the string provided.
+          Matches any subject where any member of the `race` fieldmatches the
+          string provided.
 
           **Note:** a logical OR (`||`) is performed across the values when
           determining whether the subject should be included in the results.
@@ -331,7 +331,9 @@ paths:
           type: string
       - name: ethnicity
         in: query
-        description: Matches any subject where the `ethnicity` field matches the string provided.
+        description: |-
+          Matches any subject where the `ethnicity` field matches the string
+          provided.
         required: false
         schema:
           type: string
@@ -348,13 +350,17 @@ paths:
           type: string
       - name: vital_status
         in: query
-        description: Matches any subject where the `vital_status` field matches the string provided.
+        description: |-
+          Matches any subject where the `vital_status` field matches the string
+          provided.
         required: false
         schema:
           type: string
       - name: age_at_vital_status
         in: query
-        description: Matches any subject where the `age_at_vital_status` field matches the string provided.
+        description: |-
+          Matches any subject where the `age_at_vital_status` field matches the
+          string provided.
         required: false
         schema:
           type: string
@@ -602,19 +608,25 @@ paths:
           type: string
       - name: age_at_diagnosis
         in: query
-        description: Matches any sample where the `age_at_diagnosis` field matches the string provided.
+        description: |-
+          Matches any sample where the `age_at_diagnosis` field matches the string
+          provided.
         required: false
         schema:
           type: string
       - name: age_at_collection
         in: query
-        description: Matches any sample where the `age_at_collection` field matches the string provided.
+        description: |-
+          Matches any sample where the `age_at_collection` field matches the
+          string provided.
         required: false
         schema:
           type: string
       - name: tumor_tissue_morphology
         in: query
-        description: Matches any sample where the `tumor_tissue_morphology` field matches the string provided.
+        description: |-
+          Matches any sample where the `tumor_tissue_morphology` field matches the
+          string provided.
         required: false
         schema:
           type: string
@@ -815,6 +827,53 @@ paths:
         in the `responses::Files` schema.
       operationId: file_index
       parameters:
+      - name: type
+        in: query
+        description: Matches any file where the `type` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Matches any file where the `size` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: checksums
+        in: query
+        description: |-
+          Matches any file where the `checksums` field matches the string
+          provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the file should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: |-
+          Matches any file where the `description` field matches the string
+          provided.
+
+          **Note:** a file is returned if the value provided is a substring of the
+          description.
+        required: false
+        schema:
+          type: string
+      - name: metadata.unharmonized.<field>
+        in: query
+        description: |-
+          All unharmonized fields should be filterable in the same manner as harmonized fields:
+
+          * Filtering on a singular field should include the `File` in the results if the query exactly matches the value of that field for the `File` (case-sensitive).
+          * Filtering on field with multiple values should include the `File` in the results if the query exactly matches any of the values of the field for that `File` (case-sensitive).
+          * Unlike harmonized fields, unharmonized fields must be prefixed with `metadata.unharmonized`.
+
+          **Note:** this query parameter is intended to be symbolic of any unharmonized field. Because of limitations within Swagger UI, it will show up as a query parameter that can be optionally be submitted as part of a request within Swagger UI. Please keep in mind that the literal query parameter `?metadata.unharmonized.<field>=value` is not supported, so attempting to use it within Swagger UI will not work!
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         description: |-

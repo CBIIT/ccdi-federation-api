@@ -6,6 +6,7 @@ use ccdi_models as models;
 
 use models::Entity;
 
+pub mod file;
 pub mod sample;
 pub mod subject;
 
@@ -176,6 +177,13 @@ where
             introspect::Member::Field(field) => field.identifier().unwrap().to_string(),
             // SAFETY: parameters will never be expressed as an `enum`.
             introspect::Member::Variant(_) => unreachable!(),
+        };
+
+        // If the field starts with `r#`, strip that, as it is an artifact of
+        // Rust.
+        let field = match field.starts_with("r#") {
+            true => field.strip_prefix("r#").unwrap().to_string(),
+            false => field,
         };
 
         entities = entities.filter_metadata_field(field, &filter_params);

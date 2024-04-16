@@ -40,6 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to overlap with this concept)
   ([#81](https://github.com/CBIIT/ccdi-federation-api/pull/81)).
 
+### Fixed
+
+- Adds filtering to the `/file` endpoint
+  ([#88](https://github.com/CBIIT/ccdi-federation-api/pull/88)).
+
 ## [v0.7.0] — 03-25-2024
 
 ### Added
