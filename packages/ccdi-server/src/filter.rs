@@ -84,7 +84,7 @@ where
 ///         Kind::Participant,
 ///         Some(
 ///             Builder::default()
-///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None))
+///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None, None))
 ///                 .build(),
 ///         ),
 ///     ),
@@ -94,8 +94,8 @@ where
 ///         Kind::Participant,
 ///         Some(
 ///             Builder::default()
-///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None))
-///                 .append_race(Race::new(cde::v1::subject::Race::Asian, None, None))
+///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None, None))
+///                 .append_race(Race::new(cde::v1::subject::Race::Asian, None, None, None))
 ///                 .build(),
 ///         ),
 ///     ),

@@ -68,12 +68,12 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///     .sex(Sex::new(cde::v1::subject::Sex::Female, None, None))
+    ///     .sex(Sex::new(cde::v1::subject::Sex::Female, None, None, None))
     ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.sex(),
-    ///     Some(&Sex::new(cde::v1::subject::Sex::Female, None, None))
+    ///     Some(&Sex::new(cde::v1::subject::Sex::Female, None, None, None))
     /// );
     /// ```
     pub fn sex(&self) -> Option<&field::unowned::subject::Sex> {
@@ -92,12 +92,17 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///     .append_race(Race::new(cde::v1::subject::Race::Asian, None, None))
+    ///     .append_race(Race::new(cde::v1::subject::Race::Asian, None, None, None))
     ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.race(),
-    ///     Some(&vec![Race::new(cde::v1::subject::Race::Asian, None, None)])
+    ///     Some(&vec![Race::new(
+    ///         cde::v1::subject::Race::Asian,
+    ///         None,
+    ///         None,
+    ///         None
+    ///     )])
     /// );
     /// ```
     pub fn race(&self) -> Option<&Vec<field::unowned::subject::Race>> {
@@ -120,6 +125,7 @@ impl Metadata {
     ///         cde::v2::subject::Ethnicity::NotHispanicOrLatino,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -127,6 +133,7 @@ impl Metadata {
     ///     metadata.ethnicity(),
     ///     Some(&Ethnicity::new(
     ///         cde::v2::subject::Ethnicity::NotHispanicOrLatino,
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -179,7 +186,7 @@ impl Metadata {
     ///     ),
     /// );
     ///
-    /// let field = Identifier::new(subject_id, None, None);
+    /// let field = Identifier::new(subject_id, None, None, None);
     /// let metadata = Builder::default().append_identifier(field.clone()).build();
     ///
     /// assert_eq!(metadata.identifiers(), Some(&vec![field]));
@@ -204,6 +211,7 @@ impl Metadata {
     ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -211,6 +219,7 @@ impl Metadata {
     ///     metadata.age_at_vital_status(),
     ///     Some(&AgeAtVitalStatus::new(
     ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -236,6 +245,7 @@ impl Metadata {
     ///         cde::v1::subject::VitalStatus::Unknown,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -243,6 +253,7 @@ impl Metadata {
     ///     metadata.vital_status(),
     ///     Some(&VitalStatus::new(
     ///         cde::v1::subject::VitalStatus::Unknown,
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -274,12 +285,14 @@ impl Metadata {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,
@@ -358,6 +371,7 @@ impl Metadata {
                     ),
                     None,
                     None,
+                    None,
                 ),
                 field::unowned::subject::Identifier::new(
                     crate::subject::identifier::referenced::Identifier::Unlinked(
@@ -370,11 +384,13 @@ impl Metadata {
                     ),
                     None,
                     None,
+                    None,
                 ),
             ]),
             vital_status: Some(rand::random()),
             age_at_vital_status: Some(field::unowned::subject::AgeAtVitalStatus::new(
                 crate::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+                None,
                 None,
                 None,
             )),

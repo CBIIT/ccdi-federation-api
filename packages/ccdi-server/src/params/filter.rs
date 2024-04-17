@@ -21,7 +21,7 @@ pub struct Subject {
     #[param(required = false, nullable = false)]
     pub sex: Option<String>,
 
-    /// Matches any subject where any member of the `race` fieldmatches the
+    /// Matches any subject where any member of the `race` field matches the
     /// string provided.
     ///
     /// **Note:** a logical OR (`||`) is performed across the values when
@@ -36,7 +36,7 @@ pub struct Subject {
     #[param(required = false, nullable = false)]
     pub ethnicity: Option<String>,
 
-    /// Matches any subject where any member of the `identifiers` fieldmatches
+    /// Matches any subject where any member of the `identifiers` field matches
     /// the string provided.
     ///
     /// **Note:** a logical OR (`||`) is performed across the values when

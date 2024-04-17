@@ -136,6 +136,11 @@ use utoipa::openapi;
         cde::v1::file::checksum::MD5,
         cde::v1::file::Description,
 
+        // General harmonized field concepts.
+        field::Details,
+        field::details::Harmonizer,
+        field::details::Method,
+
         // Harmonized subject fields.
         field::unowned::subject::Sex,
         field::unowned::subject::Race,

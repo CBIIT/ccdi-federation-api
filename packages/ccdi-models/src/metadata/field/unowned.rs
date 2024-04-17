@@ -32,6 +32,23 @@ macro_rules! unowned_field {
             #[schema(nullable = false)]
             ancestors: Option<Vec<String>>,
 
+            /// Any important details pertaining specifically to this assigned,
+            /// harmonized value.
+            ///
+            /// Harmonization details _can_ be included for any metadata field,
+            /// but, generally speaking, should be omitted unless there is
+            /// important information to communicate regarding how the data in
+            /// the field specifically was harmonized.
+            ///
+            /// See the "Interpreting metadata assignments" section of the
+            /// specification for more details on when information should be
+            /// included in the `/metadata/fields/<entity>` response for a
+            /// metadata field and when it should be included in the `details`
+            /// key.
+            #[serde(skip_serializing_if = "Option::is_none")]
+            #[schema(nullable = false, value_type = Option<models::metadata::field::Details>)]
+            details: Option<crate::metadata::field::Details>,
+
             /// A free-text comment field.
             #[serde(skip_serializing_if = "Option::is_none")]
             #[schema(nullable = false)]
@@ -52,17 +69,20 @@ macro_rules! unowned_field {
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
             ///     None,
+            ///     None,
             ///     None
             /// );
             /// ```
             pub fn new(
                 value: $inner,
                 ancestors: Option<Vec<String>>,
+                details: Option<crate::metadata::field::Details>,
                 comment: Option<String>,
             ) -> Self {
                 Self {
                     value,
                     ancestors,
+                    details,
                     comment,
                 }
             }
@@ -79,6 +99,7 @@ macro_rules! unowned_field {
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
+            ///     None,
             ///     None,
             ///     None
             /// );
@@ -102,6 +123,7 @@ macro_rules! unowned_field {
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
             ///     Some(vec![String::from("another_field")]),
+            ///     None,
             ///     None
             /// );
             ///
@@ -109,6 +131,42 @@ macro_rules! unowned_field {
             /// ```
             pub fn ancestors(&self) -> Option<&Vec<String>> {
                 self.ancestors.as_ref()
+            }
+
+            /// Gets the details from the [`${stringify!($name)}`] by reference.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use ${stringify!($import)};
+            /// use ccdi_models as models;
+            ///
+            /// use models::metadata::${stringify!($as)};
+            /// use models::metadata::field::details::Harmonizer;
+            /// use models::metadata::field::details::Method;
+            /// use models::metadata::field::Details;
+            /// use models::Url;
+            ///
+            /// let details = Details::new(
+            ///     Some(Method::Mapped),
+            ///     Some(Harmonizer::DomainExpert),
+            ///     Some(Url::from(
+            ///         url::Url::try_from("https://hello.world/").unwrap(),
+            ///     )),
+            /// );
+            ///
+            ///
+            /// let field = ${stringify!($name)}::new(
+            ///     ${stringify!($value)},
+            ///     None,
+            ///     Some(details.clone()),
+            ///     None
+            /// );
+            ///
+            /// assert_eq!(field.details(), Some(&details));
+            /// ```
+            pub fn details(&self) -> Option<&crate::metadata::field::Details> {
+                self.details.as_ref()
             }
 
             /// Gets the comment from the [`${stringify!($name)}`] by reference.
@@ -123,6 +181,7 @@ macro_rules! unowned_field {
             ///
             /// let field = ${stringify!($name)}::new(
             ///     ${stringify!($value)},
+            ///     None,
             ///     None,
             ///     Some(String::from("Comment."))
             /// );
@@ -140,7 +199,7 @@ macro_rules! unowned_field {
             Standard: Distribution<$inner>,
         {
             fn sample<R: rand::Rng + ?Sized>(&self, _: &mut R) -> $name {
-                $name::new(rand::random(), None, None)
+                $name::new(rand::random(), None, None, None)
             }
         }
 

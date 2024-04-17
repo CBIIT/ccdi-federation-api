@@ -55,6 +55,7 @@ impl Builder {
     ///     models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
     ///     None,
     ///     None,
+    ///     None,
     /// );
     /// let builder = Builder::default().age_at_diagnosis(field);
     /// ```
@@ -74,7 +75,12 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::DiseasePhase;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = DiseasePhase::new(cde::v1::sample::DiseasePhase::InitialDiagnosis, None, None);
+    /// let field = DiseasePhase::new(
+    ///     cde::v1::sample::DiseasePhase::InitialDiagnosis,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
     /// let builder = Builder::default().disease_phase(field);
     /// ```
     pub fn disease_phase(mut self, field: field::unowned::sample::DiseasePhase) -> Self {
@@ -93,7 +99,7 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::TissueType;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = TissueType::new(cde::v2::sample::TissueType::Tumor, None, None);
+    /// let field = TissueType::new(cde::v2::sample::TissueType::Tumor, None, None, None);
     /// let builder = Builder::default().tissue_type(field);
     /// ```
     pub fn tissue_type(mut self, field: field::unowned::sample::TissueType) -> Self {
@@ -112,7 +118,12 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::TumorClassification;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = TumorClassification::new(cde::v1::sample::TumorClassification::Primary, None, None);
+    /// let field = TumorClassification::new(
+    ///     cde::v1::sample::TumorClassification::Primary,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
     /// let builder = Builder::default().tumor_classification(field);
     /// ```
     pub fn tumor_classification(
@@ -136,6 +147,7 @@ impl Builder {
     ///
     /// let field = TumorTissueMorphology::new(
     ///     cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///     None,
     ///     None,
     ///     None,
     /// );
@@ -164,6 +176,7 @@ impl Builder {
     ///     models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
     ///     None,
     ///     None,
+    ///     None,
     /// );
     /// let builder = Builder::default().age_at_collection(field);
     /// ```
@@ -182,7 +195,7 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::LibraryStrategy;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = LibraryStrategy::new(cde::v1::sample::LibraryStrategy::RnaSeq, None, None);
+    /// let field = LibraryStrategy::new(cde::v1::sample::LibraryStrategy::RnaSeq, None, None, None);
     /// let builder = Builder::default().library_strategy(field);
     /// ```
     pub fn library_strategy(mut self, field: field::unowned::sample::LibraryStrategy) -> Self {
@@ -201,7 +214,12 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::PreservationMethod;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = PreservationMethod::new(cde::v2::sample::PreservationMethod::Unknown, None, None);
+    /// let field = PreservationMethod::new(
+    ///     cde::v2::sample::PreservationMethod::Unknown,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
     /// let builder = Builder::default().preservation_method(field);
     /// ```
     pub fn preservation_method(
@@ -255,7 +273,7 @@ impl Builder {
     ///     ),
     /// );
     ///
-    /// let field = Identifier::new(sample_id, None, None);
+    /// let field = Identifier::new(sample_id, None, None, None);
     /// let builder = Builder::default().append_identifier(field);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -292,12 +310,14 @@ impl Builder {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,

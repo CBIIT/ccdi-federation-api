@@ -41,7 +41,7 @@ impl Builder {
     /// use models::metadata::field::unowned::subject::Sex;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Sex::new(cde::v1::subject::Sex::Unknown, None, None);
+    /// let field = Sex::new(cde::v1::subject::Sex::Unknown, None, None, None);
     /// let builder = Builder::default().sex(field);
     /// ```
     pub fn sex(mut self, sex: field::unowned::subject::Sex) -> Self {
@@ -60,7 +60,7 @@ impl Builder {
     /// use models::metadata::field::unowned::subject::Race;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Race::new(cde::v1::subject::Race::Unknown, None, None);
+    /// let field = Race::new(cde::v1::subject::Race::Unknown, None, None, None);
     /// let builder = Builder::default().append_race(field);
     /// ```
     pub fn append_race(mut self, race: field::unowned::subject::Race) -> Self {
@@ -83,7 +83,7 @@ impl Builder {
     /// use models::metadata::field::unowned::subject::Ethnicity;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = Ethnicity::new(cde::v2::subject::Ethnicity::Unknown, None, None);
+    /// let field = Ethnicity::new(cde::v2::subject::Ethnicity::Unknown, None, None, None);
     /// let builder = Builder::default().ethnicity(field);
     /// ```
     pub fn ethnicity(mut self, ethnicity: field::unowned::subject::Ethnicity) -> Self {
@@ -134,7 +134,7 @@ impl Builder {
     ///     ),
     /// );
     ///
-    /// let field = Identifier::new(subject_id, None, None);
+    /// let field = Identifier::new(subject_id, None, None, None);
     /// let builder = Builder::default().append_identifier(field);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -159,7 +159,7 @@ impl Builder {
     /// use models::metadata::field::unowned::subject::VitalStatus;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = VitalStatus::new(cde::v1::subject::VitalStatus::Unknown, None, None);
+    /// let field = VitalStatus::new(cde::v1::subject::VitalStatus::Unknown, None, None, None);
     /// let builder = Builder::default().vital_status(field);
     /// ```
     pub fn vital_status(mut self, vital_status: field::unowned::subject::VitalStatus) -> Self {
@@ -180,6 +180,7 @@ impl Builder {
     ///
     /// let field = AgeAtVitalStatus::new(
     ///     models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///     None,
     ///     None,
     ///     None,
     /// );
@@ -216,12 +217,14 @@ impl Builder {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,

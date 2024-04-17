@@ -6,10 +6,12 @@ use utoipa::ToSchema;
 
 pub mod description;
 
+pub mod details;
 pub mod owned;
 pub mod unowned;
 
 pub use description::Description;
+pub use details::Details;
 
 use crate::metadata::field;
 

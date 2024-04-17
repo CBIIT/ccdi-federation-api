@@ -60,6 +60,7 @@ impl Unharmonized {
     ///         Value::String("world".into()),
     ///         None,
     ///         None,
+    ///         None,
     ///     )),
     /// );
     /// ```
@@ -149,6 +150,7 @@ mod tests {
                 Value::String(String::from("world")),
                 None,
                 None,
+                None,
             )),
         );
 
@@ -156,6 +158,7 @@ mod tests {
             String::from("foo"),
             UnharmonizedField::Owned(owned::Field::new(
                 Value::String(String::from("bar")),
+                None,
                 None,
                 None,
                 Some(true),
