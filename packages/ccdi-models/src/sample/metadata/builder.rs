@@ -29,6 +29,9 @@ pub struct Builder {
     /// The library strategy for this sample.
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
 
+    /// The preservation method for this sample or biospecimen.
+    preservation_method: Option<field::unowned::sample::PreservationMethod>,
+
     /// The alternate identifiers for the sample.
     identifiers: Option<Vec<field::unowned::sample::Identifier>>,
 
@@ -175,13 +178,37 @@ impl Builder {
     /// ```
     /// use ccdi_cde as cde;
     /// use ccdi_models as models;
+    ///
     /// use models::metadata::field::unowned::sample::LibraryStrategy;
     /// use models::sample::metadata::Builder;
+    ///
     /// let field = LibraryStrategy::new(cde::v1::sample::LibraryStrategy::RnaSeq, None, None);
     /// let builder = Builder::default().library_strategy(field);
     /// ```
     pub fn library_strategy(mut self, field: field::unowned::sample::LibraryStrategy) -> Self {
         self.library_strategy = Some(field);
+        self
+    }
+
+    /// Sets the `preservation_method` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::PreservationMethod;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = PreservationMethod::new(cde::v2::sample::PreservationMethod::Unknown, None, None);
+    /// let builder = Builder::default().preservation_method(field);
+    /// ```
+    pub fn preservation_method(
+        mut self,
+        field: field::unowned::sample::PreservationMethod,
+    ) -> Self {
+        self.preservation_method = Some(field);
         self
     }
 
@@ -311,6 +338,7 @@ impl Builder {
             age_at_collection: self.age_at_collection,
             disease_phase: self.disease_phase,
             library_strategy: self.library_strategy,
+            preservation_method: self.preservation_method,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
             tumor_tissue_morphology: self.tumor_tissue_morphology,

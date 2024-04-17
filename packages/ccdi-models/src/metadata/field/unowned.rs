@@ -230,6 +230,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        PreservationMethod,
+        field::unowned::sample::PreservationMethod,
+        cde::v2::sample::PreservationMethod,
+        cde::v2::sample::PreservationMethod,
+        cde::v2::sample::PreservationMethod::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         Identifier,
         field::unowned::sample::Identifier,
         crate::sample::identifier::referenced::Identifier,
