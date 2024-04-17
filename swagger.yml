@@ -598,6 +598,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: preservation_method
+        in: query
+        description: |-
+          Matches any sample where the `preservation_method` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: tissue_type
         in: query
         description: |-
@@ -1499,6 +1507,32 @@ components:
       - Dead
       - Unknown
       - Unspecified
+    cde.v2.sample.PreservationMethod:
+      type: string
+      description: |-
+        **`caDSR CDE 8028962 v2.00`**
+
+        This metadata element is defined by the caDSR as "Text term that represents the method used to maintain the sample or biospecimen in a viable state.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=8028962%20and%20ver_nr=2>
+      enum:
+      - -80 degrees C
+      - Cryopreserved
+      - EDTA
+      - FFPE
+      - Formalin Fixed - Buffered
+      - Formalin Fixed - Unbuffered
+      - Fresh
+      - Fresh Dissociated
+      - Fresh Dissociated and Single Cell Sorted
+      - Fresh Dissociated and Single Cell Sorted into Plates
+      - Frozen
+      - Liquid Nitrogen
+      - Not Reported
+      - OCT
+      - Snap Frozen
+      - Unknown
     cde.v2.sample.TissueType:
       type: string
       description: |-
@@ -1744,6 +1778,25 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/cde.v1.sample.LibraryStrategy'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.PreservationMethod:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v2.sample.PreservationMethod'
         ancestors:
           type: array
           items:
@@ -2706,6 +2759,7 @@ components:
       - tumor_tissue_morphology
       - age_at_collection
       - library_strategy
+      - preservation_method
       - identifiers
       properties:
         age_at_diagnosis:
@@ -2735,6 +2789,10 @@ components:
         library_strategy:
           allOf:
           - $ref: '#/components/schemas/field.unowned.sample.LibraryStrategy'
+          nullable: true
+        preservation_method:
+          allOf:
+          - $ref: '#/components/schemas/field.unowned.sample.PreservationMethod'
           nullable: true
         identifiers:
           type: array
