@@ -84,7 +84,7 @@ info:
     `null` values, as present in this specification, represent a lack of assertion
     (or, equivalently, a "decline to comment") by the server. This value should not
     be construed to communicate _any_ content about the field it represents—either
-    in affirmation or dissent. Instead, they should be interpretted simply as an
+    in affirmation or dissent. Instead, they should be interpreted simply as an
     explicit omission of data that can be updated at any time if new information is
     made available to the source server.
 
@@ -257,6 +257,81 @@ info:
     - If your server serves data from various governing bodies spread across
       multiple, independent organizations, you should create multiple namespaces
       backed by multiple organizations.
+
+    ## Metadata
+
+    ### Interpreting metadata assignments
+
+    Metadata shared through this API is expected to be collected and harmonized in
+    a through a variety of mechanisms by individuals with a wide range of
+    backgrounds. In certain cases, communicating the process by which metadata was
+    collected and harmonized will be critical to correctly interpreting the
+    data—particularly in metadata fields where the permissible values are rapidly
+    evolving (for example, diagnosis ontologies).
+
+    Within this API, there are two primary ways you can learn about harmonized
+    metadata fields: (a) via the appropriate `/metadata/fields/<entity>` endpoint
+    and (b) through the `details` key within a harmonized metadata object.
+
+    - **For information concerning harmonized metadata values where the information
+      is universally true for all value assignments provided by the server**, the
+      information should be present in the `/metadata/fields/<entity>` endpoint
+      response.
+    - **For information concerning harmonized metadata values where the information
+      is specific to a particular value assignment (or subset of value assignments)
+      provided by the server**, the information should be present in the
+      `/metadata/fields/<entity>` endpoint response.
+
+    In general, when information _can_ be included in the
+    `/metadata/fields/<entity>` response instead of embedded in `details` keys, it
+    should be, as that consolidates the information without repeating it for every
+    entity. That said, sometimes it is not possible to make blanket statements
+    about all harmonized values for a particular metadata field: when the data
+    _cannot_ be included in the `/metadata/fields/<entity>` responses, it should be
+    reported under the correct facility within the `details` key of the individual
+    harmonized value objects.
+
+    #### An illustrative example
+
+    Consider an example where there are exactly two datasets, **Dataset A** and
+    **Dataset B**, that are both served by a single API server.
+
+    **When to store information in `/metadata/fields/<entity>`**
+
+    Assume that, for both datasets, the team running the API server received
+    [age_at_collection](https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_collection)
+    information _exactly_ as the harmonized data value expects and no further
+    curation was required. Here, the metadata values were handled the exact same
+    way for all datasets provided by the API server. In these cases, any details
+    regarding the harmonization process should be provided via the
+    `/metadata/fields/<entity>` endpoint rather than duplicating the information in
+    every metadata assignment object in the response.
+
+    **When to store information in the `details` key of harmonized metadata values**
+
+    Conversely, consider a scenario where the two datasets collected and harmonized
+    the values for [tissue
+    type](https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#tissue_type)
+    in different ways:
+
+    - For **Dataset A**, assume the team running the API server received values
+      aligned to the harmonized value list, and no further curation was required.
+    - For **Dataset B**, assume the team running the API server had to manually
+      curate the mappings between the data they received to the harmonized values.
+
+    In this case, no universal statement can be made about the process by which the
+    data was harmonized for the tissue type field. As such, no universal statement
+    can be made about the harmonization process in `/metadata/fields/<entity>`.
+    Instead, details regarding the harmonization process for these values should be
+    included directly in the `details` key of each of the metadata value assignment
+    objects.
+
+    #### A final note on harmonization details
+
+    Note that an API server is not _required_ to provide harmonization details for
+    any of the harmonized metadata it provides. This mechanism is simply available
+    to include information that is deemed contextually relevant at the discretion of
+    the curation team.
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
@@ -321,7 +396,7 @@ paths:
       - name: race
         in: query
         description: |-
-          Matches any subject where any member of the `race` fieldmatches the
+          Matches any subject where any member of the `race` field matches the
           string provided.
 
           **Note:** a logical OR (`||`) is performed across the values when
@@ -340,7 +415,7 @@ paths:
       - name: identifiers
         in: query
         description: |-
-          Matches any subject where any member of the `identifiers` fieldmatches
+          Matches any subject where any member of the `identifiers` field matches
           the string provided.
 
           **Note:** a logical OR (`||`) is performed across the values when
@@ -1595,6 +1670,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1617,6 +1695,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1636,6 +1717,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1655,6 +1739,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1674,6 +1761,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1693,6 +1783,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1712,6 +1805,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1731,6 +1827,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1750,6 +1849,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1769,6 +1871,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1826,6 +1931,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1845,6 +1953,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1864,6 +1975,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1883,6 +1997,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1902,6 +2019,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1921,6 +2041,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1940,6 +2063,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1959,6 +2085,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1978,6 +2107,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -2574,6 +2706,22 @@ components:
       - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
       - $ref: '#/components/schemas/models.metadata.field.description.Unharmonized'
       description: A description for a metadata field.
+    models.metadata.field.Details:
+      type: object
+      description: Details regarding the harmonization process.
+      properties:
+        method:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.details.Method'
+          nullable: true
+        harmonizer:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.details.Harmonizer'
+          nullable: true
+        url:
+          allOf:
+          - $ref: '#/components/schemas/models.Url'
+          nullable: true
     models.metadata.field.description.Harmonized:
       type: object
       description: |-
@@ -2662,6 +2810,31 @@ components:
           description: The name.
         url:
           $ref: '#/components/schemas/models.Url'
+    models.metadata.field.details.Harmonizer:
+      type: string
+      description: |-
+        A statement on the expertise of the individual (or individuals) who are
+        assigning the harmonized values. This information can help data receivers
+        understand the context within which the data was harmonized (particularly in
+        data fields that may be constantly evolving or changing—for instance,
+        diagnosis).
+
+        **NOTE:** if you find that there are types of harmonizers that are not
+        captured here, please make an issue on the GitHub repository so we can
+        support the value.
+      enum:
+      - DomainExpert
+      - CurationTeamMember
+    models.metadata.field.details.Method:
+      type: string
+      description: |-
+        The method by which data was harmonized.
+
+        **NOTE:** if you find that there are types of harmonization methods that are
+        not captured here, please make an issue on the GitHub repository so we can
+        support the value.
+      enum:
+      - Mapped
     models.namespace.Description:
       type: string
       description: |-

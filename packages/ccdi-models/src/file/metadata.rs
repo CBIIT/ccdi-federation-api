@@ -53,7 +53,7 @@ impl Metadata {
     /// use models::file::metadata::Builder;
     /// use models::metadata::field::unowned::file::Type;
     ///
-    /// let field = Type::new(cde::v1::file::Type::TXT, None, None);
+    /// let field = Type::new(cde::v1::file::Type::TXT, None, None, None);
     /// let metadata = Builder::default().r#type(field).build();
     ///
     /// assert_eq!(
@@ -76,7 +76,7 @@ impl Metadata {
     /// use models::file::metadata::Builder;
     /// use models::metadata::field::unowned::file::Size;
     ///
-    /// let field = Size::new(cde::v1::file::Size::new(42), None, None);
+    /// let field = Size::new(cde::v1::file::Size::new(42), None, None, None);
     /// let metadata = Builder::default().size(field).build();
     ///
     /// assert_eq!(
@@ -104,6 +104,7 @@ impl Metadata {
     ///     models::file::metadata::Checksums::new(Some(md5)),
     ///     None,
     ///     None,
+    ///     None,
     /// );
     /// let metadata = Builder::default().checksums(field).build();
     ///
@@ -129,6 +130,7 @@ impl Metadata {
     ///
     /// let field = Description::new(
     ///     cde::v1::file::Description::new("This is a description."),
+    ///     None,
     ///     None,
     ///     None,
     /// );
@@ -165,12 +167,14 @@ impl Metadata {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,
@@ -210,15 +214,18 @@ impl Metadata {
                 cde::v1::file::Type::TXT,
                 None,
                 None,
+                None,
             )),
             size: Some(field::unowned::file::Size::new(
                 cde::v1::file::Size::new(rand::thread_rng().gen_range(usize::MIN..=usize::MAX)),
+                None,
                 None,
                 None,
             )),
             checksums: Some(rand::random()),
             description: Some(field::unowned::file::Description::new(
                 cde::v1::file::Description::new("This is an example description."),
+                None,
                 None,
                 None,
             )),

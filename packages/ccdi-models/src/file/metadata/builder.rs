@@ -35,7 +35,7 @@ impl Builder {
     /// use models::file::metadata::Builder;
     /// use models::metadata::field::unowned::file::Type;
     ///
-    /// let field = Type::new(cde::v1::file::Type::TXT, None, None);
+    /// let field = Type::new(cde::v1::file::Type::TXT, None, None, None);
     /// let builder = Builder::default().r#type(field);
     /// ```
     pub fn r#type(mut self, field: field::unowned::file::Type) -> Self {
@@ -54,7 +54,7 @@ impl Builder {
     /// use models::file::metadata::Builder;
     /// use models::metadata::field::unowned::file::Size;
     ///
-    /// let field = Size::new(cde::v1::file::Size::new(42), None, None);
+    /// let field = Size::new(cde::v1::file::Size::new(42), None, None, None);
     /// let builder = Builder::default().size(field);
     /// ```
     pub fn size(mut self, field: field::unowned::file::Size) -> Self {
@@ -78,6 +78,7 @@ impl Builder {
     ///     models::file::metadata::Checksums::new(Some(md5)),
     ///     None,
     ///     None,
+    ///     None,
     /// );
     /// let builder = Builder::default().checksums(field);
     /// ```
@@ -99,6 +100,7 @@ impl Builder {
     ///
     /// let field = Description::new(
     ///     cde::v1::file::Description::new("This is a description."),
+    ///     None,
     ///     None,
     ///     None,
     /// );
@@ -132,12 +134,14 @@ impl Builder {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,

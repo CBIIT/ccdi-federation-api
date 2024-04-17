@@ -87,6 +87,7 @@ impl Metadata {
     ///         models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -94,6 +95,7 @@ impl Metadata {
     ///     metadata.age_at_diagnosis(),
     ///     Some(&AgeAtDiagnosis::new(
     ///         models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -119,6 +121,7 @@ impl Metadata {
     ///         cde::v1::sample::DiseasePhase::InitialDiagnosis,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -126,6 +129,7 @@ impl Metadata {
     ///     metadata.disease_phase(),
     ///     Some(&DiseasePhase::new(
     ///         cde::v1::sample::DiseasePhase::InitialDiagnosis,
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -151,6 +155,7 @@ impl Metadata {
     ///         cde::v1::sample::LibraryStrategy::RnaSeq,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -159,7 +164,8 @@ impl Metadata {
     ///     Some(&LibraryStrategy::new(
     ///         cde::v1::sample::LibraryStrategy::RnaSeq,
     ///         None,
-    ///         None
+    ///         None,
+    ///         None,
     ///     ))
     /// );
     /// ```
@@ -183,6 +189,7 @@ impl Metadata {
     ///         cde::v2::sample::PreservationMethod::Ffpe,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -191,7 +198,8 @@ impl Metadata {
     ///     Some(&PreservationMethod::new(
     ///         cde::v2::sample::PreservationMethod::Ffpe,
     ///         None,
-    ///         None
+    ///         None,
+    ///         None,
     ///     ))
     /// );
     /// ```
@@ -215,6 +223,7 @@ impl Metadata {
     ///         cde::v2::sample::TissueType::Tumor,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -222,6 +231,7 @@ impl Metadata {
     ///     metadata.tissue_type(),
     ///     Some(&TissueType::new(
     ///         cde::v2::sample::TissueType::Tumor,
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -247,6 +257,7 @@ impl Metadata {
     ///         cde::v1::sample::TumorClassification::Primary,
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -254,6 +265,7 @@ impl Metadata {
     ///     metadata.tumor_classification(),
     ///     Some(&TumorClassification::new(
     ///         cde::v1::sample::TumorClassification::Primary,
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -279,6 +291,7 @@ impl Metadata {
     ///         cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -286,6 +299,7 @@ impl Metadata {
     ///     metadata.tumor_tissue_morphology(),
     ///     Some(&TumorTissueMorphology::new(
     ///         cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -313,6 +327,7 @@ impl Metadata {
     ///         models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
     ///         None,
     ///         None,
+    ///         None,
     ///     ))
     ///     .build();
     ///
@@ -320,6 +335,7 @@ impl Metadata {
     ///     metadata.age_at_collection(),
     ///     Some(&AgeAtCollection::new(
     ///         models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
+    ///         None,
     ///         None,
     ///         None
     ///     ))
@@ -372,7 +388,7 @@ impl Metadata {
     ///     ),
     /// );
     ///
-    /// let field = Identifier::new(sample_id, None, None);
+    /// let field = Identifier::new(sample_id, None, None, None);
     /// let metadata = Builder::default().append_identifier(field.clone()).build();
     ///
     /// assert_eq!(metadata.identifiers(), Some(&vec![field]));
@@ -403,12 +419,14 @@ impl Metadata {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,
@@ -477,6 +495,7 @@ impl Metadata {
                 crate::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
                 None,
                 None,
+                None,
             )),
             disease_phase: rand::random(),
             library_strategy: rand::random(),
@@ -488,9 +507,11 @@ impl Metadata {
                 ccdi_cde::v1::sample::TumorTissueMorphology::from(String::from("8000/0")),
                 None,
                 None,
+                None,
             )),
             age_at_collection: Some(field::unowned::sample::AgeAtCollection::new(
                 crate::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
+                None,
                 None,
                 None,
             )),
@@ -506,6 +527,7 @@ impl Metadata {
                     ),
                     None,
                     None,
+                    None,
                 ),
                 field::unowned::sample::Identifier::new(
                     crate::sample::identifier::referenced::Identifier::Unlinked(
@@ -516,6 +538,7 @@ impl Metadata {
                                 .collect::<String>()
                         )),
                     ),
+                    None,
                     None,
                     None,
                 ),
