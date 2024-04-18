@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `/metadata/file/fields` ([link to
   card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853672),
   [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
+- Two new metadata elements were added for samples ([link to card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853844), [#89](https://github.com/CBIIT/ccdi-federation-api/pull/89)).
+  - The library strategy for the sample (CDE 6273393 v1.00, [#48](https://github.com/CBIIT/ccdi-federation-api/discussions/48))
+  - The preservation method for the sample's biospecimen (CDE 8028962 v2.00, [#64](https://github.com/CBIIT/ccdi-federation-api/discussions/64))
 
 ### Changed
 
@@ -50,11 +53,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Five new metadata elements were added for files ([#63](https://github.com/CBIIT/ccdi-federation-api/pull/63)).
-  - The identifier for the file (CDE 11284037 v1.00, [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/#52))
-  - The type of file (CDE 11416926 v1.00, [#53](https://github.com/CBIIT/ccdi-federation-api/discussions/#53)).
-  - The size of the file (CDE 11479876 v1.00, [#55](https://github.com/CBIIT/ccdi-federation-api/discussions/#55)).
-  - The md5 checksum of the file (CDE 11556150 v1.00, [#56](https://github.com/CBIIT/ccdi-federation-api/discussions/#56)).
-  - A description of the file (CDE 11280338 v1.00, [#54](https://github.com/CBIIT/ccdi-federation-api/discussions/#54)).
+  - The identifier for the file (CDE 11284037 v1.00, [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/52))
+  - The type of file (CDE 11416926 v1.00, [#53](https://github.com/CBIIT/ccdi-federation-api/discussions/53)).
+  - The size of the file (CDE 11479876 v1.00, [#55](https://github.com/CBIIT/ccdi-federation-api/discussions/55)).
+  - The md5 checksum of the file (CDE 11556150 v1.00, [#56](https://github.com/CBIIT/ccdi-federation-api/discussions/56)).
+  - A description of the file (CDE 11280338 v1.00, [#54](https://github.com/CBIIT/ccdi-federation-api/discussions/54)).
 - A `Namespace` now represents a top-level governance grouping of entities
   within the CCDI Federation API. See the new "Organizations", "Namespaces",
   and "Assigning Organizations and Namespaces" sections in the Swagger
