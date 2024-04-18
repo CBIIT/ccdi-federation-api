@@ -4,6 +4,21 @@
   </h1>
 </p>
 
+  <p align="center">
+    <a href="https://github.com/CBIIT/ccdi-federation-api/actions/workflows/specification.yml" target="_blank">
+      <img alt="CI: Specification Status" src="https://github.com/CBIIT/ccdi-federation-api/actions/workflows/specification.yml/badge.svg" />
+    </a>
+    <a href="https://github.com/CBIIT/ccdi-federation-api/actions/workflows/specification-tool.yml" target="_blank">
+      <img alt="CI: Specification Status" src="https://github.com/CBIIT/ccdi-federation-api/actions/workflows/specification-tool.yml/badge.svg" />
+    </a>
+    <a href="https://github.com/CBIIT/ccdi-federation-api/blob/main/LICENSE-APACHE" target="_blank">
+      <img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache 2.0-blue.svg" />
+    </a>
+    <a href="https://github.com/CBIIT/ccdi-federation-api/blob/main/LICENSE-MIT" target="_blank">
+      <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" />
+    </a>
+  </p>
+
 <p align="center">
     An API for querying federated pediatric cancer data from the broader community.
     <br />
@@ -26,6 +41,9 @@ an example server using fake data. Please refer to the [Learn Rust] guide to
 learn how to develop using Rust.
 
 ## Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check
+[issues page](https://github.com/CBIIT/ccdi-federation-api/issues).
 
 ### Development Process
 
@@ -51,7 +69,16 @@ learn how to develop using Rust.
 - All changes will either be squashed and merged or rebased off of the `main`
   branch—no merge commits are allowed in this repository.
 
+## License
+
+This project is licensed as either [Apache 2.0][license-apache] or
+[MIT][license-mit] at your discretion.
+
+Copyright © 2023-Present Childhood Cancer Data Initiative Federation
+
 [Actix Web]: https://actix.rs/
 [Learn Rust]: https://www.rust-lang.org/learn
 [Rust]: https://www.rust-lang.org/
 [`utoipa`]: https://github.com/juhaku/utoipa
+[license-apache]: https://github.com/CBIIT/ccdi-federation-api/blob/main/LICENSE-APACHE
+[license-mit]: https://github.com/CBIIT/ccdi-federation-api/blob/main/LICENSE-MIT
