@@ -79,6 +79,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -89,6 +90,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -182,6 +184,7 @@ impl Files {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -192,6 +195,7 @@ impl Files {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -288,6 +292,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let file = File::new(
@@ -336,6 +341,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let file = File::new(

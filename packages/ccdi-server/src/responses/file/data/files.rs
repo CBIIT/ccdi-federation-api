@@ -55,6 +55,7 @@ impl Files {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -65,6 +66,7 @@ impl Files {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///

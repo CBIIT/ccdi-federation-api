@@ -41,7 +41,7 @@ pub struct Sample {
     #[schema(value_type = models::subject::Identifier)]
     subject: crate::subject::Identifier,
 
-    /// Metadata associated with this [`Sample`].
+    /// Harmonized metadata associated with this [`Sample`].
     #[schema(
         value_type = Option<models::sample::Metadata>,
         nullable = true
@@ -71,6 +71,7 @@ impl Sample {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -81,6 +82,7 @@ impl Sample {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -124,6 +126,7 @@ impl Sample {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -134,6 +137,7 @@ impl Sample {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -177,6 +181,7 @@ impl Sample {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -187,6 +192,7 @@ impl Sample {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -231,6 +237,7 @@ impl Sample {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -241,6 +248,7 @@ impl Sample {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -278,6 +286,7 @@ impl Sample {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -288,6 +297,7 @@ impl Sample {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -354,6 +364,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let a = Sample::new(
@@ -429,6 +440,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let foo = Sample::new(

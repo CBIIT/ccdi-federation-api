@@ -110,6 +110,11 @@ use utoipa::openapi;
         server::routes::info::info_index,
     ),
     components(schemas(
+        // Harmonized common metadata elements.
+        models::metadata::common::Metadata,
+        cde::v1::deposition::DbgapPhsAccession,
+        models::metadata::common::deposition::Accession,
+
         // Harmonized subject metadata elements.
         cde::v1::subject::Race,
         cde::v1::subject::Sex,
@@ -120,6 +125,7 @@ use utoipa::openapi;
 
         // Harmonized sample metadata elements.
         models::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::Diagnosis,
         cde::v1::sample::DiseasePhase,
         cde::v1::sample::LibraryStrategy,
         cde::v2::sample::PreservationMethod,
@@ -151,6 +157,7 @@ use utoipa::openapi;
 
         // Harmonized sample fields.
         field::unowned::sample::AgeAtDiagnosis,
+        field::unowned::sample::Diagnosis,
         field::unowned::sample::DiseasePhase,
         field::unowned::sample::LibraryStrategy,
         field::unowned::sample::PreservationMethod,

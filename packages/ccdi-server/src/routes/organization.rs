@@ -28,8 +28,9 @@ lazy_static! {
         hm.insert(
             "example-organization",
             models::Organization::new(
-         "example-organization".parse::<organization::Identifier>().unwrap(),
-         "Example Organization".parse::<organization::Name>().unwrap(),
+                "example-organization".parse::<organization::Identifier>().unwrap(),
+                "Example Organization".parse::<organization::Name>().unwrap(),
+                None
             )
         );
 

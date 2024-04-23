@@ -82,7 +82,7 @@ pub struct File {
     #[schema(value_type = Vec<models::gateway::AnonymousOrReference>)]
     gateways: NonEmpty<gateway::AnonymousOrReference>,
 
-    /// Metadata associated with this [`File`].
+    /// Harmonized metadata associated with this [`File`].
     #[schema(
         value_type = Option<models::file::Metadata>,
         nullable = true
@@ -120,6 +120,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -130,6 +131,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -193,6 +195,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -203,6 +206,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -264,6 +268,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -274,6 +279,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -333,6 +339,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -343,6 +350,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -400,6 +408,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -410,6 +419,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -465,6 +475,7 @@ impl File {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -475,6 +486,7 @@ impl File {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -559,6 +571,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let a = File::new(
@@ -676,6 +689,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let foo = File::new(
