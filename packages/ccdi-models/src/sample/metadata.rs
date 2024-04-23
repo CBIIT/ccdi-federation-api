@@ -8,6 +8,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 use crate::sample::Identifier;
@@ -15,10 +16,12 @@ use crate::sample::Identifier;
 mod age_at_collection;
 mod age_at_diagnosis;
 pub mod builder;
+mod diagnosis;
 
 pub use age_at_collection::AgeAtCollection;
 pub use age_at_diagnosis::AgeAtDiagnosis;
 pub use builder::Builder;
+pub use diagnosis::Diagnosis;
 
 /// Metadata associated with a sample.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
@@ -27,6 +30,10 @@ pub struct Metadata {
     /// The approximate age at diagnosis.
     #[schema(value_type = field::unowned::sample::AgeAtDiagnosis, nullable = true)]
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
+
+    /// The diagnosis for the sample.
+    #[schema(value_type = field::unowned::sample::Diagnosis, nullable = true)]
+    diagnosis: Option<field::unowned::sample::Diagnosis>,
 
     /// The phase of the disease when this sample was acquired.
     #[schema(value_type = field::unowned::sample::DiseasePhase, nullable = true)]
@@ -63,6 +70,11 @@ pub struct Metadata {
     /// for the [`Sample`].
     #[schema(value_type = Vec<field::unowned::sample::Identifier>, nullable = true)]
     identifiers: Option<Vec<field::unowned::sample::Identifier>>,
+
+    /// Common metadata elements for all metadata blocks.
+    #[schema(value_type = models::metadata::common::Metadata)]
+    #[serde(flatten)]
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
@@ -103,6 +115,30 @@ impl Metadata {
     /// ```
     pub fn age_at_diagnosis(&self) -> Option<&field::unowned::sample::AgeAtDiagnosis> {
         self.age_at_diagnosis.as_ref()
+    }
+
+    /// Gets the diagnosis for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::sample::Diagnosis;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let diagnosis =
+    ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
+    ///
+    /// let metadata = Builder::default()
+    ///     .diagnosis(Diagnosis::new(diagnosis.clone(), None, None))
+    ///     .build();
+    ///
+    /// assert_eq!(metadata.diagnosis().unwrap().value(), &diagnosis);
+    /// ```
+    pub fn diagnosis(&self) -> Option<&field::unowned::sample::Diagnosis> {
+        self.diagnosis.as_ref()
     }
 
     /// Gets the harmonized disease phase for the [`Metadata`].
@@ -366,6 +402,7 @@ impl Metadata {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -376,6 +413,7 @@ impl Metadata {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -395,6 +433,26 @@ impl Metadata {
     /// ```
     pub fn identifiers(&self) -> Option<&Vec<field::unowned::sample::Identifier>> {
         self.identifiers.as_ref()
+    }
+
+    /// Gets the common metadata fields for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::common;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let metadata = Builder::default().common(common.clone()).build();
+    ///
+    /// assert_eq!(&common, metadata.common());
+    /// ```
+    pub fn common(&self) -> &common::Metadata {
+        &self.common
     }
 
     /// Gets the unharmonized fields for the [`Metadata`].
@@ -470,6 +528,7 @@ impl Metadata {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -480,6 +539,7 @@ impl Metadata {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -494,6 +554,11 @@ impl Metadata {
             age_at_diagnosis: Some(field::unowned::sample::AgeAtDiagnosis::new(
                 crate::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
                 None,
+                None,
+                None,
+            )),
+            diagnosis: Some(field::unowned::sample::Diagnosis::new(
+                Diagnosis::from(String::from("Random Diagnosis")),
                 None,
                 None,
             )),
@@ -544,6 +609,7 @@ impl Metadata {
                 ),
             ]),
             unharmonized: Default::default(),
+            common: Default::default(),
         }
     }
 }
@@ -557,7 +623,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"preservation_method\":null,\"identifiers\":null}"
+            "{\"age_at_diagnosis\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

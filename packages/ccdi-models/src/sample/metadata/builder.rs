@@ -1,5 +1,6 @@
 //! A builder for [`Metadata`].
 
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 use crate::sample::Metadata;
@@ -9,6 +10,9 @@ use crate::sample::Metadata;
 pub struct Builder {
     /// The approximate age at diagnosis.
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
+
+    /// The diagnosis for the sample.
+    diagnosis: Option<field::unowned::sample::Diagnosis>,
 
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
@@ -34,6 +38,9 @@ pub struct Builder {
 
     /// The alternate identifiers for the sample.
     identifiers: Option<Vec<field::unowned::sample::Identifier>>,
+
+    /// Common metadata elements for all metadata blocks.
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
@@ -61,6 +68,27 @@ impl Builder {
     /// ```
     pub fn age_at_diagnosis(mut self, field: field::unowned::sample::AgeAtDiagnosis) -> Self {
         self.age_at_diagnosis = Some(field);
+        self
+    }
+
+    /// Sets the `diagnosis` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    /// use ordered_float::OrderedFloat;
+    ///
+    /// use models::metadata::field::unowned::sample::Diagnosis;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let diagnosis =
+    ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
+    ///
+    /// let builder = Builder::default().diagnosis(Diagnosis::new(diagnosis.clone(), None, None));
+    /// ```
+    pub fn diagnosis(mut self, field: field::unowned::sample::Diagnosis) -> Self {
+        self.diagnosis = Some(field);
         self
     }
 
@@ -251,6 +279,7 @@ impl Builder {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -261,6 +290,7 @@ impl Builder {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -284,6 +314,25 @@ impl Builder {
 
         self.identifiers = Some(inner);
 
+        self
+    }
+
+    /// Sets the common metadata for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::common;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let builder = Builder::default().common(common);
+    /// ```
+    pub fn common(mut self, common: common::Metadata) -> Self {
+        self.common = common;
         self
     }
 
@@ -356,6 +405,7 @@ impl Builder {
         Metadata {
             age_at_diagnosis: self.age_at_diagnosis,
             age_at_collection: self.age_at_collection,
+            diagnosis: self.diagnosis,
             disease_phase: self.disease_phase,
             library_strategy: self.library_strategy,
             preservation_method: self.preservation_method,
@@ -364,6 +414,7 @@ impl Builder {
             tumor_tissue_morphology: self.tumor_tissue_morphology,
             identifiers: self.identifiers,
             unharmonized: self.unharmonized,
+            common: self.common,
         }
     }
 }

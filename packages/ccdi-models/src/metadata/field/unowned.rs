@@ -220,6 +220,19 @@ unowned_field!(
     serde_json::Value
 );
 
+pub mod common {
+    use super::*;
+
+    unowned_field!(
+        AgeAtDiagnosis,
+        field::unowned::sample::AgeAtDiagnosis,
+        crate::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::AgeAtDiagnosis::from(OrderedFloat(365.25)),
+        ordered_float::OrderedFloat
+    );
+}
+
 pub mod sample {
     use super::*;
 
@@ -241,6 +254,15 @@ pub mod sample {
         models::sample::metadata::AgeAtCollection,
         models::sample::metadata::AgeAtCollection::from(OrderedFloat(365.25)),
         ordered_float::OrderedFloat
+    );
+
+    unowned_field!(
+        Diagnosis,
+        field::unowned::sample::Diagnosis,
+        crate::sample::metadata::Diagnosis,
+        models::sample::metadata::Diagnosis,
+        models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia")),
+        ccdi_cde as cde
     );
 
     unowned_field!(
@@ -314,6 +336,7 @@ pub mod sample {
                                 "Example Organization"
                                     .parse::<models::organization::Name>()
                                     .unwrap(),
+                                None,
                             )
                             .id()
                             .clone(),
@@ -322,6 +345,7 @@ pub mod sample {
                                 .unwrap(),
                         ),
                         "support@example.com",
+                        None,
                         None,
                     )
                     .id()
@@ -404,6 +428,7 @@ pub mod subject {
                                 "Example Organization"
                                     .parse::<models::organization::Name>()
                                     .unwrap(),
+                                None
                             )
                             .id()
                             .clone(),
@@ -412,6 +437,7 @@ pub mod subject {
                                 .unwrap(),
                         ),
                         "support@example.com",
+                        None,
                         None,
                     )
                     .id()
@@ -465,6 +491,63 @@ pub mod file {
         cde::v1::file::Description,
         cde::v1::file::Description,
         cde::v1::file::Description::new("Hello, world!"),
+        ccdi_cde as cde
+    );
+}
+
+pub mod namespace {
+    use super::*;
+
+    use ccdi_cde as cde;
+
+    unowned_field!(
+        StudyShortTitle,
+        field::unowned::namespace::StudyShortTitle,
+        cde::v1::namespace::StudyShortTitle,
+        cde::v1::namespace::StudyShortTitle,
+        cde::v1::namespace::StudyShortTitle::from(String::from("A study short title")),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        StudyName,
+        field::unowned::namespace::StudyName,
+        cde::v1::namespace::StudyName,
+        cde::v1::namespace::StudyName,
+        cde::v1::namespace::StudyName::from(String::from("A study name")),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        StudyFundingId,
+        field::unowned::namespace::StudyFundingId,
+        cde::v1::namespace::StudyFundingId,
+        cde::v1::namespace::StudyFundingId,
+        cde::v1::namespace::StudyFundingId::from(String::from("A study name")),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
+        StudyId,
+        field::unowned::namespace::StudyId,
+        cde::v1::namespace::StudyId,
+        cde::v1::namespace::StudyId,
+        cde::v1::namespace::StudyId::AALL0232,
+        ccdi_cde as cde
+    );
+}
+
+pub mod organization {
+    use super::*;
+
+    use ccdi_cde as cde;
+
+    unowned_field!(
+        Institution,
+        field::unowned::organization::Institution,
+        cde::v1::organization::Institution,
+        cde::v1::organization::Institution,
+        cde::v1::organization::Institution::Treehouse,
         ccdi_cde as cde
     );
 }

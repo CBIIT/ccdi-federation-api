@@ -6,12 +6,14 @@ use utoipa::ToSchema;
 
 mod description;
 pub mod identifier;
+pub mod metadata;
 
 pub use description::Description;
 pub use identifier::Identifier;
+pub use metadata::Metadata;
 
 /// A namespace.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, ToSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::Namespace)]
 pub struct Namespace {
     /// The identifier for this namespace.
@@ -34,6 +36,13 @@ pub struct Namespace {
     /// in terms of the email address being actively monitored).
     #[schema(example = "support@example.com")]
     contact_email: String,
+
+    /// Harmonized metadata associated with this [`Namespace`].
+    #[schema(
+        value_type = Option<models::sample::Metadata>,
+        nullable = true
+    )]
+    metadata: Option<Metadata>,
 }
 
 impl Namespace {
@@ -56,6 +65,7 @@ impl Namespace {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -67,17 +77,20 @@ impl Namespace {
     ///     ),
     ///     "support@example.com",
     ///     Some("Hello, world!".parse::<namespace::Description>().unwrap()),
+    ///     None,
     /// );
     /// ```
     pub fn new(
         id: impl Into<Identifier>,
         contact_email: impl Into<String>,
         description: Option<Description>,
+        metadata: Option<Metadata>,
     ) -> Self {
         Self {
             id: id.into(),
             contact_email: contact_email.into(),
             description,
+            metadata,
         }
     }
 
@@ -100,6 +113,7 @@ impl Namespace {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -111,6 +125,7 @@ impl Namespace {
     ///     ),
     ///     "support@example.com",
     ///     Some("Hello, world!".parse::<namespace::Description>().unwrap()),
+    ///     None,
     /// );
     ///
     /// assert_eq!(
@@ -142,6 +157,7 @@ impl Namespace {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -153,6 +169,7 @@ impl Namespace {
     ///     ),
     ///     "support@example.com",
     ///     Some("Hello, world!".parse::<namespace::Description>().unwrap()),
+    ///     None,
     /// );
     ///
     /// assert_eq!(namespace.description().unwrap().as_str(), "Hello, world!");
@@ -180,6 +197,7 @@ impl Namespace {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -191,11 +209,54 @@ impl Namespace {
     ///     ),
     ///     "support@example.com",
     ///     Some("Hello, world!".parse::<namespace::Description>().unwrap()),
+    ///     None,
     /// );
     ///
     /// assert_eq!(namespace.contact_email(), "support@example.com");
     /// ```
     pub fn contact_email(&self) -> &str {
         self.contact_email.as_str()
+    }
+
+    /// Gets the metadata of the [`Namespace`] by reference.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::Namespace;
+    /// use models::Organization;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
+    ///     None,
+    /// );
+    ///
+    /// let metadata = namespace::metadata::Builder::default().build();
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    ///     Some(metadata.clone()),
+    /// );
+    ///
+    /// assert_eq!(namespace.metadata(), Some(&metadata));
+    /// ```
+    pub fn metadata(&self) -> Option<&Metadata> {
+        self.metadata.as_ref()
     }
 }

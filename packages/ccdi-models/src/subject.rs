@@ -37,7 +37,7 @@ pub struct Subject {
     #[schema(value_type = models::subject::Kind)]
     kind: Kind,
 
-    /// Metadata associated with this [`Subject`].
+    /// Harmonized metadata associated with this [`Subject`].
     #[schema(
         value_type = Option<models::subject::Metadata>,
         nullable = true
@@ -69,6 +69,7 @@ impl Subject {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -79,6 +80,7 @@ impl Subject {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -119,6 +121,7 @@ impl Subject {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -129,6 +132,7 @@ impl Subject {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -170,6 +174,7 @@ impl Subject {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -180,6 +185,7 @@ impl Subject {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -222,6 +228,7 @@ impl Subject {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -232,6 +239,7 @@ impl Subject {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -270,6 +278,7 @@ impl Subject {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -280,6 +289,7 @@ impl Subject {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -344,6 +354,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let a = Subject::new(
@@ -401,6 +412,7 @@ mod tests {
                     .parse::<namespace::Description>()
                     .unwrap(),
             ),
+            None,
         );
 
         let foo = Subject::new(

@@ -64,6 +64,7 @@ impl Identifier {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -98,6 +99,7 @@ impl Identifier {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -132,6 +134,7 @@ impl Identifier {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let identifier = Identifier::new(

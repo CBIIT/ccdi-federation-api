@@ -8,8 +8,10 @@ use actix_web::Responder;
 use indexmap::IndexMap;
 use lazy_static::lazy_static;
 
+use ccdi_cde as cde;
 use ccdi_models as models;
 
+use models::metadata::field;
 use models::namespace;
 use rand::distributions::Distribution as _;
 use rand::distributions::Uniform;
@@ -41,6 +43,14 @@ lazy_static! {
                         .parse::<namespace::Description>()
                         .unwrap(),
                 ),
+                Some(namespace::metadata::Builder::default()
+                    .study_short_title(
+                        field::unowned::namespace::StudyShortTitle::new(
+                            cde::v1::namespace::StudyShortTitle::from(
+                                String::from("A study short title")
+                            ),
+                            None, None)
+                    ).build())
             )
         );
 
@@ -59,6 +69,14 @@ lazy_static! {
                         .parse::<namespace::Description>()
                         .unwrap(),
                 ),
+                Some(namespace::metadata::Builder::default()
+                    .study_short_title(
+                        field::unowned::namespace::StudyShortTitle::new(
+                            cde::v1::namespace::StudyShortTitle::from(
+                                String::from("A study short title")
+                            ),
+                            None, None)
+                    ).build())
             )
         );
 
