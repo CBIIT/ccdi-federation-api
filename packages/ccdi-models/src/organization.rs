@@ -7,9 +7,11 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 pub mod identifier;
+pub mod metadata;
 mod name;
 
 pub use identifier::Identifier;
+pub use metadata::Metadata;
 pub use name::Name;
 
 /// An organization.
@@ -56,6 +58,13 @@ pub struct Organization {
         example = "Example Organization"
     )]
     name: Name,
+
+    /// Harmonized metadata associated with this [`Organization`].
+    #[schema(
+        value_type = Option<models::subject::Metadata>,
+        nullable = true
+    )]
+    metadata: Option<Metadata>,
 }
 
 impl Organization {
@@ -71,13 +80,22 @@ impl Organization {
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
     ///     "Example Organization".parse::<Name>().unwrap(),
+    ///     None,
     /// );
     /// ```
-    pub fn new(identifier: impl Into<Identifier>, name: impl Into<Name>) -> Self {
+    pub fn new(
+        identifier: impl Into<Identifier>,
+        name: impl Into<Name>,
+        metadata: Option<Metadata>,
+    ) -> Self {
         let identifier = identifier.into();
         let name = name.into();
 
-        Self { identifier, name }
+        Self {
+            identifier,
+            name,
+            metadata,
+        }
     }
 
     /// Gets the identifier of the [`Organization`] by reference.
@@ -92,6 +110,7 @@ impl Organization {
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
     ///     "Example Organization".parse::<Name>().unwrap(),
+    ///     None,
     /// );
     ///
     /// assert_eq!(organization.id().as_str(), "example-organization");
@@ -112,11 +131,36 @@ impl Organization {
     /// let organization = Organization::new(
     ///     "example-organization".parse::<Identifier>().unwrap(),
     ///     "Example Organization".parse::<Name>().unwrap(),
+    ///     None,
     /// );
     ///
     /// assert_eq!(organization.name(), "Example Organization");
     /// ```
     pub fn name(&self) -> &str {
         self.name.deref()
+    }
+
+    /// Gets the metadata of the [`Organization`] by reference.
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::organization::metadata::Builder;
+    /// use models::organization::Identifier;
+    /// use models::organization::Name;
+    /// use models::Organization;
+    ///
+    /// let metadata = Builder::default().build();
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization".parse::<Identifier>().unwrap(),
+    ///     "Example Organization".parse::<Name>().unwrap(),
+    ///     Some(metadata.clone()),
+    /// );
+    ///
+    /// assert_eq!(organization.metadata(), Some(&metadata));
+    /// ```
+    pub fn metadata(&self) -> Option<&Metadata> {
+        self.metadata.as_ref()
     }
 }

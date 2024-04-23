@@ -6,6 +6,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 
@@ -34,6 +35,11 @@ pub struct Metadata {
     /// A free-text description of the file.
     #[schema(value_type = field::unowned::file::Description, nullable = true)]
     description: Option<field::unowned::file::Description>,
+
+    /// Common metadata elements for all metadata blocks.
+    #[schema(value_type = models::metadata::common::Metadata)]
+    #[serde(flatten)]
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
@@ -143,6 +149,26 @@ impl Metadata {
         self.description.as_ref()
     }
 
+    /// Gets the common metadata fields for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::file::metadata::Builder;
+    /// use models::metadata::common;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let metadata = Builder::default().common(common.clone()).build();
+    ///
+    /// assert_eq!(&common, metadata.common());
+    /// ```
+    pub fn common(&self) -> &common::Metadata {
+        &self.common
+    }
+
     /// Gets the unharmonized fields for the [`Metadata`].
     ///
     /// # Examples
@@ -222,6 +248,7 @@ impl Metadata {
                 None,
                 None,
             )),
+            common: Default::default(),
             unharmonized: Default::default(),
         }
     }
@@ -236,7 +263,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"type\":null,\"size\":null,\"checksums\":null,\"description\":null}",
+            "{\"type\":null,\"size\":null,\"checksums\":null,\"description\":null,\"depositions\":null}",
         );
     }
 }

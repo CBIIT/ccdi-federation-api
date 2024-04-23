@@ -1,6 +1,7 @@
 //! A builder for [`Metadata`].
 
 use crate::file::Metadata;
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 
@@ -18,6 +19,9 @@ pub struct Builder {
 
     /// A free-text description of the file.
     description: Option<field::unowned::file::Description>,
+
+    /// Common metadata elements for all metadata blocks.
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
@@ -109,6 +113,25 @@ impl Builder {
         self
     }
 
+    /// Sets the common metadata for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::file::metadata::Builder;
+    /// use models::metadata::common;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let builder = Builder::default().common(common);
+    /// ```
+    pub fn common(mut self, common: common::Metadata) -> Self {
+        self.common = common;
+        self
+    }
+
     /// Inserts an [`UnharmonizedField`](field::UnharmonizedField) into the
     /// `unharmonized` map.
     ///
@@ -178,6 +201,7 @@ impl Builder {
             size: self.size,
             checksums: self.checksums,
             description: self.description,
+            common: self.common,
             unharmonized: self.unharmonized,
         }
     }

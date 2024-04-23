@@ -1,5 +1,6 @@
 //! A builder for [`Metadata`].
 
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 use crate::subject::Metadata;
@@ -24,6 +25,9 @@ pub struct Builder {
 
     /// The approximate age at vital status.
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
+
+    /// Common metadata elements for all metadata blocks.
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     unharmonized: fields::Unharmonized,
@@ -112,6 +116,7 @@ impl Builder {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -122,6 +127,7 @@ impl Builder {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -190,6 +196,25 @@ impl Builder {
         age_at_vital_status: field::unowned::subject::AgeAtVitalStatus,
     ) -> Self {
         self.age_at_vital_status = Some(age_at_vital_status);
+        self
+    }
+
+    /// Sets the common metadata for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::common;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let builder = Builder::default().common(common);
+    /// ```
+    pub fn common(mut self, common: common::Metadata) -> Self {
+        self.common = common;
         self
     }
 
@@ -264,6 +289,7 @@ impl Builder {
             identifiers: self.identifiers,
             vital_status: self.vital_status,
             age_at_vital_status: self.age_at_vital_status,
+            common: self.common,
             unharmonized: self.unharmonized,
         }
     }

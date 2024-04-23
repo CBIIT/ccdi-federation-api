@@ -1151,6 +1151,17 @@ paths:
                 $ref: '#/components/schemas/responses.Information'
 components:
   schemas:
+    cde.v1.deposition.DbgapPhsAccession:
+      type: string
+      description: |-
+        **`caDSR CDE 11524544 v1.00`**
+
+        This metadata element is defined by the caDSR as "A stable unique
+        alphanumeric identifier assigned to a study and any objects by the database
+        of Genotypes and Phenotypes (dbGaP).".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11524544%20and%20ver_nr=1>
     cde.v1.file.Description:
       type: string
       description: |-
@@ -1674,6 +1685,25 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.sample.Diagnosis:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.sample.metadata.Diagnosis'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.sample.DiseasePhase:
       type: object
       required:
@@ -2099,6 +2129,10 @@ components:
             This field is required to be a valid email address (both in format and
             in terms of the email address being actively monitored).
           example: support@example.com
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/models.sample.Metadata'
+          nullable: true
     models.Organization:
       type: object
       description: |-
@@ -2113,6 +2147,10 @@ components:
           $ref: '#/components/schemas/models.organization.Identifier'
         name:
           $ref: '#/components/schemas/models.organization.Name'
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/models.subject.Metadata'
+          nullable: true
     models.Sample:
       type: object
       description: |-
@@ -2166,32 +2204,34 @@ components:
         name:
           $ref: '#/components/schemas/cde.v1.file.Name'
     models.file.Metadata:
-      type: object
+      allOf:
+      - $ref: '#/components/schemas/models.metadata.common.Metadata'
+      - type: object
+        required:
+        - type
+        - size
+        - checksums
+        - description
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.file.Type'
+            nullable: true
+          size:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.file.Size'
+            nullable: true
+          checksums:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.file.Checksums'
+            nullable: true
+          description:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.file.Description'
+            nullable: true
+          unharmonized:
+            $ref: '#/components/schemas/fields.Unharmonized'
       description: Metadata associated with a file.
-      required:
-      - type
-      - size
-      - checksums
-      - description
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.file.Type'
-          nullable: true
-        size:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.file.Size'
-          nullable: true
-        checksums:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.file.Checksums'
-          nullable: true
-        description:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.file.Description'
-          nullable: true
-        unharmonized:
-          $ref: '#/components/schemas/fields.Unharmonized'
     models.file.metadata.Checksums:
       type: object
       description: A list of checksums for a file.
@@ -2509,6 +2549,39 @@ components:
       description: The status of a closed gateway.
       discriminator:
         propertyName: status
+    models.metadata.common.Metadata:
+      type: object
+      description: Metadata that is common to all metadata blocks.
+      required:
+      - depositions
+      properties:
+        depositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.metadata.common.deposition.Accession'
+          description: |-
+            Statements of deposition to public repositories for a given entity.
+
+            **NOTE**: when you declare that a dataset has been deposited to a public
+            repository such as dbGaP or EGA, you should also include a gateway and
+            link pointing to where that entity can be found in the public
+            repository.
+    models.metadata.common.deposition.Accession:
+      oneOf:
+      - type: object
+        required:
+        - kind
+        - value
+        properties:
+          kind:
+            type: string
+            enum:
+            - dbGaP
+          value:
+            $ref: '#/components/schemas/cde.v1.deposition.DbgapPhsAccession'
+      description: An accession of a public repository where the data has been deposited.
+      discriminator:
+        propertyName: kind
     models.metadata.field.Description:
       oneOf:
       - $ref: '#/components/schemas/models.metadata.field.description.Harmonized'
@@ -2690,63 +2763,70 @@ components:
           description: The name of the identifier.
           example: SampleName001
     models.sample.Metadata:
-      type: object
-      description: Metadata associated with a sample.
-      required:
-      - age_at_diagnosis
-      - disease_phase
-      - tissue_type
-      - tumor_classification
-      - tumor_tissue_morphology
-      - age_at_collection
-      - library_strategy
-      - preservation_method
-      - identifiers
-      properties:
-        age_at_diagnosis:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.AgeAtDiagnosis'
-          nullable: true
-        disease_phase:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.DiseasePhase'
-          nullable: true
-        tissue_type:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.TissueType'
-          nullable: true
-        tumor_classification:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.TumorClassification'
-          nullable: true
-        tumor_tissue_morphology:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.TumorTissueMorphology'
-          nullable: true
-        age_at_collection:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.AgeAtCollection'
-          nullable: true
-        library_strategy:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.LibraryStrategy'
-          nullable: true
-        preservation_method:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.sample.PreservationMethod'
-          nullable: true
-        identifiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/field.unowned.sample.Identifier'
-          description: |-
-            The alternate identifiers for the sample.
+      allOf:
+      - $ref: '#/components/schemas/models.metadata.common.Metadata'
+      - type: object
+        required:
+        - age_at_diagnosis
+        - diagnosis
+        - disease_phase
+        - tissue_type
+        - tumor_classification
+        - tumor_tissue_morphology
+        - age_at_collection
+        - library_strategy
+        - preservation_method
+        - identifiers
+        properties:
+          age_at_diagnosis:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.AgeAtDiagnosis'
+            nullable: true
+          diagnosis:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.Diagnosis'
+            nullable: true
+          disease_phase:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.DiseasePhase'
+            nullable: true
+          tissue_type:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.TissueType'
+            nullable: true
+          tumor_classification:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.TumorClassification'
+            nullable: true
+          tumor_tissue_morphology:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.TumorTissueMorphology'
+            nullable: true
+          age_at_collection:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.AgeAtCollection'
+            nullable: true
+          library_strategy:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.LibraryStrategy'
+            nullable: true
+          preservation_method:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.PreservationMethod'
+            nullable: true
+          identifiers:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.sample.Identifier'
+            description: |-
+              The alternate identifiers for the sample.
 
-            Note that this list of identifiers *must* include the main identifier
-            for the [`Sample`].
-          nullable: true
-        unharmonized:
-          $ref: '#/components/schemas/fields.Unharmonized'
+              Note that this list of identifiers *must* include the main identifier
+              for the [`Sample`].
+            nullable: true
+          unharmonized:
+            $ref: '#/components/schemas/fields.Unharmonized'
+      description: Metadata associated with a sample.
     models.sample.identifier.linked.Identifier:
       allOf:
       - $ref: '#/components/schemas/models.sample.Identifier'
@@ -2830,6 +2910,26 @@ components:
         * When the age at diagnosis is collected by the source server in years, the
         number of years is multiplied by 365.25 to arrive at an approximate number
         of days.
+    models.sample.metadata.Diagnosis:
+      type: string
+      description: |-
+        The diagnosis for a [`Sample`](crate::Sample).
+
+        This value can be any permissible diagnosis in v1.7.2 of the CCDI Submission
+        Template. These values are from the value set **diagnosis_classification**
+        found in the 'Terms and Value Sets' tab from the [CCDI Submission Template
+        v1.7.2].
+
+        To facilitate quick access to these values, we have provided a slimmed down
+        spreadsheet containing the valid diagnoses:
+
+        1. Download the spreadsheet linked below titled
+        'CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx'.
+        2. The permissible values are found in column A of the 'diagnosis' tab,
+        titled **diagnosis_category_term**
+
+        [CCDI Submission Template v1.7.2]: https://github.com/CBIIT/ccdi-model/blob/682a99d93b66540bb880ce5899ba8096968a96cf/metadata-manifest/CCDI_Submission_Template_v1.7.2.xlsx
+        [CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx]: https://cbiit.github.io/ccdi-federation-api/assets/CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx
     models.subject.Identifier:
       type: object
       description: |-
@@ -2856,50 +2956,52 @@ components:
       - Cell Line
       - Organoid
     models.subject.Metadata:
-      type: object
-      description: Metadata associated with a subject.
-      required:
-      - sex
-      - race
-      - ethnicity
-      - identifiers
-      - vital_status
-      - age_at_vital_status
-      properties:
-        sex:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.subject.Sex'
-          nullable: true
-        race:
-          type: array
-          items:
-            $ref: '#/components/schemas/field.unowned.subject.Race'
-          description: The race(s) of the subject.
-          nullable: true
-        ethnicity:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.subject.Ethnicity'
-          nullable: true
-        identifiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/field.unowned.subject.Identifier'
-          description: |-
-            The alternate identifiers for the subject.
+      allOf:
+      - $ref: '#/components/schemas/models.metadata.common.Metadata'
+      - type: object
+        required:
+        - sex
+        - race
+        - ethnicity
+        - identifiers
+        - vital_status
+        - age_at_vital_status
+        properties:
+          sex:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.subject.Sex'
+            nullable: true
+          race:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.subject.Race'
+            description: The race(s) of the subject.
+            nullable: true
+          ethnicity:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.subject.Ethnicity'
+            nullable: true
+          identifiers:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.subject.Identifier'
+            description: |-
+              The alternate identifiers for the subject.
 
-            Note that this list of identifiers *must* include the main identifier
-            for the [`Subject`].
-          nullable: true
-        vital_status:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.subject.VitalStatus'
-          nullable: true
-        age_at_vital_status:
-          allOf:
-          - $ref: '#/components/schemas/field.unowned.subject.AgeAtVitalStatus'
-          nullable: true
-        unharmonized:
-          $ref: '#/components/schemas/fields.Unharmonized'
+              Note that this list of identifiers *must* include the main identifier
+              for the [`Subject`].
+            nullable: true
+          vital_status:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.subject.VitalStatus'
+            nullable: true
+          age_at_vital_status:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.subject.AgeAtVitalStatus'
+            nullable: true
+          unharmonized:
+            $ref: '#/components/schemas/fields.Unharmonized'
+      description: Metadata associated with a subject.
     models.subject.identifier.linked.Identifier:
       allOf:
       - $ref: '#/components/schemas/models.subject.Identifier'

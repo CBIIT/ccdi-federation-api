@@ -99,6 +99,7 @@ impl NamespacePartitionedResult {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let identifier = Identifier::new(
@@ -156,6 +157,7 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let identifier = Identifier::new(

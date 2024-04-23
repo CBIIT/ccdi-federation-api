@@ -51,6 +51,7 @@ where
 ///     "Example Organization"
 ///         .parse::<organization::Name>()
 ///         .unwrap(),
+///     None,
 /// );
 ///
 /// let namespace = Namespace::new(
@@ -61,6 +62,7 @@ where
 ///             .unwrap(),
 ///     ),
 ///     "support@example.com",
+///     None,
 ///     None,
 /// );
 ///

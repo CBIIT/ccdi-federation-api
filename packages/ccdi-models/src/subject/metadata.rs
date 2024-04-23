@@ -8,6 +8,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
 
+use crate::metadata::common;
 use crate::metadata::field;
 use crate::metadata::fields;
 use crate::subject::Identifier;
@@ -48,6 +49,11 @@ pub struct Metadata {
     /// The approximate age at vital status.
     #[schema(value_type = field::unowned::subject::AgeAtVitalStatus, nullable = true)]
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
+
+    /// Common metadata elements for all metadata blocks.
+    #[schema(value_type = models::metadata::common::Metadata)]
+    #[serde(flatten)]
+    common: common::Metadata,
 
     /// An unharmonized map of metadata fields.
     #[schema(value_type = fields::Unharmonized)]
@@ -157,6 +163,7 @@ impl Metadata {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -167,6 +174,7 @@ impl Metadata {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -252,6 +260,26 @@ impl Metadata {
         self.vital_status.as_ref()
     }
 
+    /// Gets the common metadata fields for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::common;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let common = common::metadata::Builder::default().build();
+    /// let metadata = Builder::default().common(common.clone()).build();
+    ///
+    /// assert_eq!(&common, metadata.common());
+    /// ```
+    pub fn common(&self) -> &common::Metadata {
+        &self.common
+    }
+
     /// Gets the unharmonized fields for the [`Metadata`].
     ///
     /// # Examples
@@ -323,6 +351,7 @@ impl Metadata {
     ///     "Example Organization"
     ///         .parse::<organization::Name>()
     ///         .unwrap(),
+    ///     None,
     /// );
     ///
     /// let namespace = Namespace::new(
@@ -333,6 +362,7 @@ impl Metadata {
     ///             .unwrap(),
     ///     ),
     ///     "support@example.com",
+    ///     None,
     ///     None,
     /// );
     ///
@@ -378,6 +408,7 @@ impl Metadata {
                 None,
                 None,
             )),
+            common: Default::default(),
             unharmonized: Default::default(),
         }
     }
@@ -392,7 +423,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null}"
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"depositions\":null}"
         );
     }
 }

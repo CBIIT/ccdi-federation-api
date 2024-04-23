@@ -20,9 +20,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `/metadata/file/fields` ([link to
   card](https://github.com/orgs/CBIIT/projects/19?pane=issue&itemId=56853672),
   [#82](https://github.com/CBIIT/ccdi-federation-api/pull/82)).
-- Two new metadata elements were added for samples ([#89](https://github.com/CBIIT/ccdi-federation-api/pull/89)).
+- Nine new metadata elements were added
+  ([#89](https://github.com/CBIIT/ccdi-federation-api/pull/89) and
+  [#91](https://github.com/CBIIT/ccdi-federation-api/pull/91)).
   - The library strategy for the sample (CDE 6273393 v1.00, [#48](https://github.com/CBIIT/ccdi-federation-api/discussions/48))
-  - The preservation method for the sample's biospecimen (CDE 8028962 v2.00, [#64](https://github.com/CBIIT/ccdi-federation-api/discussions/64))
+  - The preservation method for the sample's biospecimen (CDE 8028962 v2.00,
+    [#64](https://github.com/CBIIT/ccdi-federation-api/discussions/64))
+  - Disease at diagnosis (unaligned,
+    [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/#38)).
+  - A short title for a study (CDE 11459812 v1.00,
+    [#69](https://github.com/CBIIT/ccdi-federation-api/discussions/69)).
+  - A funding id for a study (CDE 14528051 v1.00,
+    [#66](https://github.com/CBIIT/ccdi-federation-api/discussions/66)).
+  - An identifier for a study (CDE 12960571 v1.00,
+    [#70](https://github.com/CBIIT/ccdi-federation-api/discussions/70)).
+  - A name for a study (CDE 11459810 v1.00,
+    [#68](https://github.com/CBIIT/ccdi-federation-api/discussions/68)).
+  - Institution (CDE 12662779 v1.00,
+    [#67](https://github.com/CBIIT/ccdi-federation-api/discussions/67)).
+  - dbGaP phs Accession (CDE 11524544 v1.00,
+    [#65](https://github.com/CBIIT/ccdi-federation-api/discussions/65)).
+
 
 ### Changed
 
