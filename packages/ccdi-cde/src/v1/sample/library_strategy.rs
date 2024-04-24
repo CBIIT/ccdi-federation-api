@@ -343,7 +343,7 @@ pub enum LibraryStrategy {
     ///
     /// Shotgun sequencing of pooled DNA clones.
     #[serde(rename = "POOLCLONE")]
-    Poolclone,
+    PoolClone,
 
     /// `RAD-Seq`
     ///
@@ -567,7 +567,7 @@ impl std::fmt::Display for LibraryStrategy {
             LibraryStrategy::MreSeq => write!(f, "MRE-Seq"),
             LibraryStrategy::NcrnaSeq => write!(f, "ncRNA-Seq"),
             LibraryStrategy::Other => write!(f, "Other"),
-            LibraryStrategy::Poolclone => write!(f, "POOLCLONE"),
+            LibraryStrategy::PoolClone => write!(f, "POOLCLONE"),
             LibraryStrategy::RadSeq => write!(f, "RAD-Seq"),
             LibraryStrategy::RipSeq => write!(f, "RIP-Seq"),
             LibraryStrategy::RnaSeq => write!(f, "RNA-Seq"),
@@ -613,7 +613,7 @@ impl Distribution<LibraryStrategy> for Standard {
             19 => LibraryStrategy::MreSeq,
             20 => LibraryStrategy::NcrnaSeq,
             21 => LibraryStrategy::Other,
-            22 => LibraryStrategy::Poolclone,
+            22 => LibraryStrategy::PoolClone,
             23 => LibraryStrategy::RadSeq,
             24 => LibraryStrategy::RipSeq,
             25 => LibraryStrategy::RnaSeq,
@@ -663,7 +663,7 @@ mod tests {
         assert_eq!(LibraryStrategy::MreSeq.to_string(), "MRE-Seq");
         assert_eq!(LibraryStrategy::NcrnaSeq.to_string(), "ncRNA-Seq");
         assert_eq!(LibraryStrategy::Other.to_string(), "Other");
-        assert_eq!(LibraryStrategy::Poolclone.to_string(), "POOLCLONE");
+        assert_eq!(LibraryStrategy::PoolClone.to_string(), "POOLCLONE");
         assert_eq!(LibraryStrategy::RadSeq.to_string(), "RAD-Seq");
         assert_eq!(LibraryStrategy::RipSeq.to_string(), "RIP-Seq");
         assert_eq!(LibraryStrategy::RnaSeq.to_string(), "RNA-Seq");
@@ -780,7 +780,7 @@ mod tests {
             "\"Other\""
         );
         assert_eq!(
-            serde_json::to_string(&LibraryStrategy::Poolclone).unwrap(),
+            serde_json::to_string(&LibraryStrategy::PoolClone).unwrap(),
             "\"POOLCLONE\""
         );
         assert_eq!(
