@@ -1,3 +1,8 @@
+use itertools::Itertools;
+use models::gateway;
+use models::gateway::Link;
+use models::Gateway;
+use models::Url;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -43,15 +48,42 @@ pub struct Samples {
     /// The samples.
     #[schema(nullable = false)]
     data: Vec<models::Sample>,
+
+    // The gateways.
+    #[schema(nullable = false)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    gateways: Option<Vec<models::gateway::Named>>,
 }
 
 impl From<(Vec<models::Sample>, usize)> for Samples {
-    fn from((samples, count): (Vec<models::Sample>, usize)) -> Self {
-        let counts = Counts::new(samples.len(), count);
+    fn from((samples, total): (Vec<models::Sample>, usize)) -> Self {
+        let gateways = samples
+            .iter()
+            .flat_map(|sample| sample.gateways())
+            .flatten()
+            .flat_map(|gateway| gateway.as_reference().map(|gateway| gateway.to_owned()))
+            .unique()
+            .map(|name| {
+                gateway::Named::new(
+                    name,
+                    Gateway::Open {
+                        link: Link::Direct {
+                            url: "https://example.com".parse::<Url>().unwrap(),
+                        },
+                    },
+                )
+            })
+            .collect::<Vec<_>>();
+
+        let counts = Counts::new(samples.len(), total);
 
         Self {
             summary: Summary::new(counts),
             data: samples,
+            gateways: match gateways.is_empty() {
+                true => None,
+                false => Some(gateways),
+            },
         }
     }
 }

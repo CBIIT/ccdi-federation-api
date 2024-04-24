@@ -73,17 +73,20 @@ where
 ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName001"),
 ///         Kind::Participant,
 ///         None,
+///         None,
 ///     ),
 ///     // A subject with metadata but no specified sex.
 ///     Subject::new(
 ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName002"),
 ///         Kind::Participant,
+///         None,
 ///         Some(Builder::default().build()),
 ///     ),
 ///     // A subject with sex 'F'.
 ///     Subject::new(
 ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName003"),
 ///         Kind::Participant,
+///         None,
 ///         Some(
 ///             Builder::default()
 ///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None, None))
@@ -94,6 +97,7 @@ where
 ///     Subject::new(
 ///         models::subject::Identifier::new(namespace.id().clone(), "SubjectName004"),
 ///         Kind::Participant,
+///         None,
 ///         Some(
 ///             Builder::default()
 ///                 .sex(Sex::new(cde::v1::subject::Sex::Female, None, None, None))

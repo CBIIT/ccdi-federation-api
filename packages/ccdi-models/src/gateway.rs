@@ -101,3 +101,77 @@ pub enum AnonymousOrReference {
         gateway: String,
     },
 }
+
+impl AnonymousOrReference {
+    /// Gets the inner [`Gateway`] gateway if the [`AnonymousOrReference`] is
+    /// [`AnonymousOrReference::Anonymous`]. Else, returns [`None`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::Gateway;
+    /// use models::Url;
+    ///
+    /// let gateway = AnonymousOrReference::Anonymous {
+    ///     gateway: Gateway::Open {
+    ///         link: Link::Direct {
+    ///             url: "https://example.com".parse::<Url>().unwrap(),
+    ///         },
+    ///     },
+    /// };
+    ///
+    /// assert!(matches!(gateway.as_anonymous(), Some(_)));
+    ///
+    /// let gateway = AnonymousOrReference::Reference {
+    ///     gateway: String::from("gateway"),
+    /// };
+    ///
+    /// assert!(matches!(gateway.as_anonymous(), None));
+    /// ```
+    pub fn as_anonymous(&self) -> Option<&Gateway> {
+        match self {
+            AnonymousOrReference::Anonymous { gateway } => Some(gateway),
+            _ => None,
+        }
+    }
+
+    /// Gets the inner name of the gateway if the [`AnonymousOrReference`] is
+    /// [`AnonymousOrReference::Reference`]. Else, returns [`None`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::Gateway;
+    /// use models::Url;
+    ///
+    /// let gateway = AnonymousOrReference::Anonymous {
+    ///     gateway: Gateway::Open {
+    ///         link: Link::Direct {
+    ///             url: "https://example.com".parse::<Url>().unwrap(),
+    ///         },
+    ///     },
+    /// };
+    ///
+    /// assert!(matches!(gateway.as_reference(), None));
+    ///
+    /// let gateway = AnonymousOrReference::Reference {
+    ///     gateway: String::from("gateway"),
+    /// };
+    ///
+    /// assert!(matches!(gateway.as_reference(), Some(_)));
+    /// ```
+    pub fn as_reference(&self) -> Option<&str> {
+        match self {
+            AnonymousOrReference::Reference { gateway } => Some(gateway.as_str()),
+            _ => None,
+        }
+    }
+}
