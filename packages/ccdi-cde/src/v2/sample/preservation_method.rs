@@ -9,7 +9,8 @@ use crate::CDE;
 
 /// **`caDSR CDE 8028962 v2.00`**
 ///
-/// This metadata element is defined by the caDSR as "Text term that represents the method used to maintain the sample or biospecimen in a viable state.".
+/// This metadata element is defined by the caDSR as "Text term that represents
+/// the method used to maintain the sample or biospecimen in a viable state.".
 ///
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=8028962%20and%20ver_nr=2>
@@ -114,7 +115,8 @@ pub enum PreservationMethod {
 
     /// `Fresh Dissociated and Single Cell Sorted`
     ///
-    /// * **VM Long Name**: Fresh Dissociated Tissue Preparation, Single Cell Sorted
+    /// * **VM Long Name**: Fresh Dissociated Tissue Preparation, Single Cell
+    ///   Sorted
     /// * **VM Public ID**: 8031344
     /// * **Concept Code**: C185405
     /// * **Begin Date**:   02/09/2022
@@ -126,7 +128,8 @@ pub enum PreservationMethod {
 
     /// `Fresh Dissociated and Single Cell Sorted into Plates`
     ///
-    /// * **VM Long Name**: Fresh Dissociated Tissue Preparation, Single Cell Sorted into Plates
+    /// * **VM Long Name**: Fresh Dissociated Tissue Preparation, Single Cell
+    ///   Sorted into Plates
     /// * **VM Public ID**: 8031343
     /// * **Concept Code**: C185406
     /// * **Begin Date**:   02/09/2022

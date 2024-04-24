@@ -26,7 +26,7 @@ pub struct Builder {
     /// The approximate age at collection.
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
-    /// The library strategy for this sample.
+    /// The strategy for constructing the sequencing library.
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
 
     /// The preservation method for this sample or biospecimen.

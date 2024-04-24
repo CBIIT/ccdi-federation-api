@@ -49,7 +49,7 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::AgeAtCollection, nullable = true)]
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
-    /// The sequencing library technique type.
+    /// The strategy for constructing the sequencing library.
     #[schema(value_type = field::unowned::sample::LibraryStrategy, nullable = true)]
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
 

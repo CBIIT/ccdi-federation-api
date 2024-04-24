@@ -1512,7 +1512,8 @@ components:
       description: |-
         **`caDSR CDE 8028962 v2.00`**
 
-        This metadata element is defined by the caDSR as "Text term that represents the method used to maintain the sample or biospecimen in a viable state.".
+        This metadata element is defined by the caDSR as "Text term that represents
+        the method used to maintain the sample or biospecimen in a viable state.".
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=8028962%20and%20ver_nr=2>
