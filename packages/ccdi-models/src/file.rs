@@ -71,7 +71,7 @@ pub struct File {
     /// returned file in the `/file` response object. They are intended to be
     /// used when more than one file references the same gateway. This mechanism
     /// is available to ensure that the gateway object does not need to be
-    /// duplicated mulitple times in the response in these cases.
+    /// duplicated multiple times in the response in these cases.
     ///
     /// This field can contain multiple gateways to support scenarios where a
     /// file is available through more than one mechanism. We expect that only
@@ -79,8 +79,13 @@ pub struct File {
     ///
     /// **Note:** a file must have at least one gateway. If the file has no
     /// gateway, then it should not be returned as part of this API.
-    #[schema(value_type = Vec<models::gateway::AnonymousOrReference>)]
-    gateways: NonEmpty<gateway::AnonymousOrReference>,
+    #[schema(
+        value_type = Vec<models::gateway::AnonymousOrReference>,
+        required = false,
+        nullable = false,
+    )]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    gateways: Option<NonEmpty<gateway::AnonymousOrReference>>,
 
     /// Harmonized metadata associated with this [`File`].
     #[schema(
@@ -140,13 +145,13 @@ impl File {
     /// let file = File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
-    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
     ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
-    ///     }),
+    ///     })),
     ///     Some(Metadata::random()),
     /// );
     ///
@@ -155,7 +160,7 @@ impl File {
     pub fn new(
         id: Identifier,
         samples: NonEmpty<crate::sample::Identifier>,
-        gateways: NonEmpty<gateway::AnonymousOrReference>,
+        gateways: Option<NonEmpty<gateway::AnonymousOrReference>>,
         metadata: Option<Metadata>,
     ) -> Self {
         Self {
@@ -215,13 +220,13 @@ impl File {
     /// let file = File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
-    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
     ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
-    ///     }),
+    ///     })),
     ///     Some(Metadata::random()),
     /// );
     ///
@@ -288,13 +293,13 @@ impl File {
     /// let file = File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
-    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
     ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
-    ///     }),
+    ///     })),
     ///     Some(Metadata::random()),
     /// );
     ///
@@ -359,24 +364,25 @@ impl File {
     /// let file = File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
-    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
     ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
-    ///     }),
+    ///     })),
     ///     Some(Metadata::random()),
     /// );
     ///
-    /// assert_eq!(file.gateways().len(), 1);
-    /// let gateway = file.gateways().into_iter().next().unwrap();
+    /// let gateways = file.gateways().unwrap();
+    /// assert_eq!(gateways.len(), 1);
+    /// let gateway = gateways.into_iter().next().unwrap();
     /// assert!(matches!(gateway, AnonymousOrReference::Anonymous { .. }));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn gateways(&self) -> &NonEmpty<gateway::AnonymousOrReference> {
-        &self.gateways
+    pub fn gateways(&self) -> Option<&NonEmpty<gateway::AnonymousOrReference>> {
+        self.gateways.as_ref()
     }
 
     /// Gets the [`Metadata`] for the [`File`] (if it exists, by reference).
@@ -428,13 +434,13 @@ impl File {
     /// let file = File::new(
     ///     Identifier::new(namespace.id().clone(), cde::v1::file::Name::new("Foo.txt")),
     ///     NonEmpty::new(sample_id),
-    ///     NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
     ///         gateway: Gateway::Open {
     ///             link: Link::Direct {
     ///                 url: "https://example.com".parse::<Url>().unwrap(),
     ///             },
     ///         },
-    ///     }),
+    ///     })),
     ///     Some(Metadata::random()),
     /// );
     ///
@@ -497,7 +503,7 @@ impl File {
     ///     sample_id,
     /// );
     ///
-    /// assert_eq!(file.gateways().len(), 1);
+    /// assert_eq!(file.gateways().unwrap().len(), 1);
     /// ```
     pub fn random(identifier: Identifier, sample: crate::sample::Identifier) -> Self {
         let mut rng = thread_rng();
@@ -506,16 +512,16 @@ impl File {
             id: identifier.clone(),
             samples: NonEmpty::new(sample),
             gateways: match rng.gen_bool(0.9) {
-                true => NonEmpty::new(AnonymousOrReference::Anonymous {
+                true => Some(NonEmpty::new(AnonymousOrReference::Anonymous {
                     gateway: crate::Gateway::Open {
                         link: Link::Direct {
                             url: "https://example.com".parse::<Url>().unwrap(),
                         },
                     },
-                }),
-                false => NonEmpty::new(AnonymousOrReference::Reference {
+                })),
+                false => Some(NonEmpty::new(AnonymousOrReference::Reference {
                     gateway: String::from("gateway"),
-                }),
+                })),
             },
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random()),
@@ -551,7 +557,6 @@ mod tests {
     use crate::namespace;
     use crate::organization;
     use crate::sample;
-    use crate::Gateway;
     use crate::Namespace;
 
     use super::*;
@@ -580,13 +585,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
         let b = File::new(
@@ -595,13 +594,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
 
@@ -613,13 +606,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
         let b = File::new(
@@ -628,13 +615,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
 
@@ -646,13 +627,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
         let bar = File::new(
@@ -661,13 +636,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
 
@@ -698,13 +667,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
         let bar = File::new(
@@ -713,13 +676,7 @@ mod tests {
                 namespace.id().clone(),
                 "SampleName001",
             )),
-            NonEmpty::new(AnonymousOrReference::Anonymous {
-                gateway: Gateway::Open {
-                    link: Link::Direct {
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            }),
+            None,
             None,
         );
 

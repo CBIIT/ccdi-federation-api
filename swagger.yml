@@ -2513,7 +2513,6 @@ components:
       required:
       - id
       - samples
-      - gateways
       properties:
         id:
           $ref: '#/components/schemas/models.file.Identifier'
@@ -2556,7 +2555,7 @@ components:
             returned file in the `/file` response object. They are intended to be
             used when more than one file references the same gateway. This mechanism
             is available to ensure that the gateway object does not need to be
-            duplicated mulitple times in the response in these cases.
+            duplicated multiple times in the response in these cases.
 
             This field can contain multiple gateways to support scenarios where a
             file is available through more than one mechanism. We expect that only
@@ -2706,6 +2705,33 @@ components:
           $ref: '#/components/schemas/models.sample.Identifier'
         subject:
           $ref: '#/components/schemas/models.subject.Identifier'
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.AnonymousOrReference'
+          description: |-
+            One or more [gateways](AnonymousOrReference) through which this sample
+            can be accessed.
+
+            Gateways can be either [anonymous](AnonymousOrReference::Anonymous)
+            ([gateways](crate::Gateway) with no name) or a
+            [refererence](AnonymousOrReference::Reference) to a [named
+            gateway](gateway::Named) ([gateways](crate::Gateway) with a name).
+
+            **Anonymous** gateways are intended to be embedded directly within a
+            returned sample in the `/sample` response object. They have no name and
+            are only referred to by the sample within which they are embedded.
+
+            **Named** gateways, on the other hand, are included in the `gateways`
+            key in the `/sample` response object and referred to by name within a
+            returned sample in the `/sample` response object. They are intended to
+            be used when more than one sample references the same gateway. This
+            mechanism is available to ensure that the gateway object does not need
+            to be duplicated multiple times in the response in these cases.
+
+            This field can contain multiple gateways to support scenarios where a
+            sample is available through more than one mechanism. We expect that only
+            one gateway will be returned in most responses (if at all).
         metadata:
           allOf:
           - $ref: '#/components/schemas/models.sample.Metadata'
@@ -2721,6 +2747,33 @@ components:
           $ref: '#/components/schemas/models.subject.Identifier'
         kind:
           $ref: '#/components/schemas/models.subject.Kind'
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.AnonymousOrReference'
+          description: |-
+            One or more [gateways](AnonymousOrReference) through which this subject
+            can be accessed.
+
+            Gateways can be either [anonymous](AnonymousOrReference::Anonymous)
+            ([gateways](crate::Gateway) with no name) or a
+            [refererence](AnonymousOrReference::Reference) to a [named
+            gateway](gateway::Named) ([gateways](crate::Gateway) with a name).
+
+            **Anonymous** gateways are intended to be embedded directly within a
+            returned subject in the `/subject` response object. They have no name
+            and are only referred to by the subject within which they are embedded.
+
+            **Named** gateways, on the other hand, are included in the `gateways`
+            key in the `/subject` response object and referred to by name within a
+            returned subject in the `/subject` response object. They are intended to
+            be used when more than one subject references the same gateway. This
+            mechanism is available to ensure that the gateway object does not need
+            to be duplicated multiple times in the response in these cases.
+
+            This field can contain multiple gateways to support scenarios where a
+            subject is available through more than one mechanism. We expect that
+            only one gateway will be returned in most responses (if at all).
         metadata:
           allOf:
           - $ref: '#/components/schemas/models.subject.Metadata'
@@ -3750,11 +3803,20 @@ components:
 
         If there is a provided sort order, use that instead.
       required:
+      - summary
       - data
       properties:
+        summary:
+          $ref: '#/components/schemas/responses.entity.Summary'
         data:
-          allOf:
-          - $ref: '#/components/schemas/responses.file.Data'
+          type: array
+          items:
+            $ref: '#/components/schemas/responses.File'
+          description: The files.
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.Named'
     responses.Information:
       type: object
       description: A response for information regarding the server.
@@ -3819,6 +3881,10 @@ components:
           items:
             $ref: '#/components/schemas/models.Sample'
           description: The samples.
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.Named'
     responses.Subject:
       allOf:
       - $ref: '#/components/schemas/models.Subject'
@@ -3855,6 +3921,10 @@ components:
           items:
             $ref: '#/components/schemas/models.Subject'
           description: The subjects.
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/models.gateway.Named'
     responses.Summary:
       type: object
       description: A summary response for an entity endpoint.
@@ -4182,37 +4252,6 @@ components:
               needed. Please use this field if you intend to pass the error along to a
               user.
       description: A response indicating an error from the API.
-    responses.file.Data:
-      allOf:
-      - $ref: '#/components/schemas/responses.file.data.Files'
-      - $ref: '#/components/schemas/responses.file.data.Gateways'
-      - type: object
-      description: |-
-        The `data` key within a [`Files`](super::Files)
-        response.
-    responses.file.data.Files:
-      type: object
-      description: Files within a [`Data`](super::Data) response.
-      required:
-      - summary
-      - files
-      properties:
-        summary:
-          $ref: '#/components/schemas/responses.entity.Summary'
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/responses.File'
-          description: The files.
-    responses.file.data.Gateways:
-      type: object
-      description: Named gateways within a [`Data`](super::Data) response.
-      properties:
-        gateways:
-          type: array
-          items:
-            $ref: '#/components/schemas/models.gateway.Named'
-          description: The gateways.
     responses.info.api.Information:
       type: object
       description: Information that is specific to the API that the server implements.

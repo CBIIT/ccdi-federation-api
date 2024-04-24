@@ -285,9 +285,6 @@ use utoipa::openapi;
         // File responses.
         responses::File,
         responses::Files,
-        responses::file::Data,
-        responses::file::data::Files,
-        responses::file::data::Gateways,
         responses::by::count::file::Results,
         responses::by::count::file::NamespacePartitionedResult,
         responses::by::count::file::NamespacePartitionedResults,

@@ -8,6 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Adds both local and global gateway definitions to subjects and samples. With
+  this change, subjects, samples, and files now have the same top-level keys in
+  their responses ([link to
+  discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/79),
+  [#95](https://github.com/CBIIT/ccdi-federation-api/pull/95)).
+
 ### Fixed
 
 - Includes diagnosis in sample metadata fields.

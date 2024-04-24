@@ -1,6 +1,5 @@
 //! Routes related to files.
 
-use std::num::NonZeroUsize;
 use std::sync::Mutex;
 use std::sync::MutexGuard;
 
@@ -19,18 +18,12 @@ use rand::prelude::*;
 use ccdi_models as models;
 
 use models::file::Identifier;
-use models::gateway::Link;
-use models::gateway::Named;
 use models::File;
-use models::Gateway;
-use models::Url;
 use serde_json::Value;
 
 use crate::filter::filter;
-use crate::paginate::links;
-use crate::paginate::links::Relationship;
+use crate::paginate;
 use crate::params::filter::File as FilterFileParams;
-use crate::params::pagination;
 use crate::params::PaginationParams;
 use crate::params::PartitionParams;
 use crate::params::Partitionable;
@@ -39,7 +32,6 @@ use crate::responses::by;
 use crate::responses::by::count::file::NamespacePartitionedResult;
 use crate::responses::by::count::ValueCount;
 use crate::responses::error;
-use crate::responses::file::data;
 use crate::responses::Errors;
 use crate::responses::Files;
 use crate::responses::Summary;
@@ -254,116 +246,7 @@ pub async fn file_index(
 
     let files = filter::<File, FilterFileParams>(files, filter_params.0);
 
-    if files.is_empty() {
-        // If there are no entities to return, just return an empty array back.
-        return HttpResponse::Ok().json(Vec::<responses::File>::new());
-    }
-
-    let page = match NonZeroUsize::try_from(
-        pagination_params
-            .0
-            .page()
-            .unwrap_or(pagination::DEFAULT_PAGE),
-    ) {
-        Ok(value) => value,
-        Err(_) => {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::invalid_parameters(
-                    Some(vec![String::from("page")]),
-                    String::from("must be a non-zero usize"),
-                ),
-            ))
-        }
-    };
-
-    let per_page = match NonZeroUsize::try_from(
-        pagination_params
-            .0
-            .per_page()
-            .unwrap_or(pagination::DEFAULT_PER_PAGE),
-    ) {
-        Ok(value) => value,
-        Err(_) => {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::invalid_parameters(
-                    Some(vec![String::from("per_page")]),
-                    String::from("must be a non-zero usize"),
-                ),
-            ))
-        }
-    };
-
-    let pages = files.chunks(per_page.get()).collect::<Vec<_>>();
-
-    let links =
-        links::Builder::try_new("http://localhost:8000/file", page, per_page, pages.clone())
-            .unwrap_or_else(|err| {
-                match err {
-                    links::builder::Error::ParseError(err) => {
-                        match err {
-                            links::builder::ParseError::UrlParseError(_) => {
-                                // If this error occurs, there is something wrong
-                                // with the code that generates the base URL for the
-                                // links. This cannot be a user issue.
-                                panic!("provided URL is not parsable")
-                            }
-                        }
-                    }
-                }
-            })
-            .insert_link(Relationship::First)
-            .insert_link(Relationship::Prev)
-            .insert_link(Relationship::Next)
-            .insert_link(Relationship::Last)
-            .build();
-
-    let this_page_files = pages
-        .into_iter()
-        .nth(page.get() - 1)
-        .unwrap_or_default()
-        .iter()
-        .cloned()
-        .map(crate::responses::File::from)
-        .collect::<Vec<_>>();
-
-    if this_page_files.is_empty() {
-        return HttpResponse::UnprocessableEntity().json(Errors::from(
-            error::Kind::invalid_parameters(
-                Some(vec![String::from("page"), String::from("per_page")]),
-                format!("no {}s selected", stringify!(T).to_lowercase()),
-            ),
-        ));
-    }
-
-    let files = data::Files::from((this_page_files, files.len()));
-    let gateways = files
-        .expected_gateways()
-        .into_iter()
-        .map(|name| {
-            Named::new(
-                name,
-                Gateway::Open {
-                    link: Link::Direct {
-                        // SAFETY: this is manually crafted to unwrap
-                        // successfully every time.
-                        url: "https://example.com".parse::<Url>().unwrap(),
-                    },
-                },
-            )
-        })
-        .collect::<Vec<_>>();
-
-    let mut response = &mut HttpResponse::Ok();
-    response = response.insert_header(("link", links.to_string()));
-
-    // SAFETY: this will only error when the named gateways and references to
-    // gateways from files do not perfectly match (i.e., there is a reference to
-    // a named gateway that is not included in the response _or_ there is a
-    // named gatway in the response that is not referred to by any file). Above,
-    // we craft the response to _exactly_ match these gateways. Thus, this will
-    // always unwrap.
-    let result = Files::try_new(files, gateways).unwrap();
-    response.json(result)
+    paginate::response::<File, Files>(pagination_params.0, files, "http://localhost:8000/file")
 }
 
 /// Gets the file matching the provided name (if the file exists).

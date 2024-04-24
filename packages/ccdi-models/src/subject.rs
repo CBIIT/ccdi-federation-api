@@ -1,5 +1,6 @@
 //! Representations of subjects.
 
+use nonempty::NonEmpty;
 use rand::thread_rng;
 use rand::Rng;
 use serde::Deserialize;
@@ -14,7 +15,11 @@ pub use identifier::Identifier;
 pub use kind::Kind;
 pub use metadata::Metadata;
 
+use crate::gateway;
+use crate::gateway::AnonymousOrReference;
+use crate::gateway::Link;
 use crate::Entity;
+use crate::Url;
 
 /// A subject.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
@@ -37,7 +42,38 @@ pub struct Subject {
     #[schema(value_type = models::subject::Kind)]
     kind: Kind,
 
-    /// Harmonized metadata associated with this [`Subject`].
+    /// One or more [gateways](AnonymousOrReference) through which this subject
+    /// can be accessed.
+    ///
+    /// Gateways can be either [anonymous](AnonymousOrReference::Anonymous)
+    /// ([gateways](crate::Gateway) with no name) or a
+    /// [refererence](AnonymousOrReference::Reference) to a [named
+    /// gateway](gateway::Named) ([gateways](crate::Gateway) with a name).
+    ///
+    /// **Anonymous** gateways are intended to be embedded directly within a
+    /// returned subject in the `/subject` response object. They have no name
+    /// and are only referred to by the subject within which they are embedded.
+    ///
+    /// **Named** gateways, on the other hand, are included in the `gateways`
+    /// key in the `/subject` response object and referred to by name within a
+    /// returned subject in the `/subject` response object. They are intended to
+    /// be used when more than one subject references the same gateway. This
+    /// mechanism is available to ensure that the gateway object does not need
+    /// to be duplicated multiple times in the response in these cases.
+    ///
+    /// This field can contain multiple gateways to support scenarios where a
+    /// subject is available through more than one mechanism. We expect that
+    /// only one gateway will be returned in most responses (if at all).
+    #[schema(
+        value_type = Vec<models::gateway::AnonymousOrReference>,
+        required = false,
+        nullable = false,
+    )]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    gateways: Option<NonEmpty<gateway::AnonymousOrReference>>,
+
+    /// Metadata associated with this [`Subject`].
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(
         value_type = Option<models::subject::Metadata>,
         nullable = true
@@ -53,66 +89,19 @@ impl Subject {
     /// ```
     /// use ccdi_models as models;
     ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
     /// use models::metadata::field::unowned::subject::Identifier;
     /// use models::namespace;
     /// use models::organization;
     /// use models::subject::metadata::Builder;
     /// use models::subject::Kind;
+    /// use models::Gateway;
     /// use models::Namespace;
     /// use models::Organization;
     /// use models::Subject;
-    ///
-    /// let organization = Organization::new(
-    ///     "example-organization"
-    ///         .parse::<organization::Identifier>()
-    ///         .unwrap(),
-    ///     "Example Organization"
-    ///         .parse::<organization::Name>()
-    ///         .unwrap(),
-    ///     None,
-    /// );
-    ///
-    /// let namespace = Namespace::new(
-    ///     namespace::Identifier::new(
-    ///         organization.id().clone(),
-    ///         "ExampleNamespace"
-    ///             .parse::<namespace::identifier::Name>()
-    ///             .unwrap(),
-    ///     ),
-    ///     "support@example.com",
-    ///     None,
-    ///     None,
-    /// );
-    ///
-    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
-    ///
-    /// Subject::new(
-    ///     subject_id,
-    ///     Kind::Participant,
-    ///     Some(Builder::default().build()),
-    /// );
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn new(id: Identifier, kind: Kind, metadata: Option<Metadata>) -> Self {
-        Self { id, kind, metadata }
-    }
-
-    /// Gets the identifier for this [`Subject`] by reference.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use ccdi_models as models;
-    ///
-    /// use models::metadata::field::unowned::subject::Identifier;
-    /// use models::namespace;
-    /// use models::organization;
-    /// use models::subject::metadata::Builder;
-    /// use models::subject::Kind;
-    /// use models::Namespace;
-    /// use models::Organization;
-    /// use models::Subject;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -141,6 +130,87 @@ impl Subject {
     /// let subject = Subject::new(
     ///     subject_id,
     ///     Kind::Participant,
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
+    ///             },
+    ///         },
+    ///     })),
+    ///     Some(Builder::default().build()),
+    /// );
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn new(
+        id: Identifier,
+        kind: Kind,
+        gateways: Option<NonEmpty<gateway::AnonymousOrReference>>,
+        metadata: Option<Metadata>,
+    ) -> Self {
+        Self {
+            id,
+            kind,
+            gateways,
+            metadata,
+        }
+    }
+
+    /// Gets the identifier for this [`Subject`] by reference.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::metadata::field::unowned::subject::Identifier;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::Gateway;
+    /// use models::Namespace;
+    /// use models::Organization;
+    /// use models::Subject;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
+    ///     None,
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    ///     None,
+    /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
+    ///
+    /// let subject = Subject::new(
+    ///     subject_id,
+    ///     Kind::Participant,
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
+    ///             },
+    ///         },
+    ///     })),
     ///     Some(Builder::default().build()),
     /// );
     ///
@@ -158,14 +228,19 @@ impl Subject {
     /// ```
     /// use ccdi_models as models;
     ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
     /// use models::metadata::field::unowned::subject::Identifier;
     /// use models::namespace;
     /// use models::organization;
     /// use models::subject::metadata::Builder;
     /// use models::subject::Kind;
+    /// use models::Gateway;
     /// use models::Namespace;
     /// use models::Organization;
     /// use models::Subject;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -194,6 +269,13 @@ impl Subject {
     /// let subject = Subject::new(
     ///     subject_id,
     ///     Kind::Participant,
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
+    ///             },
+    ///         },
+    ///     })),
     ///     Some(Builder::default().build()),
     /// );
     ///
@@ -205,6 +287,79 @@ impl Subject {
         &self.kind
     }
 
+    /// Gets the [gateway(s)](AnonymousOrReference) for the [`Subject`] (by reference).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::file::Identifier;
+    /// use models::file::Metadata;
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
+    /// use models::namespace;
+    /// use models::organization;
+    /// use models::sample;
+    /// use models::subject::metadata::Builder;
+    /// use models::subject::Kind;
+    /// use models::File;
+    /// use models::Gateway;
+    /// use models::Namespace;
+    /// use models::Organization;
+    /// use models::Subject;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
+    ///
+    /// let organization = Organization::new(
+    ///     "example-organization"
+    ///         .parse::<organization::Identifier>()
+    ///         .unwrap(),
+    ///     "Example Organization"
+    ///         .parse::<organization::Name>()
+    ///         .unwrap(),
+    ///     None,
+    /// );
+    ///
+    /// let namespace = Namespace::new(
+    ///     namespace::Identifier::new(
+    ///         organization.id().clone(),
+    ///         "ExampleNamespace"
+    ///             .parse::<namespace::identifier::Name>()
+    ///             .unwrap(),
+    ///     ),
+    ///     "support@example.com",
+    ///     None,
+    ///     None,
+    /// );
+    ///
+    /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
+    ///
+    /// let subject = Subject::new(
+    ///     subject_id,
+    ///     Kind::Participant,
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
+    ///             },
+    ///         },
+    ///     })),
+    ///     Some(Builder::default().build()),
+    /// );
+    ///
+    /// let gateways = subject.gateways().unwrap();
+    /// assert_eq!(gateways.len(), 1);
+    /// let gateway = gateways.into_iter().next().unwrap();
+    /// assert!(matches!(gateway, AnonymousOrReference::Anonymous { .. }));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn gateways(&self) -> Option<&NonEmpty<gateway::AnonymousOrReference>> {
+        self.gateways.as_ref()
+    }
+
     /// Gets the metadata for this [`Subject`] by reference.
     ///
     /// # Examples
@@ -212,14 +367,19 @@ impl Subject {
     /// ```
     /// use ccdi_models as models;
     ///
+    /// use models::gateway::AnonymousOrReference;
+    /// use models::gateway::Link;
     /// use models::metadata::field::unowned::subject::Identifier;
     /// use models::namespace;
     /// use models::organization;
     /// use models::subject::metadata::Builder;
     /// use models::subject::Kind;
+    /// use models::Gateway;
     /// use models::Namespace;
     /// use models::Organization;
     /// use models::Subject;
+    /// use models::Url;
+    /// use nonempty::NonEmpty;
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -245,7 +405,18 @@ impl Subject {
     ///
     /// let subject_id = models::subject::Identifier::new(namespace.id().clone(), "SubjectName001");
     /// let metadata = Builder::default().build();
-    /// let subject = Subject::new(subject_id, Kind::Participant, Some(metadata.clone()));
+    /// let subject = Subject::new(
+    ///     subject_id,
+    ///     Kind::Participant,
+    ///     Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+    ///         gateway: Gateway::Open {
+    ///             link: Link::Direct {
+    ///                 url: "https://example.com".parse::<Url>().unwrap(),
+    ///             },
+    ///         },
+    ///     })),
+    ///     Some(metadata.clone()),
+    /// );
     ///
     /// assert_eq!(subject.metadata(), Some(&metadata));
     ///
@@ -302,6 +473,18 @@ impl Subject {
         Self {
             id: identifier.clone(),
             kind: rand::random(),
+            gateways: match rng.gen_bool(0.9) {
+                true => Some(NonEmpty::new(AnonymousOrReference::Anonymous {
+                    gateway: crate::Gateway::Open {
+                        link: Link::Direct {
+                            url: "https://example.com".parse::<Url>().unwrap(),
+                        },
+                    },
+                })),
+                false => Some(NonEmpty::new(AnonymousOrReference::Reference {
+                    gateway: String::from("gateway"),
+                })),
+            },
             metadata: match rng.gen_bool(0.7) {
                 true => Some(Metadata::random(identifier)),
                 false => None,
@@ -361,10 +544,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("A")),
             Kind::Participant,
             None,
+            None,
         );
         let b = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
+            None,
             None,
         );
 
@@ -374,10 +559,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("C")),
             Kind::Participant,
             None,
+            None,
         );
         let b = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
+            None,
             None,
         );
 
@@ -387,10 +574,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
+            None,
         );
         let bar = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
+            None,
             None,
         );
 
@@ -419,10 +608,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
+            None,
         );
         let bar = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
+            None,
             None,
         );
 
@@ -432,10 +623,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("A")),
             Kind::Participant,
             None,
+            None,
         );
         let bar = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("B")),
             Kind::Participant,
+            None,
             None,
         );
 
@@ -445,10 +638,12 @@ mod tests {
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
             None,
+            None,
         );
         let bar = Subject::new(
             Identifier::new(namespace.id().clone(), Name::new("Name")),
             Kind::Participant,
+            None,
             Some(metadata::Builder::default().build()),
         );
 
