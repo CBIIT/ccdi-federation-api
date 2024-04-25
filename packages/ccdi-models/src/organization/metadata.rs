@@ -13,9 +13,9 @@ mod builder;
 
 pub use builder::Builder;
 
-/// Metadata associated with a file.
+/// Metadata associated with an organization.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
-#[schema(as = models::file::Metadata)]
+#[schema(as = models::organization::Metadata)]
 pub struct Metadata {
     /// Institutions associated with an organization.
     ///

@@ -17,7 +17,7 @@ use crate::CDE;
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14528051%20and%20ver_nr=1>
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v1::namespace::StudyFundingOrganization)]
+#[schema(as = cde::v1::namespace::StudyFundingId)]
 pub struct StudyFundingId(String);
 
 impl From<String> for StudyFundingId {
