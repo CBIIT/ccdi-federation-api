@@ -13,9 +13,9 @@ mod builder;
 
 pub use builder::Builder;
 
-/// Metadata associated with a file.
+/// Metadata associated with an organization.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
-#[schema(as = models::file::Metadata)]
+#[schema(as = models::organization::Metadata)]
 pub struct Metadata {
     /// Institutions associated with an organization.
     ///
@@ -51,7 +51,12 @@ impl Metadata {
     /// use models::metadata::field::unowned::organization::Institution;
     /// use models::organization::metadata::Builder;
     ///
-    /// let field = Institution::new(cde::v1::organization::Institution::Treehouse, None, None);
+    /// let field = Institution::new(
+    ///     cde::v1::organization::Institution::Treehouse,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
     /// let metadata = Builder::default()
     ///     .push_institution(field.clone())
     ///     .push_institution(field.clone())
@@ -110,6 +115,7 @@ impl Metadata {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
@@ -119,6 +125,7 @@ impl Metadata {
     ///             None,
     ///             None,
     ///             None,
+    ///             Some(true),
     ///         )),
     ///     )
     ///     .build();

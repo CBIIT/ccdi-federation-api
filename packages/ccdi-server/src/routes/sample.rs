@@ -10,7 +10,6 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
-use indexmap::IndexMap;
 use itertools::Itertools as _;
 use models::namespace;
 use models::sample::Identifier;
@@ -30,10 +29,12 @@ use crate::params::Partitionable;
 use crate::responses;
 use crate::responses::by;
 use crate::responses::by::count::sample::NamespacePartitionedResult;
+use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Samples;
 use crate::responses::Summary;
+use crate::routes::GroupByResults;
 
 /// A store for [`Sample`]s.
 #[derive(Debug)]
@@ -360,19 +361,22 @@ pub async fn samples_by_count(
 
             let namespace_results = group_by(namespace_samples, &field);
 
-            if namespace_results.values.is_empty() {
-                return HttpResponse::UnprocessableEntity().json(Errors::from(
-                    error::Kind::unsupported_field(
-                        field.to_string(),
-                        String::from("This field is not present for samples."),
-                    ),
-                ));
+            match namespace_results {
+                GroupByResults::Supported(namespace_results) => {
+                    let namespace_partitioned_result =
+                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+                    results.push(namespace_partitioned_result);
+                }
+                GroupByResults::Unsupported => {
+                    return HttpResponse::UnprocessableEntity().json(Errors::from(
+                        error::Kind::unsupported_field(
+                            field.to_string(),
+                            String::from("This field is not present for samples."),
+                        ),
+                    ));
+                }
             }
-
-            let namespace_partitioned_result =
-                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-            results.push(namespace_partitioned_result);
         }
 
         HttpResponse::Ok().json(by::count::sample::Response::NamespacePartitioned(
@@ -381,105 +385,185 @@ pub async fn samples_by_count(
     } else {
         let results = group_by(samples, &field);
 
-        if results.values.is_empty() {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
+        match results {
+            GroupByResults::Supported(results) => {
+                HttpResponse::Ok().json(by::count::sample::Response::Unpartitioned(results))
+            }
+            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
                 error::Kind::unsupported_field(
                     field.to_string(),
                     String::from("This field is not present for samples."),
                 ),
-            ));
+            )),
         }
-
-        HttpResponse::Ok().json(by::count::sample::Response::Unpartitioned(results))
     }
 }
 
-fn group_by(samples: Vec<Sample>, field: &str) -> responses::by::count::sample::Results {
-    let values = samples
+fn group_by(
+    samples: Vec<Sample>,
+    field: &str,
+) -> GroupByResults<responses::by::count::sample::Results> {
+    let values: Vec<Option<Option<Value>>> = samples
         .iter()
         .map(|sample| parse_field(field, sample))
         .collect::<Vec<_>>();
 
+    if values.iter().any(|value| value.is_none()) {
+        return GroupByResults::Unsupported;
+    }
+
+    let values = values
+        .into_iter()
+        // SAFETY: we just checked above to ensure that none of the values are
+        // [`None`].
+        .map(|value| value.unwrap())
+        .collect::<Vec<_>>();
+
     let mut missing_values = 0usize;
-    let result = values
+    let mut result = values
         .into_iter()
         .flat_map(|value| match value {
-            Some(Value::Null) => {
-                missing_values += 1;
-                None
-            }
-            Some(Value::String(s)) => Some(s),
+            Some(value) => Some(value),
             None => {
                 missing_values += 1;
                 None
             }
-            _ => todo!(),
         })
-        .fold(IndexMap::new(), |mut map, value| {
-            *map.entry(value).or_insert_with(|| 0usize) += 1;
-            map
+        .fold(Vec::new(), |mut acc: Vec<ValueCount>, value| {
+            match acc.iter_mut().find(|result| result.value == value) {
+                Some(result) => result.count += 1,
+                None => acc.push(ValueCount { value, count: 1 }),
+            }
+            acc
         });
 
-    responses::by::count::sample::Results::new(result, missing_values)
+    // NOTE: the `std::cmp::Reverse` here is used to sort the values in
+    // descending order.
+    result.sort_by_key(|value| std::cmp::Reverse(value.count));
+
+    GroupByResults::Supported(responses::by::count::sample::Results::new(
+        result,
+        missing_values,
+    ))
 }
 
-fn parse_field(field: &str, sample: &Sample) -> Option<Value> {
+fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
     match field {
         "age_at_diagnosis" => match sample.metadata() {
-            Some(metadata) => metadata
-                .age_at_diagnosis()
-                .as_ref()
-                .map(|age_at_diagnosis| Value::String(age_at_diagnosis.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .age_at_diagnosis()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|age_at_diagnosis| serde_json::to_value(age_at_diagnosis.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "age_at_collection" => match sample.metadata() {
-            Some(metadata) => metadata
-                .age_at_collection()
-                .as_ref()
-                .map(|age_at_collection| Value::String(age_at_collection.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .age_at_collection()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|age_at_collection| {
+                        serde_json::to_value(age_at_collection.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "disease_phase" => match sample.metadata() {
-            Some(metadata) => metadata
-                .disease_phase()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .disease_phase()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|disease_phase| serde_json::to_value(disease_phase.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "library_strategy" => match sample.metadata() {
-            Some(metadata) => metadata
-                .library_strategy()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .library_strategy()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|library_strategy| serde_json::to_value(library_strategy.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "preservation_method" => match sample.metadata() {
-            Some(metadata) => metadata
-                .preservation_method()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .preservation_method()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|preservation_method| {
+                        serde_json::to_value(preservation_method.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "tissue_type" => match sample.metadata() {
-            Some(metadata) => metadata
-                .tissue_type()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .tissue_type()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|tissue_type| serde_json::to_value(tissue_type.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "tumor_classification" => match sample.metadata() {
-            Some(metadata) => metadata
-                .tumor_classification()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .tumor_classification()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|tumor_classification| {
+                        serde_json::to_value(tumor_classification.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "tumor_tissue_morphology" => match sample.metadata() {
-            Some(metadata) => metadata
-                .tumor_tissue_morphology()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .tumor_tissue_morphology()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|tumor_tissue_morphology| {
+                        serde_json::to_value(tumor_tissue_morphology.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
+        "depositions" => match sample.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .common()
+                    .depositions()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|deposition| serde_json::to_value(deposition).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         _ => None,
     }

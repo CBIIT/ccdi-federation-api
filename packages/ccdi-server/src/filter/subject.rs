@@ -2,6 +2,7 @@
 
 use ccdi_models as models;
 
+use models::metadata::common::deposition::Accession;
 use models::Subject;
 
 use crate::filter::FilterMetadataField;
@@ -16,6 +17,7 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
             "identifiers" => params.identifiers.as_ref(),
             "vital_status" => params.vital_status.as_ref(),
             "age_at_vital_status" => params.age_at_vital_status.as_ref(),
+            "depositions" => params.depositions.as_ref(),
             _ => unreachable!("unhandled subject metadata field: {field}"),
         };
 
@@ -64,6 +66,18 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
                         .metadata()
                         .and_then(|metadata| metadata.age_at_vital_status())
                         .map(|age_at_vital_status| vec![age_at_vital_status.to_string()]),
+                    "depositions" => subject
+                        .metadata()
+                        .and_then(|metadata| metadata.common().depositions())
+                        .map(|deposition| {
+                            deposition
+                                .iter()
+                                .cloned()
+                                .map(|accession| match accession {
+                                    Accession::dbGaP(accession) => accession.to_string(),
+                                })
+                                .collect::<Vec<String>>()
+                        }),
                     _ => unreachable!("unhandled subject metadata field: {field}"),
                 };
 

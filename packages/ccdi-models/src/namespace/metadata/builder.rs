@@ -42,7 +42,8 @@ impl Builder {
     /// use models::namespace::metadata::Builder;
     ///
     /// let name = cde::v1::namespace::StudyShortTitle::from(String::from("A study short title"));
-    /// let builder = Builder::default().study_short_title(StudyShortTitle::new(name, None, None));
+    /// let builder =
+    ///     Builder::default().study_short_title(StudyShortTitle::new(name, None, None, None));
     /// ```
     pub fn study_short_title(mut self, field: field::unowned::namespace::StudyShortTitle) -> Self {
         self.study_short_title = Some(field);
@@ -61,7 +62,7 @@ impl Builder {
     /// use models::namespace::metadata::Builder;
     ///
     /// let name = cde::v1::namespace::StudyName::from(String::from("A study name"));
-    /// let builder = Builder::default().study_name(StudyName::new(name, None, None));
+    /// let builder = Builder::default().study_name(StudyName::new(name, None, None, None));
     /// ```
     pub fn study_name(mut self, field: field::unowned::namespace::StudyName) -> Self {
         self.study_name = Some(field);
@@ -81,8 +82,8 @@ impl Builder {
     ///
     /// let name = cde::v1::namespace::StudyFundingId::from(String::from("A study funding id"));
     /// let builder = Builder::default()
-    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None))
-    ///     .push_study_funding_id(StudyFundingId::new(name, None, None));
+    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None, None))
+    ///     .push_study_funding_id(StudyFundingId::new(name, None, None, None));
     /// ```
     pub fn push_study_funding_id(
         mut self,
@@ -112,7 +113,7 @@ impl Builder {
     /// use models::namespace::metadata::Builder;
     ///
     /// let name = cde::v1::namespace::StudyId::AALL0232;
-    /// let builder = Builder::default().study_id(StudyId::new(name, None, None));
+    /// let builder = Builder::default().study_id(StudyId::new(name, None, None, None));
     /// ```
     pub fn study_id(mut self, field: field::unowned::namespace::StudyId) -> Self {
         self.study_id = Some(field);
@@ -142,12 +143,14 @@ impl Builder {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,

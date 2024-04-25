@@ -2,6 +2,7 @@
 
 use ccdi_models as models;
 
+use models::metadata::common::deposition::Accession;
 use models::Sample;
 
 use crate::filter::FilterMetadataField;
@@ -18,6 +19,7 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
             "age_at_diagnosis" => params.age_at_diagnosis.as_ref(),
             "age_at_collection" => params.age_at_collection.as_ref(),
             "tumor_tissue_morphology" => params.tumor_tissue_morphology.as_ref(),
+            "depositions" => params.depositions.as_ref(),
             _ => unreachable!("unhandled sample metadata field: {field}"),
         };
 
@@ -63,6 +65,18 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                         .metadata()
                         .and_then(|metadata| metadata.tumor_tissue_morphology())
                         .map(|tumor_tissue_morphology| vec![tumor_tissue_morphology.to_string()]),
+                    "depositions" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.common().depositions())
+                        .map(|deposition| {
+                            deposition
+                                .iter()
+                                .cloned()
+                                .map(|accession| match accession {
+                                    Accession::dbGaP(accession) => accession.to_string(),
+                                })
+                                .collect::<Vec<String>>()
+                        }),
                     _ => unreachable!("unhandled sample metadata field: {field}"),
                 };
 

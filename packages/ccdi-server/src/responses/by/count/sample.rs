@@ -1,10 +1,11 @@
 //! Responses for grouping by fields for samples and counting them.
 
 use ccdi_models::namespace;
-use indexmap::IndexMap;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
+
+use crate::responses::by::count::ValueCount;
 
 /// A set of results from grouping [`Samples`](ccdi_models::Sample) by a specified
 /// metadata field and then summing the counts for each value (along with computing a
@@ -21,31 +22,43 @@ pub struct Results {
     pub missing: usize,
 
     /// The counts per value observed for the result set.
-    pub values: IndexMap<String, usize>,
+    #[schema(value_type = Vec<responses::by::count::ValueCount>)]
+    pub values: Vec<ValueCount>,
 }
 
 impl Results {
-    /// Creates a new [`Results`] from an [`IndexMap<String, usize>`].
+    /// Creates a new [`Results`] from a [`Vec<ValueCount>`].
     ///
     /// # Examples
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
     /// use server::responses::by::count::sample::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("Diagnosis".into(), 10);
-    /// map.insert("Relapse".into(), 10);
-    /// map.insert("Metastasis".into(), 10);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "Diagnosis".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Relapse".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Metastasis".into(),
+    ///         count: 10,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
+    ///
+    /// assert_eq!(results.total, 40);
     /// ```
-    pub fn new(values: IndexMap<String, usize>, missing: usize) -> Self {
-        let total = values.values().sum::<usize>() + missing;
+    pub fn new(values: Vec<ValueCount>, missing: usize) -> Self {
+        let total = values.iter().map(|result| result.count).sum::<usize>() + missing;
 
         Self {
             total,
@@ -73,8 +86,6 @@ impl NamespacePartitionedResult {
     /// # Example
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
@@ -84,13 +95,24 @@ impl NamespacePartitionedResult {
     /// use models::Organization;
     /// use server::responses::by::count::sample::NamespacePartitionedResult;
     /// use server::responses::by::count::sample::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("Diagnosis".into(), 10);
-    /// map.insert("Relapse".into(), 10);
-    /// map.insert("Metastasis".into(), 10);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "Diagnosis".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Relapse".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Metastasis".into(),
+    ///         count: 10,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -130,8 +152,6 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     /// # Example
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
@@ -142,13 +162,24 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     /// use server::responses::by::count::sample::NamespacePartitionedResult;
     /// use server::responses::by::count::sample::NamespacePartitionedResults;
     /// use server::responses::by::count::sample::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("Diagnosis".into(), 10);
-    /// map.insert("Relapse".into(), 10);
-    /// map.insert("Metastasis".into(), 10);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "Diagnosis".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Relapse".into(),
+    ///         count: 10,
+    ///     },
+    ///     ValueCount {
+    ///         value: "Metastasis".into(),
+    ///         count: 10,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"

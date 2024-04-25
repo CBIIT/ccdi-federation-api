@@ -32,7 +32,12 @@ impl Builder {
     /// use models::metadata::field::unowned::organization::Institution;
     /// use models::organization::metadata::Builder;
     ///
-    /// let field = Institution::new(cde::v1::organization::Institution::Treehouse, None, None);
+    /// let field = Institution::new(
+    ///     cde::v1::organization::Institution::Treehouse,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
     /// let builder = Builder::default()
     ///     .push_institution(field.clone())
     ///     .push_institution(field);
@@ -92,6 +97,7 @@ impl Builder {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
@@ -101,6 +107,7 @@ impl Builder {
     ///             None,
     ///             None,
     ///             None,
+    ///             Some(true),
     ///         )),
     ///     );
     ///

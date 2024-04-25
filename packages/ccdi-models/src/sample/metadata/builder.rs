@@ -85,7 +85,7 @@ impl Builder {
     /// let diagnosis =
     ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
     ///
-    /// let builder = Builder::default().diagnosis(Diagnosis::new(diagnosis.clone(), None, None));
+    /// let builder = Builder::default().diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None));
     /// ```
     pub fn diagnosis(mut self, field: field::unowned::sample::Diagnosis) -> Self {
         self.diagnosis = Some(field);

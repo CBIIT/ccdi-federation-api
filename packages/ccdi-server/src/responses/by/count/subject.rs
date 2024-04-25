@@ -1,10 +1,11 @@
 //! Responses for grouping by fields for subjects and counting them.
 
 use ccdi_models::namespace;
-use indexmap::IndexMap;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
+
+use crate::responses::by::count::ValueCount;
 
 /// A response for grouping [`Subject`](ccdi_models::Subject)s by a metadata field
 /// and then summing the counts.
@@ -20,32 +21,47 @@ pub struct Results {
     pub missing: usize,
 
     /// The counts per value observed for the result set.
-    pub values: IndexMap<String, usize>,
+    #[schema(value_type = Vec<responses::by::count::ValueCount>)]
+    pub values: Vec<ValueCount>,
 }
 
 impl Results {
-    /// Creates a new [`Results`] from an [`IndexMap<String, usize>`].
+    /// Creates a new [`Results`] from a [`Vec<ValueCount>`].
     ///
     /// # Examples
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
     /// use server::responses::by::count::subject::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("U".into(), 18);
-    /// map.insert("F".into(), 37);
-    /// map.insert("M".into(), 26);
-    /// map.insert("UNDIFFERENTIATED".into(), 31);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "U".into(),
+    ///         count: 18,
+    ///     },
+    ///     ValueCount {
+    ///         value: "F".into(),
+    ///         count: 37,
+    ///     },
+    ///     ValueCount {
+    ///         value: "M".into(),
+    ///         count: 26,
+    ///     },
+    ///     ValueCount {
+    ///         value: "UNDIFFERENTIATED".into(),
+    ///         count: 31,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
+    ///
+    /// assert_eq!(results.total, 122);
     /// ```
-    pub fn new(values: IndexMap<String, usize>, missing: usize) -> Self {
-        let total = values.values().sum::<usize>() + missing;
+    pub fn new(values: Vec<ValueCount>, missing: usize) -> Self {
+        let total = values.iter().map(|result| result.count).sum::<usize>() + missing;
 
         Self {
             total,
@@ -73,8 +89,6 @@ impl NamespacePartitionedResult {
     /// # Example
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
@@ -84,14 +98,28 @@ impl NamespacePartitionedResult {
     /// use models::Organization;
     /// use server::responses::by::count::subject::NamespacePartitionedResult;
     /// use server::responses::by::count::subject::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("U".into(), 18);
-    /// map.insert("F".into(), 37);
-    /// map.insert("M".into(), 26);
-    /// map.insert("UNDIFFERENTIATED".into(), 31);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "U".into(),
+    ///         count: 18,
+    ///     },
+    ///     ValueCount {
+    ///         value: "F".into(),
+    ///         count: 37,
+    ///     },
+    ///     ValueCount {
+    ///         value: "M".into(),
+    ///         count: 26,
+    ///     },
+    ///     ValueCount {
+    ///         value: "UNDIFFERENTIATED".into(),
+    ///         count: 31,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"
@@ -131,8 +159,6 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     /// # Example
     ///
     /// ```
-    /// use indexmap::IndexMap;
-    ///
     /// use ccdi_models as models;
     /// use ccdi_server as server;
     ///
@@ -143,14 +169,28 @@ impl From<Vec<NamespacePartitionedResult>> for NamespacePartitionedResults {
     /// use server::responses::by::count::subject::NamespacePartitionedResult;
     /// use server::responses::by::count::subject::NamespacePartitionedResults;
     /// use server::responses::by::count::subject::Results;
+    /// use server::responses::by::count::ValueCount;
     ///
-    /// let mut map = IndexMap::<String, usize>::new();
-    /// map.insert("U".into(), 18);
-    /// map.insert("F".into(), 37);
-    /// map.insert("M".into(), 26);
-    /// map.insert("UNDIFFERENTIATED".into(), 31);
+    /// let mut counts = vec![
+    ///     ValueCount {
+    ///         value: "U".into(),
+    ///         count: 18,
+    ///     },
+    ///     ValueCount {
+    ///         value: "F".into(),
+    ///         count: 37,
+    ///     },
+    ///     ValueCount {
+    ///         value: "M".into(),
+    ///         count: 26,
+    ///     },
+    ///     ValueCount {
+    ///         value: "UNDIFFERENTIATED".into(),
+    ///         count: 31,
+    ///     },
+    /// ];
     ///
-    /// let results = Results::new(map, 10);
+    /// let results = Results::new(counts, 10);
     ///
     /// let organization = Organization::new(
     ///     "example-organization"

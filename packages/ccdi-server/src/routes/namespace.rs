@@ -49,7 +49,7 @@ lazy_static! {
                             cde::v1::namespace::StudyShortTitle::from(
                                 String::from("A study short title")
                             ),
-                            None, None)
+                            None, None, None)
                     ).build())
             )
         );
@@ -75,7 +75,7 @@ lazy_static! {
                             cde::v1::namespace::StudyShortTitle::from(
                                 String::from("A study short title")
                             ),
-                            None, None)
+                            None, None, None)
                     ).build())
             )
         );
