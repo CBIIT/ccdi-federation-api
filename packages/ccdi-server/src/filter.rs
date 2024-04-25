@@ -119,6 +119,7 @@ where
 ///         identifiers: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
+///         depositions: None,
 ///     },
 /// );
 ///
@@ -142,6 +143,7 @@ where
 ///         identifiers: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
+///         depositions: None,
 ///     },
 /// );
 ///
@@ -161,6 +163,7 @@ where
 ///         identifiers: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
+///         depositions: None,
 ///     },
 /// );
 ///

@@ -39,7 +39,7 @@ pub struct Namespace {
 
     /// Harmonized metadata associated with this [`Namespace`].
     #[schema(
-        value_type = Option<models::sample::Metadata>,
+        value_type = Option<models::namespace::Metadata>,
         nullable = true
     )]
     metadata: Option<Metadata>,

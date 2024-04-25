@@ -61,7 +61,7 @@ pub struct Organization {
 
     /// Harmonized metadata associated with this [`Organization`].
     #[schema(
-        value_type = Option<models::subject::Metadata>,
+        value_type = Option<models::organization::Metadata>,
         nullable = true
     )]
     metadata: Option<Metadata>,

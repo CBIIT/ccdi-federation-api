@@ -262,8 +262,8 @@ info:
 
     ### Interpreting metadata assignments
 
-    Metadata shared through this API is expected to be collected and harmonized in
-    a through a variety of mechanisms by individuals with a wide range of
+    Metadata shared through this API is expected to be collected and harmonized
+    through a variety of mechanisms by individuals with a wide range of
     backgrounds. In certain cases, communicating the process by which metadata was
     collected and harmonized will be critical to correctly interpreting the
     data—particularly in metadata fields where the permissible values are rapidly
@@ -280,7 +280,7 @@ info:
     - **For information concerning harmonized metadata values where the information
       is specific to a particular value assignment (or subset of value assignments)
       provided by the server**, the information should be present in the
-      `/metadata/fields/<entity>` endpoint response.
+      `details` key within the harmonized metadata object.
 
     In general, when information _can_ be included in the
     `/metadata/fields/<entity>` response instead of embedded in `details` keys, it
@@ -436,6 +436,17 @@ paths:
         description: |-
           Matches any subject where the `age_at_vital_status` field matches the
           string provided.
+        required: false
+        schema:
+          type: string
+      - name: depositions
+        in: query
+        description: |-
+          Matches any subject where any member of the `depositions` fields match
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
         required: false
         schema:
           type: string
@@ -721,6 +732,17 @@ paths:
         required: false
         schema:
           type: string
+      - name: depositions
+        in: query
+        description: |-
+          Matches any sample where any member of the `depositions` fields match
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the sample should be included in the results.
+        required: false
+        schema:
+          type: string
       - name: metadata.unharmonized.<field>
         in: query
         description: |-
@@ -912,6 +934,27 @@ paths:
         parameters by providing one or more of the pagination-related query
         parameters below.
 
+        ### Filtering
+
+        All harmonized (top-level) and unharmonized (nested under the
+        `metadata.unharmonized` key) metadata fields are filterable. To achieve
+        this, you can provide the field name as a [`String`]. Filtering follows the
+        following rules:
+
+        * For single-value metadata field, the file is included in the results if
+        its value _exactly_ matches the query string. Matches are case-sensitive.
+        * For multiple-value metadata fields, the file is included in the results
+        if any of its values for the field _exactly_ match the query string (a
+        logical OR [`||`]). Matches are case-sensitive.
+        * When the metadata field is `null` (in the case of singlular or
+        multiple-valued metadata fields) or empty, the file is not included.
+        * When multiple fields are provided as filters, a logical AND (`&&`) strings
+        together the predicates. In other words, all filters must match for a
+        file to be returned. Note that this means that servers do not natively
+        support logical OR (`||`) across multiple fields: that must be done by
+        calling this endpoint with each of your desired queries and performing a
+        set union of those files out of band.
+
         ### Ordering
 
         This endpoint has default ordering requirements—those details are documented
@@ -949,6 +992,17 @@ paths:
 
           **Note:** a file is returned if the value provided is a substring of the
           description.
+        required: false
+        schema:
+          type: string
+      - name: depositions
+        in: query
+        description: |-
+          Matches any file where any member of the `depositions` fields match
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the sample should be included in the results.
         required: false
         schema:
           type: string
@@ -1421,6 +1475,179 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11556150%20and%20ver_nr=1>
+    cde.v1.namespace.StudyFundingId:
+      type: string
+      description: |-
+        **`caDSR CDE 14528051 v1.00`**
+
+        This metadata element is defined by the caDSR as "A sequence of characters
+        used to uniquely identify, name, or characterize the study funding
+        organization.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14528051%20and%20ver_nr=1>
+    cde.v1.namespace.StudyId:
+      type: string
+      description: |-
+        **`caDSR CDE 12960571 v1.00`**
+
+        This metadata element is defined by the caDSR as "A sequence of characters
+        used to identify, name, or characterize a pediatric study.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12960571%20and%20ver_nr=1>
+      enum:
+      - AALL0232
+      - AALL0331
+      - AALL03B1
+      - AALL0434
+      - AALL08B1
+      - AAML03P1
+      - AAML0531
+      - AAML1031
+      - AEIOPAML2002
+      - AEWS0031
+      - AEWS0331
+      - AEWS07P1
+      - AEWS1031
+      - AEWS1221
+      - AGCT0132
+      - AGCT01P1
+      - AGCT0521
+      - AHOD0031
+      - AHOD03P1
+      - AHOD0431
+      - AHOD0831
+      - AHOD1221
+      - AHOD1331
+      - AIEOPLAM92
+      - AMLBFM-Registry2012
+      - AMLBFM1998
+      - AMLBFM2004
+      - AMLBFM2012
+      - AMLBFMRegistry2017
+      - AOST0121
+      - AOST01P1
+      - AOST0221
+      - AOST0331/EURAMOS1
+      - AOST1321
+      - AOST1421
+      - CCG-782
+      - CCG-7942
+      - DBAML01
+      - EE99
+      - EICESS92
+      - GC1
+      - GC2
+      - GOG0078
+      - GOG0090
+      - GOG0116
+      - INT133
+      - JACLSAML99
+      - JPLSGAML05
+      - MRCAML12
+      - MRCAML15
+      - NOPHOAML2004
+      - NOPHOAML2012
+      - OS2006
+      - P9749
+      - P9754
+      - POG9049
+      - PPLLSGAML98
+      - REGOBONE
+      - Sarcome13/OS2016
+      - SCFEELAM02
+      - SJCRHAML02
+      - TCGM2004
+      - TE04
+      - TE05
+      - TE08
+      - TE09
+      - TE13
+      - TE20
+      - TE22
+      - TGM85
+      - TGM90
+      - TGM95
+      - TIP
+    cde.v1.namespace.StudyName:
+      type: string
+      description: |-
+        **`caDSR CDE 11459810 v1.00`**
+
+        This metadata element is defined by the caDSR as "The acronym or abbreviated
+        form of the title for a research data collection. Example – GLIOMA01".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459810%20and%20ver_nr=1>
+    cde.v1.namespace.StudyShortTitle:
+      type: string
+      description: |-
+        **`caDSR CDE 11459812 v1.00`**
+
+        This metadata element is defined by the caDSR as "The narrative title used
+        as a textual label for a research data collection. Example – Comparative
+        Molecular Life History of Spontaneous Canine and Human Gliomas".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=1>
+    cde.v1.organization.Institution:
+      type: string
+      description: |-
+        **`caDSR CDE 12662779 v1.00`**
+
+        This metadata element is defined by the caDSR as "A sequence of characters
+        used to identify, name, or characterize the laboratory, institute, or
+        consortium that provided the information.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12662779%20and%20ver_nr=1>
+      enum:
+      - AIEOP
+      - BFM-SG
+      - BOCG
+      - C3P
+      - CBTN
+      - CCLG
+      - CHLA
+      - COG
+      - COSS-GPOH
+      - CRCTU
+      - CWS
+      - DCOG
+      - DePICT
+      - DFCI
+      - EORTC
+      - EpSSG
+      - EuRBG
+      - EURO-EWING
+      - FSG
+      - GALOP
+      - GEIS
+      - GPOH
+      - IDIPGR
+      - ISG
+      - JACLS
+      - JCCG
+      - JINCS
+      - JNBSG
+      - JPLSG
+      - MRC
+      - NOPHO
+      - NRG-Oncology
+      - PNOC
+      - PPLLSG
+      - RBTR
+      - SFCE
+      - SIOP MMT
+      - SIOPE
+      - SIOPEN
+      - SJCRH
+      - SOPOBE
+      - SSG
+      - Treehouse
+      - UCL
+      - UK
     cde.v1.sample.DiseasePhase:
       type: string
       description: |-
@@ -1800,6 +2027,116 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.namespace.StudyFundingId:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.namespace.StudyFundingId'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.namespace.StudyId:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.namespace.StudyId'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.namespace.StudyName:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.namespace.StudyName'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.namespace.StudyShortTitle:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.namespace.StudyShortTitle'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.organization.Institution:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.organization.Institution'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.sample.AgeAtCollection:
       type: object
       required:
@@ -1860,6 +2197,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1923,6 +2263,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -1942,6 +2285,9 @@ components:
 
             Ancestors should be provided as period (`.`) delimited paths
             from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
         comment:
           type: string
           description: A free-text comment field.
@@ -2323,7 +2669,7 @@ components:
           example: support@example.com
         metadata:
           allOf:
-          - $ref: '#/components/schemas/models.sample.Metadata'
+          - $ref: '#/components/schemas/models.namespace.Metadata'
           nullable: true
     models.Organization:
       type: object
@@ -2341,7 +2687,7 @@ components:
           $ref: '#/components/schemas/models.organization.Name'
         metadata:
           allOf:
-          - $ref: '#/components/schemas/models.subject.Metadata'
+          - $ref: '#/components/schemas/models.organization.Metadata'
           nullable: true
     models.Sample:
       type: object
@@ -2926,6 +3272,37 @@ components:
           $ref: '#/components/schemas/models.organization.Identifier'
         name:
           $ref: '#/components/schemas/models.namespace.identifier.Name'
+    models.namespace.Metadata:
+      allOf:
+      - $ref: '#/components/schemas/models.metadata.common.Metadata'
+      - type: object
+        required:
+        - study_short_title
+        - study_name
+        - study_funding_id
+        - study_id
+        properties:
+          study_short_title:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.namespace.StudyShortTitle'
+            nullable: true
+          study_name:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.namespace.StudyName'
+            nullable: true
+          study_funding_id:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.namespace.StudyFundingId'
+            description: The study funding id.
+            nullable: true
+          study_id:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.namespace.StudyId'
+            nullable: true
+          unharmonized:
+            $ref: '#/components/schemas/fields.Unharmonized'
+      description: Metadata associated with a namespace.
     models.namespace.identifier.Name:
       type: string
       description: |-
@@ -2955,6 +3332,30 @@ components:
         **Note**: the regex for this field does not allow for any spaces because it is
         anticipated that the field will be displayable as a repository (e.g.,
         `example-organization/ExampleNamespace`).
+    models.organization.Metadata:
+      allOf:
+      - $ref: '#/components/schemas/models.metadata.common.Metadata'
+      - type: object
+        required:
+        - institution
+        properties:
+          institution:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.organization.Institution'
+            description: |-
+              Institutions associated with an organization.
+
+              **NOTE:** in this design, an organization in not always a single
+              institution—it may also represent a consortium of institutions, for
+              instance. This is necessary, since a namespace can be tied to one and
+              only one organization in the API specification. As such, if the above is
+              not true, there is no way to make a namespace where data is contributed
+              from multiple institutions.
+            nullable: true
+          unharmonized:
+            $ref: '#/components/schemas/fields.Unharmonized'
+      description: Metadata associated with an organization.
     models.organization.Name:
       type: string
       description: |-
@@ -3462,6 +3863,19 @@ components:
       properties:
         counts:
           $ref: '#/components/schemas/responses.summary.Counts'
+    responses.by.count.ValueCount:
+      type: object
+      description: A value along with the number of counted entities for that value.
+      required:
+      - value
+      - count
+      properties:
+        value:
+          description: The value.
+        count:
+          type: integer
+          description: The number of times the value was counted.
+          minimum: 0
     responses.by.count.file.NamespacePartitionedResult:
       type: object
       description: |-
@@ -3510,11 +3924,10 @@ components:
             the entire metadata object is missing.
           minimum: 0
         values:
-          type: object
+          type: array
+          items:
+            $ref: '#/components/schemas/responses.by.count.ValueCount'
           description: The counts per value observed for the result set.
-          additionalProperties:
-            type: integer
-            minimum: 0
     responses.by.count.sample.NamespacePartitionedResult:
       type: object
       description: |-
@@ -3563,11 +3976,10 @@ components:
             the entire metadata object is missing.
           minimum: 0
         values:
-          type: object
+          type: array
+          items:
+            $ref: '#/components/schemas/responses.by.count.ValueCount'
           description: The counts per value observed for the result set.
-          additionalProperties:
-            type: integer
-            minimum: 0
     responses.by.count.subject.NamespacePartitionedResult:
       type: object
       description: |-
@@ -3615,11 +4027,10 @@ components:
             the entire metadata object is missing.
           minimum: 0
         values:
-          type: object
+          type: array
+          items:
+            $ref: '#/components/schemas/responses.by.count.ValueCount'
           description: The counts per value observed for the result set.
-          additionalProperties:
-            type: integer
-            minimum: 0
     responses.entity.Counts:
       type: object
       description: Counts that summarize the contents of a paged entity response.

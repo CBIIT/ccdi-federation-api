@@ -132,7 +132,7 @@ impl Metadata {
     ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
     ///
     /// let metadata = Builder::default()
-    ///     .diagnosis(Diagnosis::new(diagnosis.clone(), None, None))
+    ///     .diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None))
     ///     .build();
     ///
     /// assert_eq!(metadata.diagnosis().unwrap().value(), &diagnosis);
@@ -559,6 +559,7 @@ impl Metadata {
             )),
             diagnosis: Some(field::unowned::sample::Diagnosis::new(
                 Diagnosis::from(String::from("Random Diagnosis")),
+                None,
                 None,
                 None,
             )),

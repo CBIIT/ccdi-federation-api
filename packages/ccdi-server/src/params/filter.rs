@@ -56,6 +56,15 @@ pub struct Subject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub age_at_vital_status: Option<String>,
+
+    /// Matches any subject where any member of the `depositions` fields match
+    /// the string provided.
+    ///
+    /// **Note:** a logical OR (`||`) is performed across the values when
+    /// determining whether the subject should be included in the results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub depositions: Option<String>,
 }
 
 /// Parameters for filtering samples.
@@ -116,6 +125,15 @@ pub struct Sample {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub tumor_tissue_morphology: Option<String>,
+
+    /// Matches any sample where any member of the `depositions` fields match
+    /// the string provided.
+    ///
+    /// **Note:** a logical OR (`||`) is performed across the values when
+    /// determining whether the sample should be included in the results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub depositions: Option<String>,
 }
 
 /// Parameters for filtering files.
@@ -156,4 +174,13 @@ pub struct File {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub description: Option<String>,
+
+    /// Matches any file where any member of the `depositions` fields match
+    /// the string provided.
+    ///
+    /// **Note:** a logical OR (`||`) is performed across the values when
+    /// determining whether the sample should be included in the results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub depositions: Option<String>,
 }

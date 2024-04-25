@@ -147,6 +147,15 @@ use utoipa::openapi;
         field::details::Harmonizer,
         field::details::Method,
 
+        // Harmonized namespace metadata elements.
+        cde::v1::namespace::StudyFundingId,
+        cde::v1::namespace::StudyId,
+        cde::v1::namespace::StudyName,
+        cde::v1::namespace::StudyShortTitle,
+
+        // Harmonized organization metadata elements.
+        cde::v1::organization::Institution,
+
         // Harmonized subject fields.
         field::unowned::subject::Sex,
         field::unowned::subject::Race,
@@ -172,6 +181,15 @@ use utoipa::openapi;
         field::unowned::file::Size,
         field::unowned::file::Checksums,
         field::unowned::file::Description,
+
+        // Harmonized namespace fields.
+        field::unowned::namespace::StudyFundingId,
+        field::unowned::namespace::StudyId,
+        field::unowned::namespace::StudyName,
+        field::unowned::namespace::StudyShortTitle,
+
+        // Harmonized organization fields.
+        field::unowned::organization::Institution,
 
         // Unharmonized fields.
         field::owned::Field,
@@ -220,11 +238,13 @@ use utoipa::openapi;
         models::namespace::identifier::Name,
         models::namespace::Identifier,
         models::namespace::Description,
+        models::namespace::Metadata,
 
         // Organization models.
         models::Organization,
         models::organization::Identifier,
         models::organization::Name,
+        models::organization::Metadata,
 
         // Url model.
         models::Url,
@@ -242,6 +262,9 @@ use utoipa::openapi;
         // Cross-entity responses.
         responses::entity::Summary,
         responses::entity::Counts,
+
+        // Count by response components.
+        responses::by::count::ValueCount,
 
         // Subject responses.
         responses::Subject,

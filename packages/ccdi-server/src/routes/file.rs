@@ -12,7 +12,6 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use ccdi_cde::v1::file;
-use indexmap::IndexMap;
 use itertools::Itertools as _;
 use models::namespace;
 use rand::prelude::*;
@@ -38,11 +37,13 @@ use crate::params::Partitionable;
 use crate::responses;
 use crate::responses::by;
 use crate::responses::by::count::file::NamespacePartitionedResult;
+use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::file::data;
 use crate::responses::Errors;
 use crate::responses::Files;
 use crate::responses::Summary;
+use crate::routes::GroupByResults;
 
 /// A store for [`File`]s.
 #[derive(Debug)]
@@ -110,6 +111,27 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 /// This endpoint is paginated. Users may override the default pagination
 /// parameters by providing one or more of the pagination-related query
 /// parameters below.
+///
+/// ### Filtering
+///
+/// All harmonized (top-level) and unharmonized (nested under the
+/// `metadata.unharmonized` key) metadata fields are filterable. To achieve
+/// this, you can provide the field name as a [`String`]. Filtering follows the
+/// following rules:
+///
+/// * For single-value metadata field, the file is included in the results if
+///   its value _exactly_ matches the query string. Matches are case-sensitive.
+/// * For multiple-value metadata fields, the file is included in the results
+///   if any of its values for the field _exactly_ match the query string (a
+///   logical OR [`||`]). Matches are case-sensitive.
+/// * When the metadata field is `null` (in the case of singlular or
+///   multiple-valued metadata fields) or empty, the file is not included.
+/// * When multiple fields are provided as filters, a logical AND (`&&`) strings
+///   together the predicates. In other words, all filters must match for a
+///   file to be returned. Note that this means that servers do not natively
+///   support logical OR (`||`) across multiple fields: that must be done by
+///   calling this endpoint with each of your desired queries and performing a
+///   set union of those files out of band.
 ///
 /// ### Ordering
 ///
@@ -452,19 +474,22 @@ pub async fn files_by_count(
 
             let namespace_results = group_by(namespace_files, &field);
 
-            if namespace_results.values.is_empty() {
-                return HttpResponse::UnprocessableEntity().json(Errors::from(
-                    error::Kind::unsupported_field(
-                        field.to_string(),
-                        String::from("This field is not present for files."),
-                    ),
-                ));
+            match namespace_results {
+                GroupByResults::Supported(namespace_results) => {
+                    let namespace_partitioned_result =
+                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+                    results.push(namespace_partitioned_result);
+                }
+                GroupByResults::Unsupported => {
+                    return HttpResponse::UnprocessableEntity().json(Errors::from(
+                        error::Kind::unsupported_field(
+                            field.to_string(),
+                            String::from("This field is not present for files."),
+                        ),
+                    ));
+                }
             }
-
-            let namespace_partitioned_result =
-                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-            results.push(namespace_partitioned_result);
         }
 
         HttpResponse::Ok().json(by::count::file::Response::NamespacePartitioned(
@@ -473,77 +498,122 @@ pub async fn files_by_count(
     } else {
         let results = group_by(files, &field);
 
-        if results.values.is_empty() {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
+        match results {
+            GroupByResults::Supported(results) => {
+                HttpResponse::Ok().json(by::count::file::Response::Unpartitioned(results))
+            }
+            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
                 error::Kind::unsupported_field(
                     field.to_string(),
                     String::from("This field is not present for files."),
                 ),
-            ));
+            )),
         }
-
-        HttpResponse::Ok().json(by::count::file::Response::Unpartitioned(results))
     }
 }
 
-fn group_by(files: Vec<File>, field: &str) -> responses::by::count::file::Results {
+fn group_by(files: Vec<File>, field: &str) -> GroupByResults<responses::by::count::file::Results> {
     let values = files
         .iter()
         .map(|file| parse_field(field, file))
+        .collect::<Vec<_>>();
+
+    if values.iter().any(|value| value.is_none()) {
+        return GroupByResults::Unsupported;
+    }
+
+    let values = values
+        .into_iter()
+        // SAFETY: we just checked above to ensure that none of the values are
+        // [`None`].
+        .map(|value| value.unwrap())
         .collect::<Vec<_>>();
 
     let mut missing_values = 0usize;
     let result = values
         .into_iter()
         .flat_map(|value| match value {
-            Some(Value::Null) => {
-                missing_values += 1;
-                None
-            }
-            Some(Value::String(s)) => Some(s),
+            Some(value) => Some(value),
             None => {
                 missing_values += 1;
                 None
             }
-            _ => todo!(),
         })
-        .fold(IndexMap::new(), |mut map, value| {
-            *map.entry(value).or_insert_with(|| 0usize) += 1;
-            map
+        .fold(Vec::new(), |mut acc: Vec<ValueCount>, value| {
+            match acc.iter_mut().find(|result| result.value == value) {
+                Some(result) => result.count += 1,
+                None => acc.push(ValueCount { value, count: 1 }),
+            }
+            acc
         });
 
-    responses::by::count::file::Results::new(result, missing_values)
+    GroupByResults::Supported(responses::by::count::file::Results::new(
+        result,
+        missing_values,
+    ))
 }
 
-fn parse_field(field: &str, file: &File) -> Option<Value> {
+fn parse_field(field: &str, file: &File) -> Option<Option<Value>> {
     match field {
         "type" => match file.metadata() {
-            Some(metadata) => metadata
-                .r#type()
-                .as_ref()
-                .map(|r#type| Value::String(r#type.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .r#type()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|r#type| serde_json::to_value(r#type.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "size" => match file.metadata() {
-            Some(metadata) => metadata
-                .size()
-                .as_ref()
-                .map(|size| Value::String(size.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .size()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|size| serde_json::to_value(size.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "checksums" => match file.metadata() {
-            Some(metadata) => metadata
-                .checksums()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .checksums()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|checksum| serde_json::to_value(checksum.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "description" => match file.metadata() {
-            Some(metadata) => metadata
-                .description()
-                .as_ref()
-                .map(|value| Value::String(value.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .description()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|description| serde_json::to_value(description.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
+        "depositions" => match file.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .common()
+                    .depositions()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|deposition| serde_json::to_value(deposition).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         _ => None,
     }

@@ -2,6 +2,7 @@
 
 use ccdi_models as models;
 
+use models::metadata::common::deposition::Accession;
 use models::File;
 
 use crate::filter::FilterMetadataField;
@@ -14,6 +15,7 @@ impl FilterMetadataField<File, FilterFileParams> for Vec<File> {
             "size" => params.size.as_ref(),
             "checksums" => params.checksums.as_ref(),
             "description" => params.description.as_ref(),
+            "depositions" => params.depositions.as_ref(),
             _ => unreachable!("unhandled file metadata field: {field}"),
         };
 
@@ -62,6 +64,18 @@ impl FilterMetadataField<File, FilterFileParams> for Vec<File> {
                                     .as_map()
                                     .into_values()
                                     .map(|r| r.to_string())
+                                    .collect::<Vec<String>>()
+                            }),
+                        "depositions" => file
+                            .metadata()
+                            .and_then(|metadata| metadata.common().depositions())
+                            .map(|deposition| {
+                                deposition
+                                    .iter()
+                                    .cloned()
+                                    .map(|accession| match accession {
+                                        Accession::dbGaP(accession) => accession.to_string(),
+                                    })
                                     .collect::<Vec<String>>()
                             }),
                         _ => unreachable!("unhandled file metadata field: {field}"),

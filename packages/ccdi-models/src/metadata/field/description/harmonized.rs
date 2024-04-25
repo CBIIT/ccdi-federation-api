@@ -11,6 +11,8 @@ use cde::parse::cde::Member;
 use crate::Url;
 
 pub mod file;
+pub mod namespace;
+pub mod organization;
 pub mod sample;
 mod standard;
 pub mod subject;

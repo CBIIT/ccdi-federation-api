@@ -9,7 +9,6 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
-use indexmap::IndexMap;
 use itertools::Itertools as _;
 use models::namespace;
 use serde_json::Value;
@@ -29,11 +28,13 @@ use crate::params::Partitionable;
 use crate::responses;
 use crate::responses::by;
 use crate::responses::by::count::subject::NamespacePartitionedResult;
+use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::Errors;
 use crate::responses::Subjects;
 use crate::responses::Summary;
 use crate::routes::namespace::random_namespace;
+use crate::routes::GroupByResults;
 
 /// A store for [`Subject`]s.
 #[derive(Debug)]
@@ -350,19 +351,22 @@ pub async fn subjects_by_count(
 
             let namespace_results = group_by(namespace_subjects, &field);
 
-            if namespace_results.values.is_empty() {
-                return HttpResponse::UnprocessableEntity().json(Errors::from(
-                    error::Kind::unsupported_field(
-                        field.to_string(),
-                        String::from("This field is not present for subjects."),
-                    ),
-                ));
+            match namespace_results {
+                GroupByResults::Supported(namespace_results) => {
+                    let namespace_partitioned_result =
+                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
+
+                    results.push(namespace_partitioned_result);
+                }
+                GroupByResults::Unsupported => {
+                    return HttpResponse::UnprocessableEntity().json(Errors::from(
+                        error::Kind::unsupported_field(
+                            field.to_string(),
+                            String::from("This field is not present for subjects."),
+                        ),
+                    ));
+                }
             }
-
-            let namespace_partitioned_result =
-                NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-            results.push(namespace_partitioned_result);
         }
 
         HttpResponse::Ok().json(by::count::subject::Response::NamespacePartitioned(
@@ -371,100 +375,151 @@ pub async fn subjects_by_count(
     } else {
         let results = group_by(subjects, &field);
 
-        if results.values.is_empty() {
-            return HttpResponse::UnprocessableEntity().json(Errors::from(
+        match results {
+            GroupByResults::Supported(results) => {
+                HttpResponse::Ok().json(by::count::subject::Response::Unpartitioned(results))
+            }
+            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
                 error::Kind::unsupported_field(
                     field.to_string(),
                     String::from("This field is not present for subjects."),
                 ),
-            ));
+            )),
         }
-
-        HttpResponse::Ok().json(by::count::subject::Response::Unpartitioned(results))
     }
 }
 
-fn group_by(subjects: Vec<Subject>, field: &str) -> responses::by::count::subject::Results {
+fn group_by(
+    subjects: Vec<Subject>,
+    field: &str,
+) -> GroupByResults<responses::by::count::subject::Results> {
     let values = subjects
         .iter()
         .map(|subject| parse_field(field, subject))
+        .collect::<Vec<_>>();
+
+    if values.iter().any(|value| value.is_none()) {
+        return GroupByResults::Unsupported;
+    }
+
+    let values = values
+        .into_iter()
+        // SAFETY: we just checked above to ensure that none of the values are
+        // [`None`].
+        .map(|value| value.unwrap())
         .collect::<Vec<_>>();
 
     let mut missing_values = 0usize;
     let result = values
         .into_iter()
         .flat_map(|value| match value {
-            Some(Value::Null) => {
-                missing_values += 1;
-                None
-            }
-            Some(Value::String(s)) => Some(s),
+            Some(value) => Some(value),
             None => {
                 missing_values += 1;
                 None
             }
-            _ => todo!(),
         })
-        .fold(IndexMap::new(), |mut map, value| {
-            *map.entry(value).or_insert_with(|| 0usize) += 1;
-            map
+        .fold(Vec::new(), |mut acc: Vec<ValueCount>, value| {
+            match acc.iter_mut().find(|result| result.value == value) {
+                Some(result) => result.count += 1,
+                None => acc.push(ValueCount { value, count: 1 }),
+            }
+            acc
         });
 
-    responses::by::count::subject::Results::new(result, missing_values)
+    GroupByResults::Supported(responses::by::count::subject::Results::new(
+        result,
+        missing_values,
+    ))
 }
 
-fn parse_field(field: &str, subject: &Subject) -> Option<Value> {
+fn parse_field(field: &str, subject: &Subject) -> Option<Option<Value>> {
     match field {
         "sex" => match subject.metadata() {
-            Some(metadata) => metadata
-                .sex()
-                .as_ref()
-                .map(|sex| Value::String(sex.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .sex()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|sex| serde_json::to_value(sex.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "race" => match subject.metadata() {
-            Some(metadata) => metadata.race().as_ref().map(|race| {
-                Value::String(
-                    race.iter()
-                        .map(|race| race.value().to_string())
-                        .collect::<Vec<_>>()
-                        .join(" AND "),
-                )
-            }),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .race()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|race| serde_json::to_value(race).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "ethnicity" => match subject.metadata() {
-            Some(metadata) => metadata
-                .ethnicity()
-                .as_ref()
-                .map(|ethnicity| Value::String(ethnicity.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .ethnicity()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|ethnicity| serde_json::to_value(ethnicity.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "identifiers" => match subject.metadata() {
-            Some(metadata) => metadata.identifiers().as_ref().map(|identifiers| {
-                Value::String(
-                    identifiers
-                        .iter()
-                        .map(|identifier| identifier.value().to_string())
-                        .collect::<Vec<_>>()
-                        .join(" AND "),
-                )
-            }),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .identifiers()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|identifiers| serde_json::to_value(identifiers).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "vital_status" => match subject.metadata() {
-            Some(metadata) => metadata
-                .vital_status()
-                .as_ref()
-                .map(|vital_status| Value::String(vital_status.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .vital_status()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|vital_status| serde_json::to_value(vital_status.value()).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         "age_at_vital_status" => match subject.metadata() {
-            Some(metadata) => metadata
-                .age_at_vital_status()
-                .as_ref()
-                .map(|age_at_vital_status| Value::String(age_at_vital_status.value().to_string())),
-            None => None,
+            Some(metadata) => Some(
+                metadata
+                    .age_at_vital_status()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|age_at_vital_status| {
+                        serde_json::to_value(age_at_vital_status.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
+        "depositions" => match subject.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .common()
+                    .depositions()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|deposition| serde_json::to_value(deposition).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
         },
         _ => None,
     }

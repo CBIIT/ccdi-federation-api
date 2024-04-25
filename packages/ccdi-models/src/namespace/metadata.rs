@@ -58,7 +58,7 @@ impl Metadata {
     ///
     /// let name = cde::v1::namespace::StudyShortTitle::from(String::from("A study short title"));
     /// let metadata = Builder::default()
-    ///     .study_short_title(StudyShortTitle::new(name.clone(), None, None))
+    ///     .study_short_title(StudyShortTitle::new(name.clone(), None, None, None))
     ///     .build();
     ///
     /// assert_eq!(metadata.study_short_title().unwrap().value(), &name);
@@ -80,7 +80,7 @@ impl Metadata {
     ///
     /// let name = cde::v1::namespace::StudyName::from(String::from("A study name"));
     /// let metadata = Builder::default()
-    ///     .study_name(StudyName::new(name.clone(), None, None))
+    ///     .study_name(StudyName::new(name.clone(), None, None, None))
     ///     .build();
     ///
     /// assert_eq!(metadata.study_name().unwrap().value(), &name);
@@ -102,8 +102,8 @@ impl Metadata {
     ///
     /// let name = cde::v1::namespace::StudyFundingId::from(String::from("A study funding id"));
     /// let metadata = Builder::default()
-    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None))
-    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None))
+    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None, None))
+    ///     .push_study_funding_id(StudyFundingId::new(name.clone(), None, None, None))
     ///     .build();
     ///
     /// let study_funding_id = metadata.study_funding_id().cloned().unwrap();
@@ -130,7 +130,7 @@ impl Metadata {
     ///
     /// let name = cde::v1::namespace::StudyId::AALL0232;
     /// let metadata = Builder::default()
-    ///     .study_id(StudyId::new(name.clone(), None, None))
+    ///     .study_id(StudyId::new(name.clone(), None, None, None))
     ///     .build();
     ///
     /// assert_eq!(metadata.study_id().unwrap().value(), &name);
@@ -181,12 +181,14 @@ impl Metadata {
     ///             Value::String("test".into()),
     ///             None,
     ///             None,
+    ///             None,
     ///         )),
     ///     )
     ///     .insert_unharmonized(
     ///         "owned",
     ///         UnharmonizedField::Owned(owned::Field::new(
     ///             Value::String("test".into()),
+    ///             None,
     ///             None,
     ///             None,
     ///             None,
