@@ -3,9 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic
+Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.0.0-rc.1] — 04-26-2024
 
 ### Added
 
@@ -211,7 +214,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
 - Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...HEAD
+[v1.0.0-rc.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...v1.0.0-rc.1
 [v0.7.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.5.0...v0.6.0

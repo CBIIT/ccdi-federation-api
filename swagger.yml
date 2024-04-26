@@ -335,7 +335,7 @@ info:
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
-  version: v0.7.0
+  version: v1.0.0-rc.1
 servers:
 - url: https://ccdi.stjude.cloud/api/v0
   description: St. Jude Children's Research Hospital CCDI API server
@@ -4223,7 +4223,7 @@ components:
         api_version:
           type: string
           description: The version of the API that this server supports.
-          example: v0.7.0
+          example: v1.0.0-rc.1
         documentation_url:
           type: string
           description: |-
