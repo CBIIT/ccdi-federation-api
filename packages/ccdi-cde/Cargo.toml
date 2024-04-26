@@ -1,5 +1,9 @@
 [package]
 name = "ccdi-cde"
+authors = [
+    "clay.mcleod@stjude.org"
+]
+description = "Common data elements for the CCDI Federation API"
 version.workspace = true
 license.workspace = true
 edition.workspace = true
