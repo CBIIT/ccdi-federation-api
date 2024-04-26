@@ -9,8 +9,6 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
-use itertools::Itertools as _;
-use models::namespace;
 use serde_json::Value;
 
 use ccdi_cde as cde;
@@ -23,11 +21,7 @@ use crate::filter::filter;
 use crate::paginate;
 use crate::params::filter::Subject as FilterSubjectParams;
 use crate::params::PaginationParams;
-use crate::params::PartitionParams;
-use crate::params::Partitionable;
 use crate::responses;
-use crate::responses::by;
-use crate::responses::by::count::subject::NamespacePartitionedResult;
 use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::Errors;
@@ -304,11 +298,10 @@ pub async fn subject_show(
     path = "/subject/by/{field}/count",
     params(
         ("field" = String, description = "The field to group by and count with."),
-        PartitionParams,
     ),
     tag = "Subject",
     responses(
-        (status = 200, description = "Successful operation.", body = responses::by::count::subject::Response),
+        (status = 200, description = "Successful operation.", body = responses::by::count::subject::Results),
         (
             status = 422,
             description = "Unsupported field.",
@@ -323,68 +316,19 @@ pub async fn subject_show(
     )
 )]
 #[get("/subject/by/{field}/count")]
-pub async fn subjects_by_count(
-    path: Path<String>,
-    partition_params: Query<PartitionParams>,
-    subjects: Data<Store>,
-) -> impl Responder {
+pub async fn subjects_by_count(path: Path<String>, subjects: Data<Store>) -> impl Responder {
     let subjects = subjects.subjects.lock().unwrap().clone();
     let field = path.into_inner();
 
-    if let Some(Partitionable::Namespace) = partition_params.0.partition {
-        let namespaces = subjects
-            .iter()
-            .map(|s| s.id().namespace())
-            .unique()
-            .cloned()
-            .sorted()
-            .collect::<Vec<namespace::Identifier>>();
+    let results = group_by(subjects, &field);
 
-        let mut results = Vec::new();
-
-        for namespace in namespaces {
-            let namespace_subjects = subjects
-                .iter()
-                .filter(|s| s.id().namespace() == &namespace)
-                .cloned()
-                .collect::<Vec<Subject>>();
-
-            let namespace_results = group_by(namespace_subjects, &field);
-
-            match namespace_results {
-                GroupByResults::Supported(namespace_results) => {
-                    let namespace_partitioned_result =
-                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-                    results.push(namespace_partitioned_result);
-                }
-                GroupByResults::Unsupported => {
-                    return HttpResponse::UnprocessableEntity().json(Errors::from(
-                        error::Kind::unsupported_field(
-                            field.to_string(),
-                            String::from("This field is not present for subjects."),
-                        ),
-                    ));
-                }
-            }
-        }
-
-        HttpResponse::Ok().json(by::count::subject::Response::NamespacePartitioned(
-            by::count::subject::NamespacePartitionedResults::from(results),
-        ))
-    } else {
-        let results = group_by(subjects, &field);
-
-        match results {
-            GroupByResults::Supported(results) => {
-                HttpResponse::Ok().json(by::count::subject::Response::Unpartitioned(results))
-            }
-            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::unsupported_field(
-                    field.to_string(),
-                    String::from("This field is not present for subjects."),
-                ),
-            )),
+    match results {
+        GroupByResults::Supported(results) => HttpResponse::Ok().json(results),
+        GroupByResults::Unsupported => {
+            HttpResponse::UnprocessableEntity().json(Errors::from(error::Kind::unsupported_field(
+                field.to_string(),
+                String::from("This field is not present for subjects."),
+            )))
         }
     }
 }

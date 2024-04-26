@@ -10,8 +10,6 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
-use itertools::Itertools as _;
-use models::namespace;
 use models::sample::Identifier;
 use rand::prelude::*;
 use serde_json::Value;
@@ -24,11 +22,7 @@ use crate::filter::filter;
 use crate::paginate;
 use crate::params::filter::Sample as FilterSampleParams;
 use crate::params::PaginationParams;
-use crate::params::PartitionParams;
-use crate::params::Partitionable;
 use crate::responses;
-use crate::responses::by;
-use crate::responses::by::count::sample::NamespacePartitionedResult;
 use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::Errors;
@@ -314,11 +308,10 @@ pub async fn sample_show(
     path = "/sample/by/{field}/count",
     params(
         ("field" = String, description = "The field to group by and count with."),
-        PartitionParams,
     ),
     tag = "Sample",
     responses(
-        (status = 200, description = "Successful operation.", body = responses::by::count::sample::Response),
+        (status = 200, description = "Successful operation.", body = responses::by::count::sample::Results),
         (
             status = 422,
             description = "Unsupported field.",
@@ -333,68 +326,19 @@ pub async fn sample_show(
     )
 )]
 #[get("/sample/by/{field}/count")]
-pub async fn samples_by_count(
-    path: Path<String>,
-    partition_params: Query<PartitionParams>,
-    samples: Data<Store>,
-) -> impl Responder {
+pub async fn samples_by_count(path: Path<String>, samples: Data<Store>) -> impl Responder {
     let samples = samples.samples.lock().unwrap().clone();
     let field = path.into_inner();
 
-    if let Some(Partitionable::Namespace) = partition_params.0.partition {
-        let namespaces = samples
-            .iter()
-            .map(|s| s.id().namespace())
-            .unique()
-            .cloned()
-            .sorted()
-            .collect::<Vec<namespace::Identifier>>();
+    let results = group_by(samples, &field);
 
-        let mut results = Vec::new();
-
-        for namespace in namespaces {
-            let namespace_samples = samples
-                .iter()
-                .filter(|s| s.id().namespace() == &namespace)
-                .cloned()
-                .collect::<Vec<Sample>>();
-
-            let namespace_results = group_by(namespace_samples, &field);
-
-            match namespace_results {
-                GroupByResults::Supported(namespace_results) => {
-                    let namespace_partitioned_result =
-                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-                    results.push(namespace_partitioned_result);
-                }
-                GroupByResults::Unsupported => {
-                    return HttpResponse::UnprocessableEntity().json(Errors::from(
-                        error::Kind::unsupported_field(
-                            field.to_string(),
-                            String::from("This field is not present for samples."),
-                        ),
-                    ));
-                }
-            }
-        }
-
-        HttpResponse::Ok().json(by::count::sample::Response::NamespacePartitioned(
-            by::count::sample::NamespacePartitionedResults::from(results),
-        ))
-    } else {
-        let results = group_by(samples, &field);
-
-        match results {
-            GroupByResults::Supported(results) => {
-                HttpResponse::Ok().json(by::count::sample::Response::Unpartitioned(results))
-            }
-            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::unsupported_field(
-                    field.to_string(),
-                    String::from("This field is not present for samples."),
-                ),
-            )),
+    match results {
+        GroupByResults::Supported(results) => HttpResponse::Ok().json(results),
+        GroupByResults::Unsupported => {
+            HttpResponse::UnprocessableEntity().json(Errors::from(error::Kind::unsupported_field(
+                field.to_string(),
+                String::from("This field is not present for samples."),
+            )))
         }
     }
 }

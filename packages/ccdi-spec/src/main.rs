@@ -119,7 +119,7 @@ fn parse_response(
             serde_json::from_str::<server::responses::Sample>(text).map(|_| ())?;
         }
         ResponseType::SamplesByCount => {
-            serde_json::from_str::<server::responses::by::count::sample::Response>(text)
+            serde_json::from_str::<server::responses::by::count::sample::Results>(text)
                 .map(|_| ())?;
         }
         ResponseType::Subjects => {

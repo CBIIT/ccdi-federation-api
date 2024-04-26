@@ -587,20 +587,13 @@ paths:
         required: true
         schema:
           type: string
-      - name: partition
-        in: query
-        description: The method to partition results.
-        required: false
-        schema:
-          allOf:
-          - $ref: '#/components/schemas/params.Partitionable'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.by.count.subject.Response'
+                $ref: '#/components/schemas/responses.by.count.subject.Results'
         '422':
           description: Unsupported field.
           content:
@@ -880,20 +873,13 @@ paths:
         required: true
         schema:
           type: string
-      - name: partition
-        in: query
-        description: The method to partition results.
-        required: false
-        schema:
-          allOf:
-          - $ref: '#/components/schemas/params.Partitionable'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.by.count.sample.Response'
+                $ref: '#/components/schemas/responses.by.count.sample.Results'
         '422':
           description: Unsupported field.
           content:
@@ -1143,20 +1129,13 @@ paths:
         required: true
         schema:
           type: string
-      - name: partition
-        in: query
-        description: The method to partition results.
-        required: false
-        schema:
-          allOf:
-          - $ref: '#/components/schemas/params.Partitionable'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/responses.by.count.file.Response'
+                $ref: '#/components/schemas/responses.by.count.file.Results'
         '422':
           description: Unsupported field.
           content:
@@ -3761,11 +3740,6 @@ components:
         * When the age at vital status is collected by the source server in years,
         the number of years is multiplied by 365.25 to arrive at an approximate
         number of days.
-    params.Partitionable:
-      type: string
-      description: The different methods a result can be partitioned by.
-      enum:
-      - namespace
     responses.Errors:
       type: object
       description: A wrapper around one or more [errors](Kind).
@@ -3946,31 +3920,6 @@ components:
           type: integer
           description: The number of times the value was counted.
           minimum: 0
-    responses.by.count.file.NamespacePartitionedResult:
-      type: object
-      description: |-
-        A result that associates a namespace with the [`Results`] belonging to that
-        [`Namespace`](ccdi_models::Namespace).
-      required:
-      - namespace
-      - results
-      properties:
-        namespace:
-          $ref: '#/components/schemas/models.namespace.Identifier'
-        results:
-          $ref: '#/components/schemas/responses.by.count.file.Results'
-    responses.by.count.file.NamespacePartitionedResults:
-      type: array
-      items:
-        $ref: '#/components/schemas/responses.by.count.file.NamespacePartitionedResult'
-      description: A set of [`NamespacePartitionedResults`].
-    responses.by.count.file.Response:
-      oneOf:
-      - $ref: '#/components/schemas/responses.by.count.file.Results'
-      - $ref: '#/components/schemas/responses.by.count.file.NamespacePartitionedResults'
-      description: |-
-        A unified response for counting by a particular field for
-        [`Files`](ccdi_models::File).
     responses.by.count.file.Results:
       type: object
       description: |-
@@ -3998,31 +3947,6 @@ components:
           items:
             $ref: '#/components/schemas/responses.by.count.ValueCount'
           description: The counts per value observed for the result set.
-    responses.by.count.sample.NamespacePartitionedResult:
-      type: object
-      description: |-
-        A result that associates a namespace with the [`Results`] belonging to that
-        [`Namespace`](ccdi_models::Namespace).
-      required:
-      - namespace
-      - results
-      properties:
-        namespace:
-          $ref: '#/components/schemas/models.namespace.Identifier'
-        results:
-          $ref: '#/components/schemas/responses.by.count.sample.Results'
-    responses.by.count.sample.NamespacePartitionedResults:
-      type: array
-      items:
-        $ref: '#/components/schemas/responses.by.count.sample.NamespacePartitionedResult'
-      description: A set of [`NamespacePartitionedResults`].
-    responses.by.count.sample.Response:
-      oneOf:
-      - $ref: '#/components/schemas/responses.by.count.sample.Results'
-      - $ref: '#/components/schemas/responses.by.count.sample.NamespacePartitionedResults'
-      description: |-
-        A unified response for counting by a particular field for
-        [`Samples`](ccdi_models::Sample).
     responses.by.count.sample.Results:
       type: object
       description: |-
@@ -4050,31 +3974,6 @@ components:
           items:
             $ref: '#/components/schemas/responses.by.count.ValueCount'
           description: The counts per value observed for the result set.
-    responses.by.count.subject.NamespacePartitionedResult:
-      type: object
-      description: |-
-        A result that associates a namespace with the [`Results`] belonging to that
-        [`Namespace`](ccdi_models::Namespace).
-      required:
-      - namespace
-      - results
-      properties:
-        namespace:
-          $ref: '#/components/schemas/models.namespace.Identifier'
-        results:
-          $ref: '#/components/schemas/responses.by.count.subject.Results'
-    responses.by.count.subject.NamespacePartitionedResults:
-      type: array
-      items:
-        $ref: '#/components/schemas/responses.by.count.subject.NamespacePartitionedResult'
-      description: A set of [`NamespacePartitionedResults`].
-    responses.by.count.subject.Response:
-      oneOf:
-      - $ref: '#/components/schemas/responses.by.count.subject.Results'
-      - $ref: '#/components/schemas/responses.by.count.subject.NamespacePartitionedResults'
-      description: |-
-        A unified response for counting by a particular field for
-        [`Subjects`](ccdi_models::Subject).
     responses.by.count.subject.Results:
       type: object
       description: |-

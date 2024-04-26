@@ -16,6 +16,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/79),
   [#95](https://github.com/CBIIT/ccdi-federation-api/pull/95)).
 
+### Revised
+
+- Removes namespace-partitioned count by results ([link to
+  dicussion](https://github.com/CBIIT/ccdi-federation-api/discussions/96),
+  [#97](https://github.com/CBIIT/ccdi-federation-api/pull/97)).
+
 ### Fixed
 
 - Includes diagnosis in sample metadata fields.
