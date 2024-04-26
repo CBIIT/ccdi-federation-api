@@ -1,6 +1,5 @@
 use models::metadata::field;
 use models::metadata::fields;
-use server::params;
 use utoipa::Modify;
 use utoipa::OpenApi;
 
@@ -249,9 +248,6 @@ use utoipa::openapi;
         // Url model.
         models::Url,
 
-        // Params.
-        params::Partitionable,
-
         // General responses.
         responses::Errors,
 
@@ -270,25 +266,16 @@ use utoipa::openapi;
         responses::Subject,
         responses::Subjects,
         responses::by::count::subject::Results,
-        responses::by::count::subject::NamespacePartitionedResult,
-        responses::by::count::subject::NamespacePartitionedResults,
-        responses::by::count::subject::Response,
 
         // Sample responses.
         responses::Sample,
         responses::Samples,
         responses::by::count::sample::Results,
-        responses::by::count::sample::NamespacePartitionedResult,
-        responses::by::count::sample::NamespacePartitionedResults,
-        responses::by::count::sample::Response,
 
         // File responses.
         responses::File,
         responses::Files,
         responses::by::count::file::Results,
-        responses::by::count::file::NamespacePartitionedResult,
-        responses::by::count::file::NamespacePartitionedResults,
-        responses::by::count::file::Response,
 
         // Metadata responses.
         responses::metadata::FieldDescriptions,

@@ -11,8 +11,6 @@ use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
 use ccdi_cde::v1::file;
-use itertools::Itertools as _;
-use models::namespace;
 use rand::prelude::*;
 
 use ccdi_models as models;
@@ -25,11 +23,7 @@ use crate::filter::filter;
 use crate::paginate;
 use crate::params::filter::File as FilterFileParams;
 use crate::params::PaginationParams;
-use crate::params::PartitionParams;
-use crate::params::Partitionable;
 use crate::responses;
-use crate::responses::by;
-use crate::responses::by::count::file::NamespacePartitionedResult;
 use crate::responses::by::count::ValueCount;
 use crate::responses::error;
 use crate::responses::Errors;
@@ -310,11 +304,10 @@ pub async fn file_show(path: Path<(String, String, String)>, files: Data<Store>)
     path = "/file/by/{field}/count",
     params(
         ("field" = String, description = "The field to group by and count with."),
-        PartitionParams,
     ),
     tag = "File",
     responses(
-        (status = 200, description = "Successful operation.", body = responses::by::count::file::Response),
+        (status = 200, description = "Successful operation.", body = responses::by::count::file::Results),
         (
             status = 422,
             description = "Unsupported field.",
@@ -329,68 +322,19 @@ pub async fn file_show(path: Path<(String, String, String)>, files: Data<Store>)
     )
 )]
 #[get("/file/by/{field}/count")]
-pub async fn files_by_count(
-    path: Path<String>,
-    partition_params: Query<PartitionParams>,
-    files: Data<Store>,
-) -> impl Responder {
+pub async fn files_by_count(path: Path<String>, files: Data<Store>) -> impl Responder {
     let files = files.files.lock().unwrap().clone();
     let field = path.into_inner();
 
-    if let Some(Partitionable::Namespace) = partition_params.0.partition {
-        let namespaces = files
-            .iter()
-            .map(|s| s.id().namespace())
-            .unique()
-            .cloned()
-            .sorted()
-            .collect::<Vec<namespace::Identifier>>();
+    let results = group_by(files, &field);
 
-        let mut results = Vec::new();
-
-        for namespace in namespaces {
-            let namespace_files = files
-                .iter()
-                .filter(|s| s.id().namespace() == &namespace)
-                .cloned()
-                .collect::<Vec<File>>();
-
-            let namespace_results = group_by(namespace_files, &field);
-
-            match namespace_results {
-                GroupByResults::Supported(namespace_results) => {
-                    let namespace_partitioned_result =
-                        NamespacePartitionedResult::new(namespace.clone(), namespace_results);
-
-                    results.push(namespace_partitioned_result);
-                }
-                GroupByResults::Unsupported => {
-                    return HttpResponse::UnprocessableEntity().json(Errors::from(
-                        error::Kind::unsupported_field(
-                            field.to_string(),
-                            String::from("This field is not present for files."),
-                        ),
-                    ));
-                }
-            }
-        }
-
-        HttpResponse::Ok().json(by::count::file::Response::NamespacePartitioned(
-            by::count::file::NamespacePartitionedResults::from(results),
-        ))
-    } else {
-        let results = group_by(files, &field);
-
-        match results {
-            GroupByResults::Supported(results) => {
-                HttpResponse::Ok().json(by::count::file::Response::Unpartitioned(results))
-            }
-            GroupByResults::Unsupported => HttpResponse::UnprocessableEntity().json(Errors::from(
-                error::Kind::unsupported_field(
-                    field.to_string(),
-                    String::from("This field is not present for files."),
-                ),
-            )),
+    match results {
+        GroupByResults::Supported(results) => HttpResponse::Ok().json(results),
+        GroupByResults::Unsupported => {
+            HttpResponse::UnprocessableEntity().json(Errors::from(error::Kind::unsupported_field(
+                field.to_string(),
+                String::from("This field is not present for files."),
+            )))
         }
     }
 }
