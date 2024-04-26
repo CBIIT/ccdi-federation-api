@@ -17,6 +17,7 @@ use crate::Url;
 pub fn get_field_descriptions() -> Vec<description::Description> {
     vec![
         crate::sample::metadata::AgeAtDiagnosis::description(),
+        crate::sample::metadata::Diagnosis::description(),
         cde::v1::sample::DiseasePhase::description(),
         cde::v1::sample::LibraryStrategy::description(),
         cde::v2::sample::PreservationMethod::description(),
@@ -38,7 +39,27 @@ impl description::r#trait::Description for crate::sample::metadata::AgeAtDiagnos
             Kind::Struct,
             String::from("age_at_diagnosis"),
             description,
-            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#age_at_diagnosis".parse::<Url>().unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_diagnosis".parse::<Url>().unwrap(),
+            None,
+            None,
+        ))
+    }
+}
+
+impl description::r#trait::Description for crate::sample::metadata::Diagnosis {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("diagnosis"),
+            description,
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#diagnosis"
+                .parse::<Url>()
+                .unwrap(),
             None,
             None,
         ))

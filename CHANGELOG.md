@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Includes diagnosis in sample metadata fields.
+
 ## [v1.0.0-rc.1] — 04-26-2024
 
 ### Added
