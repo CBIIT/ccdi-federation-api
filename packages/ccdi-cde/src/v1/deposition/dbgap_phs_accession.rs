@@ -20,6 +20,13 @@ use crate::CDE;
 #[schema(as = cde::v1::deposition::DbgapPhsAccession)]
 pub struct DbgapPhsAccession(String);
 
+impl DbgapPhsAccession {
+    /// Consumes `self` to return the inner [`String`].
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+}
+
 impl From<String> for DbgapPhsAccession {
     fn from(value: String) -> Self {
         Self(value)

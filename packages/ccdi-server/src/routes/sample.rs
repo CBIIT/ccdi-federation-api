@@ -10,6 +10,7 @@ use actix_web::web::Query;
 use actix_web::web::ServiceConfig;
 use actix_web::HttpResponse;
 use actix_web::Responder;
+use actix_web::ResponseError;
 use itertools::Itertools as _;
 use models::namespace;
 use models::sample::Identifier;
@@ -64,8 +65,8 @@ impl Store {
                     .map(|i| {
                         let mut rng = rand::thread_rng();
 
-                        // SAFETY: this should always unwrap because we manually ensure
-                        // that subjects is never empty.
+                        // SAFETY: this should always unwrap because we manually
+                        // ensure that subjects is never empty.
                         let subject = subjects.choose(&mut rng).unwrap().id().clone();
 
                         let identifier = Identifier::new(
@@ -104,23 +105,11 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 /// ### Filtering
 ///
 /// All harmonized (top-level) and unharmonized (nested under the
-/// `metadata.unharmonized` key) metadata fields are filterable. To achieve
-/// this, you can provide the field name as a [`String`]. Filtering follows the
-/// following rules:
-///
-/// * For single-value metadata field, the sample is included in the results if
-///   its value _exactly_ matches the query string. Matches are case-sensitive.
-/// * For multiple-value metadata fields, the sample is included in the results
-///   if any of its values for the field _exactly_ match the query string (a
-///   logical OR [`||`]). Matches are case-sensitive.
-/// * When the metadata field is `null` (in the case of singlular or
-///   multiple-valued metadata fields) or empty, the sample is not included.
-/// * When multiple fields are provided as filters, a logical AND (`&&`) strings
-///   together the predicates. In other words, all filters must match for a
-///   sample to be returned. Note that this means that servers do not natively
-///   support logical OR (`||`) across multiple fields: that must be done by
-///   calling this endpoint with each of your desired queries and performing a
-///   set union of those samples out of band.
+/// `metadata.unharmonized` key) metadata fields are filterable. Filtering is
+/// achieved by assigning a valid JSON value to a query parameter named after
+/// the field you want to filter by. The specific behavior of how the filter
+/// works is field-specific and is defined in the query parameter descriptions
+/// below.
 ///
 /// ### Ordering
 ///
@@ -136,8 +125,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
             "metadata.unharmonized.<field>" = Option<String>,
             Query,
             nullable = false,
-            description = "All unharmonized fields should be filterable in the \
-            same manner as harmonized fields:\n\n\
+            description = "All unharmonized fields should be filterable as
+            well:\n\n\
             * Filtering on a singular field should include the `Sample` in \
             the results if the query exactly matches the value of that field \
             for the `Sample` (case-sensitive).\n\
@@ -241,7 +230,10 @@ pub async fn sample_index(
     // sorted by identifier by default.
     samples.sort();
 
-    let samples = filter::<Sample, FilterSampleParams>(samples, filter_params.0);
+    let samples = match filter::<Sample, FilterSampleParams>(samples, filter_params.0) {
+        Ok(samples) => samples,
+        Err(err) => return err.error_response(),
+    };
 
     paginate::response::<Sample, Samples>(
         pagination_params.0,

@@ -18,5 +18,6 @@ regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_test.workspace = true
+serde_with.workspace = true
 url.workspace = true
 utoipa.workspace = true
