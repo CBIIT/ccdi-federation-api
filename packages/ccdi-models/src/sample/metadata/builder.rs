@@ -11,8 +11,8 @@ pub struct Builder {
     /// The approximate age at diagnosis.
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
 
-    /// The diagnosis for the sample.
-    diagnosis: Option<field::unowned::sample::Diagnosis>,
+    /// Diagnosis values for the sample.
+    diagnosis: Option<Vec<field::unowned::sample::Diagnosis>>,
 
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
@@ -85,10 +85,20 @@ impl Builder {
     /// let diagnosis =
     ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
     ///
-    /// let builder = Builder::default().diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None));
+    /// let builder = Builder::default()
+    ///     .push_diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None))
+    ///     .push_diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None));
     /// ```
-    pub fn diagnosis(mut self, field: field::unowned::sample::Diagnosis) -> Self {
-        self.diagnosis = Some(field);
+    pub fn push_diagnosis(mut self, field: field::unowned::sample::Diagnosis) -> Self {
+        let diagnosis = match self.diagnosis {
+            Some(mut diagnosis) => {
+                diagnosis.push(field);
+                diagnosis
+            }
+            None => vec![field],
+        };
+
+        self.diagnosis = Some(diagnosis);
         self
     }
 

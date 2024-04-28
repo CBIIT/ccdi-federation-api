@@ -32,8 +32,8 @@ pub struct Metadata {
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
 
     /// The diagnosis for the sample.
-    #[schema(value_type = field::unowned::sample::Diagnosis, nullable = true)]
-    diagnosis: Option<field::unowned::sample::Diagnosis>,
+    #[schema(value_type = Vec<field::unowned::sample::Diagnosis>, nullable = true)]
+    diagnosis: Option<Vec<field::unowned::sample::Diagnosis>>,
 
     /// The phase of the disease when this sample was acquired.
     #[schema(value_type = field::unowned::sample::DiseasePhase, nullable = true)]
@@ -132,12 +132,15 @@ impl Metadata {
     ///     models::sample::metadata::Diagnosis::from(String::from("Acute Lymphoblastic Leukemia"));
     ///
     /// let metadata = Builder::default()
-    ///     .diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None))
+    ///     .push_diagnosis(Diagnosis::new(diagnosis.clone(), None, None, None))
     ///     .build();
     ///
-    /// assert_eq!(metadata.diagnosis().unwrap().value(), &diagnosis);
+    /// assert_eq!(
+    ///     metadata.diagnosis().unwrap().iter().next().unwrap().value(),
+    ///     &diagnosis
+    /// );
     /// ```
-    pub fn diagnosis(&self) -> Option<&field::unowned::sample::Diagnosis> {
+    pub fn diagnosis(&self) -> Option<&Vec<field::unowned::sample::Diagnosis>> {
         self.diagnosis.as_ref()
     }
 
@@ -557,12 +560,12 @@ impl Metadata {
                 None,
                 None,
             )),
-            diagnosis: Some(field::unowned::sample::Diagnosis::new(
+            diagnosis: Some(vec![field::unowned::sample::Diagnosis::new(
                 Diagnosis::from(String::from("Random Diagnosis")),
                 None,
                 None,
                 None,
-            )),
+            )]),
             disease_phase: rand::random(),
             library_strategy: rand::random(),
             preservation_method: rand::random(),
