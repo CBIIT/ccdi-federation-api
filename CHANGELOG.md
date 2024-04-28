@@ -14,6 +14,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   values (effectively distinguishing `null` and strings) and (b) explicitly
   defined the behavior of each filter parameter
   ([#98](https://github.com/CBIIT/ccdi-federation-api/pull/98)).
+- Updates the sample's `diagnosis` field to support multiple values, as assigned
+  diagnoses are not incongruent across multiple ontologies 
+  ([#99](https://github.com/CBIIT/ccdi-federation-api/pull/99)).
 
 ### Fixed
 

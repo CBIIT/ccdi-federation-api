@@ -201,7 +201,10 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                         Value::String(query) => {
                             if let Some(metadata) = sample.metadata() {
                                 if let Some(diagnosis) = metadata.diagnosis() {
-                                    if diagnosis.to_string().contains(query) {
+                                    if diagnosis
+                                        .iter()
+                                        .any(|value| value.to_string().contains(query))
+                                    {
                                         // The user is requesting all samples
                                         // with a particular substring, and
                                         // this sample includes a metadata block

@@ -3847,8 +3847,10 @@ components:
             - $ref: '#/components/schemas/field.unowned.sample.AgeAtDiagnosis'
             nullable: true
           diagnosis:
-            allOf:
-            - $ref: '#/components/schemas/field.unowned.sample.Diagnosis'
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.sample.Diagnosis'
+            description: The diagnosis for the sample.
             nullable: true
           disease_phase:
             allOf:
