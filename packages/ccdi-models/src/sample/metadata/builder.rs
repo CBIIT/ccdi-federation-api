@@ -174,7 +174,7 @@ impl Builder {
     /// use models::sample::metadata::Builder;
     ///
     /// let field = TumorTissueMorphology::new(
-    ///     cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///     cde::v1::sample::TumorTissueMorphology::new(Some(String::from("8010/0"))),
     ///     None,
     ///     None,
     ///     None,

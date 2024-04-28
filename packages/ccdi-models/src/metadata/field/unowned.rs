@@ -297,7 +297,7 @@ pub mod sample {
         field::unowned::sample::TumorTissueMorphology,
         cde::v1::sample::TumorTissueMorphology,
         cde::v1::sample::TumorTissueMorphology,
-        cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+        cde::v1::sample::TumorTissueMorphology::new(Some(String::from("8010/0"))),
         ccdi_cde as cde
     );
 

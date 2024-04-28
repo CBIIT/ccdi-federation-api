@@ -6,6 +6,8 @@ use ccdi_models as models;
 
 use models::Entity;
 
+use crate::responses::Errors;
+
 pub mod file;
 pub mod sample;
 pub mod subject;
@@ -20,7 +22,7 @@ where
     /// Filters entities by checking if the value of the provided field name
     /// matches the value of that field within the filter parameters. Matches
     /// are case-sensitive.
-    fn filter_metadata_field(self, field: String, filter_params: &P) -> Vec<T>;
+    fn filter_metadata_field(self, field: String, filter_params: &P) -> Result<Vec<T>, Errors>;
 }
 
 /// Filters a list of entities based on the provided filter parameters.
@@ -105,7 +107,7 @@ where
 ///
 /// // Filtering of subjects with no parameters.
 /// let mut results =
-///     filter::<Subject, SubjectFilterParams>(subjects.clone(), SubjectFilterParams::default());
+///     filter::<Subject, SubjectFilterParams>(subjects.clone(), SubjectFilterParams::default())?;
 ///
 /// assert_eq!(results.len(), 4);
 ///
@@ -113,15 +115,15 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("F")),
+///         sex: Some(String::from("\"F\"")),
 ///         race: None,
 ///         ethnicity: None,
-///         identifiers: None,
+///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
-///         depositions: None,
+///         deposition: None,
 ///     },
-/// );
+/// )?;
 ///
 /// assert_eq!(results.len(), 2);
 /// assert_eq!(
@@ -137,15 +139,15 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("F")),
-///         race: Some(String::from("Asian")),
+///         sex: Some(String::from("\"F\"")),
+///         race: Some(String::from("\"Asian\"")),
 ///         ethnicity: None,
-///         identifiers: None,
+///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
-///         depositions: None,
+///         deposition: None,
 ///     },
-/// );
+/// )?;
 ///
 /// assert_eq!(results.len(), 1);
 /// assert_eq!(
@@ -157,19 +159,21 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("f")),
+///         sex: Some(String::from("\"f\"")),
 ///         race: None,
 ///         ethnicity: None,
-///         identifiers: None,
+///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
-///         depositions: None,
+///         deposition: None,
 ///     },
-/// );
+/// )?;
 ///
 /// assert_eq!(results.len(), 0);
+///
+/// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
-pub fn filter<T, P>(mut entities: Vec<T>, filter_params: P) -> Vec<T>
+pub fn filter<T, P>(mut entities: Vec<T>, filter_params: P) -> Result<Vec<T>, Errors>
 where
     T: Entity,
     Vec<T>: FilterMetadataField<T, P>,
@@ -191,8 +195,8 @@ where
             false => field,
         };
 
-        entities = entities.filter_metadata_field(field, &filter_params);
+        entities = entities.filter_metadata_field(field, &filter_params)?;
     }
 
-    entities
+    Ok(entities)
 }

@@ -19,7 +19,7 @@ use crate::CDE;
     Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, ToSchema, Introspect,
 )]
 #[schema(as = cde::v1::file::Size)]
-pub struct Size(usize);
+pub struct Size(u64);
 
 impl Size {
     /// Creates a new [`Size`].
@@ -32,7 +32,7 @@ impl Size {
     ///
     /// let size = Size::new(42);
     /// ```
-    pub fn new(value: usize) -> Self {
+    pub fn new(value: u64) -> Self {
         Self(value)
     }
 
@@ -49,7 +49,7 @@ impl Size {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn inner(&self) -> usize {
+    pub fn inner(&self) -> u64 {
         self.0
     }
 }

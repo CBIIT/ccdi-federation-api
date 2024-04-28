@@ -5,6 +5,7 @@ use rand::distributions::Distribution;
 use rand::distributions::Standard;
 use serde::Deserialize;
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 use utoipa::schema;
 use utoipa::ToSchema;
 
@@ -13,6 +14,7 @@ use utoipa::ToSchema;
     Clone, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize, ToSchema,
 )]
 #[schema(as = models::file::metadata::Checksums)]
+#[skip_serializing_none]
 pub struct Checksums {
     /// An md5 checksum.
     #[schema(example = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]

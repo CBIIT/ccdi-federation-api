@@ -30,5 +30,7 @@ complete the checklist as well:
 - [ ] I have confirmed that my field shows up in the relevant wiki generation
   command. For example. if you add a field to subjects, it should show up in the
   `cargo run --release wiki subject` output.
-
+- [ ] I have added the metadata field to the filter parameters for the 
+  entity it is assigned to and have added a test covering the various filtering
+  conditions.
 -->

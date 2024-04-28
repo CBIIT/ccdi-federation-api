@@ -243,7 +243,7 @@ impl Metadata {
                 None,
             )),
             size: Some(field::unowned::file::Size::new(
-                cde::v1::file::Size::new(rand::thread_rng().gen_range(usize::MIN..=usize::MAX)),
+                cde::v1::file::Size::new(rand::thread_rng().gen_range(u64::MIN..=u64::MAX)),
                 None,
                 None,
                 None,

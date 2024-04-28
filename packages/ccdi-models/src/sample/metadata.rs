@@ -324,7 +324,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .tumor_tissue_morphology(TumorTissueMorphology::new(
-    ///         cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///         cde::v1::sample::TumorTissueMorphology::new(Some(String::from("8010/0"))),
     ///         None,
     ///         None,
     ///         None,
@@ -334,7 +334,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.tumor_tissue_morphology(),
     ///     Some(&TumorTissueMorphology::new(
-    ///         cde::v1::sample::TumorTissueMorphology::from(String::from("8010/0")),
+    ///         cde::v1::sample::TumorTissueMorphology::new(Some(String::from("8010/0"))),
     ///         None,
     ///         None,
     ///         None
@@ -570,7 +570,7 @@ impl Metadata {
             tumor_classification: rand::random(),
             tumor_tissue_morphology: Some(field::unowned::sample::TumorTissueMorphology::new(
                 // "8000/0" is the ICD-O-3 code for a "Neoplasm".
-                ccdi_cde::v1::sample::TumorTissueMorphology::from(String::from("8000/0")),
+                ccdi_cde::v1::sample::TumorTissueMorphology::new(Some(String::from("8000/0"))),
                 None,
                 None,
                 None,

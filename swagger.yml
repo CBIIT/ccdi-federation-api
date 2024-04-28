@@ -363,23 +363,11 @@ paths:
         ### Filtering
 
         All harmonized (top-level) and unharmonized (nested under the
-        `metadata.unharmonized` key) metadata fields are filterable. To achieve
-        this, you can provide the field name as a [`String`]. Filtering follows the
-        following rules:
-
-        * For single-value metadata field, the subject is included in the results if
-        its value _exactly_ matches the query string. Matches are case-sensitive.
-        * For multiple-value metadata fields, the subject is included in the results
-        if any of its values for the field _exactly_ match the query string (a
-        logical OR [`||`]). Matches are case-sensitive.
-        * When the metadata field is `null` (in the case of singlular or
-        multiple-valued metadata fields) or empty, the subject is not included.
-        * When multiple fields are provided as filters, a logical AND (`&&`) strings
-        together the predicates. In other words, all filters must match for a
-        subject to be returned. Note that this means that servers do not natively
-        support logical OR (`||`) across multiple fields: that must be done by
-        calling this endpoint with each of your desired queries and performing a
-        set union of those subjects out of band.
+        `metadata.unharmonized` key) metadata fields are filterable. Filtering is
+        achieved by assigning a valid JSON value to a query parameter named after
+        the field you want to filter by. The specific behavior of how the filter
+        works is field-specific and is defined in the query parameter descriptions
+        below.
 
         ### Ordering
 
@@ -389,71 +377,203 @@ paths:
       parameters:
       - name: sex
         in: query
-        description: Matches any subject where the `sex` field matches the string provided.
+        description: |-
+          Matches any subject where the `sex` field exactly matches the specified
+          JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `sex` are included in the results.
+          - If a string is provided, all entries where `sex` exactly matches the
+          provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?sex="F"` to select all
+          subjects with a `sex` of `F`.
         required: false
         schema:
           type: string
+          nullable: true
       - name: race
         in: query
         description: |-
-          Matches any subject where any member of the `race` field matches the
-          string provided.
+          Matches subjects to their `race` value(s) according to the rules laid
+          out below.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the subject should be included in the results.
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `race` are included in the results.
+          - If a string is provided, all entries where any `race` value exactly
+          matches the provided string are included in the results. Note that
+          this is effectively a logical OR (`||`) across any of the race values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?race="American Indian or
+          Alaska Native"` to select any subjects where any race matches this
+          string.
         required: false
         schema:
           type: string
+          nullable: true
       - name: ethnicity
         in: query
         description: |-
-          Matches any subject where the `ethnicity` field matches the string
-          provided.
+          Matches any subject where the `ethnicity` field exactly matches the
+          specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `ethnicity` are included in the results.
+          - If a string is provided, all entries where `ethnicity` exactly matches
+          the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?ethnicity="Hispanic or
+          Latino"` to select all subjects with a `ethnicity` of `Hispanic or
+          Latino`.
         required: false
         schema:
           type: string
-      - name: identifiers
+          nullable: true
+      - name: identifier
         in: query
         description: |-
-          Matches any subject where any member of the `identifiers` field matches
-          the string provided.
+          Matches subjects to their `identifiers` value(s) according to the rules
+          laid out below.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the subject should be included in the results.
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `identifiers` are included in the results.
+          - If a string is provided, all entries where any `identifiers` have a
+          name that exactly matches the provided string are included in the
+          results. Note that this is effectively a logical OR (`||`) across any
+          of the identifier name values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?identifier="Subject-OZNL7P47"` to select any subjects where any
+          identifiers matches this string.
         required: false
         schema:
           type: string
+          nullable: true
       - name: vital_status
         in: query
         description: |-
-          Matches any subject where the `vital_status` field matches the string
-          provided.
+          Matches any subject where the `vital_status` field exactly matches the
+          specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `vital_status` are included in the results.
+          - If a string is provided, all entries where `vital_status` exactly
+          matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?vital_status="Alive"` to
+          select all subjects with a `vital_status` of `Alive`.
         required: false
         schema:
           type: string
+          nullable: true
       - name: age_at_vital_status
         in: query
         description: |-
-          Matches any subject where the `age_at_vital_status` field matches the
-          string provided.
+          Matches any subject where the `age_at_vital_status` field exactly
+          matches the specified JSON value.
+
+          This parameter can either be a JSON number (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `age_at_vital_status` are included in the results.
+          - If a number is provided, all entries where `age_at_vital_status`
+          exactly matches the provided number are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?age_at_vital_status=365.25`
+          to select all subjects with a `age_at_vital_status` of `365.25`.
         required: false
         schema:
           type: string
-      - name: depositions
+          nullable: true
+      - name: deposition
         in: query
         description: |-
-          Matches any subject where any member of the `depositions` fields match
-          the string provided.
+          Matches subjects to their `depositions` value(s) according to the rules
+          laid out below.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the subject should be included in the results.
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `depositions` are included in the results.
+          - If a string is provided, all entries where any `depositions` value
+          exactly matches the provided string are included in the results. Note
+          that this is effectively a logical OR (`||`) across any of the
+          deposition values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?deposition="phs000000.v1.p1"` to select any subjects where any
+          deposition value matches this string.
         required: false
         schema:
           type: string
+          nullable: true
       - name: metadata.unharmonized.<field>
         in: query
         description: |-
-          All unharmonized fields should be filterable in the same manner as harmonized fields:
+          All unharmonized fields should be filterable as well:
 
           * Filtering on a singular field should include the `Subject` in the results if the query exactly matches the value of that field for the `Subject` (case-sensitive).
           * Filtering on field with multiple values should include the `Subject` in the results if the query exactly matches any of the values of the field for that `Subject` (case-sensitive).
@@ -644,23 +764,11 @@ paths:
         ### Filtering
 
         All harmonized (top-level) and unharmonized (nested under the
-        `metadata.unharmonized` key) metadata fields are filterable. To achieve
-        this, you can provide the field name as a [`String`]. Filtering follows the
-        following rules:
-
-        * For single-value metadata field, the sample is included in the results if
-        its value _exactly_ matches the query string. Matches are case-sensitive.
-        * For multiple-value metadata fields, the sample is included in the results
-        if any of its values for the field _exactly_ match the query string (a
-        logical OR [`||`]). Matches are case-sensitive.
-        * When the metadata field is `null` (in the case of singlular or
-        multiple-valued metadata fields) or empty, the sample is not included.
-        * When multiple fields are provided as filters, a logical AND (`&&`) strings
-        together the predicates. In other words, all filters must match for a
-        sample to be returned. Note that this means that servers do not natively
-        support logical OR (`||`) across multiple fields: that must be done by
-        calling this endpoint with each of your desired queries and performing a
-        set union of those samples out of band.
+        `metadata.unharmonized` key) metadata fields are filterable. Filtering is
+        achieved by assigning a valid JSON value to a query parameter named after
+        the field you want to filter by. The specific behavior of how the filter
+        works is field-specific and is defined in the query parameter descriptions
+        below.
 
         ### Ordering
 
@@ -668,85 +776,322 @@ paths:
         in the `responses::Samples` schema.
       operationId: sample_index
       parameters:
-      - name: disease_phase
-        in: query
-        description: |-
-          Matches any sample where the `disease_phase` field matches the string
-          provided.
-        required: false
-        schema:
-          type: string
-      - name: library_strategy
-        in: query
-        description: |-
-          Matches any sample where the `library_strategy` field matches the string
-          provided.
-        required: false
-        schema:
-          type: string
-      - name: preservation_method
-        in: query
-        description: |-
-          Matches any sample where the `preservation_method` field matches the string
-          provided.
-        required: false
-        schema:
-          type: string
-      - name: tissue_type
-        in: query
-        description: |-
-          Matches any sample where the `tissue_type` field matches the string
-          provided.
-        required: false
-        schema:
-          type: string
-      - name: tumor_classification
-        in: query
-        description: |-
-          Matches any sample where the `tumor_classification` field matches the
-          string provided.
-        required: false
-        schema:
-          type: string
       - name: age_at_diagnosis
         in: query
         description: |-
-          Matches any sample where the `age_at_diagnosis` field matches the string
-          provided.
+          Matches any sample where the `age_at_diagnosis` field exactly matches
+          the specified JSON value.
+
+          This parameter can either be a JSON number or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `age_at_diagnosis` are included in the results.
+          - If a number is provided, all entries where `age_at_diagnosis` exactly
+          matches the provided number are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?age_at_diagnosis=365.25` to
+          select all samples with a `age_at_diagnosis` of `365.25`.
         required: false
         schema:
           type: string
-      - name: age_at_collection
+          nullable: true
+      - name: diagnosis
         in: query
         description: |-
-          Matches any sample where the `age_at_collection` field matches the
-          string provided.
+          Matches samples to their `diagnosis` value(s) according to the rules
+          laid out below.
+
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `diagnosis` are included in the results.
+          - If a string is provided, all entries where any `diagnosis` value
+          contains the provided string are included in the results. Note that
+          this is effectively a logical OR (`||`) across any of the diagnosis
+          values containing the substring.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?diagnosis="sarcoma"` to
+          select any samples where any diagnosis value contains the string
+          `sarcoma`.
+
+          **Note:** this filter parameter contains non-standard filtering
+          criteria—implementors should carefully read the description above.
         required: false
         schema:
           type: string
+          nullable: true
+      - name: disease_phase
+        in: query
+        description: |-
+          Matches any sample where the `disease_phase` field exactly matches the
+          specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `disease_phase` are included in the results.
+          - If a string is provided, all entries where `disease_phase` exactly
+          matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?disease_phase="Initial
+          Diagnosis"` to select all samples with a `disease_phase` of `Initial
+          Diagnosis`.
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: tissue_type
+        in: query
+        description: |-
+          Matches any sample where the `tissue_type` field exactly matches the
+          specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `tissue_type` are included in the results.
+          - If a string is provided, all entries where `tissue_type` exactly
+          matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?tissue_type="Unspecified"`
+          to select all samples with a `tissue_type` of `Unspecified`.
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: tumor_classification
+        in: query
+        description: |-
+          Matches any sample where the `tumor_classification` field exactly
+          matches the specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `tumor_classification` are included in the
+          results.
+          - If a string is provided, all entries where `tumor_classification`
+          exactly matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?tumor_classification="Regional"` to select all samples with a
+          `tumor_classification` of `Regional`.
+        required: false
+        schema:
+          type: string
+          nullable: true
       - name: tumor_tissue_morphology
         in: query
         description: |-
-          Matches any sample where the `tumor_tissue_morphology` field matches the
-          string provided.
+          Matches samples to their `tumor_tissue_morphology` value(s) according to
+          the rules laid out below.
+
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `tumor_tissue_morphology` are included in the
+          results.
+          - If a string is provided, all entries where any
+          `tumor_tissue_morphology` value exactly matches the provided string
+          are included in the results. Note that this is effectively a logical
+          OR (`||`) across any of the tumor tissue morphology values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?tumor_tissue_morphology="8000/0"` to select any samples where any
+          tumor tissue morphology matches this string.
         required: false
         schema:
           type: string
-      - name: depositions
+          nullable: true
+      - name: age_at_collection
         in: query
         description: |-
-          Matches any sample where any member of the `depositions` fields match
-          the string provided.
+          Matches any sample where the `age_at_collection` field exactly matches
+          the specified JSON value.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the sample should be included in the results.
+          This parameter can either be a JSON number or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `age_at_collection` are included in the results.
+          - If a number is provided, all entries where `age_at_collection` exactly
+          matches the provided number are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?age_at_collection=365.25` to
+          select all samples with a `age_at_collection` of `365.25`.
         required: false
         schema:
           type: string
+          nullable: true
+      - name: library_strategy
+        in: query
+        description: |-
+          Matches any sample where the `library_strategy` field exactly matches
+          the specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `library_strategy` are included in the results.
+          - If a string is provided, all entries where `library_strategy` exactly
+          matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?library_strategy="DNA-Seq"`
+          to select all samples with a `library_strategy` of `DNA-Seq`.
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: preservation_method
+        in: query
+        description: |-
+          Matches any sample where the `preservation_method` field exactly matches
+          the specified JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `preservation_method` are included in the results.
+          - If a string is provided, all entries where `preservation_method`
+          exactly matches the provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?preservation_method="Cryopreserved"` to select all samples with a
+          `preservation_method` of `Cryopreserved`.
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: identifier
+        in: query
+        description: |-
+          Matches samples to their `identifiers` value(s) according to the rules
+          laid out below.
+
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `identifiers` are included in the results.
+          - If a string is provided, all entries where any `identifiers` have a
+          name that exactly matches the provided string are included in the
+          results. Note that this is effectively a logical OR (`||`) across any
+          of the identifier name values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?identifier="Sample-F62VO0JV"` to select any samples where any
+          identifiers matches this string.
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: deposition
+        in: query
+        description: |-
+          Matches samples to their `depositions` value(s) according to the rules
+          laid out below.
+
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `depositions` are included in the results.
+          - If a string is provided, all entries where any `depositions` value
+          exactly matches the provided string are included in the results. Note
+          that this is effectively a logical OR (`||`) across any of the
+          deposition values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?deposition="phs000000.v1.p1"` to select any samples where any
+          deposition value matches this string.
+        required: false
+        schema:
+          type: string
+          nullable: true
       - name: metadata.unharmonized.<field>
         in: query
         description: |-
-          All unharmonized fields should be filterable in the same manner as harmonized fields:
+          All unharmonized fields should be filterable as
+                      well:
 
           * Filtering on a singular field should include the `Sample` in the results if the query exactly matches the value of that field for the `Sample` (case-sensitive).
           * Filtering on field with multiple values should include the `Sample` in the results if the query exactly matches any of the values of the field for that `Sample` (case-sensitive).
@@ -937,23 +1282,11 @@ paths:
         ### Filtering
 
         All harmonized (top-level) and unharmonized (nested under the
-        `metadata.unharmonized` key) metadata fields are filterable. To achieve
-        this, you can provide the field name as a [`String`]. Filtering follows the
-        following rules:
-
-        * For single-value metadata field, the file is included in the results if
-        its value _exactly_ matches the query string. Matches are case-sensitive.
-        * For multiple-value metadata fields, the file is included in the results
-        if any of its values for the field _exactly_ match the query string (a
-        logical OR [`||`]). Matches are case-sensitive.
-        * When the metadata field is `null` (in the case of singlular or
-        multiple-valued metadata fields) or empty, the file is not included.
-        * When multiple fields are provided as filters, a logical AND (`&&`) strings
-        together the predicates. In other words, all filters must match for a
-        file to be returned. Note that this means that servers do not natively
-        support logical OR (`||`) across multiple fields: that must be done by
-        calling this endpoint with each of your desired queries and performing a
-        set union of those files out of band.
+        `metadata.unharmonized` key) metadata fields are filterable. Filtering is
+        achieved by assigning a valid JSON value to a query parameter named after
+        the field you want to filter by. The specific behavior of how the filter
+        works is field-specific and is defined in the query parameter descriptions
+        below.
 
         ### Ordering
 
@@ -963,53 +1296,150 @@ paths:
       parameters:
       - name: type
         in: query
-        description: Matches any file where the `type` field matches the string provided.
+        description: |-
+          Matches any file where the `type` field exactly matches the specified
+          JSON value.
+
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `type` are included in the results.
+          - If a string is provided, all entries where `type` exactly matches the
+          provided string are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?type="TXT"` to select all
+          files with a type of `TXT`.
         required: false
         schema:
           type: string
+          nullable: true
       - name: size
         in: query
-        description: Matches any file where the `size` field matches the string provided.
+        description: |-
+          Matches any file where the `size` field exactly matches the specified
+          JSON value.
+
+          This parameter can either be a JSON number or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `size` are included in the results.
+          - If a number is provided, all entries where `size` exactly matches the
+          provided number are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?size=12345` to select all
+          files with a size of `12345`.
         required: false
         schema:
           type: string
-      - name: checksums
+          nullable: true
+      - name: checksum
         in: query
         description: |-
-          Matches any file where the `checksums` field matches the string
-          provided.
+          Matches files to their `checksums` value(s) according to the rules laid
+          out below.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the file should be included in the results.
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `checksums` are included in the results.
+          - If a string is provided, all entries where any `checksums` value
+          exactly matches the provided string are included in the results. Note
+          that this is effectively a logical OR (`||`) across any of the
+          checksum values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?checksum="A9781F66C9C5C9DA8837132FFEB08CA"` to select any files where
+          any checksum matches this string.
         required: false
         schema:
           type: string
+          nullable: true
       - name: description
         in: query
         description: |-
-          Matches any file where the `description` field matches the string
-          provided.
+          Matches files to their `description` value according to the rules laid
+          out below.
 
-          **Note:** a file is returned if the value provided is a substring of the
-          description.
+          This parameter can either be a JSON string (surrounded by quotes) or
+          `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `description` are included in the results.
+          - If a string is provided, all entries where the `description` contains
+          the string provided (case-sensitive) are included in the results.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter `?description="hello"` to
+          select all files where the description includes the substring `hello`.
+
+          **Note:** this filter parameter contains non-standard filtering
+          criteria—implementors should carefully read the description above.
         required: false
         schema:
           type: string
-      - name: depositions
+          nullable: true
+      - name: deposition
         in: query
         description: |-
-          Matches any file where any member of the `depositions` fields match
-          the string provided.
+          Matches files to their `depositions` value(s) according to the rules
+          laid out below.
 
-          **Note:** a logical OR (`||`) is performed across the values when
-          determining whether the sample should be included in the results.
+          This parameter can either be a JSON string or `null`.
+
+          - If `null` is provided as the value, all entries that are either (a)
+          missing a metadata block or (b) contain a metadata block but are
+          missing a value for `depositions` are included in the results.
+          - If a string is provided, all entries where any `depositions` value
+          exactly matches the provided string are included in the results. Note
+          that this is effectively a logical OR (`||`) across any of the
+          deposition values.
+
+          If a query parameter value is provided that is not able to be parsed as
+          a JSON value, an error should be returned indicating this. Further, if a
+          JSON value is able to be parsed, but the value is not one of the
+          acceptable value types above, an error should be returned indicating
+          this.
+
+          For example, you might provide the filter
+          `?deposition="phs000000.v1.p1"` to select any files where any deposition
+          value matches this string.
         required: false
         schema:
           type: string
+          nullable: true
       - name: metadata.unharmonized.<field>
         in: query
         description: |-
-          All unharmonized fields should be filterable in the same manner as harmonized fields:
+          All unharmonized fields should be filterable as
+                      well:
 
           * Filtering on a singular field should include the `File` in the results if the query exactly matches the value of that field for the `File` (case-sensitive).
           * Filtering on field with multiple values should include the `File` in the results if the query exactly matches any of the values of the field for that `File` (case-sensitive).
@@ -1375,6 +1805,7 @@ components:
       example: File001.txt
     cde.v1.file.Size:
       type: integer
+      format: int64
       description: |-
         **`caDSR CDE 11479876 v1.00`**
 
@@ -1745,12 +2176,11 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11326261%20and%20ver_nr=1>
-      required:
-      - icd_o_3
       properties:
         icd_o_3:
           type: string
           description: The ICD-O-3 code.
+          nullable: true
     cde.v1.subject.Name:
       type: string
       description: |-

@@ -8,6 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Revise
+
+- Improves filtering by (a) requiring that provided parameters be valid JSON
+  values (effectively distinguishing `null` and strings) and (b) explicitly
+  defined the behavior of each filter parameter
+  ([#98](https://github.com/CBIIT/ccdi-federation-api/pull/98)).
+
 ### Fixed
 
 - Includes diagnosis in sample metadata fields.

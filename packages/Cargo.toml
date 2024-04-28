@@ -31,7 +31,7 @@ reqwest = { version = "0.11.22", features = ["blocking", "json"] }
 serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"
-serde_with = "3.4.0"
+serde_with = { version = "3.4.0", features = ["macros"] }
 url = { version = "2", features = ["serde"] }
 utoipa = { version = "4.0.0", features = [
     "actix_extras",
