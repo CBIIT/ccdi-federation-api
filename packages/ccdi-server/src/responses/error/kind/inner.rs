@@ -249,7 +249,7 @@ impl std::fmt::Display for Inner {
                         write!(f, " {parameters}: {reason}")
                     }
                     None => {
-                        write!(f, " Invalid parameters: {reason}")
+                        write!(f, "Invalid parameters: {reason}")
                     }
                 }
             }

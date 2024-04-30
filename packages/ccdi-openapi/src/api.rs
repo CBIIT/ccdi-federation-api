@@ -77,18 +77,21 @@ use utoipa::openapi;
     paths(
         // Subject routes.
         server::routes::subject::subject_index,
+        server::routes::subject::subject_filter,
         server::routes::subject::subject_show,
         server::routes::subject::subjects_by_count,
         server::routes::subject::subject_summary,
 
         // Sample routes.
         server::routes::sample::sample_index,
+        server::routes::sample::sample_filter,
         server::routes::sample::sample_show,
         server::routes::sample::samples_by_count,
         server::routes::sample::sample_summary,
 
         // File routes.
         server::routes::file::file_index,
+        server::routes::file::file_filter,
         server::routes::file::file_show,
         server::routes::file::files_by_count,
         server::routes::file::file_summary,
@@ -314,7 +317,12 @@ use utoipa::openapi;
 
         // Error responses.
         responses::error::Kind,
-        responses::Errors
+        responses::Errors,
+
+        // Filters.
+        server::params::filter::Subject,
+        server::params::filter::Sample,
+        server::params::filter::File,
     )),
     modifiers(
         &RemoveLicense,
