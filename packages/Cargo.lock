@@ -404,7 +404,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-cde"
-version = "1.0.0-rc.1"
+version = "1.0.0"
 dependencies = [
  "indexmap 2.0.2",
  "introspect",
@@ -419,7 +419,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-models"
-version = "1.0.0-rc.1"
+version = "1.0.0"
 dependencies = [
  "ccdi-cde",
  "chrono",
@@ -440,7 +440,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-openapi"
-version = "1.0.0-rc.1"
+version = "1.0.0"
 dependencies = [
  "ccdi-cde",
  "ccdi-models",
@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-server"
-version = "1.0.0-rc.1"
+version = "1.0.0"
 dependencies = [
  "actix-web",
  "ccdi-cde",
@@ -474,7 +474,7 @@ dependencies = [
 
 [[package]]
 name = "ccdi-spec"
-version = "1.0.0-rc.1"
+version = "1.0.0"
 dependencies = [
  "actix-web",
  "ccdi-cde",

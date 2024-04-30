@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [v1.0.0] — 04-30-2024
+
 ### Added
 
 - Adds both local and global gateway definitions to subjects and samples. With
@@ -234,7 +236,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
 - Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...v1.0.0
 [v1.0.0-rc.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...v1.0.0-rc.1
 [v0.7.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.0...v0.6.1
