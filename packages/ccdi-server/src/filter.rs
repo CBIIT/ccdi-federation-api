@@ -115,13 +115,14 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("\"F\"")),
+///         sex: Some(Some(String::from("F"))),
 ///         race: None,
 ///         ethnicity: None,
 ///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
 ///         deposition: None,
+///         unharmonized: None,
 ///     },
 /// )?;
 ///
@@ -139,13 +140,14 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("\"F\"")),
-///         race: Some(String::from("\"Asian\"")),
+///         sex: Some(Some(String::from("F"))),
+///         race: Some(Some(String::from("Asian"))),
 ///         ethnicity: None,
 ///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
 ///         deposition: None,
+///         unharmonized: None,
 ///     },
 /// )?;
 ///
@@ -159,13 +161,14 @@ where
 /// let mut results = filter::<Subject, SubjectFilterParams>(
 ///     subjects.clone(),
 ///     SubjectFilterParams {
-///         sex: Some(String::from("\"f\"")),
+///         sex: Some(Some(String::from("f"))),
 ///         race: None,
 ///         ethnicity: None,
 ///         identifier: None,
 ///         vital_status: None,
 ///         age_at_vital_status: None,
 ///         deposition: None,
+///         unharmonized: None,
 ///     },
 /// )?;
 ///

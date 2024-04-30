@@ -8,7 +8,6 @@ use serde_json::Value;
 
 use crate::filter::FilterMetadataField;
 use crate::params::filter::File as FilterFileParams;
-use crate::responses::error::Kind;
 use crate::responses::Errors;
 
 impl FilterMetadataField<File, FilterFileParams> for Vec<File> {
@@ -18,81 +17,33 @@ impl FilterMetadataField<File, FilterFileParams> for Vec<File> {
         params: &FilterFileParams,
     ) -> Result<Vec<File>, Errors> {
         let parameter = match field.as_str() {
-            "type" => &params.r#type,
-            "size" => &params.size,
-            "checksum" => &params.checksum,
-            "description" => &params.description,
-            "deposition" => &params.deposition,
-            _ => unreachable!("unhandled file metadata field: {field}"),
-        };
-
-        let parameter = match parameter {
-            Some(parameter) => match parameter.parse::<Value>() {
-                Ok(value) => value,
-                Err(_) => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![field.to_string()]),
-                        String::from("Parameter was not a valid JSON value."),
-                    )]));
-                }
+            "type" => match &params.r#type {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            None => {
-                // If the parameter has no value, just return the original list of
-                // files, as the user does not want to filter based on that.
-                return Ok(self);
-            }
-        };
-
-        let parameter = match field.as_str() {
-            "type" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("type")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "size" => match &params.size {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "size" => match parameter {
-                Value::Null => Value::Null,
-                Value::Number(value) => Value::Number(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("size")]),
-                        String::from("Parameter was not a number or null."),
-                    )]));
-                }
+            "checksum" => match &params.checksum {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "checksum" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("checksum")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "description" => match &params.description {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "description" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("description")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "deposition" => match &params.deposition {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "deposition" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("deposition")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
+            "unharmonized" => match &params.unharmonized {
+                Some(_) => {
+                    // NOTE: this server does not support filtering by unharmonized data
+                    // because it does not produce any yet.
+                    todo!("this server does not yet support filtering unharmonized data")
                 }
+                None => return Ok(self),
             },
             _ => unreachable!("unhandled file metadata field: {field}"),
         };

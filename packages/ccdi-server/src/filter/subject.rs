@@ -10,7 +10,6 @@ use serde_json::Value;
 
 use crate::filter::FilterMetadataField;
 use crate::params::filter::Subject as FilterSubjectParams;
-use crate::responses::error::Kind;
 use crate::responses::Errors;
 
 impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
@@ -20,104 +19,41 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
         params: &FilterSubjectParams,
     ) -> Result<Vec<Subject>, Errors> {
         let parameter = match field.as_str() {
-            "sex" => &params.sex,
-            "race" => &params.race,
-            "ethnicity" => &params.ethnicity,
-            "identifier" => &params.identifier,
-            "vital_status" => &params.vital_status,
-            "age_at_vital_status" => &params.age_at_vital_status,
-            "deposition" => &params.deposition,
-            _ => unreachable!("unhandled subject metadata field: {field}"),
-        };
-
-        let parameter = match parameter {
-            Some(parameter) => match parameter.parse::<Value>() {
-                Ok(value) => value,
-                Err(_) => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![field.to_string()]),
-                        String::from("Parameter was not a valid JSON value."),
-                    )]));
-                }
+            "sex" => match &params.sex {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            None => {
-                // If the parameter has no value, just return the original list
-                // of subjects, as the user does not want to filter based on
-                // that.
-                return Ok(self);
-            }
-        };
-
-        let parameter = match field.as_str() {
-            "sex" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("sex")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "race" => match &params.race {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "race" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("race")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "ethnicity" => match &params.ethnicity {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "ethnicity" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("ethnicity")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "identifier" => match &params.identifier {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "identifier" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("identifier")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "vital_status" => match &params.vital_status {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "vital_status" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("vital_status")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
-                }
+            "age_at_vital_status" => match &params.age_at_vital_status {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "age_at_vital_status" => match parameter {
-                Value::Null => Value::Null,
-                Value::Number(value) => Value::Number(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("age_at_vital_status")]),
-                        String::from("Parameter was not a number or null."),
-                    )]));
-                }
+            "deposition" => match &params.deposition {
+                Some(value) => serde_json::to_value(value.to_owned()).unwrap(),
+                None => return Ok(self),
             },
-            "deposition" => match parameter {
-                Value::Null => Value::Null,
-                Value::String(value) => Value::String(value.to_owned()),
-                _ => {
-                    return Err(Errors::new(vec![Kind::invalid_parameters(
-                        Some(vec![String::from("deposition")]),
-                        String::from("Parameter was not a string or null."),
-                    )]));
+            "unharmonized" => match &params.unharmonized {
+                Some(_) => {
+                    // NOTE: this server does not support filtering by unharmonized data
+                    // because it does not produce any yet.
+                    todo!("this server does not yet support filtering unharmonized data")
                 }
+                None => return Ok(self),
             },
             _ => unreachable!("unhandled subject metadata field: {field}"),
         };

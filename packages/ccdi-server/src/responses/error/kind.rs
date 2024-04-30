@@ -100,7 +100,7 @@ impl Kind {
     ///     String::from("Parameter not within serializable range.")
     /// );
     ///
-    /// assert_eq!(serde_json::to_string(&error)?, String::from("{\"kind\":\"InvalidParameters\",\"parameters\":null,\"reason\":\"Parameter not within serializable range.\",\"message\":\" Invalid parameters: parameter not within serializable range.\"}"));
+    /// assert_eq!(serde_json::to_string(&error)?, String::from("{\"kind\":\"InvalidParameters\",\"parameters\":null,\"reason\":\"Parameter not within serializable range.\",\"message\":\"Invalid parameters: parameter not within serializable range.\"}"));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```

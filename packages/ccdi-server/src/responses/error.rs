@@ -138,7 +138,7 @@ mod tests {
         ));
 
         let result = serde_json::to_string(&error)?;
-        assert_eq!(&result, "{\"errors\":[{\"kind\":\"InvalidParameters\",\"parameters\":null,\"reason\":\"Could not parse.\",\"message\":\" Invalid parameters: could not parse.\"}]}");
+        assert_eq!(&result, "{\"errors\":[{\"kind\":\"InvalidParameters\",\"parameters\":null,\"reason\":\"Could not parse.\",\"message\":\"Invalid parameters: could not parse.\"}]}");
 
         Ok(())
     }
