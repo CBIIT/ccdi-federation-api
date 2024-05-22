@@ -27,7 +27,7 @@ use utoipa::openapi;
     ),
     servers(
         (
-            url = "https://ccdi.stjude.cloud/api/v0",
+            url = "https://ccdi.stjude.cloud/api/v1",
             description = "St. Jude Children's Research Hospital CCDI API server"
         ),
         (
