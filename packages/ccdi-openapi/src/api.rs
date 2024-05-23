@@ -31,7 +31,7 @@ use utoipa::openapi;
             description = "St. Jude Children's Research Hospital CCDI API server"
         ),
         (
-            url = "https://ccdifederation.pedscommons.org/api/v0",
+            url = "https://ccdifederation.pedscommons.org/api/v1",
             description = "Pediatric Cancer Data Commons CCDI API server"
         ),
         (
