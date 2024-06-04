@@ -35,7 +35,7 @@ use utoipa::openapi;
             description = "Pediatric Cancer Data Commons CCDI API server"
         ),
         (
-            url = "https://ccdi.treehouse.gi.ucsc.edu/api/v0",
+            url = "https://ccdi.treehouse.gi.ucsc.edu/api/v1",
             description = "UCSC Treehouse CCDI API server"
         ),
         (

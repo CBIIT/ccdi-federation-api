@@ -341,7 +341,7 @@ servers:
   description: St. Jude Children's Research Hospital CCDI API server
 - url: https://ccdifederation.pedscommons.org/api/v1
   description: Pediatric Cancer Data Commons CCDI API server
-- url: https://ccdi.treehouse.gi.ucsc.edu/api/v0
+- url: https://ccdi.treehouse.gi.ucsc.edu/api/v1
   description: UCSC Treehouse CCDI API server
 - url: https://ccdi.kidsfirstdrc.org/api/v0
   description: KidsFirst CCDI API server
