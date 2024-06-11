@@ -39,7 +39,7 @@ use utoipa::openapi;
             description = "UCSC Treehouse CCDI API server"
         ),
         (
-            url = "https://ccdi.kidsfirstdrc.org/api/v0",
+            url = "https://ccdi.kidsfirstdrc.org/api/v1",
             description = "KidsFirst CCDI API server"
         ),
     ),
