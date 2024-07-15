@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: CCDI Data Federation API
+  title: "CCDI Data Federation: Participating Nodes API"
   description: |
     ## Overview
 
