@@ -14,7 +14,7 @@ use utoipa::openapi;
 #[derive(Debug, OpenApi)]
 #[openapi(
     info(
-        title = "CCDI Data Federation API",
+        title = "CCDI Data Federation: Participating Nodes API",
         contact(
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",

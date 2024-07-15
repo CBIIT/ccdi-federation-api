@@ -328,3 +328,7 @@ Note that an API server is not _required_ to provide harmonization details for
 any of the harmonized metadata it provides. This mechanism is simply available
 to include information that is deemed contextually relevant at the discretion of
 the curation team.
+
+### CCDI Data Federation Resource
+
+To access the CCDI Data Federation Resource, please click [here](https://cbiit.github.io/ccdi-federation-api-aggregation/).
