@@ -332,6 +332,11 @@ info:
     any of the harmonized metadata it provides. This mechanism is simply available
     to include information that is deemed contextually relevant at the discretion of
     the curation team.
+    
+    ### CCDI Data Federation Resource
+    
+    To access CCDI Data Federation Resource, please click [here](https://cbiit.github.io/ccdi-federation-api-aggregation/).
+
   contact:
     name: Childhood Cancer Data Initiative support email
     email: NCIChildhoodCancerDataInitiative@mail.nih.gov
