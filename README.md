@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">
-  CCDI Data Federation API
+  CCDI Data Federation API Specification
   </h1>
 </p>
 
@@ -22,7 +22,9 @@
 <p align="center">
     An API for querying federated pediatric cancer data from the broader community.
     <br />
-    <a href="https://cbiit.github.io/ccdi-federation-api/"><strong>Explore the API documentation »</strong></a>
+    <a href="https://cbiit.github.io/ccdi-federation-api/"><strong>Read the API specification »</strong></a>
+    ·
+    <a href="https://github.com/CBIIT/ccdi-federation-api-aggregation"><strong>Explore the CCDI Data Federation Resource »</strong></a>
     <br />
     <a href="https://github.com/cbiit/ccdi-federation-api/issues/new?assignees=&labels=&template=feature_request.md&title=Descriptive%20Title&labels=enhancement">Request Feature</a>
     ·
