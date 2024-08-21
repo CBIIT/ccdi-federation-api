@@ -302,7 +302,6 @@ use utoipa::openapi;
     )),
     modifiers(
         &RemoveLicense,
-        &AddDescription,
     )
 )]
 pub struct Api;
@@ -312,14 +311,5 @@ pub struct RemoveLicense;
 impl Modify for RemoveLicense {
     fn modify(&self, openapi: &mut openapi::OpenApi) {
         openapi.info.license = None;
-    }
-}
-
-pub struct AddDescription;
-
-impl Modify for AddDescription {
-    fn modify(&self, openapi: &mut openapi::OpenApi) {
-        let contents = String::from_utf8_lossy(include_bytes!("../docs/DESCRIPTION.md"));
-        openapi.info.description = Some(contents.to_string());
     }
 }

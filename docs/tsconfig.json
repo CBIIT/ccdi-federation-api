@@ -1,0 +1,16 @@
+{
+  "include": [".vitepress/**/*", "**/*.md"],
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./.vitepress/*"]
+    }
+  }
+}

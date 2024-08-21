@@ -3,10 +3,11 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 /// A statement on the expertise of the individual (or individuals) who are
-/// assigning the harmonized values. This information can help data receivers
-/// understand the context within which the data was harmonized (particularly in
-/// data fields that may be constantly evolving or changing—for instance,
-/// diagnosis).
+/// assigning the harmonized values.
+///
+/// This information can help data receivers understand the context within which
+/// the data was harmonized (particularly in data fields that may be constantly
+/// evolving or changing—for instance, diagnosis).
 ///
 /// **NOTE:** if you find that there are types of harmonizers that are not
 /// captured here, please make an issue on the GitHub repository so we can
