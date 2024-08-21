@@ -20,7 +20,7 @@ pub struct Information {
     /// intention of this field is not to link to a Swagger specification that
     /// strictly matches this particular server, but rather, to point users to
     /// where the specification is developed and hosted.
-    #[schema(default = "https://cbiit.github.io/ccdi-federation-api/")]
+    #[schema(default = "https://cbiit.github.io/ccdi-federation-api/specification.html")]
     documentation_url: String,
 }
 
@@ -28,7 +28,9 @@ impl Default for Information {
     fn default() -> Self {
         Self {
             api_version: format!("v{}", crate_version!()),
-            documentation_url: String::from("https://cbiit.github.io/ccdi-federation-api/"),
+            documentation_url: String::from(
+                "https://cbiit.github.io/ccdi-federation-api/specification.html",
+            ),
         }
     }
 }

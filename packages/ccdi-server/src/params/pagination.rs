@@ -4,19 +4,21 @@ use serde::Deserialize;
 use serde::Serialize;
 use utoipa::IntoParams;
 
-/// The default page number if no `page` parameter is provided. By default,
-/// pagination is not enabled in queries. If the user enables pagination—say, by
-/// providing the `per_page` parameter—but they don't specify a page, this value
-/// will be used as the default.
+/// The default page number if no `page` parameter is provided.
+///
+/// By default, pagination is not enabled in queries. If the user enables
+/// pagination—say, by providing the `per_page` parameter—but they don't specify
+/// a page, this value will be used as the default.
 ///
 /// To be explicit, the true default value for `page` is actually `None`.
 pub const DEFAULT_PAGE: usize = 1;
 
 /// The default number of entities per page if no `per_page` parameter is
-/// provided. By default, pagination is not enabled in queries. If the user
-/// enables pagination—say, by providing the `page` parameter—but they don't
-/// specify the number of entities per page, this value will be used as the
-/// default.
+/// provided.
+///
+/// By default, pagination is not enabled in queries. If the user enables
+/// pagination—say, by providing the `page` parameter—but they don't specify the
+/// number of entities per page, this value will be used as the default.
 ///
 /// To be explicit, the true default value for `per_page` is actually `None`.
 pub const DEFAULT_PER_PAGE: usize = 100;
