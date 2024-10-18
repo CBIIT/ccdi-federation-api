@@ -13,6 +13,7 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
         let parameter = match field.as_str() {
             "disease_phase" => params.disease_phase.as_ref(),
             "library_strategy" => params.library_strategy.as_ref(),
+            "library_source_material" => params.library_source_material.as_ref(),
             "preservation_method" => params.preservation_method.as_ref(),
             "tissue_type" => params.tissue_type.as_ref(),
             "tumor_classification" => params.tumor_classification.as_ref(),
@@ -41,6 +42,10 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                         .metadata()
                         .and_then(|metadata| metadata.library_strategy())
                         .map(|library_strategy| vec![library_strategy.to_string()]),
+                    "library_source_material" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.library_source_material())
+                        .map(|library_source_material| vec![library_source_material.to_string()]),
                     "preservation_method" => sample
                         .metadata()
                         .and_then(|metadata| metadata.preservation_method())
