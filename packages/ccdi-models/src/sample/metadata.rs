@@ -56,9 +56,13 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::AgeAtCollection, nullable = true)]
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
-    /// The strategy for constructing the sequencing library.
+    /// The library source material.
     #[schema(value_type = field::unowned::sample::LibraryStrategy, nullable = true)]
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
+
+    /// The strategy for constructing the sequencing library.
+    #[schema(value_type = field::unowned::sample::LibrarySourceMaterial, nullable = true)]
+    library_source_material: Option<field::unowned::sample::LibrarySourceMaterial>,
 
     /// The method used to maintain the sample or biospecimen in a viable state.
     #[schema(value_type = field::unowned::sample::PreservationMethod, nullable = true)]
@@ -207,6 +211,42 @@ impl Metadata {
     /// ```
     pub fn library_strategy(&self) -> Option<&field::unowned::sample::LibraryStrategy> {
         self.library_strategy.as_ref()
+    }
+
+    /// Gets the harmonized library source material for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::LibrarySourceMaterial;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .library_source_material(LibrarySourceMaterial::new(
+    ///         cde::v1::sample::LibrarySourceMaterial::BulkCells,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.library_source_material(),
+    ///     Some(&LibrarySourceMaterial::new(
+    ///         cde::v1::sample::LibrarySourceMaterial::BulkCells,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    /// );
+    /// ```
+    pub fn library_source_material(
+        &self,
+    ) -> Option<&field::unowned::sample::LibrarySourceMaterial> {
+        self.library_source_material.as_ref()
     }
 
     /// Gets the harmonized preservation method for the [`Metadata`].
@@ -565,6 +605,7 @@ impl Metadata {
             )),
             disease_phase: rand::random(),
             library_strategy: rand::random(),
+            library_source_material: rand::random(),
             preservation_method: rand::random(),
             tissue_type: rand::random(),
             tumor_classification: rand::random(),
@@ -624,7 +665,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

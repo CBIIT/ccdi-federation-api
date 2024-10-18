@@ -90,6 +90,12 @@ pub struct Sample {
     #[param(required = false, nullable = false)]
     pub library_strategy: Option<String>,
 
+    /// Matches any sample where the `library_source_material` field matches the string
+    /// provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub library_source_material: Option<String>,
+
     /// Matches any sample where the `preservation_method` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]

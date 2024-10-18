@@ -347,6 +347,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: library_source_material
+        in: query
+        description: |-
+          Matches any sample where the `library_source_material` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: preservation_method
         in: query
         description: |-
@@ -1317,6 +1325,22 @@ components:
       - Refractory
       - Relapse
       - Relapse/Progression
+    cde.v1.sample.LibrarySourceMaterial:
+      type: string
+      description: |-
+        **`caDSR CDE 15235975 v1.00`**
+
+        This metadata element is defined by the caDSR as "TThe cell or cellular component that makes up the sample that has been prepared for testing or research purposes.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=15235975%20and%20ver_nr=1>
+      enum:
+      - Bulk Cells
+      - Bulk Nuclei
+      - Bulk Tissue
+      - Single-cells
+      - Single-nuclei
+      - Not Reported
     cde.v1.sample.LibraryStrategy:
       type: string
       description: |-
@@ -1881,6 +1905,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.sample.identifier.referenced.Identifier'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.LibrarySourceMaterial:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.LibrarySourceMaterial'
         ancestors:
           type: array
           items:
@@ -2935,10 +2981,11 @@ components:
       type: string
       description: |-
         A statement on the expertise of the individual (or individuals) who are
-        assigning the harmonized values. This information can help data receivers
-        understand the context within which the data was harmonized (particularly in
-        data fields that may be constantly evolving or changing—for instance,
-        diagnosis).
+        assigning the harmonized values.
+
+        This information can help data receivers understand the context within which
+        the data was harmonized (particularly in data fields that may be constantly
+        evolving or changing—for instance, diagnosis).
 
         **NOTE:** if you find that there are types of harmonizers that are not
         captured here, please make an issue on the GitHub repository so we can
@@ -3111,6 +3158,7 @@ components:
         - tumor_tissue_morphology
         - age_at_collection
         - library_strategy
+        - library_source_material
         - preservation_method
         - identifiers
         properties:
@@ -3145,6 +3193,10 @@ components:
           library_strategy:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.LibraryStrategy'
+            nullable: true
+          library_source_material:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.LibrarySourceMaterial'
             nullable: true
           preservation_method:
             allOf:
@@ -3842,7 +3894,7 @@ components:
             intention of this field is not to link to a Swagger specification that
             strictly matches this particular server, but rather, to point users to
             where the specification is developed and hosted.
-          default: https://cbiit.github.io/ccdi-federation-api/
+          default: https://cbiit.github.io/ccdi-federation-api/specification.html
     responses.info.data.Information:
       type: object
       description: Information that is specific to the API that the server implements.
