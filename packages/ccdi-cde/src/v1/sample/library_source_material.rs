@@ -97,15 +97,15 @@ mod tests {
     fn it_serializes_to_json_correctly() {
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkCells).unwrap(),
-            "\"Bulk Cells\""
+            "\"Bulk-Cells\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkNuclei).unwrap(),
-            "\"Bulk Nuclei\""
+            "\"Bulk-Nuclei\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkTissue).unwrap(),
-            "\"Bulk Tissue\""
+            "\"Bulk-Tissue\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::SingleCells).unwrap(),
@@ -117,7 +117,7 @@ mod tests {
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::NotReported).unwrap(),
-            "\"Not Reported\""
+            "\"Not-Reported\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::Other).unwrap(),
