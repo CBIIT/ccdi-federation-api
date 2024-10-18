@@ -9,6 +9,6 @@ mod tumor_tissue_morphology;
 
 pub use disease_phase::DiseasePhase;
 pub use library_strategy::LibraryStrategy;
-pub use library_source_material::LibrarySourceMaterial
+pub use library_source_material::LibrarySourceMaterial;
 pub use tumor_classification::TumorClassification;
 pub use tumor_tissue_morphology::TumorTissueMorphology;
