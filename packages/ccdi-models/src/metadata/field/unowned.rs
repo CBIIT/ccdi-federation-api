@@ -311,6 +311,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        LibrarySourceMaterial,
+        field::unowned::sample::LibrarySourceMaterial,
+        cde::v1::sample::LibrarySourceMaterial,
+        cde::v1::sample::LibrarySourceMaterial,
+        cde::v1::sample::LibrarySourceMaterial::NotReported,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         PreservationMethod,
         field::unowned::sample::PreservationMethod,
         cde::v2::sample::PreservationMethod,
