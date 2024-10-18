@@ -65,7 +65,7 @@ impl std::fmt::Display for LibrarySourceMaterial {
 
 impl Distribution<LibrarySourceMaterial> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> LibrarySourceMaterial {
-        match rng.gen_range(0..6) {
+        match rng.gen_range(0..7) {
             0 => LibrarySourceMaterial::BulkCells,
             1 => LibrarySourceMaterial::BulkNuclei,
             2 => LibrarySourceMaterial::BulkTissue,
@@ -73,6 +73,7 @@ impl Distribution<LibrarySourceMaterial> for Standard {
             4 => LibrarySourceMaterial::SingleNuclei,
             5 => LibrarySourceMaterial::NotReported,
             6 => LibrarySourceMaterial::Other,
+            _ => LibrarySourceMaterial::Other,
         }
     }
 }

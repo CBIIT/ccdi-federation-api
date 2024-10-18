@@ -429,7 +429,7 @@ impl Builder {
             diagnosis: self.diagnosis,
             disease_phase: self.disease_phase,
             library_strategy: self.library_strategy,
-            library_source_material: self,library_source_material,
+            library_source_material: self.library_source_material,
             preservation_method: self.preservation_method,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
