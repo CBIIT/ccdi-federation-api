@@ -18,30 +18,79 @@ use crate::CDE;
 #[schema(as = cde::v1::sample::LibrarySourceMaterial)]
 pub enum LibrarySourceMaterial {
     /// `Bulk Cells`
+    ///
+    /// * **VM Long Name**: Bulk Cell Specimen
+    /// * **VM Public ID**: 7592130
+    /// * **Concept Code**: C178223
+    /// * **Begin Date**:   03/12/2024
+    ///
+    /// A biospecimen consisting of multiple cells intended to be analyzed as a pool.
     #[serde(rename = "Bulk-Cells")]
     BulkCells,
 
     /// `Bulk-Nuclei`
+    ///
+    /// * **VM Long Name**: Bulk Nucleus Specimen
+    /// * **VM Public ID**: 7592129
+    /// * **Concept Code**: C178224
+    /// * **Begin Date**:   02/28/2024
+    ///
+    /// A biospecimen consisting of multiple nuclei intended to be analyzed as a pool.
     #[serde(rename = "Bulk-Nuclei")]
     BulkNuclei,
 
     /// `Bulk-Tissue`
+    ///
+    /// * **VM Long Name**: Bulk Tissue Specimen
+    /// * **VM Public ID**: 7592128
+    /// * **Concept Code**: C178225
+    /// * **Begin Date**:   02/28/2024
+    ///
+    /// A biospecimen either derived from a whole tissue specimen or tissue section, which may consist of heterogeneous cells or tissues.
     #[serde(rename = "Bulk-Tissue")]
     BulkTissue,
 
     /// `Single-cells`
+    ///
+    /// * **VM Long Name**: Single Cell Suspension
+    /// * **VM Public ID**: 14838800
+    /// * **Concept Code**: C204464
+    /// * **Begin Date**:   03/12/2024
+    ///
+    /// A dilute suspension of cells intended to be further fractionated for assays focused on single-cells.
     #[serde(rename = "Single-cells")]
     SingleCells,
 
     /// `Single-nuclei`
+    ///
+    /// * **VM Long Name**: Single Nucleus Suspension
+    /// * **VM Public ID**: 14838802
+    /// * **Concept Code**: C204465
+    /// * **Begin Date**:   03/12/2024
+    ///
+    /// A dilute suspension comprised of isolated intact cell nuclei intended to be further fractionated for assays focused on single-nuclei.
     #[serde(rename = "Single-nuclei")]
     SingleNuclei,
 
     /// `Not-Reported`
+    ///
+    /// * **VM Long Name**: Not Reported
+    /// * **VM Public ID**: 5612322
+    /// * **Concept Code**: C43234
+    /// * **Begin Date**:   03/01/2024
+    ///
+    /// Not provided or available.
     #[serde(rename = "Not-Reported")]
     NotReported,
 
     /// `Other`
+    ///
+    /// * **VM Long Name**: Other Library strategy
+    /// * **VM Public ID**: 6273371
+    /// * **Concept Code**: C17649
+    /// * **Begin Date**:   05/11/2018
+    ///
+    /// Different than the one(s) previously specified or mentioned.
     #[serde(rename = "Other")]
     Other,
 

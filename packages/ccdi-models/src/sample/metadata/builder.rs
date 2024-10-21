@@ -245,7 +245,7 @@ impl Builder {
     /// use models::sample::metadata::Builder;
     ///
     /// let field = LibrarySourceMaterial::new(cde::v1::sample::LibrarySourceMaterial::BulkCells, None, None, None);
-    /// let builder = Builder::default().LibrarySourceMaterial(field);
+    /// let builder = Builder::default().library_source_material(field);
     /// ```
     pub fn library_source_material(mut self, field: field::unowned::sample::LibrarySourceMaterial) -> Self {
         self.library_source_material = Some(field);
