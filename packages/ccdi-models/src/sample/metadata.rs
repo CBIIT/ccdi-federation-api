@@ -243,7 +243,9 @@ impl Metadata {
     ///     ))
     /// );
     /// ```
-    pub fn library_source_material(&self) -> Option<&field::unowned::sample::LibrarySourceMaterial> {
+    pub fn library_source_material(
+        &self,
+    ) -> Option<&field::unowned::sample::LibrarySourceMaterial> {
         self.library_source_material.as_ref()
     }
 

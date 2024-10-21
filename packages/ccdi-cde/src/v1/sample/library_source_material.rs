@@ -9,7 +9,7 @@ use crate::CDE;
 
 /// **`caDSR CDE 14808227 v1.00`**
 ///
-/// This metadata element is defined by the caDSR as "The cellular source of 
+/// This metadata element is defined by the caDSR as "The cellular source of
 /// the double stranded DNA fragments analyzed by high-throughput sequencing.".
 ///
 /// Link:
@@ -93,7 +93,6 @@ pub enum LibrarySourceMaterial {
     /// Different than the one(s) previously specified or mentioned.
     #[serde(rename = "Other")]
     Other,
-
 }
 
 impl CDE for LibrarySourceMaterial {}
@@ -136,9 +135,18 @@ mod tests {
         assert_eq!(LibrarySourceMaterial::BulkCells.to_string(), "Bulk Cells");
         assert_eq!(LibrarySourceMaterial::BulkNuclei.to_string(), "Bulk Nuclei");
         assert_eq!(LibrarySourceMaterial::BulkTissue.to_string(), "Bulk Tissue");
-        assert_eq!(LibrarySourceMaterial::SingleCells.to_string(), "Single-cells");
-        assert_eq!(LibrarySourceMaterial::SingleNuclei.to_string(), "Single-nuclei");
-        assert_eq!(LibrarySourceMaterial::NotReported.to_string(), "Not Reported");
+        assert_eq!(
+            LibrarySourceMaterial::SingleCells.to_string(),
+            "Single-cells"
+        );
+        assert_eq!(
+            LibrarySourceMaterial::SingleNuclei.to_string(),
+            "Single-nuclei"
+        );
+        assert_eq!(
+            LibrarySourceMaterial::NotReported.to_string(),
+            "Not Reported"
+        );
         assert_eq!(LibrarySourceMaterial::Other.to_string(), "Other");
     }
 

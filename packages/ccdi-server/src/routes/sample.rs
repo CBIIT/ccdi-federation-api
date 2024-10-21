@@ -450,7 +450,9 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
                     .as_ref()
                     // SAFETY: all metadata fields are able to be represented as
                     // [`serde_json::Value`]s.
-                    .map(|library_source_material| serde_json::to_value(library_source_material.value()).unwrap())
+                    .map(|library_source_material| {
+                        serde_json::to_value(library_source_material.value()).unwrap()
+                    })
                     .or(Some(Value::Null)),
             ),
             None => Some(None),
