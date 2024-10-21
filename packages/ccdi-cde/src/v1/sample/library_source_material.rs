@@ -25,10 +25,10 @@ pub enum LibrarySourceMaterial {
     /// * **Begin Date**:   03/12/2024
     ///
     /// A biospecimen consisting of multiple cells intended to be analyzed as a pool.
-    #[serde(rename = "Bulk-Cells")]
+    #[serde(rename = "Bulk Cells")]
     BulkCells,
 
-    /// `Bulk-Nuclei`
+    /// `Bulk Nuclei`
     ///
     /// * **VM Long Name**: Bulk Nucleus Specimen
     /// * **VM Public ID**: 7592129
@@ -36,10 +36,10 @@ pub enum LibrarySourceMaterial {
     /// * **Begin Date**:   02/28/2024
     ///
     /// A biospecimen consisting of multiple nuclei intended to be analyzed as a pool.
-    #[serde(rename = "Bulk-Nuclei")]
+    #[serde(rename = "Bulk Nuclei")]
     BulkNuclei,
 
-    /// `Bulk-Tissue`
+    /// `Bulk Tissue`
     ///
     /// * **VM Long Name**: Bulk Tissue Specimen
     /// * **VM Public ID**: 7592128
@@ -47,7 +47,7 @@ pub enum LibrarySourceMaterial {
     /// * **Begin Date**:   02/28/2024
     ///
     /// A biospecimen either derived from a whole tissue specimen or tissue section, which may consist of heterogeneous cells or tissues.
-    #[serde(rename = "Bulk-Tissue")]
+    #[serde(rename = "Bulk Tissue")]
     BulkTissue,
 
     /// `Single-cells`
@@ -72,7 +72,7 @@ pub enum LibrarySourceMaterial {
     #[serde(rename = "Single-nuclei")]
     SingleNuclei,
 
-    /// `Not-Reported`
+    /// `Not Reported`
     ///
     /// * **VM Long Name**: Not Reported
     /// * **VM Public ID**: 5612322
@@ -80,7 +80,7 @@ pub enum LibrarySourceMaterial {
     /// * **Begin Date**:   03/01/2024
     ///
     /// Not provided or available.
-    #[serde(rename = "Not-Reported")]
+    #[serde(rename = "Not Reported")]
     NotReported,
 
     /// `Other`
@@ -113,14 +113,13 @@ impl std::fmt::Display for LibrarySourceMaterial {
 
 impl Distribution<LibrarySourceMaterial> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> LibrarySourceMaterial {
-        match rng.gen_range(0..7) {
+        match rng.gen_range(0..6) {
             0 => LibrarySourceMaterial::BulkCells,
             1 => LibrarySourceMaterial::BulkNuclei,
             2 => LibrarySourceMaterial::BulkTissue,
             3 => LibrarySourceMaterial::SingleCells,
             4 => LibrarySourceMaterial::SingleNuclei,
             5 => LibrarySourceMaterial::NotReported,
-            6 => LibrarySourceMaterial::Other,
             _ => LibrarySourceMaterial::Other,
         }
     }
@@ -154,15 +153,15 @@ mod tests {
     fn it_serializes_to_json_correctly() {
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkCells).unwrap(),
-            "\"Bulk-Cells\""
+            "\"Bulk Cells\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkNuclei).unwrap(),
-            "\"Bulk-Nuclei\""
+            "\"Bulk Nuclei\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::BulkTissue).unwrap(),
-            "\"Bulk-Tissue\""
+            "\"Bulk Tissue\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::SingleCells).unwrap(),
@@ -174,7 +173,7 @@ mod tests {
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::NotReported).unwrap(),
-            "\"Not-Reported\""
+            "\"Not Reported\""
         );
         assert_eq!(
             serde_json::to_string(&LibrarySourceMaterial::Other).unwrap(),
