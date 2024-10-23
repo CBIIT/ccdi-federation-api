@@ -213,7 +213,7 @@ impl Metadata {
         self.library_strategy.as_ref()
     }
 
-    /// Gets the harmonized library strategy for the [`Metadata`].
+    /// Gets the harmonized library source material for the [`Metadata`].
     ///
     /// # Examples
     ///
