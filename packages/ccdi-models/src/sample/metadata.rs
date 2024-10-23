@@ -57,11 +57,11 @@ pub struct Metadata {
     age_at_collection: Option<field::unowned::sample::AgeAtCollection>,
 
     /// The library source material.
-    #[schema(value_type = field::unowned::sample::LibrarySourceMaterial, nullable = true)]
+    #[schema(value_type = field::unowned::sample::LibraryStrategy, nullable = true)]
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
 
     /// The strategy for constructing the sequencing library.
-    #[schema(value_type = field::unowned::sample::LibraryStrategy, nullable = true)]
+    #[schema(value_type = field::unowned::sample::LibrarySourceMaterial, nullable = true)]
     library_source_material: Option<field::unowned::sample::LibrarySourceMaterial>,
 
     /// The method used to maintain the sample or biospecimen in a viable state.
