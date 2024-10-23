@@ -18,7 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/79),
   [#95](https://github.com/CBIIT/ccdi-federation-api/pull/95)).
 - Adds Library Source Material ([link to 
-  discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/114))
+  discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/114),
   [#118](https://github.com/CBIIT/ccdi-federation-api/pull/118))
 
 ### Revised
