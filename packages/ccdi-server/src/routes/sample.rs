@@ -443,6 +443,20 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "library_source_material" => match sample.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .library_source_material()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|library_source_material| {
+                        serde_json::to_value(library_source_material.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "preservation_method" => match sample.metadata() {
             Some(metadata) => Some(
                 metadata

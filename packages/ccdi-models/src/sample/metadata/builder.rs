@@ -33,6 +33,9 @@ pub struct Builder {
     /// The strategy for constructing the sequencing library.
     library_strategy: Option<field::unowned::sample::LibraryStrategy>,
 
+    /// The library source material.
+    library_source_material: Option<field::unowned::sample::LibrarySourceMaterial>,
+
     /// The preservation method for this sample or biospecimen.
     preservation_method: Option<field::unowned::sample::PreservationMethod>,
 
@@ -231,6 +234,32 @@ impl Builder {
         self
     }
 
+    /// Sets the `library_source_material` field of the [`Builder`].
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::LibrarySourceMaterial;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = LibrarySourceMaterial::new(
+    ///     cde::v1::sample::LibrarySourceMaterial::BulkCells,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().library_source_material(field);
+    /// ```
+    pub fn library_source_material(
+        mut self,
+        field: field::unowned::sample::LibrarySourceMaterial,
+    ) -> Self {
+        self.library_source_material = Some(field);
+        self
+    }
+
     /// Sets the `preservation_method` field of the [`Builder`].
     ///
     /// # Examples
@@ -408,6 +437,7 @@ impl Builder {
             diagnosis: self.diagnosis,
             disease_phase: self.disease_phase,
             library_strategy: self.library_strategy,
+            library_source_material: self.library_source_material,
             preservation_method: self.preservation_method,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
