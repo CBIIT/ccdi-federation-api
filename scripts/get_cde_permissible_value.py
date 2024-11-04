@@ -66,6 +66,33 @@ impl Distribution<CCDI_TEMPLATE_REPLACE_7> for Standard {
 """
 
 
+test_convert_to_string_template = """
+        assert_eq!(CCDI_TEMPLATE_REPLACE_1::CCDI_TEMPLATE_REPLACE_2.to_string(), "CCDI_TEMPLATE_REPLACE_3");"""
+
+test_convert_to_json_template = """
+        assert_eq!(
+            serde_json::to_string(&CCDI_TEMPLATE_REPLACE_1::CCDI_TEMPLATE_REPLACE_2).unwrap(),
+            "\\\"CCDI_TEMPLATE_REPLACE_3\\\""
+        );"""
+
+test_template = """
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_converts_to_string_correctly() {
+        CCDI_TEMPLATE_REPLACE_1
+    }
+
+    #[test]
+    fn it_serializes_to_json_correctly() {
+        CCDI_TEMPLATE_REPLACE_2
+    }
+}
+"""
+
+
 
 # Retrieve the data from CaDSR
 payload = {}
@@ -83,6 +110,10 @@ permissible_values = response["DataElement"]["ValueDomain"]["PermissibleValues"]
 values = []
 display_values = []
 distribution_values = []
+
+tests_string = []
+tests_json = []
+
 index = 0
 for permissible_value in permissible_values:
   # print(permissible_value)
@@ -111,12 +142,29 @@ for permissible_value in permissible_values:
   distribution_value = distribution_value.replace("CCDI_TEMPLATE_REPLACE_3", formatted_name)
   distribution_values.append(distribution_value)
 
+
+  test_string = copy.deepcopy(test_convert_to_string_template)
+  test_string = test_string.replace("CCDI_TEMPLATE_REPLACE_1", enum_name)
+  test_string = test_string.replace("CCDI_TEMPLATE_REPLACE_2", formatted_name)
+  test_string = test_string.replace("CCDI_TEMPLATE_REPLACE_3", permissible_value["value"])
+  tests_string.append(test_string)
+
+
+  test_json = copy.deepcopy(test_convert_to_json_template)
+  test_json = test_json.replace("CCDI_TEMPLATE_REPLACE_1", enum_name)
+  test_json = test_json.replace("CCDI_TEMPLATE_REPLACE_2", formatted_name)
+  test_json = test_json.replace("CCDI_TEMPLATE_REPLACE_3", permissible_value["value"])
+  tests_json.append(test_json)
+
   index = index + 1
 
 combined_values = ''.join(values)
 combined_display_values = ''.join(display_values)
 combined_distribution_values = ''.join(distribution_values)
 # print(combined_distribution_values)
+
+combined_test_json = ''.join(tests_json)
+combined_test_string = ''.join(tests_string)
 
 
 
@@ -137,5 +185,12 @@ cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_02", combined_distribution_va
 
 
 
-print(cde_enum)
+test_str = copy.deepcopy(test_template)
+test_str = test_str.replace("CCDI_TEMPLATE_REPLACE_1", combined_test_string)
+test_str = test_str.replace("CCDI_TEMPLATE_REPLACE_2", combined_test_json)
+
+
+ccdi_cde_file = cde_enum + test_str
+# print(cde_enum)
+print(ccdi_cde_file)
 
