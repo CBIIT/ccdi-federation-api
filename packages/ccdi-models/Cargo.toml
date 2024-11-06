@@ -15,8 +15,14 @@ nonempty.workspace = true
 ordered-float.workspace = true
 rand.workspace = true
 regex.workspace = true
+strum.workspace = true
+strum_macros.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_test.workspace = true
 url.workspace = true
 utoipa.workspace = true
+
+[features]
+default = []
+all-anatomical-site = []

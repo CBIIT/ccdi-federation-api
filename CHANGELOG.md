@@ -8,23 +8,30 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Adds Library Source Material
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/119),
+  [#118](https://github.com/CBIIT/ccdi-federation-api/pull/118)).
+- Adds anatomical site as any node that inherits from "anatomical entity" in the
+  "simple" Uberon ontology
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/74),
+  [#121](https://github.com/CBIIT/ccdi-federation-api/pull/121)).
+
 ## [v1.0.0] — 04-30-2024
 
 ### Added
 
 - Adds both local and global gateway definitions to subjects and samples. With
   this change, subjects, samples, and files now have the same top-level keys in
-  their responses ([link to
-  discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/79),
+  their responses
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/79),
   [#95](https://github.com/CBIIT/ccdi-federation-api/pull/95)).
-- Adds Library Source Material ([link to 
-  discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/119),
-  [#118](https://github.com/CBIIT/ccdi-federation-api/pull/118))
 
 ### Revised
 
-- Removes namespace-partitioned count by results ([link to
-  dicussion](https://github.com/CBIIT/ccdi-federation-api/discussions/96),
+- Removes namespace-partitioned count by results
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/96),
   [#97](https://github.com/CBIIT/ccdi-federation-api/pull/97)).
 - Updates diagnosis to support multiple values
   ([#99](https://github.com/CBIIT/ccdi-federation-api/pull/99)).
@@ -98,39 +105,45 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Five new metadata elements were added for files ([#63](https://github.com/CBIIT/ccdi-federation-api/pull/63)).
-  - The identifier for the file (CDE 11284037 v1.00, [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/52))
-  - The type of file (CDE 11416926 v1.00, [#53](https://github.com/CBIIT/ccdi-federation-api/discussions/53)).
-  - The size of the file (CDE 11479876 v1.00, [#55](https://github.com/CBIIT/ccdi-federation-api/discussions/55)).
-  - The md5 checksum of the file (CDE 11556150 v1.00, [#56](https://github.com/CBIIT/ccdi-federation-api/discussions/56)).
-  - A description of the file (CDE 11280338 v1.00, [#54](https://github.com/CBIIT/ccdi-federation-api/discussions/54)).
+- Five new metadata elements were added for files
+  ([#63](https://github.com/CBIIT/ccdi-federation-api/pull/63)).
+  - The identifier for the file (CDE 11284037 v1.00,
+    [#52](https://github.com/CBIIT/ccdi-federation-api/discussions/52))
+  - The type of file (CDE 11416926 v1.00,
+    [#53](https://github.com/CBIIT/ccdi-federation-api/discussions/53)).
+  - The size of the file (CDE 11479876 v1.00,
+    [#55](https://github.com/CBIIT/ccdi-federation-api/discussions/55)).
+  - The md5 checksum of the file (CDE 11556150 v1.00,
+    [#56](https://github.com/CBIIT/ccdi-federation-api/discussions/56)).
+  - A description of the file (CDE 11280338 v1.00,
+    [#54](https://github.com/CBIIT/ccdi-federation-api/discussions/54)).
 - A `Namespace` now represents a top-level governance grouping of entities
-  within the CCDI Federation API. See the new "Organizations", "Namespaces",
-  and "Assigning Organizations and Namespaces" sections in the Swagger
-  specification to learn about how your design might need to change to account
-  for these new definitions
-  ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
+  within the CCDI Federation API. See the new "Organizations", "Namespaces", and
+  "Assigning Organizations and Namespaces" sections in the Swagger specification
+  to learn about how your design might need to change to account for these new
+  definitions ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
 - Introduces `Organization` as a supporting entity with the corresponding
   `/organization` and `/organization/{name}` endpoints
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
 - For all primary entities, an `Identifier` is now represented as both a
   `Namespace` identifier and a `Name` of the entity.
-- Identifiers, when referenced from within metadata blocks (but not when specified as
-  the top-level identifiers for subjects/samples/files) are now known as **referenced**
-  identifiers. Their body type has changed to include `linked::Identifier`s and
-  `unlinked::Identifier`s, which are wrapped in an `identifier::Referenced` enum
+- Identifiers, when referenced from within metadata blocks (but not when
+  specified as the top-level identifiers for subjects/samples/files) are now
+  known as **referenced** identifiers. Their body type has changed to include
+  `linked::Identifier`s and `unlinked::Identifier`s, which are wrapped in an
+  `identifier::Referenced` enum
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
 - The `identifiers` metadata field for a `Subject` was changed from an _owned_
   metadata field to an _unowned_ metadata field
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
-- A new `identifiers` metadata field was added to `Sample` to support adding other
-  known identifiers at the sample level
+- A new `identifiers` metadata field was added to `Sample` to support adding
+  other known identifiers at the sample level
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
-- For both samples and subjects, there is a new `partition` query parameter that needs
-  to be supported for the `/{entity}/by/{field}/count` endpoint
+- For both samples and subjects, there is a new `partition` query parameter that
+  needs to be supported for the `/{entity}/by/{field}/count` endpoint
   ([#75](https://github.com/CBIIT/ccdi-federation-api/pull/75)).
-    - The only current valid value for the `partition` query parameter at the moment is
-      `namespace`, though this may be expanded in the future.
+    - The only current valid value for the `partition` query parameter at the
+      moment is `namespace`, though this may be expanded in the future.
 
 ### Changed
 
@@ -143,8 +156,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- The pagination via `Link` headers was fixed
-  (Thanks @e-t-k! [#61](https://github.com/CBIIT/ccdi-federation-api/pull/61)).
+- The pagination via `Link` headers was fixed (Thanks @e-t-k!
+  [#61](https://github.com/CBIIT/ccdi-federation-api/pull/61)).
 
 ## [v0.6.1] — 01-16-2024
 
@@ -152,45 +165,68 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Corrects two issues with the v0.6.0 release
   ([#51](https://github.com/CBIIT/ccdi-federation-api/pull/51)).
-  - Corrects the description of the sample metadata `tumor_tissue_morphology` to be specified as a
-    struct. Additionally, add the `icd_o_3` code as a named struct field so that it will be named in the wiki.
-  - Adds the `age_at_vital_status` subject metadata to `get_field_descriptions()` so that it will be
-    included in the wiki page generation.
+  - Corrects the description of the sample metadata `tumor_tissue_morphology` to
+    be specified as a struct. Additionally, add the `icd_o_3` code as a named
+    struct field so that it will be named in the wiki.
+  - Adds the `age_at_vital_status` subject metadata to
+    `get_field_descriptions()` so that it will be included in the wiki page
+    generation.
 
 ## [v0.6.0] — 01-16-2024
 
 ### Added
 
-- Adds the files and gateways API ([#31](https://github.com/CBIIT/ccdi-federation-api/pull/31)).
-- Adds the `check` command for checking conformance with the API specification ([`c092b06`](https://github.com/CBIIT/ccdi-federation-api/commit/c092b064e4060471bdb6628b26a4099632c2089b)).
-- Adds five new harmonized metadata elements ([#49](https://github.com/CBIIT/ccdi-federation-api/pull/49)).
-  - Subjects now support vital status ([#42](https://github.com/CBIIT/ccdi-federation-api/discussions/42)) and age at vital status ([#45](https://github.com/CBIIT/ccdi-federation-api/discussions/45)).
-  - Samples now support age at diagnosis ([#37](https://github.com/CBIIT/ccdi-federation-api/discussions/370)), age at collection ([#44](https://github.com/CBIIT/ccdi-federation-api/discussions/44)), and tumor tissue morphology ([#43](https://github.com/CBIIT/ccdi-federation-api/discussions/43)).
+- Adds the files and gateways API
+  ([#31](https://github.com/CBIIT/ccdi-federation-api/pull/31)).
+- Adds the `check` command for checking conformance with the API specification
+  ([`c092b06`](https://github.com/CBIIT/ccdi-federation-api/commit/c092b064e4060471bdb6628b26a4099632c2089b)).
+- Adds five new harmonized metadata elements
+  ([#49](https://github.com/CBIIT/ccdi-federation-api/pull/49)).
+  - Subjects now support vital status
+    ([#42](https://github.com/CBIIT/ccdi-federation-api/discussions/42)) and age
+    at vital status
+    ([#45](https://github.com/CBIIT/ccdi-federation-api/discussions/45)).
+  - Samples now support age at diagnosis
+    ([#37](https://github.com/CBIIT/ccdi-federation-api/discussions/370)), age
+    at collection
+    ([#44](https://github.com/CBIIT/ccdi-federation-api/discussions/44)), and
+    tumor tissue morphology
+    ([#43](https://github.com/CBIIT/ccdi-federation-api/discussions/43)).
 
 ## [v0.5.0] — 11-25-2023
 
 ### Added
 
-- Formalizes the `Namespace` entity and adds `/info` endpoint ([#27](https://github.com/CBIIT/ccdi-federation-api/pull/27)).
+- Formalizes the `Namespace` entity and adds `/info` endpoint
+  ([#27](https://github.com/CBIIT/ccdi-federation-api/pull/27)).
   - `/info`: Gets information about the server.
   - `/namespace`: Lists namespaces known by this server.
-  - `/namespace/{name}`: Gets the namespace matching the provided name (if it exists).
-- Adds a `InvalidRoute` error to give feedback in the response body when a route is not available ([#28](https://github.com/CBIIT/ccdi-federation-api/pull/28)).
-- Adds an `UnshareableData` error to explain why data is not shareable ([#29](https://github.com/CBIIT/ccdi-federation-api/pull/29)).
+  - `/namespace/{name}`: Gets the namespace matching the provided name (if it
+    exists).
+- Adds a `InvalidRoute` error to give feedback in the response body when a route
+  is not available
+  ([#28](https://github.com/CBIIT/ccdi-federation-api/pull/28)).
+- Adds an `UnshareableData` error to explain why data is not shareable
+  ([#29](https://github.com/CBIIT/ccdi-federation-api/pull/29)).
 
 ## [v0.4.0] — 11-17-2023
 
 ### Added
 
-- Adds filtering via query parameters for `/subject` and `/sample` ([#26](https://github.com/CBIIT/ccdi-federation-api/pull/26)).
-- Adds a reference from samples back to subjects ([#25](https://github.com/CBIIT/ccdi-federation-api/pull/25)).
-- Adds pagination to `/subject` and `/sample` ([#24](https://github.com/CBIIT/ccdi-federation-api/pull/24)).
+- Adds filtering via query parameters for `/subject` and `/sample`
+  ([#26](https://github.com/CBIIT/ccdi-federation-api/pull/26)).
+- Adds a reference from samples back to subjects
+  ([#25](https://github.com/CBIIT/ccdi-federation-api/pull/25)).
+- Adds pagination to `/subject` and `/sample`
+  ([#24](https://github.com/CBIIT/ccdi-federation-api/pull/24)).
 - New server endpoints.
-  - Adds Kids First Data Resource Center endpoint ([#30](https://github.com/CBIIT/ccdi-federation-api/pull/30)).
+  - Adds Kids First Data Resource Center endpoint
+    ([#30](https://github.com/CBIIT/ccdi-federation-api/pull/30)).
 
 ### Fixed
 
-- Applies the `Refactory` -> `Refractory` typo present in the CDE 12217251 v1.00 ([#23](https://github.com/CBIIT/ccdi-federation-api/pull/23)).
+- Applies the `Refactory` -> `Refractory` typo present in the CDE 12217251 v1.00
+  ([#23](https://github.com/CBIIT/ccdi-federation-api/pull/23)).
 
 ## [v0.3.0] — 11-02-2023
 
@@ -205,9 +241,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - New endpoints for `/sample`.
   - `/sample`: Gets the samples known by this server.
-  - `/sample/{name}`: Gets the sample matching the provided name (if the sample exists).
-  - `/sample/by/{field}/count`: Groups the samples by the specified metadata field and returns counts.
-- Adds character restrictions to harmonized and unharmonized fields ([#19](https://github.com/CBIIT/ccdi-federation-api/pull/19)).
+  - `/sample/{name}`: Gets the sample matching the provided name (if the sample
+    exists).
+  - `/sample/by/{field}/count`: Groups the samples by the specified metadata
+    field and returns counts.
+- Adds character restrictions to harmonized and unharmonized fields
+  ([#19](https://github.com/CBIIT/ccdi-federation-api/pull/19)).
 - Adds unharmonized metadata fields.
 - Adds linting with [`spectral`](https://github.com/stoplightio/spectral).
 
@@ -220,7 +259,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fixed swapping of server descriptions ([#18](https://github.com/CBIIT/ccdi-federation-api/pull/18)).
+- Fixed swapping of server descriptions
+  ([#18](https://github.com/CBIIT/ccdi-federation-api/pull/18)).
 
 ## [v0.1.0] — 10-15-2023
 
@@ -230,14 +270,19 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - `/subject`: Gets the subjects known by this server.
   - `/subject/{namespace}/{name}`: Gets the subject matching the provided id (if
     it exists).
-  - `/subject/by/{field}/count`: Groups the subjects by the specified metadata field and returns counts.
+  - `/subject/by/{field}/count`: Groups the subjects by the specified metadata
+    field and returns counts.
 - New endpoints for metadata.
-  - `/metadata/fields/subject`: Gets the metadata fields for subjects that are supported by this server.
+  - `/metadata/fields/subject`: Gets the metadata fields for subjects that are
+    supported by this server.
 - New server endpoints.
   - Adds St. Jude Children's Research Hospital endpoint (initial commit).
-  - Adds UCSC Treehouse endpoint ([#6](https://github.com/CBIIT/ccdi-federation-api/pull/6)).
-  - Adds Pediatric Cancer Data Commons (PCDC) endpoint ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
-- Rust tooling was added to the `packages` directory ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
+  - Adds UCSC Treehouse endpoint
+    ([#6](https://github.com/CBIIT/ccdi-federation-api/pull/6)).
+  - Adds Pediatric Cancer Data Commons (PCDC) endpoint
+    ([#10](https://github.com/CBIIT/ccdi-federation-api/pull/10)).
+- Rust tooling was added to the `packages` directory
+  ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
 [Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0...HEAD
 [v1.0.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...v1.0.0

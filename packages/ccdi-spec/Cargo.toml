@@ -12,9 +12,16 @@ ccdi-models = { path = "../ccdi-models" }
 ccdi-openapi = { path = "../ccdi-openapi" }
 ccdi-server = { path = "../ccdi-server" }
 clap.workspace = true
+csv.workspace = true
 itertools.workspace = true
 log.workspace = true
 reqwest.workspace = true
+strum.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 utoipa.workspace = true
 utoipa-swagger-ui.workspace = true
+
+[features]
+default = []
+all-anatomical-site = ["ccdi-models/all-anatomical-site"]

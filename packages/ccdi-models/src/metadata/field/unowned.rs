@@ -257,6 +257,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        AnatomicalSite,
+        field::unowned::sample::AnatomicalSite,
+        crate::sample::metadata::AnatomicalSite,
+        models::sample::metadata::AnatomicalSite,
+        models::sample::metadata::AnatomicalSite::AnatomicalEntity,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         Diagnosis,
         field::unowned::sample::Diagnosis,
         crate::sample::metadata::Diagnosis,

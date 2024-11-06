@@ -11,6 +11,7 @@ use crate::params::filter::Sample as FilterSampleParams;
 impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
     fn filter_metadata_field(self, field: String, params: &FilterSampleParams) -> Vec<Sample> {
         let parameter = match field.as_str() {
+            "anatomical_site" => params.anatomical_site.as_ref(),
             "disease_phase" => params.disease_phase.as_ref(),
             "library_strategy" => params.library_strategy.as_ref(),
             "library_source_material" => params.library_source_material.as_ref(),
@@ -34,6 +35,15 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
         self.into_iter()
             .filter(|sample| {
                 let values: Option<Vec<String>> = match field.as_str() {
+                    "anatomical_site" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.anatomical_sites())
+                        .map(|sites| {
+                            sites
+                                .iter()
+                                .map(|site| site.to_string())
+                                .collect::<Vec<_>>()
+                        }),
                     "disease_phase" => sample
                         .metadata()
                         .and_then(|metadata| metadata.disease_phase())

@@ -15,6 +15,17 @@ use utoipa::openapi;
 #[openapi(
     info(
         title = "CCDI Data Federation: Participating Nodes API",
+        description = "This is the concrete OpenAPI specification for the CCDI
+        Data Federation API—though this document contains all of the API calls
+        that CCDI Federation nodes must implement, it does not outline the
+        complete specification.
+
+* Visit the [documentation homepage](https://cbiit.github.io/ccdi-federation-api)
+  to view the complete set of requirements to maintain and deploy a CCDI
+  Federation node.
+* Additionally, you can view the Swagger specification in a more traditional
+  theme by visiting
+  [this link](https://editor.swagger.io/?url=https://cbiit.github.io/ccdi-federation-api/swagger.yml).",
         contact(
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
@@ -124,6 +135,7 @@ use utoipa::openapi;
 
         // Harmonized sample metadata elements.
         models::sample::metadata::AgeAtDiagnosis,
+        models::sample::metadata::AnatomicalSite,
         models::sample::metadata::Diagnosis,
         cde::v1::sample::DiseasePhase,
         cde::v1::sample::LibraryStrategy,
@@ -166,6 +178,7 @@ use utoipa::openapi;
 
         // Harmonized sample fields.
         field::unowned::sample::AgeAtDiagnosis,
+        field::unowned::sample::AnatomicalSite,
         field::unowned::sample::Diagnosis,
         field::unowned::sample::DiseasePhase,
         field::unowned::sample::LibraryStrategy,

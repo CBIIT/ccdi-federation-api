@@ -15,11 +15,13 @@ use crate::sample::Identifier;
 
 mod age_at_collection;
 mod age_at_diagnosis;
+mod anatomical_site;
 pub mod builder;
 mod diagnosis;
 
 pub use age_at_collection::AgeAtCollection;
 pub use age_at_diagnosis::AgeAtDiagnosis;
+pub use anatomical_site::AnatomicalSite;
 pub use builder::Builder;
 pub use diagnosis::Diagnosis;
 
@@ -30,6 +32,13 @@ pub struct Metadata {
     /// The approximate age at diagnosis.
     #[schema(value_type = field::unowned::sample::AgeAtDiagnosis, nullable = true)]
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
+
+    /// The anatomical site(s) of sample collection.
+    ///
+    /// This represents the sample being collected from _at least one of_ the
+    /// following provided sites.
+    #[schema(value_type = field::unowned::sample::AnatomicalSite, nullable = true)]
+    anatomical_sites: Option<Vec<field::unowned::sample::AnatomicalSite>>,
 
     /// The diagnosis for the sample.
     #[schema(value_type = field::unowned::sample::Diagnosis, nullable = true)]
@@ -119,6 +128,39 @@ impl Metadata {
     /// ```
     pub fn age_at_diagnosis(&self) -> Option<&field::unowned::sample::AgeAtDiagnosis> {
         self.age_at_diagnosis.as_ref()
+    }
+
+    /// Gets the anatomical site for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::AnatomicalSite;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .append_anatomical_site(AnatomicalSite::new(
+    ///         models::sample::metadata::AnatomicalSite::AnatomicalEntity,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.anatomical_sites(),
+    ///     Some(&vec![AnatomicalSite::new(
+    ///         models::sample::metadata::AnatomicalSite::AnatomicalEntity,
+    ///         None,
+    ///         None,
+    ///         None
+    ///     )])
+    /// );
+    /// ```
+    pub fn anatomical_sites(&self) -> Option<&Vec<field::unowned::sample::AnatomicalSite>> {
+        self.anatomical_sites.as_ref()
     }
 
     /// Gets the diagnosis for the [`Metadata`].
@@ -597,6 +639,12 @@ impl Metadata {
                 None,
                 None,
             )),
+            anatomical_sites: Some(vec![field::unowned::sample::AnatomicalSite::new(
+                AnatomicalSite::AnatomicalEntity,
+                None,
+                None,
+                None,
+            )]),
             diagnosis: Some(field::unowned::sample::Diagnosis::new(
                 Diagnosis::from(String::from("Random Diagnosis")),
                 None,
@@ -665,7 +713,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

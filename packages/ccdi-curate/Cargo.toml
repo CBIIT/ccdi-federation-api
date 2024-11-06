@@ -1,0 +1,25 @@
+[package]
+name = "ccdi-curate"
+license.workspace = true
+edition.workspace = true
+version.workspace = true
+
+[dependencies]
+chrono.workspace = true
+clap.workspace = true
+clap-verbosity-flag.workspace = true
+color-eyre.workspace = true
+eyre.workspace = true
+Inflector = "0.11.4"
+petgraph = "0.6.5"
+regex.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-log.workspace = true
+tracing-subscriber.workspace = true
+
+[features]
+default = []
+all-anatomical-site = []
