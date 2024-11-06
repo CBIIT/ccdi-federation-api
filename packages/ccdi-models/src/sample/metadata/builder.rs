@@ -11,6 +11,9 @@ pub struct Builder {
     /// The approximate age at diagnosis.
     age_at_diagnosis: Option<field::unowned::sample::AgeAtDiagnosis>,
 
+    /// The anatomical site.
+    anatomical_sites: Option<Vec<field::unowned::sample::AnatomicalSite>>,
+
     /// The diagnosis for the sample.
     diagnosis: Option<field::unowned::sample::Diagnosis>,
 
@@ -71,6 +74,33 @@ impl Builder {
     /// ```
     pub fn age_at_diagnosis(mut self, field: field::unowned::sample::AgeAtDiagnosis) -> Self {
         self.age_at_diagnosis = Some(field);
+        self
+    }
+
+    /// Sets the `anatomical_site` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::AnatomicalSite;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = AnatomicalSite::new(
+    ///     models::sample::metadata::AnatomicalSite::AnatomicalEntity,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().append_anatomical_site(field);
+    /// ```
+    pub fn append_anatomical_site(mut self, field: field::unowned::sample::AnatomicalSite) -> Self {
+        let mut inner = self.anatomical_sites.unwrap_or_default();
+        inner.push(field);
+
+        self.anatomical_sites = Some(inner);
+
         self
     }
 
@@ -433,6 +463,7 @@ impl Builder {
     pub fn build(self) -> Metadata {
         Metadata {
             age_at_diagnosis: self.age_at_diagnosis,
+            anatomical_sites: self.anatomical_sites,
             age_at_collection: self.age_at_collection,
             diagnosis: self.diagnosis,
             disease_phase: self.disease_phase,

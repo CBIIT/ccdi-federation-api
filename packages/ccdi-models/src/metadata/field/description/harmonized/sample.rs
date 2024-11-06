@@ -17,6 +17,7 @@ use crate::Url;
 pub fn get_field_descriptions() -> Vec<description::Description> {
     vec![
         crate::sample::metadata::AgeAtDiagnosis::description(),
+        crate::sample::metadata::AnatomicalSite::description(),
         crate::sample::metadata::Diagnosis::description(),
         cde::v1::sample::DiseasePhase::description(),
         cde::v1::sample::LibraryStrategy::description(),
@@ -41,6 +42,24 @@ impl description::r#trait::Description for crate::sample::metadata::AgeAtDiagnos
             String::from("age_at_diagnosis"),
             description,
             "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#age_at_diagnosis".parse::<Url>().unwrap(),
+            None,
+            None,
+        ))
+    }
+}
+
+impl description::r#trait::Description for crate::sample::metadata::AnatomicalSite {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("anatomical_site"),
+            description,
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#anatomical_site".parse::<Url>().unwrap(),
             None,
             None,
         ))

@@ -13,13 +13,18 @@ use actix_web::App;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::HttpServer;
+use ccdi_models::sample::metadata::AnatomicalSite;
 use clap::Parser;
 use clap::Subcommand;
+use clap::ValueEnum;
 use itertools::Itertools as _;
 use log::info;
+#[cfg(not(feature = "all-anatomical-site"))]
+use log::warn;
 use log::LevelFilter;
 use server::routes::file;
 use server::routes::organization;
+use strum::VariantArray;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -174,6 +179,19 @@ pub struct CheckArgs {
     response_type: ResponseType,
 }
 
+/// Entities that can be exported.
+#[derive(Clone, Debug, ValueEnum)]
+pub enum ExportEntity {
+    /// Exports the anatomical site nodes.
+    AnatomicalSite,
+}
+
+#[derive(Debug, Parser)]
+pub struct ExportArgs {
+    /// The entity to be exported.
+    entity: ExportEntity,
+}
+
 #[derive(Debug, Parser)]
 pub struct ServeArgs {
     /// Number of subjects for the server to generate.
@@ -203,6 +221,9 @@ pub struct WikiArgs {
 pub enum Command {
     /// Checks that a URL matches the specification.
     Check(CheckArgs),
+
+    /// Exports a particular entity to an external file.
+    Export(ExportArgs),
 
     /// Generate the OpenAPI specification.
     Generate(GenerateArgs),
@@ -253,7 +274,28 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
             parse_response(&text, args.response_type)?;
             println!("Success!");
         }
+
+        Command::Export(args) => match args.entity {
+            ExportEntity::AnatomicalSite => {
+                let mut wtr = csv::WriterBuilder::new()
+                    .delimiter(b'\t')
+                    .from_writer(io::stdout());
+
+                wtr.write_record(["Anatomical Site Name"])
+                    .expect("writing CSV header");
+
+                for variant in AnatomicalSite::VARIANTS {
+                    wtr.serialize(variant).expect("writing CSV record");
+                }
+            }
+        },
         Command::Generate(args) => {
+            #[cfg(not(feature = "all-anatomical-site"))]
+            warn!(
+                "You're building the spec without all anatomical sites! \
+                 Please be sure that's what you want."
+            );
+
             let api = Api::openapi();
             let mut writer = get_output(args.output, args.force)?;
             write!(writer, "{}", api.to_yaml()?)?;
