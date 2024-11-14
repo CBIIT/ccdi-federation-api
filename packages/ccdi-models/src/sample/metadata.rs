@@ -48,6 +48,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::DiseasePhase, nullable = true)]
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
 
+    /// The type of actions performed to select or enrich nucleic acid fragments in this sample.
+    #[schema(value_type = field::unowned::sample::LibrarySelectionMethod, nullable = true)]
+    library_selection_method: Option<field::unowned::sample::LibrarySelectionMethod>,
+
     /// The type of tissue for this sample.
     #[schema(value_type = field::unowned::sample::TissueType, nullable = true)]
     tissue_type: Option<field::unowned::sample::TissueType>,
@@ -223,6 +227,42 @@ impl Metadata {
     /// ```
     pub fn disease_phase(&self) -> Option<&field::unowned::sample::DiseasePhase> {
         self.disease_phase.as_ref()
+    }
+
+    /// Gets the harmonized library selection method for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::LibrarySelectionMethod;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .library_selection_method(LibrarySelectionMethod::new(
+    ///         cde::v2::sample::LibrarySelectionMethod::Unspecified,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.library_selection_method(),
+    ///     Some(&LibrarySelectionMethod::new(
+    ///         cde::v2::sample::LibrarySelectionMethod::Unspecified,
+    ///         None,
+    ///         None,
+    ///         None
+    ///     ))
+    /// );
+    /// ```
+    pub fn library_selection_method(
+        &self,
+    ) -> Option<&field::unowned::sample::LibrarySelectionMethod> {
+        self.library_selection_method.as_ref()
     }
 
     /// Gets the harmonized library strategy for the [`Metadata`].
@@ -692,6 +732,7 @@ impl Metadata {
                 None,
             )),
             disease_phase: rand::random(),
+            library_selection_method: rand::random(),
             library_strategy: rand::random(),
             library_source_material: rand::random(),
             preservation_method: rand::random(),
@@ -754,7 +795,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"library_selection_method\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

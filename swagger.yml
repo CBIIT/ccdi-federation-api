@@ -361,6 +361,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: library_selection_method
+        in: query
+        description: |-
+          Matches any sample where the `library_selection_method` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: library_strategy
         in: query
         description: |-
@@ -1539,6 +1547,54 @@ components:
       - Dead
       - Unknown
       - Unspecified
+    cde.v2.sample.LibrarySelectionMethod:
+      type: string
+      description: |-
+        **`caDSR CDE 6347743 2.00`**
+
+        This metadata element is defined by the caDSR as "The type of systematic
+        actions performed to select or enrich DNA fragments used in analysis by
+        high-throughput sequencing.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6347743%20and%20ver_nr=2>
+      enum:
+      - ChIP
+      - CF-M
+      - CF-S
+      - MF
+      - HMPR
+      - RT-PCR
+      - Random PCR
+      - PCR
+      - Random
+      - Inverse rRNA
+      - cDNA random priming
+      - cDNA oligo_dT
+      - Padlock probes capture method
+      - Size fractionation
+      - RACE
+      - CAGE
+      - MBD2 protein methyl-CpG binding domain
+      - 5-methylcytidine antibody
+      - Restriction Digest
+      - Reduced Representation
+      - Hybrid Selection
+      - DNAse
+      - Repeat fractionation
+      - Unspecified
+      - MSLL
+      - MDA
+      - CF-T
+      - CF-H
+      - cDNA
+      - Other
+      - miRNA Size Fractionation
+      - rRNA Depletion
+      - Affinity Enrichment
+      - Not applicable
+      - MNase
+      - Poly-A Enriched Genomic Library
     cde.v2.sample.PreservationMethod:
       type: string
       description: |-
@@ -1973,6 +2029,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.sample.identifier.referenced.Identifier'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.LibrarySelectionMethod:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v2.sample.LibrarySelectionMethod'
         ancestors:
           type: array
           items:
@@ -3244,6 +3322,7 @@ components:
         - anatomical_sites
         - diagnosis
         - disease_phase
+        - library_selection_method
         - tissue_type
         - tumor_classification
         - tumor_tissue_morphology
@@ -3269,6 +3348,10 @@ components:
           disease_phase:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.DiseasePhase'
+            nullable: true
+          library_selection_method:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.LibrarySelectionMethod'
             nullable: true
           tissue_type:
             allOf:

@@ -284,6 +284,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        LibrarySelectionMethod,
+        field::unowned::sample::LibrarySelectionMethod,
+        cde::v2::sample::LibrarySelectionMethod,
+        cde::v2::sample::LibrarySelectionMethod,
+        cde::v2::sample::LibrarySelectionMethod::Unspecified,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         TissueType,
         field::unowned::sample::TissueType,
         cde::v2::sample::TissueType,
