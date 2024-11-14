@@ -20,6 +20,9 @@ pub struct Builder {
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
 
+    /// The type of actions performed to select or enrich nucleic acid fragments in this sample.
+    library_selection_method: Option<field::unowned::sample::LibrarySelectionMethod>,
+
     /// The type of tissue for this sample.
     tissue_type: Option<field::unowned::sample::TissueType>,
 
@@ -149,6 +152,33 @@ impl Builder {
     /// ```
     pub fn disease_phase(mut self, field: field::unowned::sample::DiseasePhase) -> Self {
         self.disease_phase = Some(field);
+        self
+    }
+
+    /// Sets the `library_selection_method` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::LibrarySelectionMethod;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = LibrarySelectionMethod::new(
+    ///     cde::v2::sample::LibrarySelectionMethod::Unspecified,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().library_selection_method(field);
+    /// ```
+    pub fn library_selection_method(
+        mut self,
+        field: field::unowned::sample::LibrarySelectionMethod,
+    ) -> Self {
+        self.library_selection_method = Some(field);
         self
     }
 
@@ -497,6 +527,7 @@ impl Builder {
             age_at_collection: self.age_at_collection,
             diagnosis: self.diagnosis,
             disease_phase: self.disease_phase,
+            library_selection_method: self.library_selection_method,
             library_strategy: self.library_strategy,
             library_source_material: self.library_source_material,
             preservation_method: self.preservation_method,

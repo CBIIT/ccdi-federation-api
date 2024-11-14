@@ -34,6 +34,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/116),
   [#123](https://github.com/CBIIT/ccdi-federation-api/pull/123),
   [#122](https://github.com/CBIIT/ccdi-federation-api/issues/122))
+- Adds Library Selection Method
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/47),
+  [#125](https://github.com/CBIIT/ccdi-federation-api/pull/125))
 
 ### Revised
 

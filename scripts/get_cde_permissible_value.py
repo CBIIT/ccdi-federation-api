@@ -1,18 +1,24 @@
 import requests
 import copy
-import re
+import sys
 from datetime import datetime
 
+# Get cde_id, version, name, data_type from command line
+if len(sys.argv) == 5:
+    cde_id = sys.argv[1]
+    cde_version = sys.argv[2]
+    cde_version_numeric = cde_version.replace("v", "")
+    enum_name = sys.argv[3]
+    data_type = sys.argv[4]
+else:
+    print("Usage: get_cde_permissible_value.py 14808227 v1 LibrarySourceMaterial sample")
+    exit()
+
 # CaDSR Variables
-cde_id = "14808227"
-cde_deeplink= "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14808227%20and%20ver_nr=1"
+cde_deeplink= f"https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID={cde_id}%20and%20ver_nr={cde_version_numeric}"
 url = "https://cadsrapi.cancer.gov/rad/NCIAPI/1.0/api/DataElement/" + cde_id
 
-# CCDI Federation variables
-enum_name = "LibrarySourceMaterial"
-cde_version = "v1"
-data_type = "sample"
-
+# Templates
 enum_value_template = """
     /// `CCDI_TEMPLATE_REPLACE_1`
     ///
@@ -34,6 +40,15 @@ enum_distrubution_value_template = """
             CCDI_TEMPLATE_REPLACE_1 => CCDI_TEMPLATE_REPLACE_2::CCDI_TEMPLATE_REPLACE_3,"""
 
 enum_template = """
+use introspect::Introspect;
+use rand::distributions::Standard;
+use rand::prelude::Distribution;
+use serde::Deserialize;
+use serde::Serialize;
+use utoipa::ToSchema;
+
+use crate::CDE;
+
 /// **`caDSR CDE CCDI_TEMPLATE_REPLACE_1 CCDI_TEMPLATE_REPLACE_2`**
 ///
 /// This metadata element is defined by the caDSR as "CCDI_TEMPLATE_REPLACE_3".
@@ -58,7 +73,7 @@ impl std::fmt::Display for CCDI_TEMPLATE_REPLACE_7 {
 
 impl Distribution<CCDI_TEMPLATE_REPLACE_7> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> CCDI_TEMPLATE_REPLACE_7 {
-        match rng.gen_range(0..CCDI_TEMPLATE_REPLACE_01) {
+        match rng.gen_range(0..=CCDI_TEMPLATE_REPLACE_01) {
             CCDI_TEMPLATE_REPLACE_02
         }
     }
@@ -105,8 +120,6 @@ response = response.json()
 # print(response["DataElement"]["ValueDomain"]["PermissibleValues"])
 permissible_values = response["DataElement"]["ValueDomain"]["PermissibleValues"]
 
-
-
 values = []
 display_values = []
 distribution_values = []
@@ -119,13 +132,24 @@ for permissible_value in permissible_values:
   # print(permissible_value)
   value = copy.deepcopy(enum_value_template)
   value = value.replace("CCDI_TEMPLATE_REPLACE_1", permissible_value["value"])
-  value = value.replace("CCDI_TEMPLATE_REPLACE_2", permissible_value["ValueMeaning"]["Concepts"][0]["longName"])
+  value = value.replace("CCDI_TEMPLATE_REPLACE_2", permissible_value["ValueMeaning"]["longName"])
   value = value.replace("CCDI_TEMPLATE_REPLACE_3",permissible_value["ValueMeaning"]["publicId"])
-  value = value.replace("CCDI_TEMPLATE_REPLACE_4", permissible_value["ValueMeaning"]["Concepts"][0]["conceptCode"])
+  # Include conceptCode if present; some permissible values do not have any associated Concepts.
+  if len(permissible_value["ValueMeaning"]["Concepts"]):
+    value = value.replace("CCDI_TEMPLATE_REPLACE_4", permissible_value["ValueMeaning"]["Concepts"][0]["conceptCode"])
+  else:
+    value = value.replace("CCDI_TEMPLATE_REPLACE_4","")
   formatted_date = datetime.strptime(permissible_value["ValueMeaning"]["dateModified"], '%Y-%m-%d').strftime('%m/%d/%Y')
   value = value.replace("CCDI_TEMPLATE_REPLACE_5", formatted_date)
-  value = value.replace("CCDI_TEMPLATE_REPLACE_6", permissible_value["ValueMeaning"]["Concepts"][0]["definition"])
-  formatted_name = ''.join(word.capitalize() for word in permissible_value["value"].split()) 
+  value = value.replace("CCDI_TEMPLATE_REPLACE_6", permissible_value["ValueMeaning"]["definition"])
+  # Format the name.
+  # Cannot contain -_ or start with a digit
+  name = permissible_value["value"]
+  for i in ["-", "_"]: name = name.replace(i," ")
+  if name[0].isdigit():
+    num2words = {'1':'One','2':'Two','3':'Three','4':'Four','5':'Five','6':'Six','7':'Seven','8':'Eight','9':'Nine','0':'Zero'}
+    name = num2words[name[0]] + name[1:]
+  formatted_name = ''.join(word.capitalize() for word in name.split())
   value = value.replace("CCDI_TEMPLATE_REPLACE_7", formatted_name)
   values.append(value)
 
@@ -166,13 +190,9 @@ combined_distribution_values = ''.join(distribution_values)
 combined_test_json = ''.join(tests_json)
 combined_test_string = ''.join(tests_string)
 
-
-
-
 cde_enum = copy.deepcopy(enum_template)
 cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_1", response["DataElement"]["publicId"])
-match = re.search(r'v\d+\.\d+$', response["DataElement"]["shortName"])
-cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_2", match.group())
+cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_2", response["DataElement"]["version"] + ".00")
 cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_3", response["DataElement"]["definition"])
 cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_4", cde_deeplink)
 cde_enum = cde_enum.replace("CCDI_TEMPLATE_REPLACE_5", cde_version)

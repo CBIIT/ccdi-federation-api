@@ -20,6 +20,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         crate::sample::metadata::AnatomicalSite::description(),
         crate::sample::metadata::Diagnosis::description(),
         cde::v1::sample::DiseasePhase::description(),
+        cde::v2::sample::LibrarySelectionMethod::description(),
         cde::v1::sample::LibraryStrategy::description(),
         cde::v1::sample::LibrarySourceMaterial::description(),
         cde::v2::sample::PreservationMethod::description(),
@@ -99,6 +100,24 @@ impl description::r#trait::Description for cde::v1::sample::DiseasePhase {
             String::from("disease_phase"),
             entity.description().to_string(),
             "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#disease_phase".parse::<Url>().unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            members,
+        ))
+    }
+}
+
+impl description::r#trait::Description for cde::v2::sample::LibrarySelectionMethod {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("library_selection_method"),
+            entity.description().to_string(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#library_selection_method".parse::<Url>().unwrap(),
             Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
             members,
         ))

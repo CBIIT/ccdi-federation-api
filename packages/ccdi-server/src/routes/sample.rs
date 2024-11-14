@@ -431,6 +431,20 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "library_selection_method" => match sample.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .library_selection_method()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|library_selection_method| {
+                        serde_json::to_value(library_selection_method.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "library_strategy" => match sample.metadata() {
             Some(metadata) => Some(
                 metadata
