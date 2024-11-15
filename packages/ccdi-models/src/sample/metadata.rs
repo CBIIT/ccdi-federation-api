@@ -77,6 +77,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::PreservationMethod, nullable = true)]
     preservation_method: Option<field::unowned::sample::PreservationMethod>,
 
+    /// The sample or material being subjected to analysis.
+    #[schema(value_type = field::unowned::sample::SpecimenMolecularAnalyteType, nullable = true)]
+    specimen_molecular_analyte_type: Option<field::unowned::sample::SpecimenMolecularAnalyteType>,
+
     /// The alternate identifiers for the sample.
     ///
     /// Note that this list of identifiers *must* include the main identifier
@@ -323,6 +327,42 @@ impl Metadata {
     /// ```
     pub fn preservation_method(&self) -> Option<&field::unowned::sample::PreservationMethod> {
         self.preservation_method.as_ref()
+    }
+
+    /// Gets the harmonized specimen molecular analyte type for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::SpecimenMolecularAnalyteType;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .specimen_molecular_analyte_type(SpecimenMolecularAnalyteType::new(
+    ///         cde::v1::sample::SpecimenMolecularAnalyteType::Rna,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.specimen_molecular_analyte_type(),
+    ///     Some(&SpecimenMolecularAnalyteType::new(
+    ///         cde::v1::sample::SpecimenMolecularAnalyteType::Rna,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    /// );
+    /// ```
+    pub fn specimen_molecular_analyte_type(
+        &self,
+    ) -> Option<&field::unowned::sample::SpecimenMolecularAnalyteType> {
+        self.specimen_molecular_analyte_type.as_ref()
     }
 
     /// Gets the harmonized tissue type for the [`Metadata`].
@@ -655,6 +695,7 @@ impl Metadata {
             library_strategy: rand::random(),
             library_source_material: rand::random(),
             preservation_method: rand::random(),
+            specimen_molecular_analyte_type: rand::random(),
             tissue_type: rand::random(),
             tumor_classification: rand::random(),
             tumor_tissue_morphology: Some(field::unowned::sample::TumorTissueMorphology::new(
@@ -713,7 +754,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

@@ -111,6 +111,12 @@ pub struct Sample {
     #[param(required = false, nullable = false)]
     pub preservation_method: Option<String>,
 
+    /// Matches any sample where the `specimen_molecular_analyte_type` field matches the string
+    /// provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub specimen_molecular_analyte_type: Option<String>,
+
     /// Matches any sample where the `tissue_type` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]

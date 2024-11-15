@@ -23,6 +23,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v1::sample::LibraryStrategy::description(),
         cde::v1::sample::LibrarySourceMaterial::description(),
         cde::v2::sample::PreservationMethod::description(),
+        cde::v1::sample::SpecimenMolecularAnalyteType::description(),
         cde::v2::sample::TissueType::description(),
         cde::v1::sample::TumorClassification::description(),
         cde::v1::sample::TumorTissueMorphology::description(),
@@ -162,6 +163,28 @@ impl description::r#trait::Description for cde::v2::sample::PreservationMethod {
             "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#preservation_method"
                 .parse::<Url>()
                 .unwrap(),
+            Some(Standard::new(
+                entity.standard_name().to_string(),
+                crate::Url::from(entity.standard_url().clone()),
+            )),
+            members,
+        ))
+    }
+}
+
+impl description::r#trait::Description for cde::v1::sample::SpecimenMolecularAnalyteType {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("specimen_molecular_analyte_type"),
+            entity.description().to_string(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#specimen_molecular_analyte_type"
+                .parse::<Url>().unwrap(),
             Some(Standard::new(
                 entity.standard_name().to_string(),
                 crate::Url::from(entity.standard_url().clone()),

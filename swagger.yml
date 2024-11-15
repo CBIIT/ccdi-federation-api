@@ -385,6 +385,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: specimen_molecular_analyte_type
+        in: query
+        description: |-
+          Matches any sample where the `specimen_molecular_analyte_type` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: tissue_type
         in: query
         description: |-
@@ -1412,6 +1420,19 @@ components:
       - WGA
       - WGS
       - WXS
+    cde.v1.sample.SpecimenMolecularAnalyteType:
+      type: string
+      description: |-
+        **`caDSR CDE 15063661 v2.00`**
+
+        This metadata element is defined by the caDSR as "The sample or material being subjected to analysis.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=15063661%20and%20ver_nr=1>
+      enum:
+      - Protein
+      - DNA
+      - RNA
     cde.v1.sample.TumorClassification:
       type: string
       description: |-
@@ -2015,6 +2036,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/cde.v2.sample.PreservationMethod'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.SpecimenMolecularAnalyteType:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.SpecimenMolecularAnalyteType'
         ancestors:
           type: array
           items:
@@ -3205,6 +3248,7 @@ components:
         - library_strategy
         - library_source_material
         - preservation_method
+        - specimen_molecular_analyte_type
         - identifiers
         properties:
           age_at_diagnosis:
@@ -3250,6 +3294,10 @@ components:
           preservation_method:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.PreservationMethod'
+            nullable: true
+          specimen_molecular_analyte_type:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.SpecimenMolecularAnalyteType'
             nullable: true
           identifiers:
             type: array
