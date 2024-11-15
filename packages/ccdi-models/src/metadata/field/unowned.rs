@@ -338,6 +338,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        SpecimenMolecularAnalyteType,
+        field::unowned::sample::SpecimenMolecularAnalyteType,
+        cde::v1::sample::SpecimenMolecularAnalyteType,
+        cde::v1::sample::SpecimenMolecularAnalyteType,
+        cde::v1::sample::SpecimenMolecularAnalyteType::Rna,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         Identifier,
         field::unowned::sample::Identifier,
         crate::sample::identifier::referenced::Identifier,

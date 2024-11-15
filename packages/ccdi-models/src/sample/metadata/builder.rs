@@ -42,6 +42,9 @@ pub struct Builder {
     /// The preservation method for this sample or biospecimen.
     preservation_method: Option<field::unowned::sample::PreservationMethod>,
 
+    /// The specimen molecular analyte type for this sample.
+    specimen_molecular_analyte_type: Option<field::unowned::sample::SpecimenMolecularAnalyteType>,
+
     /// The alternate identifiers for the sample.
     identifiers: Option<Vec<field::unowned::sample::Identifier>>,
 
@@ -317,6 +320,33 @@ impl Builder {
         self
     }
 
+    /// Sets the `specimen_molecular_analyte_type` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::SpecimenMolecularAnalyteType;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = SpecimenMolecularAnalyteType::new(
+    ///     cde::v1::sample::SpecimenMolecularAnalyteType::Rna,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().specimen_molecular_analyte_type(field);
+    /// ```
+    pub fn specimen_molecular_analyte_type(
+        mut self,
+        field: field::unowned::sample::SpecimenMolecularAnalyteType,
+    ) -> Self {
+        self.specimen_molecular_analyte_type = Some(field);
+        self
+    }
+
     /// Append a value to the `identifier` field of the [`Builder`].
     ///
     /// # Examples
@@ -470,6 +500,7 @@ impl Builder {
             library_strategy: self.library_strategy,
             library_source_material: self.library_source_material,
             preservation_method: self.preservation_method,
+            specimen_molecular_analyte_type: self.specimen_molecular_analyte_type,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
             tumor_tissue_morphology: self.tumor_tissue_morphology,

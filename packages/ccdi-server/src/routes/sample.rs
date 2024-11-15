@@ -471,6 +471,20 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "specimen_molecular_analyte_type" => match sample.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .specimen_molecular_analyte_type()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|specimen_molecular_analyte_type| {
+                        serde_json::to_value(specimen_molecular_analyte_type.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "tissue_type" => match sample.metadata() {
             Some(metadata) => Some(
                 metadata
