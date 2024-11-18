@@ -9,7 +9,7 @@ encourage you to check out the [introduction blog
 post](/blog/09-25-2024-introducing-the-federation-api).
 :::
 
-Welcome to the Childhood Cancer Data Initiative (CCDI) Federation API
+Welcome to the [Childhood Cancer Data Initiative (CCDI)][ccdi] Federation API
 documentation 📚.
 
 The goal of the CCDI Federation API is to support the discovery of real-time,
@@ -18,3 +18,5 @@ community. Here, you'll find documentation regarding the import concepts
 necessary to work with the API alongside the specification itself. If you have
 any questions, please [create a
 discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/categories/q-a).
+
+[ccdi]: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
