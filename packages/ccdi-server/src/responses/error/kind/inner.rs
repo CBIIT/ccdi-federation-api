@@ -324,10 +324,7 @@ pub fn capitalize(value: String) -> Option<String> {
 /// assert_eq!(formalize_reason(String::from("")), None);
 /// ```
 pub fn formalize_reason(mut value: String) -> Option<String> {
-    let c = match value.chars().last() {
-        Some(c) => c,
-        None => return None,
-    };
+    let c = value.chars().last()?;
 
     if !c.is_ascii_punctuation() {
         value.push('.')
