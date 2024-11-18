@@ -18,6 +18,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/74),
   [#121](https://github.com/CBIIT/ccdi-federation-api/pull/121)).
 
+### Revised
+
+- Adds a reference to the CCDI Data Federation Resource back to the Swagger
+  specification.
+
 ## [v1.0.0] — 04-30-2024
 
 ### Added
