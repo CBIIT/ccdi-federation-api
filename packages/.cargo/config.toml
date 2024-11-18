@@ -1,0 +1,2 @@
+[alias]
+build-spec = "run --all-features --bin ccdi-spec generate"
