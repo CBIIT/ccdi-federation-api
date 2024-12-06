@@ -8,8 +8,24 @@
       content="An API specification for discovering federated pediatric cancer data from the broader community."
     />
     <title>CCDI Data Federation API Specification</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"
+    />
+  </head>
   <body>
-    <script id="api-reference" data-url="/ccdi-federation-api/swagger.yml"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+    <div id="root"></div>
+    <script
+      src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"
+      crossorigin
+    ></script>
+    <script>
+      window.onload = () => {
+        window.ui = SwaggerUIBundle({
+          url: "/ccdi-federation-api/swagger.yml",
+          dom_id: "#root",
+        });
+      };
+    </script>
   </body>
 </html>
