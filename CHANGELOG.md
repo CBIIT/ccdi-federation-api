@@ -18,6 +18,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/74),
   [#121](https://github.com/CBIIT/ccdi-federation-api/pull/121)).
 
+### Clarifications
+
+- Clarify that, in instances where one does not want to share the fields that
+  are invalid, it is also permissible to specify the `parameters` key as `null`.
+
 ### Revised
 
 - Adds a reference to the CCDI Data Federation Resource back to the Swagger

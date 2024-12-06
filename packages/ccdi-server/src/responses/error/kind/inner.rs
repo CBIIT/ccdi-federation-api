@@ -41,8 +41,9 @@ pub enum Inner {
         }
     ))]
     InvalidParameters {
-        /// If known, the parameters that are invalid. If not known, pass `None`
-        /// to this field for a more general error message.
+        /// If known, the parameters that are invalid. If not known or the list
+        /// of invalid fields is not desirable to share, pass `null` to this
+        /// field for a more general error message.
         parameters: Option<Vec<String>>,
 
         /// A plain-text reason describing why the parameters are invalid.
