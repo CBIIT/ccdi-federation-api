@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [v1.1.0] — 12-17-2024
+
 ### Added
 
 - Adds Library Source Material
@@ -307,7 +309,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rust tooling was added to the `packages` directory
   ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.1.0...HEAD
+[v1.1.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...v1.0.0
 [v1.0.0-rc.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...v1.0.0-rc.1
 [v0.7.0]: https://github.com/cbiit/ccdi-federation-api/compare/v0.6.1...v0.7.0
