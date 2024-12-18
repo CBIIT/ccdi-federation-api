@@ -59,9 +59,9 @@ impl description::r#trait::Description for crate::sample::metadata::AnatomicalSi
 
         description::Description::Harmonized(Harmonized::new(
             Kind::Struct,
-            String::from("anatomical_site"),
+            String::from("anatomical_sites"),
             description,
-            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#anatomical_site".parse::<Url>().unwrap(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#anatomical_sites".parse::<Url>().unwrap(),
             None,
             None,
         ))

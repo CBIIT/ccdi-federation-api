@@ -352,10 +352,10 @@ paths:
         required: false
         schema:
           type: string
-      - name: anatomical_site
+      - name: anatomical_sites
         in: query
         description: |-
-          Matches any sample where the `anatomical_site` field matches the string
+          Matches any sample where the `anatomical_sites` field matches the string
           provided.
 
           **Note:** a logical OR (`||`) is performed across the values when

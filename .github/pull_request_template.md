@@ -29,8 +29,8 @@ complete the checklist as well:
   `/metadata/fields/subject` endpoint.
 - [ ] I have confirmed that my field filters correctly when filtered from the
   root endpoint (`/subject`, `/sample`, etc). For example, if you add the
-  `anatomical_site` field to the sample endpoint, make sure that visiting
-  `http://localhost:8000/sample?anatomical_site=foobar` works.
+  `anatomical_sites` field to the sample endpoint, make sure that visiting
+  `http://localhost:8000/sample?anatomical_sites=foobar` works.
 - [ ] I have confirmed that my field shows up in the relevant wiki generation
   command. For example. if you add a field to subjects, it should show up in the
   `cargo run --release wiki subject` output.
