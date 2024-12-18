@@ -1093,24 +1093,76 @@ components:
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11416926%20and%20ver_nr=1>
       enum:
-      - HIC
+      - ADF
+      - AVI
+      - BAI
+      - BAM
+      - BCR Biotab
+      - BED
+      - bedgraph
       - BEDPE Format
-      - mtx
-      - mzIdentML
-      - MEX
-      - CRAI
+      - bigBed
+      - bigWig
+      - Binary Format
+      - BIOM
+      - cdf
       - CEL
-      - mzXML
+      - CNS
+      - CRAI
+      - CRAM
+      - CSV
+      - DICOM
+      - DICT
+      - DOC
+      - DOCX
+      - DSV
+      - FASTA
+      - FASTQ
+      - GCT/Res Format
+      - GenBank Format
+      - GFF3
+      - GPR
+      - GTF
+      - gVCF
+      - GZIP Format
+      - HDF5
+      - HIC
+      - HTML
+      - HTSeq Count
       - IDAT
       - IDF
+      - idpDB
       - JPEG
       - JPEG 2000
       - JSON
       - MAF
-      - YAML
-      - ZIP
+      - MAGE-TAB
+      - MAT
+      - MATLAB Script
+      - MEX
+      - MPEG-4
+      - mtx
+      - mzIdentML
+      - mzML
+      - mzXML
+      - NIFTI Format
+      - OME-TIFF
+      - PDF
+      - PED
+      - Plain Text Data Format
+      - PNG
+      - Python Script Format
+      - R File Format
+      - R Markdown
+      - rds
+      - RTF
+      - SDRF
+      - SEG
+      - Sequence Record Format
+      - SVG
       - SVS
       - TAR
+      - TBI
       - Thermo RAW
       - TIFF
       - TSV
@@ -1119,48 +1171,8 @@ components:
       - XLS
       - XLSX
       - XML
-      - MATLAB Script
-      - NIFTI Format
-      - R Markdown
-      - R File Format
-      - Python Script Format
-      - Sequence Record Format
-      - SVG
-      - OME-TIFF
-      - PDF
-      - Plain Text Data Format
-      - PNG
-      - SDRF
-      - MAGE-TAB
-      - MAT
-      - MPEG-4
-      - mzML
-      - GenBank Format
-      - GFF3
-      - GPR
-      - GTF
-      - GZIP Format
-      - HDF5
-      - HTML
-      - BIOM
-      - CRAM
-      - CSV
-      - DICOM
-      - DOCX
-      - DSV
-      - FASTA
-      - FASTQ
-      - GCT/Res Format
-      - AVI
-      - BAI
-      - BAM
-      - BCR Biotab
-      - BED
-      - bedgraph
-      - bigBed
-      - bigWig
-      - Binary Format
-      - ADF
+      - YAML
+      - ZIP
     cde.v1.file.checksum.MD5:
       type: string
       description: |-
@@ -18458,8 +18470,9 @@ components:
               items:
                 type: string
               description: |-
-                If known, the parameters that are invalid. If not known, pass `None`
-                to this field for a more general error message.
+                If known, the parameters that are invalid. If not known or the list
+                of invalid fields is not desirable to share, pass `null` to this
+                field for a more general error message.
               nullable: true
             reason:
               type: string

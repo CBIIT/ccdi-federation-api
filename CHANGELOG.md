@@ -27,6 +27,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Adds a reference to the CCDI Data Federation Resource back to the Swagger
   specification.
+- Updates the permissible values that have been added to file type in `CDE
+  11416926 v1.00`
+  ([#127](https://github.com/CBIIT/ccdi-federation-api/issues/127)).
 
 ## [v1.0.0] — 04-30-2024
 
