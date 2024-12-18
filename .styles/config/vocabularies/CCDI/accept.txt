@@ -1,9 +1,0 @@
-(?i)allowlisted
-(?i)consortiums?
-(?i)namespaces?
-(?i)pseudocode
-CDEs?
-ontology
-ontologies
-
-age_at_collection
