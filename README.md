@@ -39,12 +39,12 @@
 
 ## Developing
 
-The specification is generated using the [Rust] packages contained with
-`packages` directory. In particular, [`utoipa`] is used to autogenerate the
-OpenAPI 3.0 specification. An [Actix Web] server is provided that (a) provides
-the foundation for `utoipa` to generate the API documentation and (b) provides
-an example server using fake data. Please refer to the [Learn Rust] guide to
-learn how to develop using Rust.
+The specification is generated using the [Rust] crates contained with `crates`
+directory. In particular, [`utoipa`] is used to autogenerate the OpenAPI 3.0
+specification. An [Actix Web] server is provided that (a) provides the
+foundation for `utoipa` to generate the API documentation and (b) provides an
+example server using fake data. Please refer to the [Learn Rust] guide to learn
+how to develop using Rust.
 
 ## Contributing
 

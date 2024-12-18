@@ -22,7 +22,7 @@ complete the checklist as well:
 - [ ] I have added my field definition to the appropriate
   `get_field_descriptions()` method. For example, if you add a field to
   subjects, you should include it in the `get_field_descriptions()` method at
-  `packages/ccdi_models/src/metadata/field/description/harmonized/subject.rs`.
+  `crates/ccdi_models/src/metadata/field/description/harmonized/subject.rs`.
 - [ ] I have confirmed that my field shows up in the relevant
   `/metadata/fields/<entity>` endpoint. For example. if you add a field to
   subjects, it should show up in the fields listed in the output of the
