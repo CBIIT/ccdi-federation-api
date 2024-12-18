@@ -20,7 +20,7 @@
   * [ ] Go to the Releases page in Github
     * [ ] Create a Release for this tag.
     * [ ] Copy the notes from the `CHANGELOG.md` file.
-  * [ ] Update all relevant wiki pages (`cd crates; cargo run --release wiki
-    subject | pbcopy; cd ..`).
+  * [ ] Update all relevant wiki pages (`cd crates; cargo run --release --bin
+    ccdi-spec wiki subject | pbcopy; cd ..`).
     * Commit the updates with this message: `release: updates wiki page for
       v0.1.0`
