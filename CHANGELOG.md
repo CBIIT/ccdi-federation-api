@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrects the duplicated `Black or African Amercian` race description
+  ([#129](https://github.com/CBIIT/ccdi-federation-api/issues/129)).
+
 ## [v1.1.0] — 12-17-2024
 
 ### Added

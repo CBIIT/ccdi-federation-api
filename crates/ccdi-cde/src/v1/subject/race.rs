@@ -96,17 +96,16 @@ pub enum Race {
     #[serde(rename = "Asian")]
     Asian,
 
-    /// `Asian`
+    /// `Black or African American`
     ///
-    /// * **VM Long Name**: Asian
-    /// * **VM Public ID**: 2572233
-    /// * **Concept Code**: C41260
+    /// * **VM Long Name**: Black or African American
+    /// * **VM Public ID**: 2572313
+    /// * **Concept Code**: C16352
     /// * **Begin Date**:   05/31/2002
     ///
-    /// A person having origins in any of the original peoples of the Far East,
-    /// Southeast Asia, or the Indian subcontinent, including for example,
-    /// Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine
-    /// Islands, Thailand, and Vietnam. (OMB)
+    /// A person having origins in any of the Black racial groups of Africa.
+    /// Terms such as "Haitian" or "Negro" can be used in addition to "Black or
+    /// African American". (OMB)
     #[serde(rename = "Black or African American")]
     BlackOrAfricanAmerican,
 
