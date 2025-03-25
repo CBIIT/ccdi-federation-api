@@ -726,7 +726,10 @@ impl Metadata {
                 None,
             )]),
             diagnosis: Some(field::unowned::sample::Diagnosis::new(
-                Diagnosis::from(String::from("Random Diagnosis")),
+                Diagnosis::from(format!(
+                    "Random Diagnosis {}",
+                    rng.sample(Alphanumeric).to_ascii_uppercase() as char,
+                )),
                 None,
                 None,
                 None,
