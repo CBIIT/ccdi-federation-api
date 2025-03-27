@@ -12,6 +12,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Corrects the duplicated `Black or African Amercian` race description
   ([#129](https://github.com/CBIIT/ccdi-federation-api/issues/129)).
+- Updates the depositions field to be nullable
+  ([#140](https://github.com/CBIIT/ccdi-federation-api/pull/140)).
 
 ## [v1.1.0] — 12-17-2024
 
