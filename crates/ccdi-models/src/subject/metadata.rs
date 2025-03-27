@@ -16,10 +16,12 @@ use crate::subject::Identifier;
 mod age_at_vital_status;
 mod associated_diagnoses;
 mod builder;
+mod associated_diagnoses;
 
 pub use age_at_vital_status::AgeAtVitalStatus;
 pub use associated_diagnoses::AssociatedDiagnoses;
 pub use builder::Builder;
+pub use associated_diagnoses::AssociatedDiagnoses;
 
 /// Metadata associated with a subject.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
