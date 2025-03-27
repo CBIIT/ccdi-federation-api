@@ -3008,6 +3008,7 @@ components:
             repository such as dbGaP or EGA, you should also include a gateway and
             link pointing to where that entity can be found in the public
             repository.
+          nullable: true
     models.metadata.common.deposition.Accession:
       oneOf:
       - type: object

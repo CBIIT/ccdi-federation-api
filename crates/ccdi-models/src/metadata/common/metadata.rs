@@ -21,7 +21,7 @@ pub struct Metadata {
     /// repository such as dbGaP or EGA, you should also include a gateway and
     /// link pointing to where that entity can be found in the public
     /// repository.
-    #[schema(value_type = Vec<models::metadata::common::deposition::Accession>)]
+    #[schema(value_type = Vec<models::metadata::common::deposition::Accession>, nullable = true)]
     depositions: Option<NonEmpty<Accession>>,
     // NOTE: ensure that any new items added to this struct are also checked in
     // the `is_empty()` method.
