@@ -26,6 +26,9 @@ pub struct Builder {
     /// The approximate age at vital status.
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
 
+    /// The associated diagnoses for the sample.
+    associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
+
     /// Common metadata elements for all metadata blocks.
     common: common::Metadata,
 
@@ -200,6 +203,29 @@ impl Builder {
         self
     }
 
+    /// Append a value to the `associated_diagnoses` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::AssociatedDiagnoses;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia"));
+    /// let builder = Builder::default().append_associated_diagnoses(field);
+    /// ```
+    pub fn append_associated_diagnoses(mut self, field: field::unowned::subject::AssociatedDiagnoses) -> Self {
+        let mut inner = self.associated_diagnoses.unwrap_or_default();
+        inner.push(field);
+
+        self.associated_diagnoses = Some(inner);
+
+        self
+    }
+
     /// Sets the common metadata for the [`Metadata`].
     ///
     /// # Examples
@@ -292,6 +318,7 @@ impl Builder {
             identifiers: self.identifiers,
             vital_status: self.vital_status,
             age_at_vital_status: self.age_at_vital_status,
+            associated_diagnoses: self.associated_diagnoses,
             common: self.common,
             unharmonized: self.unharmonized,
         }
