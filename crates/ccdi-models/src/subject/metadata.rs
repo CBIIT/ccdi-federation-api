@@ -15,9 +15,11 @@ use crate::subject::Identifier;
 
 mod age_at_vital_status;
 mod builder;
+mod associated_diagnoses;
 
 pub use age_at_vital_status::AgeAtVitalStatus;
 pub use builder::Builder;
+pub use associated_diagnoses::AssociatedDiagnoses;
 
 /// Metadata associated with a subject.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
@@ -49,6 +51,10 @@ pub struct Metadata {
     /// The approximate age at vital status.
     #[schema(value_type = field::unowned::subject::AgeAtVitalStatus, nullable = true)]
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
+
+    /// The associated diagnoses for the subject.
+    #[schema(value_type = field::unowned::subject::AssociatedDiagnoses, nullable = true)]
+    associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
 
     /// Common metadata elements for all metadata blocks.
     #[schema(value_type = models::metadata::common::Metadata)]
@@ -271,6 +277,29 @@ impl Metadata {
         self.vital_status.as_ref()
     }
 
+    /// Gets the associated diagnoses for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::AssociatedDiagnoses;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .append_associated_diagnoses(AssociatedDiagnoses::new(AssociatedDiagnoses.clone(), None, None, None))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.associated_diagnoses(),
+    ///     Some(&vec![AssociatedDiagnoses::new(AssociatedDiagnoses.clone(), None, None, None)])
+    /// );
+    /// ```
+    pub fn associated_diagnoses(&self) -> Option<&Vec<field::unowned::subject::AssociatedDiagnoses>> {
+        self.associated_diagnoses.as_ref()
+    }
+
     /// Gets the common metadata fields for the [`Metadata`].
     ///
     /// # Examples
@@ -424,6 +453,14 @@ impl Metadata {
                 None,
                 None,
             )),
+
+            associated_diagnoses: Some(vec![field::unowned::subject::AssociatedDiagnoses::new(
+                AssociatedDiagnoses::from(String::from("Random Diagnosis")),
+                None,
+                None,
+                None,
+            )]),
+
             common: Default::default(),
             unharmonized: Default::default(),
         }
@@ -439,7 +476,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"depositions\":null}"
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"diagnosis\":null,\"depositions\":null}"
         );
     }
 }
