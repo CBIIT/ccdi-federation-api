@@ -418,7 +418,7 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
-        "diagnosis" => match sample.metadata(){
+        "diagnosis" => match sample.metadata() {
             Some(metadata) => Some(
                 metadata
                     .diagnosis()

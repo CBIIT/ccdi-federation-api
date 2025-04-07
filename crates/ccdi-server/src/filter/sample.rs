@@ -24,6 +24,7 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
             "age_at_collection" => params.age_at_collection.as_ref(),
             "tumor_tissue_morphology" => params.tumor_tissue_morphology.as_ref(),
             "depositions" => params.depositions.as_ref(),
+            "diagnosis" => params.diagnosis.as_ref(),
             _ => unreachable!("unhandled sample metadata field: {field}"),
         };
 
@@ -104,6 +105,11 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                                 })
                                 .collect::<Vec<String>>()
                         }),
+                    "diagnosis" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.diagnosis())
+                        .map(|diagnosis| vec![diagnosis.to_string()]),
+
                     _ => unreachable!("unhandled sample metadata field: {field}"),
                 };
 
