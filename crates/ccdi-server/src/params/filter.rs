@@ -161,6 +161,12 @@ pub struct Sample {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub depositions: Option<String>,
+
+    /// Matches any sample where the `diagnosis` field matches the
+    /// string provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub diagnosis: Option<String>,
 }
 
 /// Parameters for filtering files.
