@@ -3008,7 +3008,6 @@ components:
             repository such as dbGaP or EGA, you should also include a gateway and
             link pointing to where that entity can be found in the public
             repository.
-          nullable: true
     models.metadata.common.deposition.Accession:
       oneOf:
       - type: object
@@ -18041,6 +18040,7 @@ components:
         - identifiers
         - vital_status
         - age_at_vital_status
+        - associated_diagnoses
         properties:
           sex:
             allOf:
@@ -18073,6 +18073,10 @@ components:
           age_at_vital_status:
             allOf:
             - $ref: '#/components/schemas/field.unowned.subject.AgeAtVitalStatus'
+            nullable: true
+          associated_diagnoses:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.subject.AssociatedDiagnoses'
             nullable: true
           unharmonized:
             $ref: '#/components/schemas/fields.Unharmonized'
