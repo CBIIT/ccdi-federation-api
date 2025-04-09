@@ -214,7 +214,7 @@ impl Builder {
     /// use models::metadata::field::unowned::subject::AssociatedDiagnoses;
     /// use models::subject::metadata::Builder;
     ///
-    /// let field = models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia"));
+    /// let field = AssociatedDiagnoses::new(models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")), None, None, None);
     /// let builder = Builder::default().append_associated_diagnoses(field);
     /// ```
     pub fn append_associated_diagnoses(mut self, field: field::unowned::subject::AssociatedDiagnoses) -> Self {
@@ -225,6 +225,7 @@ impl Builder {
 
         self
     }
+
 
     /// Sets the common metadata for the [`Metadata`].
     ///

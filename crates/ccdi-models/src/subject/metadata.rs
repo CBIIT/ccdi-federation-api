@@ -285,20 +285,21 @@ impl Metadata {
     /// use ccdi_models as models;
     ///
     /// use models::metadata::field::unowned::subject::AssociatedDiagnoses;
-    /// use models::sample::metadata::Builder;
+    /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///     .append_associated_diagnoses(AssociatedDiagnoses::new(AssociatedDiagnoses.clone(), None, None, None))
+    ///     .append_associated_diagnoses(AssociatedDiagnoses::new(models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")), None, None, None))
     ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.associated_diagnoses(),
-    ///     Some(&vec![AssociatedDiagnoses::new(AssociatedDiagnoses.clone(), None, None, None)])
+    ///     Some(&vec![AssociatedDiagnoses::new(models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")), None, None, None)])
     /// );
     /// ```
     pub fn associated_diagnoses(&self) -> Option<&Vec<field::unowned::subject::AssociatedDiagnoses>> {
         self.associated_diagnoses.as_ref()
     }
+
 
     /// Gets the common metadata fields for the [`Metadata`].
     ///
@@ -476,7 +477,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"diagnosis\":null,\"depositions\":null}"
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"associated_diagnoses\":null,\"depositions\":null}"
         );
     }
 }
