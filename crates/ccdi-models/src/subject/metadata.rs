@@ -14,12 +14,12 @@ use crate::metadata::fields;
 use crate::subject::Identifier;
 
 mod age_at_vital_status;
-mod builder;
 mod associated_diagnoses;
+mod builder;
 
 pub use age_at_vital_status::AgeAtVitalStatus;
-pub use builder::Builder;
 pub use associated_diagnoses::AssociatedDiagnoses;
+pub use builder::Builder;
 
 /// Metadata associated with a subject.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
@@ -288,18 +288,33 @@ impl Metadata {
     /// use models::subject::metadata::Builder;
     ///
     /// let metadata = Builder::default()
-    ///     .append_associated_diagnoses(AssociatedDiagnoses::new(models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")), None, None, None))
+    ///     .append_associated_diagnoses(AssociatedDiagnoses::new(
+    ///         models::subject::metadata::AssociatedDiagnoses::from(String::from(
+    ///             "Acute Lymphoblastic Leukemia",
+    ///         )),
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
     ///     .build();
     ///
     /// assert_eq!(
     ///     metadata.associated_diagnoses(),
-    ///     Some(&vec![AssociatedDiagnoses::new(models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")), None, None, None)])
+    ///     Some(&vec![AssociatedDiagnoses::new(
+    ///         models::subject::metadata::AssociatedDiagnoses::from(String::from(
+    ///             "Acute Lymphoblastic Leukemia"
+    ///         )),
+    ///         None,
+    ///         None,
+    ///         None
+    ///     )])
     /// );
     /// ```
-    pub fn associated_diagnoses(&self) -> Option<&Vec<field::unowned::subject::AssociatedDiagnoses>> {
+    pub fn associated_diagnoses(
+        &self,
+    ) -> Option<&Vec<field::unowned::subject::AssociatedDiagnoses>> {
         self.associated_diagnoses.as_ref()
     }
-
 
     /// Gets the common metadata fields for the [`Metadata`].
     ///

@@ -452,10 +452,11 @@ pub mod subject {
         field::unowned::subject::AssociatedDiagnoses,
         crate::subject::metadata::AssociatedDiagnoses,
         models::subject::metadata::AssociatedDiagnoses,
-        models::subject::metadata::AssociatedDiagnoses::from(String::from("Acute Lymphoblastic Leukemia")),
+        models::subject::metadata::AssociatedDiagnoses::from(String::from(
+            "Acute Lymphoblastic Leukemia"
+        )),
         ccdi_cde as cde
     );
-
 
     unowned_field!(
         Identifier,
