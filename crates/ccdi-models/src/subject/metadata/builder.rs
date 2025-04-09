@@ -236,7 +236,6 @@ impl Builder {
         self
     }
 
-
     /// Sets the common metadata for the [`Metadata`].
     ///
     /// # Examples
