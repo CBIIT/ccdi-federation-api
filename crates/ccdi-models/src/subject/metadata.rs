@@ -318,6 +318,7 @@ impl Metadata {
         self.associated_diagnoses.as_ref()
     }
 
+
     /// Gets the common metadata fields for the [`Metadata`].
     ///
     /// # Examples
