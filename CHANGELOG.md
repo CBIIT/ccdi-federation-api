@@ -15,6 +15,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Updates the depositions field to be nullable
   ([#140](https://github.com/CBIIT/ccdi-federation-api/pull/140)).
 
+### Revised
+
+- Updates the Study Short Title to use v2.00 of the CDE `11459812`
+  [#142](https://github.com/CBIIT/ccdi-federation-api/pull/142)).
+
 ## [v1.1.0] — 12-17-2024
 
 ### Added

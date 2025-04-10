@@ -260,14 +260,13 @@ export enum CdeV1NamespaceStudyId {
 export type CdeV1NamespaceStudyName = string;
 
 /**
- * **`caDSR CDE 11459812 v1.00`**
+ * **`caDSR CDE 11459812 v2.00`**
  *
- * This metadata element is defined by the caDSR as "The narrative title used
- * as a textual label for a research data collection. Example – Comparative
- * Molecular Life History of Spontaneous Canine and Human Gliomas".
+ * This metadata element is defined by the caDSR as "The acronym or
+ * abbreviated form of the title for a research data collection".
  *
  * Link:
- * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=1>
+ * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
  */
 export type CdeV1NamespaceStudyShortTitle = string;
 
@@ -770,14 +769,13 @@ export interface FieldUnownedNamespaceStudyName {
 
 export interface FieldUnownedNamespaceStudyShortTitle {
   /**
-   * **`caDSR CDE 11459812 v1.00`**
+   * **`caDSR CDE 11459812 v2.00`**
    *
-   * This metadata element is defined by the caDSR as "The narrative title used
-   * as a textual label for a research data collection. Example – Comparative
-   * Molecular Life History of Spontaneous Canine and Human Gliomas".
+   * This metadata element is defined by the caDSR as "The acronym or
+   * abbreviated form of the title for a research data collection".
    *
    * Link:
-   * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=1>
+   * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
    */
   value: CdeV1NamespaceStudyShortTitle;
   /**
