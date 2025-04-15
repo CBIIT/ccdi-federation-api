@@ -83,7 +83,8 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
             .service(sample_index)
             .service(samples_by_count)
             .service(sample_show)
-            .service(sample_summary);
+            .service(sample_summary)
+            .service(sample_diagnosis);
     }
 }
 
@@ -580,6 +581,36 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
 pub async fn sample_summary(samples: Data<Store>) -> impl Responder {
     let samples = samples.samples.lock().unwrap().clone();
     HttpResponse::Ok().json(Summary::new(samples.len()))
+}
+
+/// Gets the samples known by this server via free-text diagnosis search.
+#[utoipa::path(
+    get,
+    path = "/sample-diagnosis",
+    tag = "Sample-Diagnosis",
+    responses(
+        (status = 200, description = "Successful operation.", body = responses::Summary),
+    )
+)]
+#[get("/sample-diagnosis")]
+pub async fn sample_diagnosis(
+    filter_params: Query<FilterSampleParams>,
+    pagination_params: Query<PaginationParams>,
+    samples: Data<Store>,
+) -> impl Responder {
+    let mut samples = samples.samples.lock().unwrap().clone();
+
+    // See the note in the documentation for this endpoint: the results must be
+    // sorted by identifier by default.
+    samples.sort();
+
+    let samples = filter::<Sample, FilterSampleParams>(samples, filter_params.0);
+
+    paginate::response::<Sample, Samples>(
+        pagination_params.0,
+        samples,
+        "http://localhost:8000/sample-diagnosis",
+    )
 }
 
 #[cfg(test)]

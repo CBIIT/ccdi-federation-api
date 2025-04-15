@@ -462,6 +462,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: search
+        in: query
+        description: |-
+          Matches any sample where the `diagnosis` field contains the
+          string provided, ignoring case.
+        required: false
+        schema:
+          type: string
       - name: metadata.unharmonized.<field>
         in: query
         description: |-

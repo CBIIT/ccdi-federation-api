@@ -75,6 +75,8 @@ pub struct Subject {
 /// matches the value provided for the parameter (i.e., matching is done by
 /// looking for the provided parameter as a substring). Matches are
 /// case-sensitive.
+/// For the "search" parameter only, matching is case-insensitive and requires
+/// only a substring match rather than an exact match.
 #[derive(Debug, Default, Deserialize, IntoParams, Introspect, Serialize)]
 #[into_params(parameter_in = Query)]
 pub struct Sample {
@@ -167,6 +169,12 @@ pub struct Sample {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub diagnosis: Option<String>,
+
+    /// Matches any sample where the `diagnosis` field contains the
+    /// string provided, ignoring case.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub search: Option<String>,
 }
 
 /// Parameters for filtering files.
