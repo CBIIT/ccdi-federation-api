@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- added associated_disease to the Subject endpoints
+  ([#141](https://github.com/CBIIT/ccdi-federation-api/pull/141)).
 
 ### Fixed
 
