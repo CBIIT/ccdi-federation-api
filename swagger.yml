@@ -1612,24 +1612,20 @@ components:
     cde.v2.sample.TissueType:
       type: string
       description: |-
-        **`caDSR CDE 5432687 v2.00`**
+        **`caDSR CDE 14688604 v1.00`**
 
-        This metadata element is defined by the caDSR as "Text term that represents
-        a description of the kind of tissue collected with respect to disease status
-        or proximity to tumor tissue."
+        This metadata element is defined by the caDSR as "The category assigned to the
+        cytologic atypia found in cellular molecules, cells, tissues, organs,
+        body fluids, or body excretory products."
 
         Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=5432687%20and%20ver_nr=2>
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
       enum:
       - Not Reported
-      - Abnormal
       - Normal
       - Peritumoral
       - Tumor
-      - Non-neoplastic
-      - Unavailable
       - Unknown
-      - Unspecified
     cde.v2.subject.Ethnicity:
       type: string
       description: |-

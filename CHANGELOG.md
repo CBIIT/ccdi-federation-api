@@ -22,7 +22,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Revised
 
 - Updates the Study Short Title to use v2.00 of the CDE `11459812`
-  [#142](https://github.com/CBIIT/ccdi-federation-api/pull/142)).
+  ([#142](https://github.com/CBIIT/ccdi-federation-api/pull/142)).
+- Updates sample `tissue_type` field to updated CDE
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/39),
+  [#144](https://github.com/CBIIT/ccdi-federation-api/pull/144)).
 
 ## [v1.1.0] — 12-17-2024
 
