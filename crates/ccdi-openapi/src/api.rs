@@ -134,6 +134,7 @@ use utoipa::openapi;
         cde::v1::subject::Name,
         cde::v1::subject::VitalStatus,
         models::subject::metadata::AgeAtVitalStatus,
+        models::subject::metadata::AssociatedDiagnoses,
 
         // Harmonized sample metadata elements.
         models::sample::metadata::AgeAtDiagnosis,
@@ -179,6 +180,7 @@ use utoipa::openapi;
         field::unowned::subject::Identifier,
         field::unowned::subject::VitalStatus,
         field::unowned::subject::AgeAtVitalStatus,
+        field::unowned::subject::AssociatedDiagnoses,
 
         // Harmonized sample fields.
         field::unowned::sample::AgeAtDiagnosis,

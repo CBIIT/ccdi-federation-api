@@ -2230,6 +2230,28 @@ components:
         comment:
           type: string
           description: A free-text comment field.
+    field.unowned.subject.AssociatedDiagnoses:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.subject.metadata.AssociatedDiagnoses'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
     field.unowned.subject.Ethnicity:
       type: object
       required:
@@ -18153,6 +18175,26 @@ components:
         * When the age at vital status is collected by the source server in years,
         the number of years is multiplied by 365.25 to arrive at an approximate
         number of days.
+    models.subject.metadata.AssociatedDiagnoses:
+      type: string
+      description: |-
+        The associated_diagnoses for a [`Subject`](crate::Subject).
+
+        This value can be any permissible diagnosis in v1.7.2 of the CCDI Submission
+        Template. These values are from the value set **diagnosis_classification**
+        found in the 'Terms and Value Sets' tab from the [CCDI Submission Template
+        v1.7.2].
+
+        To facilitate quick access to these values, we have provided a slimmed down
+        spreadsheet containing the valid diagnoses:
+
+        1. Download the spreadsheet linked below titled
+        'CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx'.
+        2. The permissible values are found in column A of the 'diagnosis' tab,
+        titled **diagnosis_category_term**
+
+        [CCDI Submission Template v1.7.2]: https://github.com/CBIIT/ccdi-model/blob/682a99d93b66540bb880ce5899ba8096968a96cf/metadata-manifest/CCDI_Submission_Template_v1.7.2.xlsx
+        [CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx]: https://cbiit.github.io/ccdi-federation-api/assets/CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx
     responses.Errors:
       type: object
       description: A wrapper around one or more [errors](Kind).
