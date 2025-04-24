@@ -26,7 +26,7 @@ pub struct Builder {
     /// The approximate age at vital status.
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
 
-    /// The associated diagnoses for the sample.
+    /// The associated diagnoses for the subject.
     associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
 
     /// Common metadata elements for all metadata blocks.
