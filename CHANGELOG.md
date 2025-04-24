@@ -8,12 +8,23 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Adds an experimental `sample-diagnosis` endpoint with `search` filter to enable case-insensitive substring searching of diagnoses. 
+([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/131), [#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
+
+### Changed
+
+- Updates the sample's diagnosis randomizer ([#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
+
 ### Fixed
 
 - Corrects the duplicated `Black or African Amercian` race description
   ([#129](https://github.com/CBIIT/ccdi-federation-api/issues/129)).
 - Updates the depositions field to be nullable
   ([#140](https://github.com/CBIIT/ccdi-federation-api/pull/140)).
+- Adds missing `sample?diagnosis=xyz` search parameter. ([#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
+- Adds missing `sample/by/diagnosis/count` endpoint. ([#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
 
 ## [v1.1.0] — 12-17-2024
 
