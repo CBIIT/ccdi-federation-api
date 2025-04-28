@@ -170,8 +170,7 @@ pub async fn namespace_show(path: Path<(String, String)>) -> impl Responder {
         .map(|(_, namespace)| HttpResponse::Ok().json(Namespace::from(namespace.clone())))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "Namespace with organization '{}' and name '{}'",
-                organization, namespace_name
+                "Namespace with organization '{organization}' and name '{namespace_name}'"
             ))))
         })
 }

@@ -243,7 +243,7 @@ impl std::fmt::Display for Inner {
 
                         let parameters = parameters
                             .iter()
-                            .map(|parameter| format!("'{}'", parameter))
+                            .map(|parameter| format!("'{parameter}'"))
                             .collect::<Vec<_>>()
                             .join(" and ");
 

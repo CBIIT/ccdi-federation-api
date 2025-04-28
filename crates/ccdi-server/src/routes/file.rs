@@ -292,8 +292,7 @@ pub async fn file_show(path: Path<(String, String, String)>, files: Data<Store>)
         .map(|file| HttpResponse::Ok().json(file))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "File with namespace '{}' and name '{}'",
-                namespace, name
+                "File with namespace '{namespace}' and name '{name}'"
             ))))
         })
 }
