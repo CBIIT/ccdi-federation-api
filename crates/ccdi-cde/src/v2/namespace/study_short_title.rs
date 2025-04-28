@@ -16,7 +16,7 @@ use crate::CDE;
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v1::namespace::StudyShortTitle)]
+#[schema(as = cde::v2::namespace::StudyShortTitle)]
 pub struct StudyShortTitle(String);
 
 impl From<String> for StudyShortTitle {
