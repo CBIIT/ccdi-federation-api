@@ -46,7 +46,7 @@ lazy_static! {
                 Some(namespace::metadata::Builder::default()
                     .study_short_title(
                         field::unowned::namespace::StudyShortTitle::new(
-                            cde::v1::namespace::StudyShortTitle::from(
+                            cde::v2::namespace::StudyShortTitle::from(
                                 String::from("A study short title")
                             ),
                             None, None, None)
@@ -72,7 +72,7 @@ lazy_static! {
                 Some(namespace::metadata::Builder::default()
                     .study_short_title(
                         field::unowned::namespace::StudyShortTitle::new(
-                            cde::v1::namespace::StudyShortTitle::from(
+                            cde::v2::namespace::StudyShortTitle::from(
                                 String::from("A study short title")
                             ),
                             None, None, None)

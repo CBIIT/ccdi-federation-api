@@ -539,9 +539,9 @@ pub mod namespace {
     unowned_field!(
         StudyShortTitle,
         field::unowned::namespace::StudyShortTitle,
-        cde::v1::namespace::StudyShortTitle,
-        cde::v1::namespace::StudyShortTitle,
-        cde::v1::namespace::StudyShortTitle::from(String::from("A study short title")),
+        cde::v2::namespace::StudyShortTitle,
+        cde::v2::namespace::StudyShortTitle,
+        cde::v2::namespace::StudyShortTitle::from(String::from("A study short title")),
         ccdi_cde as cde
     );
 
