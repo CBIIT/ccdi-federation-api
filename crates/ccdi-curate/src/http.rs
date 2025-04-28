@@ -78,7 +78,7 @@ impl Client {
             .0
             .get(url)
             .send()
-            .with_context(|| format!("sending a GET request to {}", url))?;
+            .with_context(|| format!("sending a GET request to {url}"))?;
 
         if !response.status().is_success() {
             bail!("failed to GET the URL {}", url);
