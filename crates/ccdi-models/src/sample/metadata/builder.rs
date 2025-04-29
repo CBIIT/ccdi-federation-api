@@ -193,7 +193,7 @@ impl Builder {
     /// use models::metadata::field::unowned::sample::TissueType;
     /// use models::sample::metadata::Builder;
     ///
-    /// let field = TissueType::new(cde::v2::sample::TissueType::Tumor, None, None, None);
+    /// let field = TissueType::new(cde::v1::sample::TissueType::Tumor, None, None, None);
     /// let builder = Builder::default().tissue_type(field);
     /// ```
     pub fn tissue_type(mut self, field: field::unowned::sample::TissueType) -> Self {

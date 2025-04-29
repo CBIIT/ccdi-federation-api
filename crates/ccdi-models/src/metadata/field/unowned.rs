@@ -295,9 +295,9 @@ pub mod sample {
     unowned_field!(
         TissueType,
         field::unowned::sample::TissueType,
-        cde::v2::sample::TissueType,
-        cde::v2::sample::TissueType,
-        cde::v2::sample::TissueType::Tumor,
+        cde::v1::sample::TissueType,
+        cde::v1::sample::TissueType,
+        cde::v1::sample::TissueType::Tumor,
         ccdi_cde as cde
     );
 
