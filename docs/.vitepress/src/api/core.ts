@@ -400,6 +400,24 @@ export enum CdeV1SampleLibraryStrategy {
 }
 
 /**
+ * **`caDSR CDE 14688604 v1.00`**
+ *
+ * This metadata element is defined by the caDSR as "The category assigned
+ * to the cytologic atypia found in cellular molecules, cells, tissues, organs,
+ * body fluids, or body excretory products."
+ *
+ * Link:
+ * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
+ */
+export enum CdeV1SampleTissueType {
+  NotReported = "Not Reported",
+  Normal = "Normal",
+  Peritumoral = "Peritumoral",
+  Tumor = "Tumor",
+  Unknown = "Unknown",
+}
+
+/**
  * **`caDSR CDE 12922545 v1.00`**
  *
  * This metadata element is defined by the caDSR as "The classification of a
@@ -530,24 +548,6 @@ export enum CdeV2SamplePreservationMethod {
   NotReported = "Not Reported",
   OCT = "OCT",
   SnapFrozen = "Snap Frozen",
-  Unknown = "Unknown",
-}
-
-/**
- * **`caDSR CDE 14688604 v1.00`**
- *
- * This metadata element is defined by the caDSR as "The category assigned
- * to the cytologic atypia found in cellular molecules, cells, tissues, organs,
- * body fluids, or body excretory products."
- *
- * Link:
- * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
- */
-export enum CdeV2SampleTissueType {
-  NotReported = "Not Reported",
-  Normal = "Normal",
-  Peritumoral = "Peritumoral",
-  Tumor = "Tumor",
   Unknown = "Unknown",
 }
 
@@ -995,7 +995,7 @@ export interface FieldUnownedSampleTissueType {
    * Link:
    * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
    */
-  value: CdeV2SampleTissueType;
+  value: CdeV1SampleTissueType;
   /**
    * The ancestors from which this field was derived.
    *
