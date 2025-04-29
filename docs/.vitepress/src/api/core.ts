@@ -268,7 +268,7 @@ export type CdeV1NamespaceStudyName = string;
  * Link:
  * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
  */
-export type CdeV1NamespaceStudyShortTitle = string;
+export type CdeV2NamespaceStudyShortTitle = string;
 
 /**
  * **`caDSR CDE 12662779 v1.00`**
@@ -777,7 +777,7 @@ export interface FieldUnownedNamespaceStudyShortTitle {
    * Link:
    * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
    */
-  value: CdeV1NamespaceStudyShortTitle;
+  value: CdeV2NamespaceStudyShortTitle;
   /**
    * The ancestors from which this field was derived.
    *
