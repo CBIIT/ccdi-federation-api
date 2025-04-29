@@ -16,7 +16,7 @@ use crate::CDE;
 /// Link:
 /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v2::sample::TissueType)]
+#[schema(as = cde::v1::sample::TissueType)]
 pub enum TissueType {
     /// `Not Reported`
     ///

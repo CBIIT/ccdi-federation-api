@@ -418,7 +418,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .tissue_type(TissueType::new(
-    ///         cde::v2::sample::TissueType::Tumor,
+    ///         cde::v1::sample::TissueType::Tumor,
     ///         None,
     ///         None,
     ///         None,
@@ -428,7 +428,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.tissue_type(),
     ///     Some(&TissueType::new(
-    ///         cde::v2::sample::TissueType::Tumor,
+    ///         cde::v1::sample::TissueType::Tumor,
     ///         None,
     ///         None,
     ///         None
