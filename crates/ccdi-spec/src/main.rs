@@ -206,7 +206,7 @@ pub struct ServeArgs {
     #[arg(default_value_t = 1000)]
     number_of_files: usize,
 
-    /// A path to write the output to.
+    /// Port to run the server on.
     #[arg(short = 'p', default_value_t = 8000)]
     port: u16,
 }
