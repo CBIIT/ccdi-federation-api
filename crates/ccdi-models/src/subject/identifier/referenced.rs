@@ -40,10 +40,10 @@ impl std::fmt::Display for Identifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Identifier::Linked(identifier) => {
-                write!(f, "Linked Subject {{ inner: {} }}", identifier)
+                write!(f, "Linked Subject {{ inner: {identifier} }}")
             }
             Identifier::Unlinked(identifier) => {
-                write!(f, "Unlinked Subject {{ inner: {} }}", identifier)
+                write!(f, "Unlinked Subject {{ inner: {identifier} }}")
             }
         }
     }

@@ -27,8 +27,7 @@ impl std::fmt::Display for Error {
             Error::Empty => todo!(),
             Error::TooLong(len) => write!(
                 f,
-                "too long: {} chars exceeds maximum of {} chars",
-                len, MAX_CHARACTERS
+                "too long: {len} chars exceeds maximum of {MAX_CHARACTERS} chars"
             ),
         }
     }

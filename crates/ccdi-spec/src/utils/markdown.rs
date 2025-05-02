@@ -118,7 +118,7 @@ fn write_variant_members(
     write!(f, "| Permissible Value | Description |")?;
 
     for field in METADATA_TABLE_FIELDS {
-        write!(f, " {} |", field)?;
+        write!(f, " {field} |")?;
     }
 
     writeln!(f)?;
@@ -166,7 +166,7 @@ fn write_variant_members(
                         })
                         .unwrap_or(String::new());
 
-                    result.push_str(&format!(" {} |", value));
+                    result.push_str(&format!(" {value} |"));
                 }
 
                 result

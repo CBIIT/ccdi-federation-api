@@ -296,8 +296,7 @@ pub async fn sample_show(
         .map(|sample| HttpResponse::Ok().json(sample))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "Sample with namespace '{}' and name '{}'",
-                namespace, name
+                "Sample with namespace '{namespace}' and name '{name}'"
             ))))
         })
 }

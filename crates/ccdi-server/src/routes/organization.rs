@@ -119,8 +119,7 @@ pub async fn organization_show(path: Path<String>) -> impl Responder {
         .map(|(_, organization)| HttpResponse::Ok().json(Organization::from(organization.clone())))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "Organization with name '{}'",
-                organization_name
+                "Organization with name '{organization_name}'"
             ))))
         })
 }

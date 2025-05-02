@@ -286,8 +286,7 @@ pub async fn subject_show(
         .map(|subject| HttpResponse::Ok().json(subject))
         .unwrap_or_else(|| {
             HttpResponse::NotFound().json(Errors::from(error::Kind::not_found(format!(
-                "Subject with namespace '{}' and name '{}'",
-                namespace, name
+                "Subject with namespace '{namespace}' and name '{name}'"
             ))))
         })
 }
