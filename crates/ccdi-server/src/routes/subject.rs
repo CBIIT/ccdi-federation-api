@@ -452,6 +452,18 @@ fn parse_field(field: &str, subject: &Subject) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "associated_diagnoses" => match subject.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .associated_diagnoses()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|associated_diagnoses| serde_json::to_value(associated_diagnoses).unwrap())
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "depositions" => match subject.metadata() {
             Some(metadata) => Some(
                 metadata
