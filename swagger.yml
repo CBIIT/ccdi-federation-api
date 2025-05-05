@@ -1447,6 +1447,23 @@ components:
       - Protein
       - DNA
       - RNA
+    cde.v1.sample.TissueType:
+      type: string
+      description: |-
+        **`caDSR CDE 14688604 v1.00`**
+
+        This metadata element is defined by the caDSR as "The category assigned to the
+        cytologic atypia found in cellular molecules, cells, tissues, organs,
+        body fluids, or body excretory products."
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
+      enum:
+      - Not Reported
+      - Normal
+      - Peritumoral
+      - Tumor
+      - Unknown
     cde.v1.sample.TumorClassification:
       type: string
       description: |-
@@ -1608,23 +1625,6 @@ components:
       - Not Reported
       - OCT
       - Snap Frozen
-      - Unknown
-    cde.v2.sample.TissueType:
-      type: string
-      description: |-
-        **`caDSR CDE 14688604 v1.00`**
-
-        This metadata element is defined by the caDSR as "The category assigned to the
-        cytologic atypia found in cellular molecules, cells, tissues, organs,
-        body fluids, or body excretory products."
-
-        Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=14688604%20and%20ver_nr=1>
-      enum:
-      - Not Reported
-      - Normal
-      - Peritumoral
-      - Tumor
       - Unknown
     cde.v2.subject.Ethnicity:
       type: string
@@ -2143,7 +2143,7 @@ components:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/cde.v2.sample.TissueType'
+          $ref: '#/components/schemas/cde.v1.sample.TissueType'
         ancestors:
           type: array
           items:
