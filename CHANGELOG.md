@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Adds Sample ID CDE description to the `name`
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
+  [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
+
 ### Fixed
 
 - Corrects the duplicated `Black or African Amercian` race description
