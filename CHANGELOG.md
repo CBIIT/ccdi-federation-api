@@ -12,6 +12,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - added associated_diagnoses to the /subject/by/{}/count endpoint
   ([#150](https://github.com/CBIIT/ccdi-federation-api/pull/150).
 
+### Added
+
+- Adds Sample ID CDE description to the `name`
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
+  [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
+
 ### Fixed
 
 - Corrects the duplicated `Black or African Amercian` race description
