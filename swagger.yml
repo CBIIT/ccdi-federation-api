@@ -18097,8 +18097,10 @@ components:
             - $ref: '#/components/schemas/field.unowned.subject.AgeAtVitalStatus'
             nullable: true
           associated_diagnoses:
-            allOf:
-            - $ref: '#/components/schemas/field.unowned.subject.AssociatedDiagnoses'
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.subject.AssociatedDiagnoses'
+            description: The associated diagnoses for the subject.
             nullable: true
           unharmonized:
             $ref: '#/components/schemas/fields.Unharmonized'
