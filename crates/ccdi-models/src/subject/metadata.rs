@@ -53,7 +53,7 @@ pub struct Metadata {
     age_at_vital_status: Option<field::unowned::subject::AgeAtVitalStatus>,
 
     /// The associated diagnoses for the subject.
-    #[schema(value_type = field::unowned::subject::AssociatedDiagnoses, nullable = true)]
+    #[schema(value_type = Vec<field::unowned::subject::AssociatedDiagnoses>, nullable = true)]
     associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
 
     /// Common metadata elements for all metadata blocks.
