@@ -395,6 +395,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: tumor_grade
+        in: query
+        description: |-
+          Matches any sample where the `tumor_grade` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: specimen_molecular_analyte_type
         in: query
         description: |-
@@ -1886,6 +1894,27 @@ components:
       - OCT
       - Snap Frozen
       - Unknown
+    cde.v2.sample.TumorGrade:
+      type: string
+      description: |-
+        **`caDSR CDE 11325685 v2.00`**
+
+        This metadata element is defined by the caDSR as "A text term to express
+        the degree of abnormality of cancer cells as a measure of differentiation
+        and aggressiveness.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11325685%20and%20ver_nr=2>
+      enum:
+      - G1 Low Grade
+      - G2 Intermediate Grade
+      - G3 High Grade
+      - G4 Anaplastic
+      - GB Borderline
+      - GX Grade Cannot Be Assessed
+      - Not Applicable
+      - Not Reported
+      - Unknown
     cde.v2.subject.Ethnicity:
       type: string
       description: |-
@@ -2426,6 +2455,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/cde.v1.sample.TumorClassification'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.TumorGrade:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v2.sample.TumorGrade'
         ancestors:
           type: array
           items:
@@ -3603,6 +3654,7 @@ components:
         - library_strategy
         - library_source_material
         - preservation_method
+        - tumor_grade
         - specimen_molecular_analyte_type
         - identifiers
         properties:
@@ -3653,6 +3705,10 @@ components:
           preservation_method:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.PreservationMethod'
+            nullable: true
+          tumor_grade:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.TumorGrade'
             nullable: true
           specimen_molecular_analyte_type:
             allOf:

@@ -81,6 +81,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::PreservationMethod, nullable = true)]
     preservation_method: Option<field::unowned::sample::PreservationMethod>,
 
+    /// The tumor grade for a sample.
+    #[schema(value_type = field::unowned::sample::TumorGrade, nullable = true)]
+    tumor_grade: Option<field::unowned::sample::TumorGrade>,
+
     /// The sample or material being subjected to analysis.
     #[schema(value_type = field::unowned::sample::SpecimenMolecularAnalyteType, nullable = true)]
     specimen_molecular_analyte_type: Option<field::unowned::sample::SpecimenMolecularAnalyteType>,
@@ -367,6 +371,39 @@ impl Metadata {
     /// ```
     pub fn preservation_method(&self) -> Option<&field::unowned::sample::PreservationMethod> {
         self.preservation_method.as_ref()
+    }
+    /// Gets the harmonized tumor grade for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::TumorGrade;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .tumor_grade(TumorGrade::new(
+    ///         cde::v2::sample::TumorGrade::G1LowGrade,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.tumor_grade(),
+    ///     Some(&TumorGrade::new(
+    ///         cde::v2::sample::TumorGrade::G1LowGrade,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    /// );
+    /// ```
+    pub fn tumor_grade(&self) -> Option<&field::unowned::sample::TumorGrade> {
+        self.tumor_grade.as_ref()
     }
 
     /// Gets the harmonized specimen molecular analyte type for the [`Metadata`].
@@ -739,6 +776,7 @@ impl Metadata {
             library_strategy: rand::random(),
             library_source_material: rand::random(),
             preservation_method: rand::random(),
+            tumor_grade: rand::random(),
             specimen_molecular_analyte_type: rand::random(),
             tissue_type: rand::random(),
             tumor_classification: rand::random(),
@@ -798,7 +836,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"library_selection_method\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"library_selection_method\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"tumor_grade\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }
