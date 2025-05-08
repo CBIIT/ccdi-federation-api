@@ -168,7 +168,7 @@ use utoipa::openapi;
         cde::v1::namespace::StudyFundingId,
         cde::v1::namespace::StudyId,
         cde::v1::namespace::StudyName,
-        cde::v1::namespace::StudyShortTitle,
+        cde::v2::namespace::StudyShortTitle,
 
         // Harmonized organization metadata elements.
         cde::v1::organization::Institution,

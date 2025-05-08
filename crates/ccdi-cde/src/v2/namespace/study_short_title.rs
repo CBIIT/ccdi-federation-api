@@ -8,16 +8,15 @@ use utoipa::ToSchema;
 
 use crate::CDE;
 
-/// **`caDSR CDE 11459812 v1.00`**
+/// **`caDSR CDE 11459812 v2.00`**
 ///
-/// This metadata element is defined by the caDSR as "The narrative title used
-/// as a textual label for a research data collection. Example – Comparative
-/// Molecular Life History of Spontaneous Canine and Human Gliomas".
+/// This metadata element is defined by the caDSR as "The acronym or
+/// abbreviated form of the title for a research data collection".
 ///
 /// Link:
-/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=1>
+/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459812%20and%20ver_nr=2>
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v1::namespace::StudyShortTitle)]
+#[schema(as = cde::v2::namespace::StudyShortTitle)]
 pub struct StudyShortTitle(String);
 
 impl From<String> for StudyShortTitle {

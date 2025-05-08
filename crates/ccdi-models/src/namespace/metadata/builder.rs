@@ -41,7 +41,7 @@ impl Builder {
     /// use models::metadata::field::unowned::namespace::StudyShortTitle;
     /// use models::namespace::metadata::Builder;
     ///
-    /// let name = cde::v1::namespace::StudyShortTitle::from(String::from("A study short title"));
+    /// let name = cde::v2::namespace::StudyShortTitle::from(String::from("A study short title"));
     /// let builder =
     ///     Builder::default().study_short_title(StudyShortTitle::new(name, None, None, None));
     /// ```
