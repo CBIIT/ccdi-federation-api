@@ -347,6 +347,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        TumorGrade,
+        field::unowned::sample::TumorGrade,
+        cde::v2::sample::TumorGrade,
+        cde::v2::sample::TumorGrade,
+        cde::v2::sample::TumorGrade::Unknown,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         SpecimenMolecularAnalyteType,
         field::unowned::sample::SpecimenMolecularAnalyteType,
         cde::v1::sample::SpecimenMolecularAnalyteType,

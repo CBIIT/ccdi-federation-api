@@ -45,6 +45,9 @@ pub struct Builder {
     /// The preservation method for this sample or biospecimen.
     preservation_method: Option<field::unowned::sample::PreservationMethod>,
 
+    /// The tumor grade for this sample.
+    tumor_grade: Option<field::unowned::sample::TumorGrade>,
+
     /// The specimen molecular analyte type for this sample.
     specimen_molecular_analyte_type: Option<field::unowned::sample::SpecimenMolecularAnalyteType>,
 
@@ -350,6 +353,25 @@ impl Builder {
         self
     }
 
+    /// Sets the `tumor_grade` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::TumorGrade;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = TumorGrade::new(cde::v2::sample::TumorGrade::Unknown, None, None, None);
+    /// let builder = Builder::default().tumor_grade(field);
+    /// ```
+    pub fn tumor_grade(mut self, field: field::unowned::sample::TumorGrade) -> Self {
+        self.tumor_grade = Some(field);
+        self
+    }
+
     /// Sets the `specimen_molecular_analyte_type` field of the [`Builder`].
     ///
     /// # Examples
@@ -531,6 +553,7 @@ impl Builder {
             library_strategy: self.library_strategy,
             library_source_material: self.library_source_material,
             preservation_method: self.preservation_method,
+            tumor_grade: self.tumor_grade,
             specimen_molecular_analyte_type: self.specimen_molecular_analyte_type,
             tissue_type: self.tissue_type,
             tumor_classification: self.tumor_classification,
