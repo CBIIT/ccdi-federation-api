@@ -22,7 +22,13 @@ pub struct Identifier {
     #[schema(value_type = models::namespace::Identifier)]
     namespace: namespace::Identifier,
 
-    /// The name of the identifier.
+    /// **`caDSR CDE 15100774 v1.00`**
+    ///
+    /// This metadata element is defined by the caDSR as "A unique string of characters
+    /// used to identify a specimen.".
+    ///
+    /// Link:
+    /// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=15100774%20and%20ver_nr=1>
     #[schema(example = "SampleName001")]
     name: String,
 }
