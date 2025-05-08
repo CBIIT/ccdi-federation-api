@@ -25,7 +25,6 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
             "tumor_tissue_morphology" => params.tumor_tissue_morphology.as_ref(),
             "depositions" => params.depositions.as_ref(),
             "diagnosis" => params.diagnosis.as_ref(),
-            "search" => params.search.as_ref(),
             _ => unreachable!("unhandled sample metadata field: {field}"),
         };
 
@@ -38,116 +37,86 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
 
         self.into_iter()
             .filter(|sample| {
-                // Search field matches by substring rather than exact match.
-                if field.as_str() == "search" {
-                    if let Some(metadata) = sample.metadata() {
-                        if let Some(diagnosis) = metadata.diagnosis() {
-                            // Only return the entry if the query is a substring
-                            // of the diagnosis, ignoring case.
-                            // Matching on to_lowercase is an approximation and will not cover
-                            // all unicode characters.
-                            let diagnosis_lower = diagnosis.to_string().to_lowercase();
-                            let query_lower = query.to_string().to_lowercase();
-                            return diagnosis_lower.to_string().contains(&query_lower);
-                        }
+                let values: Option<Vec<String>> = match field.as_str() {
+                    "anatomical_sites" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.anatomical_sites())
+                        .map(|sites| {
+                            sites
+                                .iter()
+                                .map(|site| site.to_string())
+                                .collect::<Vec<_>>()
+                        }),
+                    "disease_phase" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.disease_phase())
+                        .map(|disease_phase| vec![disease_phase.to_string()]),
+                    "library_selection_method" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.library_selection_method())
+                        .map(|library_selection_method| vec![library_selection_method.to_string()]),
+                    "library_strategy" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.library_strategy())
+                        .map(|library_strategy| vec![library_strategy.to_string()]),
+                    "library_source_material" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.library_source_material())
+                        .map(|library_source_material| vec![library_source_material.to_string()]),
+                    "preservation_method" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.preservation_method())
+                        .map(|preservation_method| vec![preservation_method.to_string()]),
+                    "specimen_molecular_analyte_type" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.specimen_molecular_analyte_type())
+                        .map(|specimen_molecular_analyte_type| {
+                            vec![specimen_molecular_analyte_type.to_string()]
+                        }),
+                    "tissue_type" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.tissue_type())
+                        .map(|tissue_type| vec![tissue_type.to_string()]),
+                    "tumor_classification" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.tumor_classification())
+                        .map(|tumor_classification| vec![tumor_classification.to_string()]),
+                    "age_at_diagnosis" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.age_at_diagnosis())
+                        .map(|age_at_diagnosis| vec![age_at_diagnosis.to_string()]),
+                    "age_at_collection" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.age_at_collection())
+                        .map(|age_at_collection| vec![age_at_collection.to_string()]),
+                    "tumor_tissue_morphology" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.tumor_tissue_morphology())
+                        .map(|tumor_tissue_morphology| vec![tumor_tissue_morphology.to_string()]),
+                    "depositions" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.common().depositions())
+                        .map(|deposition| {
+                            deposition
+                                .iter()
+                                .cloned()
+                                .map(|accession| match accession {
+                                    Accession::dbGaP(accession) => accession.to_string(),
+                                })
+                                .collect::<Vec<String>>()
+                        }),
+                    "diagnosis" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.diagnosis())
+                        .map(|diagnosis| vec![diagnosis.to_string()]),
+                    _ => unreachable!("unhandled sample metadata field: {field}"),
+                };
 
-                        // If the metadata doesn't have a diagnosis, the entry
-                        // should not be included.
-                        return false;
-                    }
-
-                    // If no metadata is included, this entry should not be
-                    // included.
-                    false
-                } else {
-                    // All other "non-search" fields require an exact case-sensitive match.
-                    let values: Option<Vec<String>> = match field.as_str() {
-                        "anatomical_sites" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.anatomical_sites())
-                            .map(|sites| {
-                                sites
-                                    .iter()
-                                    .map(|site| site.to_string())
-                                    .collect::<Vec<_>>()
-                            }),
-                        "disease_phase" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.disease_phase())
-                            .map(|disease_phase| vec![disease_phase.to_string()]),
-                        "library_selection_method" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.library_selection_method())
-                            .map(|library_selection_method| {
-                                vec![library_selection_method.to_string()]
-                            }),
-                        "library_strategy" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.library_strategy())
-                            .map(|library_strategy| vec![library_strategy.to_string()]),
-                        "library_source_material" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.library_source_material())
-                            .map(|library_source_material| {
-                                vec![library_source_material.to_string()]
-                            }),
-                        "preservation_method" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.preservation_method())
-                            .map(|preservation_method| vec![preservation_method.to_string()]),
-                        "specimen_molecular_analyte_type" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.specimen_molecular_analyte_type())
-                            .map(|specimen_molecular_analyte_type| {
-                                vec![specimen_molecular_analyte_type.to_string()]
-                            }),
-                        "tissue_type" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.tissue_type())
-                            .map(|tissue_type| vec![tissue_type.to_string()]),
-                        "tumor_classification" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.tumor_classification())
-                            .map(|tumor_classification| vec![tumor_classification.to_string()]),
-                        "age_at_diagnosis" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.age_at_diagnosis())
-                            .map(|age_at_diagnosis| vec![age_at_diagnosis.to_string()]),
-                        "age_at_collection" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.age_at_collection())
-                            .map(|age_at_collection| vec![age_at_collection.to_string()]),
-                        "tumor_tissue_morphology" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.tumor_tissue_morphology())
-                            .map(|tumor_tissue_morphology| {
-                                vec![tumor_tissue_morphology.to_string()]
-                            }),
-                        "depositions" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.common().depositions())
-                            .map(|deposition| {
-                                deposition
-                                    .iter()
-                                    .cloned()
-                                    .map(|accession| match accession {
-                                        Accession::dbGaP(accession) => accession.to_string(),
-                                    })
-                                    .collect::<Vec<String>>()
-                            }),
-                        "diagnosis" => sample
-                            .metadata()
-                            .and_then(|metadata| metadata.diagnosis())
-                            .map(|diagnosis| vec![diagnosis.to_string()]),
-                        _ => unreachable!("unhandled sample metadata field: {field}"),
-                    };
-
-                    match values {
-                        Some(values) => values.into_iter().any(|s| s.eq(query)),
-                        // Samples with no values for this field are automatically
-                        // filtered as described in the rules for filtering.
-                        None => false,
-                    }
+                match values {
+                    Some(values) => values.into_iter().any(|s| s.eq(query)),
+                    // Samples with no values for this field are automatically
+                    // filtered as described in the rules for filtering.
+                    None => false,
                 }
             })
             .collect::<Vec<_>>()
