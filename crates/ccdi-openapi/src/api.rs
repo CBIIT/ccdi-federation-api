@@ -120,6 +120,9 @@ use utoipa::openapi;
 
         // Information.
         server::routes::info::info_index,
+
+        // Experimental.
+        server::routes::sample_diagnosis::sample_diagnosis_index,
     ),
     components(schemas(
         // Harmonized common metadata elements.

@@ -6,6 +6,7 @@ pub mod metadata;
 pub mod namespace;
 pub mod organization;
 pub mod sample;
+pub mod sample_diagnosis;
 pub mod subject;
 
 /// A result for a group by operation.
