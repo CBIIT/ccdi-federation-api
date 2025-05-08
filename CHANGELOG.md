@@ -17,6 +17,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Updates the depositions field to be nullable
   ([#140](https://github.com/CBIIT/ccdi-federation-api/pull/140)).
 
+### Revised
+
+- Updates sample `tissue_type` field to updated CDE
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/39),
+  [#144](https://github.com/CBIIT/ccdi-federation-api/pull/144)).
+
 ## [v1.1.0] — 12-17-2024
 
 ### Added

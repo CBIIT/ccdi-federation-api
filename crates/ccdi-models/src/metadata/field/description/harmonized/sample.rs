@@ -25,7 +25,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v1::sample::LibrarySourceMaterial::description(),
         cde::v2::sample::PreservationMethod::description(),
         cde::v1::sample::SpecimenMolecularAnalyteType::description(),
-        cde::v2::sample::TissueType::description(),
+        cde::v1::sample::TissueType::description(),
         cde::v1::sample::TumorClassification::description(),
         cde::v1::sample::TumorTissueMorphology::description(),
         crate::sample::metadata::AgeAtCollection::description(),
@@ -213,7 +213,7 @@ impl description::r#trait::Description for cde::v1::sample::SpecimenMolecularAna
     }
 }
 
-impl description::r#trait::Description for cde::v2::sample::TissueType {
+impl description::r#trait::Description for cde::v1::sample::TissueType {
     fn description() -> description::Description {
         // SAFETY: these two unwraps are tested statically below in the test
         // that constructs the description using `get_fields()`.

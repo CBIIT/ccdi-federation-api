@@ -146,7 +146,7 @@ use utoipa::openapi;
         cde::v1::sample::LibrarySourceMaterial,
         cde::v2::sample::PreservationMethod,
         cde::v1::sample::SpecimenMolecularAnalyteType,
-        cde::v2::sample::TissueType,
+        cde::v1::sample::TissueType,
         cde::v1::sample::TumorClassification,
         cde::v1::sample::TumorTissueMorphology,
         models::sample::metadata::AgeAtCollection,
