@@ -17,6 +17,7 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
             "library_strategy" => params.library_strategy.as_ref(),
             "library_source_material" => params.library_source_material.as_ref(),
             "preservation_method" => params.preservation_method.as_ref(),
+            "tumor_grade" => params.tumor_grade.as_ref(),
             "specimen_molecular_analyte_type" => params.specimen_molecular_analyte_type.as_ref(),
             "tissue_type" => params.tissue_type.as_ref(),
             "tumor_classification" => params.tumor_classification.as_ref(),
@@ -66,6 +67,10 @@ impl FilterMetadataField<Sample, FilterSampleParams> for Vec<Sample> {
                         .metadata()
                         .and_then(|metadata| metadata.preservation_method())
                         .map(|preservation_method| vec![preservation_method.to_string()]),
+                    "tumor_grade" => sample
+                        .metadata()
+                        .and_then(|metadata| metadata.tumor_grade())
+                        .map(|tumor_grade| vec![tumor_grade.to_string()]),
                     "specimen_molecular_analyte_type" => sample
                         .metadata()
                         .and_then(|metadata| metadata.specimen_molecular_analyte_type())

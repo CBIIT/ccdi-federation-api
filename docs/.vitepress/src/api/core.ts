@@ -552,6 +552,27 @@ export enum CdeV2SamplePreservationMethod {
 }
 
 /**
+ * **`caDSR CDE 11325685 v2.00`**
+ *
+ * This metadata element is defined by the caDSR as "A text term to express the degree
+ * of abnormality of cancer cells as a measure of differentiation and aggressiveness.".
+ *
+ * Link:
+ * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11325685%20and%20ver_nr=2>
+ */
+export enum CdeV2SampleTumorGrade {
+  G1LowGrade = "G1 Low Grade",
+  G2IntermediateGrade = "G2 Intermediate Grade",
+  G3HighGrade = "G3 High Grade",
+  G4Anaplastic = "G4 Anaplastic",
+  GBBorderline = "GB Borderline",
+  GXGrade = "GX Grade Cannot Be Assessed",
+  NotApplicable = "Not Applicable",
+  NotReported = "Not Reported",
+  Unknown = "Unknown",
+}
+
+/**
  * **`caDSR CDE 2192217 v2.00`**
  *
  * This metadata element is defined by the caDSR as "The text for reporting
@@ -972,6 +993,29 @@ export interface FieldUnownedSamplePreservationMethod {
    * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=8028962%20and%20ver_nr=2>
    */
   value: CdeV2SamplePreservationMethod;
+  /**
+   * The ancestors from which this field was derived.
+   *
+   * Ancestors should be provided as period (`.`) delimited paths
+   * from the `metadata` key in the subject response object.
+   */
+  ancestors?: string[];
+  details?: ModelsMetadataFieldDetails;
+  /** A free-text comment field. */
+  comment?: string;
+}
+
+export interface FieldUnownedSampleTumorGrade {
+  /**
+   * **`caDSR CDE 11325685 v2.00`**
+   *
+   * This metadata element is defined by the caDSR as "A text term to express the degree
+   * of abnormality of cancer cells as a measure of differentiation and aggressiveness.".
+   *
+   * Link:
+   * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11325685%20and%20ver_nr=2>
+   */
+  value: CdeV2SampleTumorGrade;
   /**
    * The ancestors from which this field was derived.
    *
@@ -2141,6 +2185,7 @@ export type ModelsSampleMetadata = ModelsMetadataCommonMetadata & {
   age_at_collection: FieldUnownedSampleAgeAtCollection | null;
   library_strategy: FieldUnownedSampleLibraryStrategy | null;
   preservation_method: FieldUnownedSamplePreservationMethod | null;
+  tumor_grade: FieldUnownedSampleTumorGrade | null;
   /**
    * The alternate identifiers for the sample.
    *
@@ -3215,6 +3260,11 @@ export class Api<
          * provided.
          */
         preservation_method?: string;
+        /**
+         * Matches any sample where the `tumor_grade` field matches the string
+         * provided.
+         */
+        tumor_grade?: string;
         /**
          * Matches any sample where the `tissue_type` field matches the string
          * provided.

@@ -148,6 +148,7 @@ use utoipa::openapi;
         cde::v1::sample::SpecimenMolecularAnalyteType,
         cde::v1::sample::TissueType,
         cde::v1::sample::TumorClassification,
+        cde::v2::sample::TumorGrade,
         cde::v1::sample::TumorTissueMorphology,
         models::sample::metadata::AgeAtCollection,
 
@@ -194,6 +195,7 @@ use utoipa::openapi;
         field::unowned::sample::SpecimenMolecularAnalyteType,
         field::unowned::sample::TissueType,
         field::unowned::sample::TumorClassification,
+        field::unowned::sample::TumorGrade,
         field::unowned::sample::TumorTissueMorphology,
         field::unowned::sample::AgeAtCollection,
         field::unowned::sample::Identifier,
