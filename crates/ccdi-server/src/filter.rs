@@ -8,6 +8,7 @@ use models::Entity;
 
 pub mod file;
 pub mod sample;
+pub mod sample_diagnosis;
 pub mod subject;
 
 /// A trait that defines a method for filtering by metadata values.
