@@ -40,12 +40,11 @@ This will build all the dependencies (takes a minute the first time and is quick
 
 Some tips for development:
 - It is recommended to install and use the `rust-analyzer` plugin for your IDE while developing.
-- To view changes made on the server, you will need to interrupt the server (e.g. Ctrl-C) and start it up again with `cargo run serve`, as well as refresh the page in the browser.
+- To view changes made on the server, you will need to interrupt the server (e.g. Ctrl-C) and start it up again with `cargo run --bin ccdi-spec serve`, as well as refresh the page in the browser.
 - Don't edit the `swagger.yml` file directly. Instead, regenerate the file once your code changes have been made.
-While developing, you can do so by running `cargo run --bin ccdi-spec generate > ../swagger.yml`. This won't include the anatomical sites in the swagger document which is required
-for the final swagger document generation.
-- The default swagger compilation omits many anatomical sites. This is probably what you want while testing.
-When doing a final commit, include the anatomical sites by running the following, which takes several minutes: `cargo run --bin ccdi-spec --features all-anatomical-site generate > ../swagger.yml`.
+While developing, you can do so by running `cargo run --bin ccdi-spec generate > ../swagger.yml`. This will omit the anatomical sites from the swagger document to save build time.
+However, you should re-add the anatomical sites before committing your changes.
+To include the anatomical sites, run the following, which takes several minutes: `cargo run --bin ccdi-spec --features all-anatomical-site generate > ../swagger.yml`.
 
 ## Setting up changes for review
 When your code changes are ready for review, run the following before making a PR and fix any issues (these checks are also performed as GitHub actions on the PR):
@@ -84,7 +83,7 @@ The command to do this is check: `cargo run --bin ccdi-spec check <URL> <RESPONS
 
 `cargo run --bin ccdi-spec check "https://ccdi.treehouse.gi.ucsc.edu/api/v1/info" Information`
 
-`cargo run --bin ccdi-spec check "https://ccdi.treehouse.gi.ucsc.edu/api/v1/sample?page=2&diagnosis=9380/3 : Glioma, malignant" Samples`
+`cargo run --bin ccdi-spec check "https://ccdi.treehouse.gi.ucsc.edu/api/v1/subject?kind=Participant&page=2&per_page=10" Subjects`
 
 If the bottom line is `Success!`, the response was conformant (this may not catch every error).
 Otherwise, you will get an error. For example:
@@ -93,6 +92,10 @@ Otherwise, you will get an error. For example:
     error: missing field counts at line 10 column 1
 
 This gives you a hint of where in the JSON your endpoint response diverged from what the reference implementation was expecting.
+
+For the `Samples` validation, you will need to add the `all-anatomical-sites` feature flag:
+
+`cargo run --bin ccdi-spec --features all-anatomical-site check "https://ccdi.treehouse.gi.ucsc.edu/api/v1/sample?page=2&diagnosis=9380/3 : Glioma, malignant" Samples`
 
 Possible `RESPONSE_TYPE`s, also listed when you call `cargo run --bin ccdi-spec check --help`:
 
