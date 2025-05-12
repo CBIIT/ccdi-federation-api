@@ -85,6 +85,10 @@ use utoipa::openapi;
             name = "Info",
             description = "Information about the API implementation itself."
         ),
+        (
+            name = "Experimental",
+            description = "Endpoints and features in an experimental phase."
+        ),
     ),
     paths(
         // Subject routes.
