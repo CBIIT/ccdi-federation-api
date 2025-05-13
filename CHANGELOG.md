@@ -17,6 +17,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds Sample ID CDE description to the `name`
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
   [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
+- Adds Tumor Grade
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/137),
+  [#149](https://github.com/CBIIT/ccdi-federation-api/pull/149)).
 
 ### Fixed
 
