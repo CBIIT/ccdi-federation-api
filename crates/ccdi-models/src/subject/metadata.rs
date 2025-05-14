@@ -469,13 +469,22 @@ impl Metadata {
                 None,
                 None,
             )),
-
-            associated_diagnoses: Some(vec![field::unowned::subject::AssociatedDiagnoses::new(
-                AssociatedDiagnoses::from(String::from("Random Diagnosis")),
-                None,
-                None,
-                None,
-            )]),
+            // One to three diagnoses of the format Random Diagnosis X
+            associated_diagnoses: Some(
+                (0..rng.gen_range(1..4))
+                    .map(|_| {
+                        field::unowned::subject::AssociatedDiagnoses::new(
+                            AssociatedDiagnoses::from(format!(
+                                "Random Diagnosis {}",
+                                rng.sample(Alphanumeric).to_ascii_uppercase() as char,
+                            )),
+                            None,
+                            None,
+                            None,
+                        )
+                    })
+                    .collect(),
+            ),
 
             common: Default::default(),
             unharmonized: Default::default(),
