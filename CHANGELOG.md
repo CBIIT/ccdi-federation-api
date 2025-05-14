@@ -7,24 +7,23 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
 - added associated_diagnoses to the /subject endpoint
   ([#141](https://github.com/CBIIT/ccdi-federation-api/pull/141)).
 - added associated_diagnoses to the /subject/by/{}/count endpoint
   ([#150](https://github.com/CBIIT/ccdi-federation-api/pull/150).
-
-### Added
-
 - Adds Sample ID CDE description to the `name`
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
   [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
 - Adds Tumor Grade
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/137),
   [#149](https://github.com/CBIIT/ccdi-federation-api/pull/149)).
-
-### Added
-
-- Adds an experimental `sample-diagnosis` endpoint with `search` filter to enable case-insensitive substring searching of diagnoses. 
+- Adds an experimental `sample-diagnosis` endpoint with `search` filter to enable case-insensitive substring searching of diagnoses.
 ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/131), [#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
+- Adds an experimental `subject-diagnosis` endpoint with `search` filter to enable case-insensitive substring searching of diagnoses associated with a subject.
+([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/131), [#152](https://github.com/CBIIT/ccdi-federation-api/issues/152)).
 
 ### Changed
 
