@@ -10,6 +10,7 @@ pub mod file;
 pub mod sample;
 pub mod sample_diagnosis;
 pub mod subject;
+pub mod subject_diagnosis;
 
 /// A trait that defines a method for filtering by metadata values.
 ///

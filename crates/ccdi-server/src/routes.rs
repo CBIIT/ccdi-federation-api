@@ -8,6 +8,7 @@ pub mod organization;
 pub mod sample;
 pub mod sample_diagnosis;
 pub mod subject;
+pub mod subject_diagnosis;
 
 /// A result for a group by operation.
 #[derive(Debug)]

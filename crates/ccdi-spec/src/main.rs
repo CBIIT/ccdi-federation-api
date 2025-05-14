@@ -42,6 +42,7 @@ use server::routes::namespace;
 use server::routes::sample;
 use server::routes::sample_diagnosis;
 use server::routes::subject;
+use server::routes::subject_diagnosis;
 
 mod utils;
 
@@ -341,6 +342,7 @@ fn inner() -> Result<(), Box<dyn std::error::Error>> {
                         .configure(organization::configure())
                         .configure(info::configure())
                         .configure(sample_diagnosis::configure(samples.clone()))
+                        .configure(subject_diagnosis::configure(subjects.clone()))
                         .service(
                             SwaggerUi::new("/swagger-ui/{_:.*}")
                                 .url("/api-docs/openapi.json", Api::openapi()),

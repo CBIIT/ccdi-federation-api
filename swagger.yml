@@ -1302,6 +1302,205 @@ paths:
                   - per_page
                   reason: Unable to calculate offset.
                   message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
+  /subject-diagnosis:
+    get:
+      tags:
+      - Experimental
+      summary: 'Experimental: Filter the subjects known by this server by free-text diagnosis search.'
+      description: |-
+        Experimental: Filter the subjects known by this server by free-text diagnosis search.
+
+        ### Diagnosis Filtering
+
+        This endpoint supports the experimental `search` parameter.
+        For this parameter, the subject is included in the results if the value of its
+        its `associated_diagnoses` field has at least one diagnosis which _contains_ the query string.
+        Matches are case-insensitive.
+
+        ### Pagination
+
+        This endpoint is paginated. Users may override the default pagination
+        parameters by providing one or more of the pagination-related query
+        parameters below.
+
+        ### Additional Filtering
+
+        All harmonized (top-level) and unharmonized (nested under the
+        `metadata.unharmonized` key) metadata fields are filterable. To achieve
+        this, you can provide the field name as a [`String`]. Filtering follows the
+        following rules:
+
+        * For single-value metadata field, the subject is included in the results if
+        its value _exactly_ matches the query string. Matches are case-sensitive.
+        * For multiple-value metadata fields, the subject is included in the results
+        if any of its values for the field _exactly_ match the query string (a
+        logical OR [`||`]). Matches are case-sensitive.
+        * When the metadata field is `null` (in the case of singular or
+        multiple-valued metadata fields) or empty, the subject is not included.
+        * When multiple fields are provided as filters, a logical AND (`&&`) strings
+        together the predicates. In other words, all filters must match for a
+        subject to be returned. Note that this means that servers do not natively
+        support logical OR (`||`) across multiple fields: that must be done by
+        calling this endpoint with each of your desired queries and performing a
+        set union of those subjects out of band.
+
+        ### Ordering
+
+        This endpoint has default ordering requirements—those details are documented
+        in the `responses::Subjects` schema.
+      operationId: subject_diagnosis_index
+      parameters:
+      - name: search
+        in: query
+        description: |-
+          Matches any subject where any member of the `associated_diagnoses` field contains the
+          string provided, ignoring case.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: sex
+        in: query
+        description: Matches any subject where the `sex` field matches the string provided.
+        required: false
+        schema:
+          type: string
+      - name: race
+        in: query
+        description: |-
+          Matches any subject where any member of the `race` field matches the
+          string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: ethnicity
+        in: query
+        description: |-
+          Matches any subject where the `ethnicity` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
+      - name: identifiers
+        in: query
+        description: |-
+          Matches any subject where any member of the `identifiers` field matches
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: vital_status
+        in: query
+        description: |-
+          Matches any subject where the `vital_status` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
+      - name: age_at_vital_status
+        in: query
+        description: |-
+          Matches any subject where the `age_at_vital_status` field matches the
+          string provided.
+        required: false
+        schema:
+          type: string
+      - name: depositions
+        in: query
+        description: |-
+          Matches any subject where any member of the `depositions` fields match
+          the string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
+      - name: metadata.unharmonized.<field>
+        in: query
+        description: |-
+          All unharmonized fields should be filterable in the same manner as harmonized fields:
+
+          * Filtering on a singular field should include the `Subject` in the results if the query exactly matches the value of that field for the `Subject` (case-sensitive).
+          * Filtering on field with multiple values should include the `Subject` in the results if the query exactly matches any of the values of the field for that `Subject` (case-sensitive).
+          * Unlike harmonized fields, unharmonized fields must be prefixed with `metadata.unharmonized`.
+
+          **Note:** this query parameter is intended to be symbolic of any unharmonized field. Because of limitations within Swagger UI, it will show up as a query parameter that can be optionally be submitted as part of a request within Swagger UI. Please keep in mind that the literal query parameter `?metadata.unharmonized.<field>=value` is not supported, so attempting to use it within Swagger UI will not work!
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: |-
+          The page to retrieve.
+
+          This is a 1-based index of a page within a page set. The value of `page`
+          **must** default to `1` when this parameter is not provided.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: per_page
+        in: query
+        description: |-
+          The number of results per page.
+
+          Each server can select its own default value for `per_page` when this
+          parameter is not provided. That said, the convention within the
+          community is to use `100` as a default value if any value is equally
+          reasonable.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            link:
+              schema:
+                type: string
+              description: "Links to URLs that may be of interest when paging through paginated responses. This header contains two or more links of interest. The format of the field is as follows: \n\n`Link: <URL>; rel=\"REL\"` \n### Relationships\n\nIn the format above, `URL` represents a valid URL for the link of interest and `REL` is one of four values: \n- `first` (_Required_). A link to the first page in the results (can be the same as `last` if there is only one page).\n- `last` (_Required_). A link to the first page in the results (can be the same as `first` if there is only one page).\n- `next` (_Optional_). A link to the next page (if it exists).\n- `prev` (_Optional_). A link to the previous page (if it exists).\n\n### Requirements\n\n- This header _must_ provide links for at least the `first` and `last` rels.\n - The `prev` and `next` links must exist only (a) when there are multiple pages in the result page set and (b) when the current page is not the first or last page, respectively.\n- This list of links is unordered.\n\n ### Notes\n\n- HTTP 1.1 and HTTP 2.0 dictate that response headers are case insensitive. Though not required, we recommend an all lowercase name of `link` for this response header."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Subjects'
+        '404':
+          description: |-
+            Not found.
+            Servers that cannot provide line-level data should use this response rather than Forbidden (403), as there is no level of authorization that would allow one to access the information included in the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: UnshareableData
+                  entity: Subjects
+                  reason: Our agreement with data providers prohibits us from sharing line-level data.
+                  message: 'Unable to share data for subjects: our agreement with data providers prohibits us from sharing line-level data.'
+        '422':
+          description: Invalid query or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Errors'
+              example:
+                errors:
+                - kind: InvalidParameters
+                  parameters:
+                  - page
+                  - per_page
+                  reason: Unable to calculate offset.
+                  message: 'Invalid value for parameters ''page'' and ''per_page'': unable to calculate offset.'
 components:
   schemas:
     cde.v1.deposition.DbgapPhsAccession:
