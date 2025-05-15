@@ -1776,6 +1776,12 @@ components:
         of the subject when the vitals measurement was taken.". No permissible
         values are defined for this CDE.
 
+        * When the age at vital status is collected by the source server in days,
+        the number of days is reported directly.
+        * When the age at vital status is collected by the source server in years,
+        the number of years is multiplied by 365.25 to arrive at an approximate
+        number of days.
+
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12306025%20and%20ver_nr=1>
     cde.v1.subject.Name:

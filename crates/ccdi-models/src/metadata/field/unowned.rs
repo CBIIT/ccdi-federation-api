@@ -443,8 +443,8 @@ pub mod subject {
         field::unowned::subject::AgeAtVitalStatus,
         cde::v1::subject::AgeAtVitalStatus,
         cde::v1::subject::AgeAtVitalStatus,
-        cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
-        ccdi_cde as cde
+        ccdi_cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+        ordered_float::OrderedFloat
     );
 
     unowned_field!(

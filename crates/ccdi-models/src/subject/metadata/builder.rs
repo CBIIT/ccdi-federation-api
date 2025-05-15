@@ -181,6 +181,7 @@ impl Builder {
     /// # Examples
     ///
     /// ```
+    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     /// use ordered_float::OrderedFloat;
     ///
@@ -188,7 +189,7 @@ impl Builder {
     /// use models::subject::metadata::Builder;
     ///
     /// let field = AgeAtVitalStatus::new(
-    ///     models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///     cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
     ///     None,
     ///     None,
     ///     None,

@@ -17,7 +17,7 @@ use crate::CDE;
 /// * When the age at vital status is collected by the source server in days,
 ///   the number of days is reported directly.
 /// * When the age at vital status is collected by the source server in years,
-///   the number of years is multiplied by 365.25 to arrive at an approximate 
+///   the number of years is multiplied by 365.25 to arrive at an approximate
 ///   number of days.
 ///
 /// Link:
