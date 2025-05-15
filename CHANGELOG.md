@@ -14,6 +14,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Adds Age at Vital Status CDE to the `age_at_vital_status` metadata field
+  ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/45)
+  [#154](https://github.com/CBIIT/ccdi-federation-api/pull/154)).
 - Adds Sample ID CDE description to the `name`
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
   [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
