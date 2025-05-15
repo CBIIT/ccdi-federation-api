@@ -22,7 +22,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v2::subject::Ethnicity::description(),
         cde::v1::subject::Name::description(),
         cde::v1::subject::VitalStatus::description(),
-        crate::subject::metadata::AgeAtVitalStatus::description(),
+        cde::v1::subject::AgeAtVitalStatus::description(),
         crate::subject::metadata::AssociatedDiagnoses::description(),
     ]
 }
@@ -137,7 +137,7 @@ impl Description for cde::v1::subject::VitalStatus {
     }
 }
 
-impl description::r#trait::Description for crate::subject::metadata::AgeAtVitalStatus {
+impl description::r#trait::Description for cde::v1::subject::AgeAtVitalStatus {
     fn description() -> description::Description {
         let description = match Self::introspected_entity() {
             Entity::Enum(entity) => entity.documentation().unwrap().to_string(),

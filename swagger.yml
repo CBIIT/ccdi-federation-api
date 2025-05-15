@@ -1766,6 +1766,18 @@ components:
         icd_o_3:
           type: string
           description: The ICD-O-3 code.
+    cde.v1.subject.AgeAtVitalStatus:
+      type: number
+      format: float
+      description: |-
+        **`caDSR CDE 12306025 v1.00`**
+
+        This metadata element is defined by the caDSR as "The age in days
+        of the subject when the vitals measurement was taken.". No permissible
+        values are defined for this CDE.
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12306025%20and%20ver_nr=1>
     cde.v1.subject.Name:
       type: string
       description: |-
@@ -2520,7 +2532,7 @@ components:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/models.subject.metadata.AgeAtVitalStatus'
+          $ref: '#/components/schemas/cde.v1.subject.AgeAtVitalStatus'
         ancestors:
           type: array
           items:
@@ -18485,17 +18497,6 @@ components:
       properties:
         name:
           type: string
-    models.subject.metadata.AgeAtVitalStatus:
-      type: number
-      format: float
-      description: |-
-        The approximate age at vital status in days.
-
-        * When the age at vital status is collected by the source server in days,
-        the number of days is reported directly.
-        * When the age at vital status is collected by the source server in years,
-        the number of years is multiplied by 365.25 to arrive at an approximate
-        number of days.
     models.subject.metadata.AssociatedDiagnoses:
       type: string
       description: |-

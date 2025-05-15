@@ -13,11 +13,9 @@ use crate::metadata::field;
 use crate::metadata::fields;
 use crate::subject::Identifier;
 
-mod age_at_vital_status;
 mod associated_diagnoses;
 mod builder;
 
-pub use age_at_vital_status::AgeAtVitalStatus;
 pub use associated_diagnoses::AssociatedDiagnoses;
 pub use builder::Builder;
 
@@ -214,6 +212,7 @@ impl Metadata {
     /// # Examples
     ///
     /// ```
+    /// use ccdi_cde as cde;
     /// use ccdi_models as models;
     /// use ordered_float::OrderedFloat;
     ///
@@ -222,7 +221,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .age_at_vital_status(AgeAtVitalStatus::new(
-    ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///         cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
     ///         None,
     ///         None,
     ///         None,
@@ -232,7 +231,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.age_at_vital_status(),
     ///     Some(&AgeAtVitalStatus::new(
-    ///         models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+    ///         cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
     ///         None,
     ///         None,
     ///         None
@@ -464,7 +463,7 @@ impl Metadata {
             ]),
             vital_status: Some(rand::random()),
             age_at_vital_status: Some(field::unowned::subject::AgeAtVitalStatus::new(
-                crate::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+                ccdi_cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
                 None,
                 None,
                 None,

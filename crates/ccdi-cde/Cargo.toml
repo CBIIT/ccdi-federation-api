@@ -12,6 +12,7 @@ edition.workspace = true
 indexmap.workspace = true
 introspect.workspace = true
 lazy_static.workspace = true
+ordered-float.workspace = true
 rand.workspace = true
 regex.workspace = true
 serde.workspace = true

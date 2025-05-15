@@ -419,6 +419,7 @@ dependencies = [
  "indexmap 2.0.2",
  "introspect",
  "lazy_static",
+ "ordered-float",
  "rand",
  "regex",
  "serde",

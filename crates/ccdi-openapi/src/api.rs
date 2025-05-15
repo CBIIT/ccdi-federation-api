@@ -135,12 +135,12 @@ use utoipa::openapi;
         models::metadata::common::deposition::Accession,
 
         // Harmonized subject metadata elements.
+        cde::v1::subject::AgeAtVitalStatus,
         cde::v1::subject::Race,
         cde::v1::subject::Sex,
         cde::v2::subject::Ethnicity,
         cde::v1::subject::Name,
         cde::v1::subject::VitalStatus,
-        models::subject::metadata::AgeAtVitalStatus,
         models::subject::metadata::AssociatedDiagnoses,
 
         // Harmonized sample metadata elements.

@@ -441,10 +441,10 @@ pub mod subject {
     unowned_field!(
         AgeAtVitalStatus,
         field::unowned::subject::AgeAtVitalStatus,
-        crate::subject::metadata::AgeAtVitalStatus,
-        models::subject::metadata::AgeAtVitalStatus,
-        models::subject::metadata::AgeAtVitalStatus::from(OrderedFloat(365.25)),
-        ordered_float::OrderedFloat
+        cde::v1::subject::AgeAtVitalStatus,
+        cde::v1::subject::AgeAtVitalStatus,
+        cde::v1::subject::AgeAtVitalStatus::from(OrderedFloat(365.25)),
+        ccdi_cde as cde
     );
 
     unowned_field!(
