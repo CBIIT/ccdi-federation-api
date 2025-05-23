@@ -24,6 +24,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/131), [#139](https://github.com/CBIIT/ccdi-federation-api/issues/139)).
 - Adds an experimental `subject-diagnosis` endpoint with `search` filter to enable case-insensitive substring searching of diagnoses associated with a subject.
 ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/131), [#152](https://github.com/CBIIT/ccdi-federation-api/issues/152)).
+- Adds the ecDNA CCDI API Server to the list of available implementations
+  ([#155](https://github.com/CBIIT/ccdi-federation-api/pull/155)).
 
 ### Changed
 

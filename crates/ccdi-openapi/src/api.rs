@@ -55,6 +55,11 @@ use utoipa::openapi;
             url = "https://ccdi.kidsfirstdrc.org/api/v1",
             description = "KidsFirst CCDI API server"
         ),
+        (
+            url = "https://ccdi-ecdna.org/ccdi-federation/api/v1",
+            description = "Childhood Cancer Catalog of ecDNA CCDI API server"
+
+        ),
     ),
     tags(
         (
