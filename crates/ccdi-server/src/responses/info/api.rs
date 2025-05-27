@@ -10,7 +10,7 @@ use utoipa::ToSchema;
 #[schema(as = responses::info::api::Information)]
 pub struct Information {
     /// The version of the API that this server supports.
-    #[schema(example = "v1.1.0")]
+    #[schema(example = "v1.2.0")]
     api_version: String,
 
     /// A URL pointing to the latest version of the Swagger documentation.

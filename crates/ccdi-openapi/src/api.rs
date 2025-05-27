@@ -32,7 +32,7 @@ use utoipa::openapi;
             name = "Childhood Cancer Data Initiative support email",
             email = "NCIChildhoodCancerDataInitiative@mail.nih.gov",
         ),
-        version = "v1.1.0",
+        version = "v1.2.0",
     ),
     external_docs(
         description = "Learn more about the Childhood Cancer Data Initiative",

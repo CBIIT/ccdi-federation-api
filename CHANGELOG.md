@@ -8,11 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [v1.2.0] — 05-27-2025
+
 ### Added
 
-- added associated_diagnoses to the /subject endpoint
+- Adds associated_diagnoses to the /subject endpoint
   ([#141](https://github.com/CBIIT/ccdi-federation-api/pull/141)).
-- added associated_diagnoses to the /subject/by/{}/count endpoint
+- Adds associated_diagnoses to the /subject/by/{}/count endpoint
   ([#150](https://github.com/CBIIT/ccdi-federation-api/pull/150).
 - Adds Sample ID CDE description to the `name`
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
@@ -349,7 +351,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rust tooling was added to the `packages` directory
   ([#14](https://github.com/CBIIT/ccdi-federation-api/pull/14)).
 
-[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/cbiit/ccdi-federation-api/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/cbiit/ccdi-federation-api/compare/v1.0.0-rc.1...v1.0.0
 [v1.0.0-rc.1]: https://github.com/cbiit/ccdi-federation-api/compare/v0.7.0...v1.0.0-rc.1
