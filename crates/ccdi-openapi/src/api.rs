@@ -25,7 +25,7 @@ use utoipa::openapi;
   Federation node.
 * Additionally, you can view the Swagger specification in a more traditional
   theme by visiting
-  [this link](https://editor.swagger.io/?url=https://cbiit.github.io/ccdi-federation-api/swagger.yml).
+  [this link](https://cbiit.github.io/ccdi-federation-api/specification.html).
 * To access CCDI Data Federation Resource, please visit
   [this link](https://cbiit.github.io/ccdi-federation-api-aggregation/).",
         contact(
