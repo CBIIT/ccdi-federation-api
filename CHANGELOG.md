@@ -8,6 +8,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- Updates link to the Swagger UI document.
+  ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
+
 ## [v1.2.0] — 05-27-2025
 
 ### Added
