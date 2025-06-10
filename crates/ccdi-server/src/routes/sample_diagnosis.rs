@@ -69,6 +69,9 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 ///
 /// This endpoint has default ordering requirements—those details are documented
 /// in the `responses::Samples` schema.
+///
+/// Note: This API is experimental and is subject to change without being considered
+/// as a breaking change.
 #[utoipa::path(
     get,
     path = "/sample-diagnosis",

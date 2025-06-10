@@ -1099,6 +1099,9 @@ paths:
 
         This endpoint has default ordering requirements—those details are documented
         in the `responses::Samples` schema.
+
+        Note: This API is experimental and is subject to change without being considered
+        as a breaking change.
       operationId: sample_diagnosis_index
       parameters:
       - name: search
@@ -1350,6 +1353,9 @@ paths:
 
         This endpoint has default ordering requirements—those details are documented
         in the `responses::Subjects` schema.
+
+        Note: This API is experimental and is subject to change without being considered
+        as a breaking change.
       operationId: subject_diagnosis_index
       parameters:
       - name: search
