@@ -104,6 +104,10 @@ export default defineConfig({
             text: "Introducing the Federation API",
             link: "/blog/09-25-2024-introducing-the-federation-api",
           },
+          {
+            text: "Federation Resource API with CPI",
+            link: "/blog/06-25-2025-the-federation-api-cpi",
+          },
         ],
       },
     ],
