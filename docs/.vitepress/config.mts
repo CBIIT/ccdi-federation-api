@@ -1,9 +1,10 @@
 import { defineConfig } from "vitepress";
+import { withMermaid } from 'vitepress-plugin-mermaid';
 import path from "path";
 
 const projectRootDir = path.resolve(__dirname);
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: "CCDI Data Federation API",
   description:
     "The documentation site for the Childhood Cancer Data Initiative Federation API.",
@@ -106,7 +107,7 @@ export default defineConfig({
           },
           {
             text: "Federation Resource API with CPI",
-            link: "/blog/06-25-2025-the-federation-api-cpi",
+            link: "/blog/07-17-2025-the-federation-api-cpi",
           },
         ],
       },
@@ -117,6 +118,9 @@ export default defineConfig({
     ],
   },
   vite: {
+    optimizeDeps: {
+      include: ['@braintree/sanitize-url']
+    },
     ssr: {
       noExternal: ["monaco-editor"],
     },
@@ -138,7 +142,8 @@ export default defineConfig({
     resolve: {
       alias: {
         "@": projectRootDir,
+        dayjs: 'dayjs/'
       },
     },
   },
-});
+}));
