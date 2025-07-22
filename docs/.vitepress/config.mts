@@ -107,7 +107,7 @@ export default withMermaid(defineConfig({
           },
           {
             text: "Federation Resource API with CPI",
-            link: "/blog/07-17-2025-the-federation-api-cpi",
+            link: "/blog/07-23-2025-the-federation-api-cpi",
           },
         ],
       },
