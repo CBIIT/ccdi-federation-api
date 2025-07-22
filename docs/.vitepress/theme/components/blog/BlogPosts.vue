@@ -13,7 +13,7 @@
       <BlogEntry1
         title="Federation Resource API with CPI"
         author="The CCDI Federation Developers"
-        link="/ccdi-federation-api/blog/07-17-2025-the-federation-api-cpi"
+        link="/ccdi-federation-api/blog/07-23-2025-the-federation-api-cpi"
       />
     </ul>
   </div>

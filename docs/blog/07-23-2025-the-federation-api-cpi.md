@@ -10,9 +10,9 @@ const ApiCallBlockAggr = inBrowser
   : () => null;
 
 import DataTable from '@/theme/components/api-call-aggr/DataTable.vue';
-//import * as Graph from "./07-17-2025-the-federation-api-cpi/graph";
-//import GraphPlaceholder from "./07-17-2025-the-federation-api-cpi/GraphPlaceholder.vue";
-import { useDataStore } from "./07-17-2025-the-federation-api-cpi/store";
+//import * as Graph from "./07-23-2025-the-federation-api-cpi/graph";
+//import GraphPlaceholder from "./07-23-2025-the-federation-api-cpi/GraphPlaceholder.vue";
+import { useDataStore } from "./07-23-2025-the-federation-api-cpi/store";
 
 let api = new ApiAggr();
 const data = useDataStore();
@@ -21,17 +21,17 @@ const data = useDataStore();
 <ClientOnly>
 <div class="text-4xl font-extrabold">Expanding the CCDI Federation API: subject-mapping Endpoint</div>
 <div class="text-lg mt-1 dark:text-slate-300 text-slate-900">The CCDI Federation Resource API Team</div>
-<div class="dark:text-slate-400 text-slate-800 italic">July 17, 2025</div>
+<div class="dark:text-slate-400 text-slate-800 italic">July 23, 2025</div>
 
-We’re excited to announce a major update to the [CCDI Federation API][ResourceAPI-main]: the new **subject-mapping endpoint** available within [the Federation Resource API][spec-aggr] that links Federation member participants with the [CCDI Participant Index (CPI)][CPI-main] to help researchers connect participant data across multiple pediatric cancer studies. This enhancement makes it easier to discover and analyze data from different sources, accelerating progress in childhood cancer research.
+We’re excited to announce a major update to the [CCDI Federation API][ResourceAPI-main]: the new `/subject-mapping` endpoint available within [the Federation Resource API][spec-aggr] that links Federation member participants with the [CCDI Participant Index (CPI)][CPI-main] to help researchers connect participant data across multiple pediatric cancer studies. This enhancement makes it easier to discover and analyze data from different sources, accelerating progress in childhood cancer research.
 
 ## What’s New? {#new-subject-mapping}
 
-The subject-mapping endpoint allows researchers to connect participant data across multiple studies and institutions. The CPI’s goal is to manage and share multiple cross-linked participant IDs that represent the same individual by connecting various participant IDs from different studies/research institutions (domains). By leveraging the CPI, this feature maps various participant IDs - assigned by different Federation members- to the same individual, making it easier to find and analyze related data across datasets.
+The `/subject-mapping` endpoint allows researchers to connect participant data across multiple studies and institutions. The CPI’s goal is to manage and share multiple cross-linked participant IDs that represent the same individual by connecting various participant IDs from different studies/research institutions (domains). By leveraging the CPI, this feature maps various participant IDs - assigned by different Federation members- to the same individual, making it easier to find and analyze related data across datasets.
 
 ## How It Works {how-it-works}
 
-This new **subject-mapping** endpoint is embedded in the existing search parameters used in the subject search in the Federation API. Through the subject mapping endpoint, the CPI finds the subjects known by the Federation and returns domain ID/ID pairs and all mapped organizational domain ID/ID pairs for each found subject ID. 
+This new `/subject-mapping` endpoint is embedded in the existing search parameters used in the subject search in the Federation API. Through the `/subject-mapping` endpoint, the CPI finds the subjects known by the Federation and returns domain ID/ID pairs and all mapped organizational domain ID/ID pairs for each found subject ID.
 
 When you conduct a subject search, the API searches the CPI, leveraging the CPI functionality [getAssociatedParticipantIds][getAssociatedParticipantIds] for all known participant IDs and organizational domains that correspond to the same individual. The response includes all mapped identifiers, helping you quickly connect related data across the Federation.
 

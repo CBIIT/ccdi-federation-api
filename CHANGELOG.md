@@ -8,7 +8,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 - Added a blog post "Federation Resource API with CPI".
-  ([#161](https://github.com/CBIIT/ccdi-federation-api/pull/161)).
+  ([#162](https://github.com/CBIIT/ccdi-federation-api/pull/162)).
 
 ## [Unreleased]
 
