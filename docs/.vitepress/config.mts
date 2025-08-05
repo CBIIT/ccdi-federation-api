@@ -109,6 +109,10 @@ export default withMermaid(defineConfig({
             text: "Federation Resource API with CPI",
             link: "/blog/07-23-2025-the-federation-api-cpi",
           },
+          {
+            text: "CCDI ecDNA joins the Federation API",
+            link: "/blog/08-06-2025-the-federation-api-ecdna",
+          },
         ],
       },
     ],

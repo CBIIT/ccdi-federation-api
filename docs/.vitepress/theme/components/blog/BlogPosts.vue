@@ -12,8 +12,15 @@
     <ul>
       <BlogEntry1
         title="Federation Resource API with CPI"
-        author="The CCDI Federation Developers"
+        author="The CCDI Federation Resource API Team"
         link="/ccdi-federation-api/blog/07-23-2025-the-federation-api-cpi"
+      />
+    </ul>
+    <ul>
+      <BlogEntry2
+        title="CCDI ecDNA joins the Federation API"
+        author="The CCDI Federation Resource API Team"
+        link="/ccdi-federation-api/blog/08-06-2025-the-federation-api-ecdna"
       />
     </ul>
   </div>
@@ -22,6 +29,7 @@
 <script setup lang="ts">
 import BlogEntry from "./BlogEntry.vue";
 import BlogEntry1 from "./BlogEntry1.vue";
+import BlogEntry2 from "./BlogEntry2.vue";
 </script>
 
 <style scoped></style>
