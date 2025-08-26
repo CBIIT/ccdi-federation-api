@@ -113,6 +113,10 @@ export default withMermaid(defineConfig({
             text: "CCDI ecDNA joins the Federation API",
             link: "/blog/08-06-2025-the-federation-api-ecdna",
           },
+          {
+            text: "New Diagnosis Endpoints",
+            link: "/blog/08-26-2025-the-federation-api-diagnosis",
+          },
         ],
       },
     ],
