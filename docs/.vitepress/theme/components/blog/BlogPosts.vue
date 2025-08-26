@@ -23,13 +23,20 @@
         link="/ccdi-federation-api/blog/08-06-2025-the-federation-api-ecdna"
       />
     </ul>
+    <ul>
+      <BlogEntry3
+        title="New Diagnosis Endpoints"
+        author="The CCDI Federation Resource API Team"
+        link="/ccdi-federation-api/blog/08-26-2025-the-federation-api-diagnosis"
+      />
+    </ul>
   </div>
 </template>
-
 <script setup lang="ts">
 import BlogEntry from "./BlogEntry.vue";
 import BlogEntry1 from "./BlogEntry1.vue";
 import BlogEntry2 from "./BlogEntry2.vue";
+import BlogEntry3 from "./BlogEntry3.vue";
 </script>
 
 <style scoped></style>
