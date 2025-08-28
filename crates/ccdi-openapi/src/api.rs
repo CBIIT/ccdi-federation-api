@@ -60,6 +60,11 @@ use utoipa::openapi;
             description = "Childhood Cancer Catalog of ecDNA CCDI API server"
 
         ),
+        (
+            url = "https://ccdi.ipo.sulab.io/api/v1",
+            description = "Indiana Precision Oncology CCDI API server"
+
+        ),
     ),
     tags(
         (
