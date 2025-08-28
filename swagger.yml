@@ -30,6 +30,8 @@ servers:
   description: KidsFirst CCDI API server
 - url: https://ccdi-ecdna.org/ccdi-federation/api/v1
   description: Childhood Cancer Catalog of ecDNA CCDI API server
+- url: https://ccdi.ipo.sulab.io/api/v1
+  description: Indiana Precision Oncology CCDI API server
 paths:
   /subject:
     get:
