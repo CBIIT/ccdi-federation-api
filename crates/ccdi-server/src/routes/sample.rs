@@ -106,7 +106,7 @@ pub fn configure(store: Data<Store>) -> impl FnOnce(&mut ServiceConfig) {
 ///   its value _exactly_ matches the query string. Matches are case-sensitive.
 /// * For multiple-value metadata fields, the sample is included in the results
 ///   if any of its values for the field _exactly_ match the query string (a
-///   logical OR [`||`]). Matches are case-sensitive.
+///   logical OR (`||`)). Matches are case-sensitive.
 /// * When the metadata field is `null` (in the case of singular or
 ///   multiple-valued metadata fields) or empty, the sample is not included.
 /// * When multiple fields are provided as filters, a logical AND (`&&`) strings
