@@ -7,6 +7,10 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Added a blog post "IUSCCC-PST joins the Federation API".
+  ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
+
+## [Unreleased]
 - Adds the IPO CCDI API Server to the list of available implementations
   ([#165](https://github.com/CBIIT/ccdi-federation-api/pull/165)).
 
