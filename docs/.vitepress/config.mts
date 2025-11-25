@@ -117,6 +117,10 @@ export default withMermaid(defineConfig({
             text: "New Diagnosis Endpoints",
             link: "/blog/08-26-2025-the-federation-api-diagnosis",
           },
+          {
+            text: "IUSCCC-PST joins the Federation API",
+            link: "/blog/11-26-2025-the-federation-api-iusccc-pst",
+          },
         ],
       },
     ],
