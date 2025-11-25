@@ -30,6 +30,13 @@
         link="/ccdi-federation-api/blog/08-26-2025-the-federation-api-diagnosis"
       />
     </ul>
+    <ul>
+      <BlogEntry4
+        title="IUSCCC-PST joins the Federation API"
+        author="The CCDI Federation Resource API Team"
+        link="/ccdi-federation-api/blog/11-26-2025-the-federation-api-iusccc-pst"
+      />
+    </ul>
   </div>
 </template>
 <script setup lang="ts">
