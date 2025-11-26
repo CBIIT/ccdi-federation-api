@@ -18,15 +18,14 @@ University Simon Comprehensive Cancer Center (IUSCCC).
 The Sarcoma and Solid Tumor Program at Riley Children's Health, operated
 through the Indiana University Simon Comprehensive Cancer Center,
 specializes in diagnosing, treating, and researching childhood solid
-tumors - including sarcomas and kidney tumors. Through advanced care
+tumors - including sarcomas and kidney tumors. The program uses advanced care
 protocols and collaborative research with the Children’s Oncology
-Group (COG) and developing new therapies, such as targeted therapies.
+Group (COG) and develops new therapies.
 
 **How to Access**
 
-The CCDI Federation Resource ecosystem allows users to directly access
-individual source nodes (and the Pediatric Solid Tumor program data) or
-use the aggregation capabilities of the Federation Resource to query
+The CCDI Federation Resource allows users to directly access
+individual source nodes or use the aggregation capabilities of the Federation Resource to query
 data across all nodes simultaneously. Researchers can leverage this new
 Data Federation member, along with the current CCDI Data Federation
 Members (KidsFirst, PCDC, St. Jude Cloud, Treehouse, CCDI ecDNA) as
