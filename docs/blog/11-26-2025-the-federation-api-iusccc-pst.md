@@ -40,9 +40,9 @@ For more information, visit the  [CCDI Data Federation Resource page][ResourceAP
 
 *This announcement blog highlights a technical milestone that took place earlier this 
 year. While we are publishing this blog update today, access and integration have been 
-in place since September. The CCDI Data Federation was expanded in September 
-2025 to fully incorporate the Indiana Precision Oncology CCDI API as an official, 
-searchable resource alongside other Federation members.*
+in place since September 2025. The CCDI Data Federation was expanded to fully 
+incorporate the Indiana Precision Oncology CCDI API as an official, searchable 
+resource alongside other Federation members*
 
 
 [spec-aggr]: https://cbiit.github.io/ccdi-federation-api-aggregation
