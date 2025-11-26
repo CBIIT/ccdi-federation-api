@@ -15,7 +15,7 @@ University Simon Comprehensive Cancer Center (IUSCCC).
 
 **About The IUSCCC Pediatric Solid Tumor Program**
 
-The Sarcoma and Solid Tumor Program at Riley Children's, operated
+The Sarcoma and Solid Tumor Program at Riley Children's Health, operated
 through the Indiana University Simon Comprehensive Cancer Center,
 specializes in diagnosing, treating, and researching childhood solid
 tumors - including sarcomas and kidney tumors. Through advanced care
