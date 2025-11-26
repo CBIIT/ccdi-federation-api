@@ -44,6 +44,7 @@ import BlogEntry from "./BlogEntry.vue";
 import BlogEntry1 from "./BlogEntry1.vue";
 import BlogEntry2 from "./BlogEntry2.vue";
 import BlogEntry3 from "./BlogEntry3.vue";
+import BlogEntry4 from "./BlogEntry4.vue";
 </script>
 
 <style scoped></style>
