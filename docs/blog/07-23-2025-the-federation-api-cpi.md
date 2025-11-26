@@ -73,7 +73,7 @@ You can query this API endpoint live and get responses back — we hope you'll t
 For technical details on the CPI service, please visit the [CPI Participant Index Documentation Site][CPI-spec].
 
 
-To stay updated on our progress, please star and follow the project [onGitHub](https://github.com/cbiit/ccdi-federation-api).
+To stay updated on our progress, please star and follow the project [on GitHub](https://github.com/cbiit/ccdi-federation-api).
 
 [ccdi-main]: https://www.cancer.gov/research/areas/childhood/childhood-cancer-data-initiative
 [spec]: https://cbiit.github.io/ccdi-federation-api/specification.html

@@ -34,7 +34,7 @@ To access the CCDI Data Federation Resource API, please click [here][spec-aggr].
 To access participating nodes API, please click [here][spec-nodes].
 
 Stay tuned for future updates as we continue to expand the CCDI Data Federation with new 
-resources and tools supporting pediatric cancerresearch community.
+resources and tools supporting pediatric cancer research community.
 
 For more information, visit the  [CCDI Data Federation Resource page][ResourceAPI-main].
 
@@ -42,7 +42,7 @@ For more information, visit the  [CCDI Data Federation Resource page][ResourceAP
 year. While we are publishing this blog update today, access and integration have been 
 in place since September 2025. The CCDI Data Federation was expanded to fully 
 incorporate the Indiana Precision Oncology CCDI API as an official, searchable 
-resource alongside other Federation members*
+resource alongside other Federation members.*
 
 
 [spec-aggr]: https://cbiit.github.io/ccdi-federation-api-aggregation
