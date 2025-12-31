@@ -17,6 +17,9 @@ pub struct Builder {
     /// The diagnosis for the sample.
     diagnosis: Option<field::unowned::sample::Diagnosis>,
 
+    /// The diagnosis category for the sample.
+    diagnosis_category: Option<field::unowned::sample::DiagnosisCategory>,
+
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
 
@@ -548,6 +551,7 @@ impl Builder {
             anatomical_sites: self.anatomical_sites,
             age_at_collection: self.age_at_collection,
             diagnosis: self.diagnosis,
+            diagnosis_category: self.diagnosis_category,
             disease_phase: self.disease_phase,
             library_selection_method: self.library_selection_method,
             library_strategy: self.library_strategy,

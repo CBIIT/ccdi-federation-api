@@ -44,6 +44,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::Diagnosis, nullable = true)]
     diagnosis: Option<field::unowned::sample::Diagnosis>,
 
+    /// The diagnosis category for the sample.
+    #[schema(value_type = field::unowned::sample::DiagnosisCategory, nullable = true)]
+    diagnosis_category: Option<field::unowned::sample::DiagnosisCategory>,
+
     /// The phase of the disease when this sample was acquired.
     #[schema(value_type = field::unowned::sample::DiseasePhase, nullable = true)]
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
@@ -771,6 +775,7 @@ impl Metadata {
                 None,
                 None,
             )),
+            diagnosis_category: rand::random(),
             disease_phase: rand::random(),
             library_selection_method: rand::random(),
             library_strategy: rand::random(),

@@ -275,6 +275,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        DiagnosisCategory,
+        field::unowned::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory::from(String::from("Hematologic Malignancy")),
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         DiseasePhase,
         field::unowned::sample::DiseasePhase,
         cde::v1::sample::DiseasePhase,
