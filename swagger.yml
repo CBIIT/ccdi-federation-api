@@ -348,6 +348,14 @@ paths:
         in the `responses::Samples` schema.
       operationId: sample_index
       parameters:
+      - name: diagnosis_category
+        in: query
+        description: |-
+          Matches any sample where the `diagnosis_category` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: disease_phase
         in: query
         description: |-
@@ -1114,6 +1122,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: diagnosis_category
+        in: query
+        description: |-
+          Matches any sample where the `diagnosis_category` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: disease_phase
         in: query
         description: |-
@@ -1823,6 +1839,40 @@ components:
       - Treehouse
       - UCL
       - UK
+    cde.v1.sample.DiagnosisCategory:
+      type: string
+      description: |-
+        **`caDSR CDE 16607972 1.00`**
+
+        This metadata element is defined by the caDSR as "The disease group which is associated with the pediatric cancer diagnosis.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
+      enum:
+      - Atypical Teratoid/Rhabdoid Tumor
+      - Choroid Plexus Tumors
+      - CNS Germ Cell Tumors
+      - CNS Sarcoma
+      - Craniopharyngioma
+      - Ependymoma
+      - Glioneuronal and Neuronal Tumors
+      - High-Grade Glioma
+      - Low-Grade Glioma
+      - Medulloblastoma
+      - CNS Embryonal Tumor, NOS
+      - Myeloid Leukemia
+      - Lymphoblastic Leukemia
+      - Hodgkin Lymphoma
+      - Non-Hodgkin Lymphoma
+      - Lymphoproliferative Disease
+      - Soft Tissue Sarcoma
+      - Neuroblastoma
+      - Osteosarcoma
+      - Renal Tumor
+      - Germ Cell Tumor
+      - Ewing Sarcoma
+      - Liver Tumor
+      - Other
     cde.v1.sample.DiseasePhase:
       type: string
       description: |-
@@ -2466,6 +2516,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.sample.metadata.Diagnosis'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.DiagnosisCategory:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.DiagnosisCategory'
         ancestors:
           type: array
           items:
@@ -3854,6 +3926,7 @@ components:
         - age_at_diagnosis
         - anatomical_sites
         - diagnosis
+        - diagnosis_category
         - disease_phase
         - library_selection_method
         - tissue_type
@@ -3878,6 +3951,10 @@ components:
           diagnosis:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.Diagnosis'
+            nullable: true
+          diagnosis_category:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.DiagnosisCategory'
             nullable: true
           disease_phase:
             allOf:
