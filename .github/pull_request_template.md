@@ -33,6 +33,6 @@ complete the checklist as well:
   `http://localhost:8000/sample?anatomical_sites=foobar` works.
 - [ ] I have confirmed that my field shows up in the relevant wiki generation
   command. For example. if you add a field to subjects, it should show up in the
-  `cargo run --release wiki subject` output.
+  `cargo run --bin ccdi-spec --release wiki subject` output.
 
 -->
