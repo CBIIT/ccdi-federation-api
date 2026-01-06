@@ -1844,7 +1844,8 @@ components:
       description: |-
         **`caDSR CDE 16607972 1.00`**
 
-        This metadata element is defined by the caDSR as "The disease group which is associated with the pediatric cancer diagnosis.".
+        This metadata element is defined by the caDSR as "The disease group which is
+        associated with the pediatric cancer diagnosis.".
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
