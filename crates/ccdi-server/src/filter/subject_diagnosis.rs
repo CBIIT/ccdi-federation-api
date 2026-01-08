@@ -46,7 +46,6 @@ impl FilterMetadataField<Subject, FilterSubjectDiagnosisParams> for Vec<Subject>
 
                             let diagnoses_lower = associated_diagnoses
                                 .iter()
-                                .cloned()
                                 .map(|r| r.value().to_string().to_lowercase())
                                 .collect::<Vec<String>>();
 
@@ -70,12 +69,7 @@ impl FilterMetadataField<Subject, FilterSubjectDiagnosisParams> for Vec<Subject>
                                 .and_then(|metadata| metadata.sex())
                                 .map(|sex| vec![sex.to_string()]),
                             "race" => subject.metadata().and_then(|metadata| metadata.race()).map(
-                                |race| {
-                                    race.iter()
-                                        .cloned()
-                                        .map(|r| r.to_string())
-                                        .collect::<Vec<String>>()
-                                },
+                                |race| race.iter().map(|r| r.to_string()).collect::<Vec<String>>(),
                             ),
                             "ethnicity" => subject
                                 .metadata()
@@ -87,7 +81,6 @@ impl FilterMetadataField<Subject, FilterSubjectDiagnosisParams> for Vec<Subject>
                                 .map(|identifiers| {
                                     identifiers
                                         .iter()
-                                        .cloned()
                                         .map(|r| r.to_string())
                                         .collect::<Vec<String>>()
                                 }),
