@@ -136,6 +136,15 @@ pub struct SubjectDiagnosis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub depositions: Option<String>,
+
+    /// Matches any subject where any member of the `associated_diagnosis_categories` field matches the
+    /// string provided.
+    ///
+    /// **Note:** a logical OR (`||`) is performed across the values when
+    /// determining whether the subject should be included in the results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub associated_diagnosis_categories: Option<String>,
 }
 
 /// Parameters for filtering samples.

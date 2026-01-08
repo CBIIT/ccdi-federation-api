@@ -472,9 +472,7 @@ pub mod subject {
         field::unowned::subject::AssociatedDiagnosisCategories,
         Vec<cde::v1::sample::DiagnosisCategory>,
         Vec<cde::v1::sample::DiagnosisCategory>,
-        vec![
-            cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor
-        ],
+        vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
         ccdi_cde as cde
     );
 

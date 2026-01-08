@@ -58,7 +58,8 @@ pub struct Metadata {
 
     /// The associated diagnoses categories for the subject.
     #[schema(value_type = Vec<field::unowned::subject::AssociatedDiagnosisCategories>, nullable = true)]
-    associated_diagnosis_categories: Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
+    associated_diagnosis_categories:
+        Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
 
     /// Common metadata elements for all metadata blocks.
     #[schema(value_type = models::metadata::common::Metadata)]
@@ -333,9 +334,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .append_associated_diagnosis_categories(AssociatedDiagnosisCategories::new(
-    ///             vec![
-    ///                 cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
-    ///             ],
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
     ///         None,
     ///         None,
     ///         None,
@@ -345,9 +344,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.associated_diagnosis_categories(),
     ///     Some(&vec![AssociatedDiagnosisCategories::new(
-    ///         vec![
-    ///             cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor
-    ///         ],
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
     ///         None,
     ///         None,
     ///         None
