@@ -30,7 +30,8 @@ pub struct Builder {
     associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
 
     /// The associated diagnoses categories for the subject.
-    associated_diagnosis_categories: Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
+    associated_diagnosis_categories:
+        Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
 
     /// Common metadata elements for all metadata blocks.
     common: common::Metadata,
