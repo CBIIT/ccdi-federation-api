@@ -7,27 +7,18 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Added diagnosis_category to the /sample endpoint
+  ([#173](https://github.com/CBIIT/ccdi-federation-api/pull/173))
 - Added a blog post "IUSCCC-PST joins the Federation API".
-  ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
-
-## [Unreleased]
+  ([#171](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
 - Adds the IPO CCDI API Server to the list of available implementations
   ([#165](https://github.com/CBIIT/ccdi-federation-api/pull/165)).
-
-## [Unreleased]
 - Added a blog post "New Diagnosis Endpoints".
   ([#164](https://github.com/CBIIT/ccdi-federation-api/pull/164)).
-
-## [Unreleased]
 - Added a blog post "CCDI ecDNA joins the Federation API".
   ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/163)).
-
-## [Unreleased]
 - Added a blog post "Federation Resource API with CPI".
   ([#162](https://github.com/CBIIT/ccdi-federation-api/pull/162)).
-
-## [Unreleased]
-
 - Updates link to the Swagger UI document.
   ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
 

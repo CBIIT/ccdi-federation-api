@@ -19,6 +19,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         crate::sample::metadata::AgeAtDiagnosis::description(),
         crate::sample::metadata::AnatomicalSite::description(),
         crate::sample::metadata::Diagnosis::description(),
+        cde::v1::sample::DiagnosisCategory::description(),
         cde::v1::sample::DiseasePhase::description(),
         cde::v2::sample::LibrarySelectionMethod::description(),
         cde::v1::sample::LibraryStrategy::description(),
@@ -85,6 +86,24 @@ impl description::r#trait::Description for crate::sample::metadata::Diagnosis {
                 .unwrap(),
             None,
             None,
+        ))
+    }
+}
+
+impl description::r#trait::Description for cde::v1::sample::DiagnosisCategory {
+    fn description() -> description::Description {
+        // SAFETY: these two unwraps are tested statically below in the test
+        // that constructs the description using `get_fields()`.
+        let entity = Self::entity().unwrap();
+        let members = Self::members().map(|member| member.unwrap());
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Enum,
+            String::from("diagnosis_category"),
+            entity.description().to_string(),
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Sample-Metadata-Fields#diagnosis_category".parse::<Url>().unwrap(),
+            Some(Standard::new(entity.standard_name().to_string(), crate::Url::from(entity.standard_url().clone()))),
+            members,
         ))
     }
 }

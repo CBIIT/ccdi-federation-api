@@ -44,6 +44,10 @@ pub struct Metadata {
     #[schema(value_type = field::unowned::sample::Diagnosis, nullable = true)]
     diagnosis: Option<field::unowned::sample::Diagnosis>,
 
+    /// The diagnosis category for the sample.
+    #[schema(value_type = field::unowned::sample::DiagnosisCategory, nullable = true)]
+    diagnosis_category: Option<field::unowned::sample::DiagnosisCategory>,
+
     /// The phase of the disease when this sample was acquired.
     #[schema(value_type = field::unowned::sample::DiseasePhase, nullable = true)]
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
@@ -197,6 +201,41 @@ impl Metadata {
     /// ```
     pub fn diagnosis(&self) -> Option<&field::unowned::sample::Diagnosis> {
         self.diagnosis.as_ref()
+    }
+
+    /// Gets the diagnosis category for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::DiagnosisCategory;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .diagnosis_category(DiagnosisCategory::new(
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.diagnosis_category(),
+    ///     Some(&DiagnosisCategory::new(
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         None,
+    ///         None,
+    ///         None
+    ///     ))
+    /// );
+    /// ```
+    pub fn diagnosis_category(&self) -> Option<&field::unowned::sample::DiagnosisCategory> {
+        self.diagnosis_category.as_ref()
     }
 
     /// Gets the harmonized disease phase for the [`Metadata`].
@@ -771,6 +810,7 @@ impl Metadata {
                 None,
                 None,
             )),
+            diagnosis_category: rand::random(),
             disease_phase: rand::random(),
             library_selection_method: rand::random(),
             library_strategy: rand::random(),
@@ -836,7 +876,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"disease_phase\":null,\"library_selection_method\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"tumor_grade\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
+            "{\"age_at_diagnosis\":null,\"anatomical_sites\":null,\"diagnosis\":null,\"diagnosis_category\":null,\"disease_phase\":null,\"library_selection_method\":null,\"tissue_type\":null,\"tumor_classification\":null,\"tumor_tissue_morphology\":null,\"age_at_collection\":null,\"library_strategy\":null,\"library_source_material\":null,\"preservation_method\":null,\"tumor_grade\":null,\"specimen_molecular_analyte_type\":null,\"identifiers\":null,\"depositions\":null}"
         );
     }
 }

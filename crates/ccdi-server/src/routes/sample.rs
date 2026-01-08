@@ -430,6 +430,20 @@ fn parse_field(field: &str, sample: &Sample) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "diagnosis_category" => match sample.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .diagnosis_category()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as
+                    // [`serde_json::Value`]s.
+                    .map(|diagnosis_category| {
+                        serde_json::to_value(diagnosis_category.value()).unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "disease_phase" => match sample.metadata() {
             Some(metadata) => Some(
                 metadata

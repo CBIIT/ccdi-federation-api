@@ -5,7 +5,6 @@ use rand::distributions::Distribution;
 use rand::distributions::Standard;
 use serde::Deserialize;
 use serde::Serialize;
-use utoipa::schema;
 use utoipa::ToSchema;
 
 /// A list of checksums for a file.

@@ -275,6 +275,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        DiagnosisCategory,
+        field::unowned::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         DiseasePhase,
         field::unowned::sample::DiseasePhase,
         cde::v1::sample::DiseasePhase,
