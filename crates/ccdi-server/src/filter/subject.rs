@@ -38,12 +38,7 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
                     "race" => subject
                         .metadata()
                         .and_then(|metadata| metadata.race())
-                        .map(|race| {
-                            race.iter()
-                                .cloned()
-                                .map(|r| r.to_string())
-                                .collect::<Vec<String>>()
-                        }),
+                        .map(|race| race.iter().map(|r| r.to_string()).collect::<Vec<String>>()),
                     "ethnicity" => subject
                         .metadata()
                         .and_then(|metadata| metadata.ethnicity())
@@ -54,7 +49,6 @@ impl FilterMetadataField<Subject, FilterSubjectParams> for Vec<Subject> {
                         .map(|identifiers| {
                             identifiers
                                 .iter()
-                                .cloned()
                                 .map(|r| r.to_string())
                                 .collect::<Vec<String>>()
                         }),
