@@ -24,6 +24,7 @@ pub fn get_field_descriptions() -> Vec<description::Description> {
         cde::v1::subject::VitalStatus::description(),
         crate::subject::metadata::AgeAtVitalStatus::description(),
         crate::subject::metadata::AssociatedDiagnoses::description(),
+        crate::subject::metadata::AssociatedDiagnosisCategories::description(),
     ]
 }
 
@@ -167,6 +168,24 @@ impl description::r#trait::Description for crate::subject::metadata::AssociatedD
             String::from("associated_diagnoses"),
             description,
             "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#associated_diagnoses".parse::<Url>().unwrap(),
+            None,
+            None,
+        ))
+    }
+}
+
+impl description::r#trait::Description for crate::subject::metadata::AssociatedDiagnosisCategories {
+    fn description() -> description::Description {
+        let description = match Self::introspected_entity() {
+            Entity::Enum(entity) => entity.documentation().unwrap().to_string(),
+            Entity::Struct(entity) => entity.documentation().unwrap().to_string(),
+        };
+
+        description::Description::Harmonized(Harmonized::new(
+            Kind::Struct,
+            String::from("associated_diagnosis_categories"),
+            description,
+            "https://github.com/CBIIT/ccdi-federation-api/wiki/Subject-Metadata-Fields#associated_diagnosis_categories".parse::<Url>().unwrap(),
             None,
             None,
         ))

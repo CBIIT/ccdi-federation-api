@@ -468,6 +468,17 @@ pub mod subject {
     );
 
     unowned_field!(
+        AssociatedDiagnosisCategories,
+        field::unowned::subject::AssociatedDiagnosisCategories,
+        Vec<cde::v1::sample::DiagnosisCategory>,
+        Vec<cde::v1::sample::DiagnosisCategory>,
+        vec![
+            cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor
+        ],
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         Identifier,
         field::unowned::subject::Identifier,
         crate::subject::identifier::referenced::Identifier,

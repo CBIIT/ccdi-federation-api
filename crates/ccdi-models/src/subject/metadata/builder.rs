@@ -29,6 +29,9 @@ pub struct Builder {
     /// The associated diagnoses for the subject.
     associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
 
+    /// The associated diagnoses categories for the subject.
+    associated_diagnosis_categories: Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
+
     /// Common metadata elements for all metadata blocks.
     common: common::Metadata,
 
@@ -236,6 +239,40 @@ impl Builder {
         self
     }
 
+    /// Append a value to the `associated_diagnosis_categories` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::AssociatedDiagnosisCategories;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let field = AssociatedDiagnosisCategories::new(
+    ///     vec![
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         cde::v1::sample::DiagnosisCategory::Neuroblastoma,
+    ///     ],
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().append_aassociated_diagnosis_categories(field);
+    /// ```
+    pub fn append_associated_diagnosis_categories(
+        mut self,
+        field: field::unowned::subject::AssociatedDiagnosisCategories,
+    ) -> Self {
+        let mut inner = self.associated_diagnosis_categories.unwrap_or_default();
+        inner.push(field);
+
+        self.associated_diagnosis_categories = Some(inner);
+
+        self
+    }
+
     /// Sets the common metadata for the [`Metadata`].
     ///
     /// # Examples
@@ -329,6 +366,7 @@ impl Builder {
             vital_status: self.vital_status,
             age_at_vital_status: self.age_at_vital_status,
             associated_diagnoses: self.associated_diagnoses,
+            associated_diagnosis_categories: self.associated_diagnosis_categories,
             common: self.common,
             unharmonized: self.unharmonized,
         }
