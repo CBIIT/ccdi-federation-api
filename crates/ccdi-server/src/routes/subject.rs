@@ -464,6 +464,25 @@ fn parse_field(field: &str, subject: &Subject) -> Option<Option<Value>> {
             ),
             None => Some(None),
         },
+        "associated_diagnosis_categories" => match subject.metadata() {
+            Some(metadata) => Some(
+                metadata
+                    .associated_diagnosis_categories()
+                    .as_ref()
+                    // SAFETY: all metadata fields are able to be represented as [`serde_json::Value`]s.
+                    .map(|categories_vec| {
+                        serde_json::to_value(
+                            categories_vec
+                                .iter()
+                                .flat_map(|cat| cat.value().iter()) // unwrap the Vec<DiagnosisCategory>
+                                .collect::<Vec<_>>(), // collect as a Vec<DiagnosisCategory>
+                        )
+                        .unwrap()
+                    })
+                    .or(Some(Value::Null)),
+            ),
+            None => Some(None),
+        },
         "depositions" => match subject.metadata() {
             Some(metadata) => Some(
                 metadata
