@@ -112,7 +112,7 @@ impl Builder {
     /// use models::metadata::field::unowned::namespace::StudyId;
     /// use models::namespace::metadata::Builder;
     ///
-    /// let name = cde::v1::namespace::StudyId::AALL0232;
+    /// let name = cde::v1::namespace::StudyId::from(String::from("STUDY001"));
     /// let builder = Builder::default().study_id(StudyId::new(name, None, None, None));
     /// ```
     pub fn study_id(mut self, field: field::unowned::namespace::StudyId) -> Self {
