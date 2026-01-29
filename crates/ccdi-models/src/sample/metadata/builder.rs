@@ -149,7 +149,7 @@ impl Builder {
     /// use models::sample::metadata::Builder;
     ///
     /// let field = DiagnosisCategory::new(
-    ///     cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///     cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
     ///     None,
     ///     None,
     ///     None,

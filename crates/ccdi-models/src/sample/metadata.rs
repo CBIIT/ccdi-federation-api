@@ -217,7 +217,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .diagnosis_category(DiagnosisCategory::new(
-    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
     ///         None,
     ///         None,
     ///         None,
@@ -227,7 +227,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.diagnosis_category(),
     ///     Some(&DiagnosisCategory::new(
-    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
     ///         None,
     ///         None,
     ///         None

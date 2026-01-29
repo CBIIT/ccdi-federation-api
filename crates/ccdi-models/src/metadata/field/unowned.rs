@@ -279,7 +279,7 @@ pub mod sample {
         field::unowned::sample::DiagnosisCategory,
         cde::v1::sample::DiagnosisCategory,
         cde::v1::sample::DiagnosisCategory,
-        cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+        cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
         ccdi_cde as cde
     );
 
