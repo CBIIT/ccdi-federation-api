@@ -597,7 +597,7 @@ pub mod namespace {
         field::unowned::namespace::StudyId,
         cde::v1::namespace::StudyId,
         cde::v1::namespace::StudyId,
-        cde::v1::namespace::StudyId::AALL0232,
+        cde::v1::namespace::StudyId::from(String::from("STUDY001")),
         ccdi_cde as cde
     );
 }

@@ -128,7 +128,7 @@ impl Metadata {
     /// use models::metadata::field::unowned::namespace::StudyId;
     /// use models::namespace::metadata::Builder;
     ///
-    /// let name = cde::v1::namespace::StudyId::AALL0232;
+    /// let name = cde::v1::namespace::StudyId::from(String::from("STUDY001"));
     /// let metadata = Builder::default()
     ///     .study_id(StudyId::new(name.clone(), None, None, None))
     ///     .build();

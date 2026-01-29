@@ -7,6 +7,9 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
 - Added diagnosis_category to the /sample endpoint
   ([#173](https://github.com/CBIIT/ccdi-federation-api/pull/173))
 - Added a blog post "IUSCCC-PST joins the Federation API".
@@ -19,6 +22,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/163)).
 - Added a blog post "Federation Resource API with CPI".
   ([#162](https://github.com/CBIIT/ccdi-federation-api/pull/162)).
+
+### Changed
+
+- Updates the Study ID to use new CDE `6380045`
+  ([[#170](https://github.com/CBIIT/ccdi-federation-api/issues/170)],
+  [#177](https://github.com/CBIIT/ccdi-federation-api/pull/177)).
 - Updates link to the Swagger UI document.
   ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
 
