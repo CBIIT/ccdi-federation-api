@@ -1850,30 +1850,37 @@ components:
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
       enum:
-      - Atypical Teratoid/Rhabdoid Tumor
+      - Atypical Teratoid/Rhabdoid Tumors
       - Choroid Plexus Tumors
       - CNS Germ Cell Tumors
-      - CNS Sarcoma
-      - Craniopharyngioma
+      - CNS Sarcomas
+      - Craniopharyngiomas
       - Ependymoma
       - Glioneuronal and Neuronal Tumors
       - High-Grade Glioma
-      - Low-Grade Glioma
+      - Low-Grade Gliomas
       - Medulloblastoma
-      - CNS Embryonal Tumor, NOS
+      - Other CNS Embryonal Tumors
       - Myeloid Leukemia
       - Lymphoblastic Leukemia
       - Hodgkin Lymphoma
       - Non-Hodgkin Lymphoma
-      - Lymphoproliferative Disease
-      - Soft Tissue Sarcoma
+      - Lymphoproliferative Diseases
+      - Soft Tissue Tumors
       - Neuroblastoma
       - Osteosarcoma
-      - Renal Tumor
-      - Germ Cell Tumor
-      - Ewing Sarcoma
-      - Liver Tumor
-      - Other
+      - Renal Tumors
+      - Germ Cell Tumors
+      - Ewings Sarcoma
+      - Liver Tumors
+      - Other Gliomas
+      - Other Brain Tumors
+      - Other Solid Tumors
+      - Rhabdomyosarcoma
+      - Rhabdoid Tumors
+      - Retinoblastoma
+      - Endocrine and Neuroendocrine Tumors
+      - Other Hematopoietic Tumors
     cde.v1.sample.DiseasePhase:
       type: string
       description: |-

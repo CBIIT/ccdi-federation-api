@@ -33,7 +33,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Atypical Teratoid/Rhabdoid Tumors")]
     AtypicalTeratoidRhabdoidTumors,
 
-
     /// `Choroid Plexus Tumors`
     ///
     /// * **VM Long Name**: Choroid Plexus Neoplasm
@@ -46,7 +45,6 @@ pub enum DiagnosisCategory {
     /// choroid plexus papilloma, and choroid plexus carcinoma.
     #[serde(rename = "Choroid Plexus Tumors")]
     ChoroidPlexusTumors,
-
 
     /// `CNS Germ Cell Tumors`
     ///
@@ -66,7 +64,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "CNS Germ Cell Tumors")]
     CnsGermCellTumors,
 
-
     /// `CNS Sarcomas`
     ///
     /// * **VM Long Name**: Central Nervous System Sarcoma
@@ -77,7 +74,6 @@ pub enum DiagnosisCategory {
     /// A sarcoma that arises from the central nervous system.
     #[serde(rename = "CNS Sarcomas")]
     CnsSarcomas,
-
 
     /// `Craniopharyngiomas`
     ///
@@ -96,7 +92,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Craniopharyngiomas")]
     Craniopharyngiomas,
 
-
     /// `Ependymoma`
     ///
     /// * **VM Long Name**: Ependymoma
@@ -111,7 +106,6 @@ pub enum DiagnosisCategory {
     /// pseudorosettes and ependymal rosettes. (Adapted from WHO)
     #[serde(rename = "Ependymoma")]
     Ependymoma,
-
 
     /// `Glioneuronal and Neuronal Tumors`
     ///
@@ -129,7 +123,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Glioneuronal and Neuronal Tumors")]
     GlioneuronalAndNeuronalTumors,
 
-
     /// `High-Grade Glioma`
     ///
     /// * **VM Long Name**: Malignant Brain Glioma
@@ -142,7 +135,6 @@ pub enum DiagnosisCategory {
     /// ependymoma, anaplastic oligodendroglioma, and anaplastic oligoastrocytoma.
     #[serde(rename = "High-Grade Glioma")]
     HighGradeGlioma,
-
 
     /// `Low-Grade Gliomas`
     ///
@@ -157,7 +149,6 @@ pub enum DiagnosisCategory {
     /// oligoastrocytoma, and angiocentric glioma.
     #[serde(rename = "Low-Grade Gliomas")]
     LowGradeGliomas,
-
 
     /// `Medulloblastoma`
     ///
@@ -176,7 +167,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Medulloblastoma")]
     Medulloblastoma,
 
-
     /// `Other CNS Embryonal Tumors`
     ///
     /// * **VM Long Name**: Central Nervous System Embryonal Tumor, Not Otherwise Specified
@@ -188,7 +178,6 @@ pub enum DiagnosisCategory {
     /// not fully characterized.
     #[serde(rename = "Other CNS Embryonal Tumors")]
     OtherCnsEmbryonalTumors,
-
 
     /// `Myeloid Leukemia`
     ///
@@ -205,7 +194,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Myeloid Leukemia")]
     MyeloidLeukemia,
 
-
     /// `Lymphoblastic Leukemia`
     ///
     /// * **VM Long Name**: Acute Lymphoblastic Leukemia
@@ -218,7 +206,6 @@ pub enum DiagnosisCategory {
     /// the acute B lymphoblastic leukemia and acute T lymphoblastic leukemia.
     #[serde(rename = "Lymphoblastic Leukemia")]
     LymphoblasticLeukemia,
-
 
     /// `Hodgkin Lymphoma`
     ///
@@ -234,7 +221,6 @@ pub enum DiagnosisCategory {
     /// involves primarily lymph nodes.
     #[serde(rename = "Hodgkin Lymphoma")]
     HodgkinLymphoma,
-
 
     /// `Non-Hodgkin Lymphoma`
     ///
@@ -253,7 +239,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Non-Hodgkin Lymphoma")]
     NonHodgkinLymphoma,
 
-
     /// `Lymphoproliferative Diseases`
     ///
     /// * **VM Long Name**: Lymphoproliferative Disorder
@@ -268,7 +253,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Lymphoproliferative Diseases")]
     LymphoproliferativeDiseases,
 
-
     /// `Soft Tissue Tumors`
     ///
     /// * **VM Long Name**: Soft Tissue Sarcoma
@@ -282,7 +266,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Soft Tissue Tumors")]
     SoftTissueTumors,
 
-
     /// `Neuroblastoma`
     ///
     /// * **VM Long Name**: Neuroblastoma
@@ -295,7 +278,6 @@ pub enum DiagnosisCategory {
     /// Schwannian stroma formation.
     #[serde(rename = "Neuroblastoma")]
     Neuroblastoma,
-
 
     /// `Osteosarcoma`
     ///
@@ -314,7 +296,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Osteosarcoma")]
     Osteosarcoma,
 
-
     /// `Renal Tumors`
     ///
     /// * **VM Long Name**: Renal Neoplasm
@@ -330,7 +311,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Renal Tumors")]
     RenalTumors,
 
-
     /// `Germ Cell Tumors`
     ///
     /// * **VM Long Name**: Germ Cell Tumor
@@ -343,7 +323,6 @@ pub enum DiagnosisCategory {
     /// embryonal carcinoma, and yolk sac tumor.
     #[serde(rename = "Germ Cell Tumors")]
     GermCellTumors,
-
 
     /// `Ewings Sarcoma`
     ///
@@ -361,7 +340,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Ewings Sarcoma")]
     EwingsSarcoma,
 
-
     /// `Liver Tumors`
     ///
     /// * **VM Long Name**: Liver Neoplasm
@@ -373,7 +351,6 @@ pub enum DiagnosisCategory {
     /// parenchyma or intrahepatic bile ducts.
     #[serde(rename = "Liver Tumors")]
     LiverTumors,
-
 
     /// `Other Gliomas`
     ///
@@ -391,7 +368,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Other Gliomas")]
     OtherGliomas,
 
-
     /// `Other Brain Tumors`
     ///
     /// * **VM Long Name**: Other Brain Neoplasm
@@ -403,7 +379,6 @@ pub enum DiagnosisCategory {
     /// A benign or malignant neoplasm that arises from or metastasizes to the brain.
     #[serde(rename = "Other Brain Tumors")]
     OtherBrainTumors,
-
 
     /// `Other Solid Tumors`
     ///
@@ -417,7 +392,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Other Solid Tumors")]
     OtherSolidTumors,
 
-
     /// `Rhabdomyosarcoma`
     ///
     /// * **VM Long Name**: Rhabdomyosarcoma
@@ -429,7 +403,6 @@ pub enum DiagnosisCategory {
     /// (skeletal or cardiac) muscle cells. It usually occurs in children and young adults.
     #[serde(rename = "Rhabdomyosarcoma")]
     Rhabdomyosarcoma,
-
 
     /// `Rhabdoid Tumors`
     ///
@@ -445,7 +418,6 @@ pub enum DiagnosisCategory {
     /// kidney, and the soft tissues. The prognosis is poor.
     #[serde(rename = "Rhabdoid Tumors")]
     RhabdoidTumors,
-
 
     /// `Retinoblastoma`
     ///
@@ -467,7 +439,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Retinoblastoma")]
     Retinoblastoma,
 
-
     /// `Endocrine and Neuroendocrine Tumors`
     ///
     /// * **VM Long Name**: Endocrine Neoplasm And Neuroendocrine Neoplasm
@@ -484,7 +455,6 @@ pub enum DiagnosisCategory {
     #[serde(rename = "Endocrine and Neuroendocrine Tumors")]
     EndocrineAndNeuroendocrineTumors,
 
-
     /// `Other Hematopoietic Tumors`
     ///
     /// * **VM Long Name**: Other Hematopoietic and Lymphoid Cell Neoplasm
@@ -498,8 +468,6 @@ pub enum DiagnosisCategory {
     /// myelodysplastic syndromes, leukemias, Hodgkin lymphomas, and non-Hodgkin lymphomas.
     #[serde(rename = "Other Hematopoietic Tumors")]
     OtherHematopoieticTumors,
-
-
 }
 
 impl CDE for DiagnosisCategory {}
@@ -507,13 +475,17 @@ impl CDE for DiagnosisCategory {}
 impl std::fmt::Display for DiagnosisCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DiagnosisCategory::AtypicalTeratoidRhabdoidTumors => write!(f, "Atypical Teratoid/Rhabdoid Tumors"),
+            DiagnosisCategory::AtypicalTeratoidRhabdoidTumors => {
+                write!(f, "Atypical Teratoid/Rhabdoid Tumors")
+            }
             DiagnosisCategory::ChoroidPlexusTumors => write!(f, "Choroid Plexus Tumors"),
             DiagnosisCategory::CnsGermCellTumors => write!(f, "CNS Germ Cell Tumors"),
             DiagnosisCategory::CnsSarcomas => write!(f, "CNS Sarcomas"),
             DiagnosisCategory::Craniopharyngiomas => write!(f, "Craniopharyngiomas"),
             DiagnosisCategory::Ependymoma => write!(f, "Ependymoma"),
-            DiagnosisCategory::GlioneuronalAndNeuronalTumors => write!(f, "Glioneuronal and Neuronal Tumors"),
+            DiagnosisCategory::GlioneuronalAndNeuronalTumors => {
+                write!(f, "Glioneuronal and Neuronal Tumors")
+            }
             DiagnosisCategory::HighGradeGlioma => write!(f, "High-Grade Glioma"),
             DiagnosisCategory::LowGradeGliomas => write!(f, "Low-Grade Gliomas"),
             DiagnosisCategory::Medulloblastoma => write!(f, "Medulloblastoma"),
@@ -522,7 +494,9 @@ impl std::fmt::Display for DiagnosisCategory {
             DiagnosisCategory::LymphoblasticLeukemia => write!(f, "Lymphoblastic Leukemia"),
             DiagnosisCategory::HodgkinLymphoma => write!(f, "Hodgkin Lymphoma"),
             DiagnosisCategory::NonHodgkinLymphoma => write!(f, "Non-Hodgkin Lymphoma"),
-            DiagnosisCategory::LymphoproliferativeDiseases => write!(f, "Lymphoproliferative Diseases"),
+            DiagnosisCategory::LymphoproliferativeDiseases => {
+                write!(f, "Lymphoproliferative Diseases")
+            }
             DiagnosisCategory::SoftTissueTumors => write!(f, "Soft Tissue Tumors"),
             DiagnosisCategory::Neuroblastoma => write!(f, "Neuroblastoma"),
             DiagnosisCategory::Osteosarcoma => write!(f, "Osteosarcoma"),
@@ -536,7 +510,9 @@ impl std::fmt::Display for DiagnosisCategory {
             DiagnosisCategory::Rhabdomyosarcoma => write!(f, "Rhabdomyosarcoma"),
             DiagnosisCategory::RhabdoidTumors => write!(f, "Rhabdoid Tumors"),
             DiagnosisCategory::Retinoblastoma => write!(f, "Retinoblastoma"),
-            DiagnosisCategory::EndocrineAndNeuroendocrineTumors => write!(f, "Endocrine and Neuroendocrine Tumors"),
+            DiagnosisCategory::EndocrineAndNeuroendocrineTumors => {
+                write!(f, "Endocrine and Neuroendocrine Tumors")
+            }
             DiagnosisCategory::OtherHematopoieticTumors => write!(f, "Other Hematopoietic Tumors"),
         }
     }
@@ -544,7 +520,7 @@ impl std::fmt::Display for DiagnosisCategory {
 
 impl Distribution<DiagnosisCategory> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> DiagnosisCategory {
-        match rng.gen_range(0..=30) {            
+        match rng.gen_range(0..=30) {
             0 => DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
             1 => DiagnosisCategory::ChoroidPlexusTumors,
             2 => DiagnosisCategory::CnsGermCellTumors,
@@ -586,37 +562,112 @@ mod tests {
 
     #[test]
     fn it_converts_to_string_correctly() {
-        assert_eq!(DiagnosisCategory::AtypicalTeratoidRhabdoidTumors.to_string(), "Atypical Teratoid/Rhabdoid Tumors");
-        assert_eq!(DiagnosisCategory::ChoroidPlexusTumors.to_string(), "Choroid Plexus Tumors");
-        assert_eq!(DiagnosisCategory::CnsGermCellTumors.to_string(), "CNS Germ Cell Tumors");
+        assert_eq!(
+            DiagnosisCategory::AtypicalTeratoidRhabdoidTumors.to_string(),
+            "Atypical Teratoid/Rhabdoid Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::ChoroidPlexusTumors.to_string(),
+            "Choroid Plexus Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::CnsGermCellTumors.to_string(),
+            "CNS Germ Cell Tumors"
+        );
         assert_eq!(DiagnosisCategory::CnsSarcomas.to_string(), "CNS Sarcomas");
-        assert_eq!(DiagnosisCategory::Craniopharyngiomas.to_string(), "Craniopharyngiomas");
+        assert_eq!(
+            DiagnosisCategory::Craniopharyngiomas.to_string(),
+            "Craniopharyngiomas"
+        );
         assert_eq!(DiagnosisCategory::Ependymoma.to_string(), "Ependymoma");
-        assert_eq!(DiagnosisCategory::GlioneuronalAndNeuronalTumors.to_string(), "Glioneuronal and Neuronal Tumors");
-        assert_eq!(DiagnosisCategory::HighGradeGlioma.to_string(), "High-Grade Glioma");
-        assert_eq!(DiagnosisCategory::LowGradeGliomas.to_string(), "Low-Grade Gliomas");
-        assert_eq!(DiagnosisCategory::Medulloblastoma.to_string(), "Medulloblastoma");
-        assert_eq!(DiagnosisCategory::OtherCnsEmbryonalTumors.to_string(), "Other CNS Embryonal Tumors");
-        assert_eq!(DiagnosisCategory::MyeloidLeukemia.to_string(), "Myeloid Leukemia");
-        assert_eq!(DiagnosisCategory::LymphoblasticLeukemia.to_string(), "Lymphoblastic Leukemia");
-        assert_eq!(DiagnosisCategory::HodgkinLymphoma.to_string(), "Hodgkin Lymphoma");
-        assert_eq!(DiagnosisCategory::NonHodgkinLymphoma.to_string(), "Non-Hodgkin Lymphoma");
-        assert_eq!(DiagnosisCategory::LymphoproliferativeDiseases.to_string(), "Lymphoproliferative Diseases");
-        assert_eq!(DiagnosisCategory::SoftTissueTumors.to_string(), "Soft Tissue Tumors");
-        assert_eq!(DiagnosisCategory::Neuroblastoma.to_string(), "Neuroblastoma");
+        assert_eq!(
+            DiagnosisCategory::GlioneuronalAndNeuronalTumors.to_string(),
+            "Glioneuronal and Neuronal Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::HighGradeGlioma.to_string(),
+            "High-Grade Glioma"
+        );
+        assert_eq!(
+            DiagnosisCategory::LowGradeGliomas.to_string(),
+            "Low-Grade Gliomas"
+        );
+        assert_eq!(
+            DiagnosisCategory::Medulloblastoma.to_string(),
+            "Medulloblastoma"
+        );
+        assert_eq!(
+            DiagnosisCategory::OtherCnsEmbryonalTumors.to_string(),
+            "Other CNS Embryonal Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::MyeloidLeukemia.to_string(),
+            "Myeloid Leukemia"
+        );
+        assert_eq!(
+            DiagnosisCategory::LymphoblasticLeukemia.to_string(),
+            "Lymphoblastic Leukemia"
+        );
+        assert_eq!(
+            DiagnosisCategory::HodgkinLymphoma.to_string(),
+            "Hodgkin Lymphoma"
+        );
+        assert_eq!(
+            DiagnosisCategory::NonHodgkinLymphoma.to_string(),
+            "Non-Hodgkin Lymphoma"
+        );
+        assert_eq!(
+            DiagnosisCategory::LymphoproliferativeDiseases.to_string(),
+            "Lymphoproliferative Diseases"
+        );
+        assert_eq!(
+            DiagnosisCategory::SoftTissueTumors.to_string(),
+            "Soft Tissue Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::Neuroblastoma.to_string(),
+            "Neuroblastoma"
+        );
         assert_eq!(DiagnosisCategory::Osteosarcoma.to_string(), "Osteosarcoma");
         assert_eq!(DiagnosisCategory::RenalTumors.to_string(), "Renal Tumors");
-        assert_eq!(DiagnosisCategory::GermCellTumors.to_string(), "Germ Cell Tumors");
-        assert_eq!(DiagnosisCategory::EwingsSarcoma.to_string(), "Ewings Sarcoma");
+        assert_eq!(
+            DiagnosisCategory::GermCellTumors.to_string(),
+            "Germ Cell Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::EwingsSarcoma.to_string(),
+            "Ewings Sarcoma"
+        );
         assert_eq!(DiagnosisCategory::LiverTumors.to_string(), "Liver Tumors");
         assert_eq!(DiagnosisCategory::OtherGliomas.to_string(), "Other Gliomas");
-        assert_eq!(DiagnosisCategory::OtherBrainTumors.to_string(), "Other Brain Tumors");
-        assert_eq!(DiagnosisCategory::OtherSolidTumors.to_string(), "Other Solid Tumors");
-        assert_eq!(DiagnosisCategory::Rhabdomyosarcoma.to_string(), "Rhabdomyosarcoma");
-        assert_eq!(DiagnosisCategory::RhabdoidTumors.to_string(), "Rhabdoid Tumors");
-        assert_eq!(DiagnosisCategory::Retinoblastoma.to_string(), "Retinoblastoma");
-        assert_eq!(DiagnosisCategory::EndocrineAndNeuroendocrineTumors.to_string(), "Endocrine and Neuroendocrine Tumors");
-        assert_eq!(DiagnosisCategory::OtherHematopoieticTumors.to_string(), "Other Hematopoietic Tumors");
+        assert_eq!(
+            DiagnosisCategory::OtherBrainTumors.to_string(),
+            "Other Brain Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::OtherSolidTumors.to_string(),
+            "Other Solid Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::Rhabdomyosarcoma.to_string(),
+            "Rhabdomyosarcoma"
+        );
+        assert_eq!(
+            DiagnosisCategory::RhabdoidTumors.to_string(),
+            "Rhabdoid Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::Retinoblastoma.to_string(),
+            "Retinoblastoma"
+        );
+        assert_eq!(
+            DiagnosisCategory::EndocrineAndNeuroendocrineTumors.to_string(),
+            "Endocrine and Neuroendocrine Tumors"
+        );
+        assert_eq!(
+            DiagnosisCategory::OtherHematopoieticTumors.to_string(),
+            "Other Hematopoietic Tumors"
+        );
     }
 
     #[test]
