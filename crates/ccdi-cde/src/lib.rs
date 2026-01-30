@@ -17,6 +17,7 @@ use crate::parse::cde::member;
 pub mod parse;
 pub mod v1;
 pub mod v2;
+pub mod v4;
 
 /// An error related to a [`CDE`].
 #[derive(Debug)]

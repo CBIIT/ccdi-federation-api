@@ -2127,6 +2127,16 @@ components:
       - Not Hispanic or Latino
       - Unknown
       - Not reported
+    cde.v4.organization.Institution:
+      type: string
+      description: |-
+        **`caDSR CDE 1100 v4.00`**
+
+        This metadata element is defined by the caDSR as "the name of the
+        organization entering patients on a clinical trial.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=1100%20and%20ver_nr=4>
     field.UnharmonizedField:
       oneOf:
       - $ref: '#/components/schemas/field.owned.Field'
@@ -2361,7 +2371,7 @@ components:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/cde.v1.organization.Institution'
+          $ref: '#/components/schemas/cde.v4.organization.Institution'
         ancestors:
           type: array
           items:
