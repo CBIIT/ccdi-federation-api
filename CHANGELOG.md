@@ -13,7 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Added diagnosis_category to the /sample endpoint
   ([#173](https://github.com/CBIIT/ccdi-federation-api/pull/173))
 - Added a blog post "IUSCCC-PST joins the Federation API".
-  ([#171](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
+  ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
 - Adds the IPO CCDI API Server to the list of available implementations
   ([#165](https://github.com/CBIIT/ccdi-federation-api/pull/165)).
 - Added a blog post "New Diagnosis Endpoints".
@@ -28,6 +28,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Updates the Study ID to use new CDE `6380045`
   ([#170](https://github.com/CBIIT/ccdi-federation-api/issues/170),
   [#177](https://github.com/CBIIT/ccdi-federation-api/pull/177)).
+- Updates the Institution CDE to use v4.00 of CDE `1100`
+  ([[#168](https://github.com/CBIIT/ccdi-federation-api/issues/168)],
+  [#176](https://github.com/CBIIT/ccdi-federation-api/pull/176)).
 - Updates link to the Swagger UI document.
   ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
 
@@ -38,7 +41,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds associated_diagnoses to the /subject endpoint
   ([#141](https://github.com/CBIIT/ccdi-federation-api/pull/141)).
 - Adds associated_diagnoses to the /subject/by/{}/count endpoint
-  ([#150](https://github.com/CBIIT/ccdi-federation-api/pull/150).
+  ([#150](https://github.com/CBIIT/ccdi-federation-api/pull/150)).
 - Adds Sample ID CDE description to the `name`
   ([discussion](https://github.com/CBIIT/ccdi-federation-api/discussions/136),
   [#148](https://github.com/CBIIT/ccdi-federation-api/pull/148)).
