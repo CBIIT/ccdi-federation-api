@@ -12,10 +12,10 @@ use crate::Url;
 
 /// Gets the harmonized fields for samples.
 pub fn get_field_descriptions() -> Vec<description::Description> {
-    vec![cde::v1::organization::Institution::description()]
+    vec![cde::v4::organization::Institution::description()]
 }
 
-impl description::r#trait::Description for cde::v1::organization::Institution {
+impl description::r#trait::Description for cde::v4::organization::Institution {
     fn description() -> description::Description {
         let description = match Self::introspected_entity() {
             Entity::Enum(entity) => entity.documentation().unwrap().to_string(),

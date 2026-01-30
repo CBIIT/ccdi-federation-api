@@ -191,7 +191,7 @@ use utoipa::openapi;
         cde::v2::namespace::StudyShortTitle,
 
         // Harmonized organization metadata elements.
-        cde::v1::organization::Institution,
+        cde::v4::organization::Institution,
 
         // Harmonized subject fields.
         field::unowned::subject::Sex,

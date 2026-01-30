@@ -52,7 +52,7 @@ impl Metadata {
     /// use models::organization::metadata::Builder;
     ///
     /// let field = Institution::new(
-    ///     cde::v1::organization::Institution::Treehouse,
+    ///     cde::v4::organization::Institution::from(String::from("Example Institution")),
     ///     None,
     ///     None,
     ///     None,
