@@ -1708,63 +1708,6 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459810%20and%20ver_nr=1>
-    cde.v1.organization.Institution:
-      type: string
-      description: |-
-        **`caDSR CDE 12662779 v1.00`**
-
-        This metadata element is defined by the caDSR as "A sequence of characters
-        used to identify, name, or characterize the laboratory, institute, or
-        consortium that provided the information.".
-
-        Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12662779%20and%20ver_nr=1>
-      enum:
-      - AIEOP
-      - BFM-SG
-      - BOCG
-      - C3P
-      - CBTN
-      - CCLG
-      - CHLA
-      - COG
-      - COSS-GPOH
-      - CRCTU
-      - CWS
-      - DCOG
-      - DePICT
-      - DFCI
-      - EORTC
-      - EpSSG
-      - EuRBG
-      - EURO-EWING
-      - FSG
-      - GALOP
-      - GEIS
-      - GPOH
-      - IDIPGR
-      - ISG
-      - JACLS
-      - JCCG
-      - JINCS
-      - JNBSG
-      - JPLSG
-      - MRC
-      - NOPHO
-      - NRG-Oncology
-      - PNOC
-      - PPLLSG
-      - RBTR
-      - SFCE
-      - SIOP MMT
-      - SIOPE
-      - SIOPEN
-      - SJCRH
-      - SOPOBE
-      - SSG
-      - Treehouse
-      - UCL
-      - UK
     cde.v1.sample.DiagnosisCategory:
       type: string
       description: |-
