@@ -26,7 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Updates the Study ID to use new CDE `6380045`
-  ([[#170](https://github.com/CBIIT/ccdi-federation-api/issues/170)],
+  ([#170](https://github.com/CBIIT/ccdi-federation-api/issues/170),
   [#177](https://github.com/CBIIT/ccdi-federation-api/pull/177)).
 - Updates link to the Swagger UI document.
   ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
