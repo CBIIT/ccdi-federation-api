@@ -13,7 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Added diagnosis_category to the /sample endpoint
   ([#173](https://github.com/CBIIT/ccdi-federation-api/pull/173))
 - Added a blog post "IUSCCC-PST joins the Federation API".
-  ([#163](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
+  ([#171](https://github.com/CBIIT/ccdi-federation-api/pull/171)).
 - Adds the IPO CCDI API Server to the list of available implementations
   ([#165](https://github.com/CBIIT/ccdi-federation-api/pull/165)).
 - Added a blog post "New Diagnosis Endpoints".
@@ -29,7 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   ([#170](https://github.com/CBIIT/ccdi-federation-api/issues/170),
   [#177](https://github.com/CBIIT/ccdi-federation-api/pull/177)).
 - Updates the Institution CDE to use v4.00 of CDE `1100`
-  ([[#168](https://github.com/CBIIT/ccdi-federation-api/issues/168)],
+  ([#168](https://github.com/CBIIT/ccdi-federation-api/issues/168),
   [#176](https://github.com/CBIIT/ccdi-federation-api/pull/176)).
 - Updates link to the Swagger UI document.
   ([#156](https://github.com/CBIIT/ccdi-federation-api/pull/156)).
