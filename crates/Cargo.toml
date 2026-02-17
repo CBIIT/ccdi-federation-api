@@ -32,7 +32,7 @@ nonempty = { version = "0.9.0", features = ["serialize"] }
 ordered-float = { version = "4.0", features = ["serde"] }
 rand = "0.8.5"
 regex = "1.10.2"
-reqwest = { version = "0.11.22", features = ["blocking", "json"] }
+reqwest = { version = "0.13.0", features = ["blocking", "json"] }
 serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = { version = "1.0.107", features = ["preserve_order"] }
 serde_test = "1.0.176"

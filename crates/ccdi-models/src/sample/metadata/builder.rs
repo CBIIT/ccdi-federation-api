@@ -17,6 +17,9 @@ pub struct Builder {
     /// The diagnosis for the sample.
     diagnosis: Option<field::unowned::sample::Diagnosis>,
 
+    /// The diagnosis category for the sample.
+    diagnosis_category: Option<field::unowned::sample::DiagnosisCategory>,
+
     /// The phase of the disease when this sample was acquired.
     disease_phase: Option<field::unowned::sample::DiseasePhase>,
 
@@ -131,6 +134,30 @@ impl Builder {
     /// ```
     pub fn diagnosis(mut self, field: field::unowned::sample::Diagnosis) -> Self {
         self.diagnosis = Some(field);
+        self
+    }
+
+    /// Sets the `diagnosis_category` field of the [`Builder`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::sample::DiagnosisCategory;
+    /// use models::sample::metadata::Builder;
+    ///
+    /// let field = DiagnosisCategory::new(
+    ///     cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
+    ///     None,
+    ///     None,
+    ///     None,
+    /// );
+    /// let builder = Builder::default().diagnosis_category(field);
+    /// ```
+    pub fn diagnosis_category(mut self, field: field::unowned::sample::DiagnosisCategory) -> Self {
+        self.diagnosis_category = Some(field);
         self
     }
 
@@ -548,6 +575,7 @@ impl Builder {
             anatomical_sites: self.anatomical_sites,
             age_at_collection: self.age_at_collection,
             diagnosis: self.diagnosis,
+            diagnosis_category: self.diagnosis_category,
             disease_phase: self.disease_phase,
             library_selection_method: self.library_selection_method,
             library_strategy: self.library_strategy,

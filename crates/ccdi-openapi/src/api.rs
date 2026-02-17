@@ -159,6 +159,7 @@ use utoipa::openapi;
         models::sample::metadata::AgeAtDiagnosis,
         models::sample::metadata::AnatomicalSite,
         models::sample::metadata::Diagnosis,
+        cde::v1::sample::DiagnosisCategory,
         cde::v1::sample::DiseasePhase,
         cde::v2::sample::LibrarySelectionMethod,
         cde::v1::sample::LibraryStrategy,
@@ -191,7 +192,7 @@ use utoipa::openapi;
         cde::v2::namespace::StudyShortTitle,
 
         // Harmonized organization metadata elements.
-        cde::v1::organization::Institution,
+        cde::v4::organization::Institution,
 
         // Harmonized subject fields.
         field::unowned::subject::Sex,
@@ -207,6 +208,7 @@ use utoipa::openapi;
         field::unowned::sample::AgeAtDiagnosis,
         field::unowned::sample::AnatomicalSite,
         field::unowned::sample::Diagnosis,
+        field::unowned::sample::DiagnosisCategory,
         field::unowned::sample::DiseasePhase,
         field::unowned::sample::LibrarySelectionMethod,
         field::unowned::sample::LibraryStrategy,

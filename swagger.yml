@@ -348,6 +348,14 @@ paths:
         in the `responses::Samples` schema.
       operationId: sample_index
       parameters:
+      - name: diagnosis_category
+        in: query
+        description: |-
+          Matches any sample where the `diagnosis_category` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: disease_phase
         in: query
         description: |-
@@ -1114,6 +1122,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: diagnosis_category
+        in: query
+        description: |-
+          Matches any sample where the `diagnosis_category` field matches the string
+          provided.
+        required: false
+        schema:
+          type: string
       - name: disease_phase
         in: query
         description: |-
@@ -1675,87 +1691,13 @@ components:
     cde.v1.namespace.StudyId:
       type: string
       description: |-
-        **`caDSR CDE 12960571 v1.00`**
+        **`caDSR CDE 6380045 v1.00`**
 
-        This metadata element is defined by the caDSR as "A sequence of characters
-        used to identify, name, or characterize a pediatric study.".
+        This metadata element is defined by the caDSR as "A unique identifier
+        for a study.".
 
         Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12960571%20and%20ver_nr=1>
-      enum:
-      - AALL0232
-      - AALL0331
-      - AALL03B1
-      - AALL0434
-      - AALL08B1
-      - AAML03P1
-      - AAML0531
-      - AAML1031
-      - AEIOPAML2002
-      - AEWS0031
-      - AEWS0331
-      - AEWS07P1
-      - AEWS1031
-      - AEWS1221
-      - AGCT0132
-      - AGCT01P1
-      - AGCT0521
-      - AHOD0031
-      - AHOD03P1
-      - AHOD0431
-      - AHOD0831
-      - AHOD1221
-      - AHOD1331
-      - AIEOPLAM92
-      - AMLBFM-Registry2012
-      - AMLBFM1998
-      - AMLBFM2004
-      - AMLBFM2012
-      - AMLBFMRegistry2017
-      - AOST0121
-      - AOST01P1
-      - AOST0221
-      - AOST0331/EURAMOS1
-      - AOST1321
-      - AOST1421
-      - CCG-782
-      - CCG-7942
-      - DBAML01
-      - EE99
-      - EICESS92
-      - GC1
-      - GC2
-      - GOG0078
-      - GOG0090
-      - GOG0116
-      - INT133
-      - JACLSAML99
-      - JPLSGAML05
-      - MRCAML12
-      - MRCAML15
-      - NOPHOAML2004
-      - NOPHOAML2012
-      - OS2006
-      - P9749
-      - P9754
-      - POG9049
-      - PPLLSGAML98
-      - REGOBONE
-      - Sarcome13/OS2016
-      - SCFEELAM02
-      - SJCRHAML02
-      - TCGM2004
-      - TE04
-      - TE05
-      - TE08
-      - TE09
-      - TE13
-      - TE20
-      - TE22
-      - TGM85
-      - TGM90
-      - TGM95
-      - TIP
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380045%20and%20ver_nr=1>
     cde.v1.namespace.StudyName:
       type: string
       description: |-
@@ -1766,63 +1708,48 @@ components:
 
         Link:
         <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=11459810%20and%20ver_nr=1>
-    cde.v1.organization.Institution:
+    cde.v1.sample.DiagnosisCategory:
       type: string
       description: |-
-        **`caDSR CDE 12662779 v1.00`**
+        **`caDSR CDE 16607972 1.00`**
 
-        This metadata element is defined by the caDSR as "A sequence of characters
-        used to identify, name, or characterize the laboratory, institute, or
-        consortium that provided the information.".
+        This metadata element is defined by the caDSR as "The disease group which is
+        associated with the pediatric cancer diagnosis.".
 
         Link:
-        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=12662779%20and%20ver_nr=1>
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
       enum:
-      - AIEOP
-      - BFM-SG
-      - BOCG
-      - C3P
-      - CBTN
-      - CCLG
-      - CHLA
-      - COG
-      - COSS-GPOH
-      - CRCTU
-      - CWS
-      - DCOG
-      - DePICT
-      - DFCI
-      - EORTC
-      - EpSSG
-      - EuRBG
-      - EURO-EWING
-      - FSG
-      - GALOP
-      - GEIS
-      - GPOH
-      - IDIPGR
-      - ISG
-      - JACLS
-      - JCCG
-      - JINCS
-      - JNBSG
-      - JPLSG
-      - MRC
-      - NOPHO
-      - NRG-Oncology
-      - PNOC
-      - PPLLSG
-      - RBTR
-      - SFCE
-      - SIOP MMT
-      - SIOPE
-      - SIOPEN
-      - SJCRH
-      - SOPOBE
-      - SSG
-      - Treehouse
-      - UCL
-      - UK
+      - Atypical Teratoid/Rhabdoid Tumors
+      - Choroid Plexus Tumors
+      - CNS Germ Cell Tumors
+      - CNS Sarcomas
+      - Craniopharyngiomas
+      - Ependymoma
+      - Glioneuronal and Neuronal Tumors
+      - High-Grade Glioma
+      - Low-Grade Gliomas
+      - Medulloblastoma
+      - Other CNS Embryonal Tumors
+      - Myeloid Leukemia
+      - Lymphoblastic Leukemia
+      - Hodgkin Lymphoma
+      - Non-Hodgkin Lymphoma
+      - Lymphoproliferative Diseases
+      - Soft Tissue Tumors
+      - Neuroblastoma
+      - Osteosarcoma
+      - Renal Tumors
+      - Germ Cell Tumors
+      - Ewings Sarcoma
+      - Liver Tumors
+      - Other Gliomas
+      - Other Brain Tumors
+      - Other Solid Tumors
+      - Rhabdomyosarcoma
+      - Rhabdoid Tumors
+      - Retinoblastoma
+      - Endocrine and Neuroendocrine Tumors
+      - Other Hematopoietic Tumors
     cde.v1.sample.DiseasePhase:
       type: string
       description: |-
@@ -2143,6 +2070,16 @@ components:
       - Not Hispanic or Latino
       - Unknown
       - Not reported
+    cde.v4.organization.Institution:
+      type: string
+      description: |-
+        **`caDSR CDE 1100 v4.00`**
+
+        This metadata element is defined by the caDSR as "the name of the
+        organization entering patients on a clinical trial.".
+
+        Link:
+        <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=1100%20and%20ver_nr=4>
     field.UnharmonizedField:
       oneOf:
       - $ref: '#/components/schemas/field.owned.Field'
@@ -2377,7 +2314,7 @@ components:
       - value
       properties:
         value:
-          $ref: '#/components/schemas/cde.v1.organization.Institution'
+          $ref: '#/components/schemas/cde.v4.organization.Institution'
         ancestors:
           type: array
           items:
@@ -2466,6 +2403,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.sample.metadata.Diagnosis'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.sample.DiagnosisCategory:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/cde.v1.sample.DiagnosisCategory'
         ancestors:
           type: array
           items:
@@ -3854,6 +3813,7 @@ components:
         - age_at_diagnosis
         - anatomical_sites
         - diagnosis
+        - diagnosis_category
         - disease_phase
         - library_selection_method
         - tissue_type
@@ -3878,6 +3838,10 @@ components:
           diagnosis:
             allOf:
             - $ref: '#/components/schemas/field.unowned.sample.Diagnosis'
+            nullable: true
+          diagnosis_category:
+            allOf:
+            - $ref: '#/components/schemas/field.unowned.sample.DiagnosisCategory'
             nullable: true
           disease_phase:
             allOf:

@@ -158,6 +158,12 @@ pub struct SubjectDiagnosis {
 #[derive(Debug, Default, Deserialize, IntoParams, Introspect, Serialize)]
 #[into_params(parameter_in = Query)]
 pub struct Sample {
+    /// Matches any sample where the `diagnosis_category` field matches the string
+    /// provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub diagnosis_category: Option<String>,
+
     /// Matches any sample where the `disease_phase` field matches the string
     /// provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -273,6 +279,12 @@ pub struct SampleDiagnosis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[param(required = false, nullable = false)]
     pub search: Option<String>,
+
+    /// Matches any sample where the `diagnosis_category` field matches the string
+    /// provided.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[param(required = false, nullable = false)]
+    pub diagnosis_category: Option<String>,
 
     /// Matches any sample where the `disease_phase` field matches the string
     /// provided.

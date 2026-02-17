@@ -8,24 +8,24 @@ use utoipa::ToSchema;
 
 use crate::CDE;
 
-/// **`caDSR CDE 6380045 v1.00`**
+/// **`caDSR CDE 1100 v4.00`**
 ///
-/// This metadata element is defined by the caDSR as "A unique identifier
-/// for a study.".
+/// This metadata element is defined by the caDSR as "the name of the
+/// organization entering patients on a clinical trial.".
 ///
 /// Link:
-/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6380045%20and%20ver_nr=1>
+/// <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=1100%20and%20ver_nr=4>
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema, Introspect)]
-#[schema(as = cde::v1::namespace::StudyId)]
-pub struct StudyId(String);
+#[schema(as = cde::v4::organization::Institution)]
+pub struct Institution(String);
 
-impl From<String> for StudyId {
+impl From<String> for Institution {
     fn from(value: String) -> Self {
         Self(value)
     }
 }
 
-impl Deref for StudyId {
+impl Deref for Institution {
     type Target = String;
 
     fn deref(&self) -> &Self::Target {
@@ -33,15 +33,15 @@ impl Deref for StudyId {
     }
 }
 
-impl DerefMut for StudyId {
+impl DerefMut for Institution {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl CDE for StudyId {}
+impl CDE for Institution {}
 
-impl std::fmt::Display for StudyId {
+impl std::fmt::Display for Institution {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }

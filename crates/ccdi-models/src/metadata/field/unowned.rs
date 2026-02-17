@@ -275,6 +275,15 @@ pub mod sample {
     );
 
     unowned_field!(
+        DiagnosisCategory,
+        field::unowned::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory,
+        cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
+        ccdi_cde as cde
+    );
+
+    unowned_field!(
         DiseasePhase,
         field::unowned::sample::DiseasePhase,
         cde::v1::sample::DiseasePhase,
@@ -597,7 +606,7 @@ pub mod namespace {
         field::unowned::namespace::StudyId,
         cde::v1::namespace::StudyId,
         cde::v1::namespace::StudyId,
-        cde::v1::namespace::StudyId::AALL0232,
+        cde::v1::namespace::StudyId::from(String::from("STUDY001")),
         ccdi_cde as cde
     );
 }
@@ -610,9 +619,9 @@ pub mod organization {
     unowned_field!(
         Institution,
         field::unowned::organization::Institution,
-        cde::v1::organization::Institution,
-        cde::v1::organization::Institution,
-        cde::v1::organization::Institution::Treehouse,
+        cde::v4::organization::Institution,
+        cde::v4::organization::Institution,
+        cde::v4::organization::Institution::from(String::from("Example Institution")),
         ccdi_cde as cde
     );
 }

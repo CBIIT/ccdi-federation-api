@@ -329,6 +329,48 @@ export enum CdeV1OrganizationInstitution {
 }
 
 /**
+ * **`caDSR CDE 16607972 v1.00`**
+ *
+ * This metadata element is defined by the caDSR as "The disease group which is associated with the pediatric cancer diagnosis.".
+ *
+ * Link:
+ * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
+ */
+export enum CDEV1SampleDiagnosisCategory {
+  AtypicalTeratoidRhabdoidTumors = "Atypical Teratoid/Rhabdoid Tumors",
+  ChoroidPlexusTumors = "Choroid Plexus Tumors",
+  CnsGermCellTumors = "CNS Germ Cell Tumors",
+  CnsSarcomas = "CNS Sarcomas",
+  Craniopharyngiomas = "Craniopharyngiomas",
+  Ependymoma = "Ependymoma",
+  GlioneuronalAndNeuronalTumors = "Glioneuronal and Neuronal Tumors",
+  HighGradeGlioma = "High-Grade Glioma",
+  LowGradeGliomas = "Low-Grade Gliomas",
+  Medulloblastoma = "Medulloblastoma",
+  OtherCnsEmbryonalTumors = "Other CNS Embryonal Tumors",
+  MyeloidLeukemia = "Myeloid Leukemia",
+  LymphoblasticLeukemia = "Lymphoblastic Leukemia",
+  HodgkinLymphoma = "Hodgkin Lymphoma",
+  NonHodgkinLymphoma = "Non-Hodgkin Lymphoma",
+  LymphoproliferativeDiseases = "Lymphoproliferative Diseases",
+  SoftTissueTumors = "Soft Tissue Tumors",
+  Neuroblastoma = "Neuroblastoma",
+  Osteosarcoma = "Osteosarcoma",
+  RenalTumors = "Renal Tumors",
+  GermCellTumors = "Germ Cell Tumors",
+  EwingsSarcoma = "Ewings Sarcoma",
+  LiverTumors = "Liver Tumors",
+  OtherGliomas = "Other Gliomas",
+  OtherBrainTumors = "Other Brain Tumors",
+  OtherSolidTumors = "Other Solid Tumors",
+  Rhabdomyosarcoma = "Rhabdomyosarcoma",
+  RhabdoidTumors = "Rhabdoid Tumors",
+  Retinoblastoma = "Retinoblastoma",
+  EndocrineAndNeuroendocrineTumors = "Endocrine and Neuroendocrine Tumors",
+  OtherHematopoieticTumors = "Other Hematopoietic Tumors",
+}
+
+/**
  * **`caDSR CDE 12217251 v1.00`**
  *
  * This metadata element is defined by the caDSR as "The stage or period of an
@@ -898,6 +940,28 @@ export interface FieldUnownedSampleDiagnosis {
    * [CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx]: https://cbiit.github.io/ccdi-federation-api/assets/CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx
    */
   value: ModelsSampleMetadataDiagnosis;
+  /**
+   * The ancestors from which this field was derived.
+   *
+   * Ancestors should be provided as period (`.`) delimited paths
+   * from the `metadata` key in the subject response object.
+   */
+  ancestors?: string[];
+  details?: ModelsMetadataFieldDetails;
+  /** A free-text comment field. */
+  comment?: string;
+}
+
+export interface FieldUnownedSampleDiagnosisCategory {
+  /**
+   * **`caDSR CDE 16607972 v1.00`**
+   *
+   * This metadata element is defined by the caDSR as "The disease group which is associated with the pediatric cancer diagnosis.".
+   *
+   * Link:
+   * <https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=16607972%20and%20ver_nr=1>
+   */
+  value: CDEV1SampleDiagnosisCategory;
   /**
    * The ancestors from which this field was derived.
    *
