@@ -1450,6 +1450,17 @@ paths:
         required: false
         schema:
           type: string
+      - name: associated_diagnosis_categories
+        in: query
+        description: |-
+          Matches any subject where any member of the `associated_diagnosis_categories` field matches the
+          string provided.
+
+          **Note:** a logical OR (`||`) is performed across the values when
+          determining whether the subject should be included in the results.
+        required: false
+        schema:
+          type: string
       - name: metadata.unharmonized.<field>
         in: query
         description: |-
@@ -2711,6 +2722,28 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/models.subject.metadata.AssociatedDiagnoses'
+        ancestors:
+          type: array
+          items:
+            type: string
+          description: |-
+            The ancestors from which this field was derived.
+
+            Ancestors should be provided as period (`.`) delimited paths
+            from the `metadata` key in the subject response object.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/models.metadata.field.Details'
+        comment:
+          type: string
+          description: A free-text comment field.
+    field.unowned.subject.AssociatedDiagnosisCategories:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/models.subject.metadata.AssociatedDiagnosisCategories'
         ancestors:
           type: array
           items:
@@ -18555,6 +18588,7 @@ components:
         - vital_status
         - age_at_vital_status
         - associated_diagnoses
+        - associated_diagnosis_categories
         properties:
           sex:
             allOf:
@@ -18593,6 +18627,12 @@ components:
             items:
               $ref: '#/components/schemas/field.unowned.subject.AssociatedDiagnoses'
             description: The associated diagnoses for the subject.
+            nullable: true
+          associated_diagnosis_categories:
+            type: array
+            items:
+              $ref: '#/components/schemas/field.unowned.subject.AssociatedDiagnosisCategories'
+            description: The associated diagnoses categories for the subject.
             nullable: true
           unharmonized:
             $ref: '#/components/schemas/fields.Unharmonized'
@@ -18689,6 +18729,18 @@ components:
 
         [CCDI Submission Template v1.7.2]: https://github.com/CBIIT/ccdi-model/blob/682a99d93b66540bb880ce5899ba8096968a96cf/metadata-manifest/CCDI_Submission_Template_v1.7.2.xlsx
         [CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx]: https://cbiit.github.io/ccdi-federation-api/assets/CCDI_Submission_Template_v1.7.2.diagnosis_values.xlsx
+    models.subject.metadata.AssociatedDiagnosisCategories:
+      type: array
+      items:
+        $ref: '#/components/schemas/cde.v1.sample.DiagnosisCategory'
+      description: |-
+        The associated diagnosis categories for a [`Subject`](crate::Subject).
+
+        These values correspond to the CCDI diagnosis *categories* and are restricted
+        to the controlled vocabulary defined by the CCDI CDEs.
+
+        Unlike \[`AssociatedDiagnoses`\], which is free-text, this field is strongly
+        typed and backed by the `DiagnosisCategory` enum.
     responses.Errors:
       type: object
       description: A wrapper around one or more [errors](Kind).
