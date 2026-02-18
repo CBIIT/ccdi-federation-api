@@ -253,14 +253,15 @@ impl Builder {
     ///
     /// let field = AssociatedDiagnosisCategories::new(
     ///     vec![
-    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor,
+    ///         cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
     ///         cde::v1::sample::DiagnosisCategory::Neuroblastoma,
-    ///     ],
+    ///     ]
+    ///     .into(),
     ///     None,
     ///     None,
     ///     None,
     /// );
-    /// let builder = Builder::default().append_aassociated_diagnosis_categories(field);
+    /// let builder = Builder::default().append_associated_diagnosis_categories(field);
     /// ```
     pub fn append_associated_diagnosis_categories(
         mut self,

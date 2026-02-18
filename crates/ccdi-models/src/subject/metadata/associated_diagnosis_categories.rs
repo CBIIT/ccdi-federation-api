@@ -1,7 +1,10 @@
 use std::ops::Deref;
 use std::ops::DerefMut;
 
+use ccdi_cde as cde;
 use introspect::Introspect;
+use rand::distributions::Distribution;
+use rand::distributions::Standard;
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -11,13 +14,11 @@ use utoipa::ToSchema;
 /// These values correspond to the CCDI diagnosis *categories* and are restricted
 /// to the controlled vocabulary defined by the CCDI CDEs.
 ///
-/// Unlike [`AssociatedDiagnoses`], which is free-text, this field is strongly
+/// Unlike \[`AssociatedDiagnoses`\], which is free-text, this field is strongly
 /// typed and backed by the `DiagnosisCategory` enum.
-#[derive(
-    Clone, Debug, Deserialize, Eq, Introspect, Ord, PartialEq, PartialOrd, Serialize, ToSchema,
-)]
+#[derive(Clone, Debug, Deserialize, Eq, Introspect, PartialEq, Serialize, ToSchema)]
 #[schema(as = models::subject::metadata::AssociatedDiagnosisCategories)]
-pub struct AssociatedDiagnosisCategories(Vec<cde::v1::sample::DiagnosisCategory>,);
+pub struct AssociatedDiagnosisCategories(Vec<cde::v1::sample::DiagnosisCategory>);
 
 impl From<Vec<cde::v1::sample::DiagnosisCategory>> for AssociatedDiagnosisCategories {
     fn from(value: Vec<cde::v1::sample::DiagnosisCategory>) -> Self {
@@ -48,5 +49,13 @@ impl std::fmt::Display for AssociatedDiagnosisCategories {
             .collect::<Vec<_>>()
             .join(", ");
         write!(f, "{}", joined)
+    }
+}
+
+impl Distribution<AssociatedDiagnosisCategories> for Standard {
+    fn sample<R: rand::Rng + ?Sized>(&self, _rng: &mut R) -> AssociatedDiagnosisCategories {
+        AssociatedDiagnosisCategories::from(vec![
+            cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors,
+        ])
     }
 }

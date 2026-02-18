@@ -479,9 +479,11 @@ pub mod subject {
     unowned_field!(
         AssociatedDiagnosisCategories,
         field::unowned::subject::AssociatedDiagnosisCategories,
-        Vec<cde::v1::sample::DiagnosisCategory>,
-        Vec<cde::v1::sample::DiagnosisCategory>,
-        vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
+        crate::subject::metadata::AssociatedDiagnosisCategories,
+        models::subject::metadata::AssociatedDiagnosisCategories,
+        models::subject::metadata::AssociatedDiagnosisCategories::from(vec![
+            cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors
+        ]),
         ccdi_cde as cde
     );
 
