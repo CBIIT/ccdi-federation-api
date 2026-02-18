@@ -15,10 +15,12 @@ use crate::subject::Identifier;
 
 mod age_at_vital_status;
 mod associated_diagnoses;
+mod associated_diagnosis_categories;
 mod builder;
 
 pub use age_at_vital_status::AgeAtVitalStatus;
 pub use associated_diagnoses::AssociatedDiagnoses;
+pub use associated_diagnosis_categories::AssociatedDiagnosisCategories;
 pub use builder::Builder;
 
 /// Metadata associated with a subject.
@@ -334,7 +336,7 @@ impl Metadata {
     ///
     /// let metadata = Builder::default()
     ///     .append_associated_diagnosis_categories(AssociatedDiagnosisCategories::new(
-    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors].into(),
     ///         None,
     ///         None,
     ///         None,
@@ -344,7 +346,7 @@ impl Metadata {
     /// assert_eq!(
     ///     metadata.associated_diagnosis_categories(),
     ///     Some(&vec![AssociatedDiagnosisCategories::new(
-    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumor],
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors].into(),
     ///         None,
     ///         None,
     ///         None
