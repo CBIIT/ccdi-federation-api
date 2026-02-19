@@ -7,12 +7,12 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Added diagnosis_category to the /subject endpoint
-  ([#?](https://github.com/CBIIT/ccdi-federation-api/pull/?))
+
 
 
 ### Added
-
+- Added diagnosis_category to the /subject endpoint
+  ([#175](https://github.com/CBIIT/ccdi-federation-api/pull/175))
 - Added diagnosis_category to the /sample endpoint
   ([#173](https://github.com/CBIIT/ccdi-federation-api/pull/173))
 - Added a blog post "IUSCCC-PST joins the Federation API".
