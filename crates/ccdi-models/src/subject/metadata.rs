@@ -15,10 +15,12 @@ use crate::subject::Identifier;
 
 mod age_at_vital_status;
 mod associated_diagnoses;
+mod associated_diagnosis_categories;
 mod builder;
 
 pub use age_at_vital_status::AgeAtVitalStatus;
 pub use associated_diagnoses::AssociatedDiagnoses;
+pub use associated_diagnosis_categories::AssociatedDiagnosisCategories;
 pub use builder::Builder;
 
 /// Metadata associated with a subject.
@@ -55,6 +57,11 @@ pub struct Metadata {
     /// The associated diagnoses for the subject.
     #[schema(value_type = Vec<field::unowned::subject::AssociatedDiagnoses>, nullable = true)]
     associated_diagnoses: Option<Vec<field::unowned::subject::AssociatedDiagnoses>>,
+
+    /// The associated diagnoses categories for the subject.
+    #[schema(value_type = Vec<field::unowned::subject::AssociatedDiagnosisCategories>, nullable = true)]
+    associated_diagnosis_categories:
+        Option<Vec<field::unowned::subject::AssociatedDiagnosisCategories>>,
 
     /// Common metadata elements for all metadata blocks.
     #[schema(value_type = models::metadata::common::Metadata)]
@@ -316,6 +323,42 @@ impl Metadata {
         self.associated_diagnoses.as_ref()
     }
 
+    /// Gets the associated diagnoses categories for the [`Metadata`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ccdi_cde as cde;
+    /// use ccdi_models as models;
+    ///
+    /// use models::metadata::field::unowned::subject::AssociatedDiagnosisCategories;
+    /// use models::subject::metadata::Builder;
+    ///
+    /// let metadata = Builder::default()
+    ///     .append_associated_diagnosis_categories(AssociatedDiagnosisCategories::new(
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors].into(),
+    ///         None,
+    ///         None,
+    ///         None,
+    ///     ))
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     metadata.associated_diagnosis_categories(),
+    ///     Some(&vec![AssociatedDiagnosisCategories::new(
+    ///         vec![cde::v1::sample::DiagnosisCategory::AtypicalTeratoidRhabdoidTumors].into(),
+    ///         None,
+    ///         None,
+    ///         None
+    ///     )])
+    /// );
+    /// ```
+    pub fn associated_diagnosis_categories(
+        &self,
+    ) -> Option<&Vec<field::unowned::subject::AssociatedDiagnosisCategories>> {
+        self.associated_diagnosis_categories.as_ref()
+    }
+
     /// Gets the common metadata fields for the [`Metadata`].
     ///
     /// # Examples
@@ -485,6 +528,7 @@ impl Metadata {
                     })
                     .collect(),
             ),
+            associated_diagnosis_categories: Some(vec![rand::random()]),
 
             common: Default::default(),
             unharmonized: Default::default(),
@@ -501,7 +545,7 @@ mod tests {
         let metadata = builder::Builder::default().build();
         assert_eq!(
             &serde_json::to_string(&metadata).unwrap(),
-            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"associated_diagnoses\":null,\"depositions\":null}"
+            "{\"sex\":null,\"race\":null,\"ethnicity\":null,\"identifiers\":null,\"vital_status\":null,\"age_at_vital_status\":null,\"associated_diagnoses\":null,\"associated_diagnosis_categories\":null,\"depositions\":null}"
         );
     }
 }

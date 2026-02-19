@@ -104,6 +104,16 @@ impl FilterMetadataField<Subject, FilterSubjectDiagnosisParams> for Vec<Subject>
                                         })
                                         .collect::<Vec<String>>()
                                 }),
+                            "associated_diagnosis_categories" => subject
+                                .metadata()
+                                .and_then(|metadata| metadata.associated_diagnosis_categories())
+                                .map(|categories_vec| {
+                                    categories_vec
+                                        .iter()
+                                        .flat_map(|cat| cat.value().iter()) // unwrap the Vec<DiagnosisCategory>
+                                        .map(|diag_cat| diag_cat.to_string())
+                                        .collect::<Vec<String>>()
+                                }),
                             _ => unreachable!("unhandled subject metadata field: {field}"),
                         };
 
