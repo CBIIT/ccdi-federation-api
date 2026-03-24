@@ -121,6 +121,10 @@ export default withMermaid(defineConfig({
             text: "IUSCCC-PST joins the Federation API",
             link: "/blog/11-26-2025-the-federation-api-iusccc-pst",
           },
+          {
+            text: "CCDI Data via Federation API",
+            link: "/blog/03-26-2026-the-federation-api-dcc-ccdi",
+          },
         ],
       },
     ],
