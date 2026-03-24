@@ -37,6 +37,13 @@
         link="/ccdi-federation-api/blog/11-26-2025-the-federation-api-iusccc-pst"
       />
     </ul>
+    <ul>
+      <BlogEntry5
+        title="CCDI Data via Federation API"
+        author="CCDI Federation Resource Team"
+        link="/ccdi-federation-api/blog/03-26-2026-the-federation-api-dcc-ccdi"
+      />
+    </ul>
   </div>
 </template>
 <script setup lang="ts">
@@ -45,6 +52,7 @@ import BlogEntry1 from "./BlogEntry1.vue";
 import BlogEntry2 from "./BlogEntry2.vue";
 import BlogEntry3 from "./BlogEntry3.vue";
 import BlogEntry4 from "./BlogEntry4.vue";
+import BlogEntry5 from "./BlogEntry5.vue";
 </script>
 
 <style scoped></style>
