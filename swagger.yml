@@ -32,6 +32,8 @@ servers:
   description: Childhood Cancer Catalog of ecDNA CCDI API server
 - url: https://ccdi.ipo.sulab.io/api/v1
   description: Indiana Precision Oncology CCDI API server
+- url: https://dcc.ccdi.cancer.gov/api/v1
+  description: CCDI Data Node API Server
 paths:
   /subject:
     get:

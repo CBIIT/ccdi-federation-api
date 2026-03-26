@@ -7,8 +7,8 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-
+- Added a blog post "CCDI Data via Federation API".
+  ([#180](https://github.com/CBIIT/ccdi-federation-api/pull/180))
 ### Added
 - Added diagnosis_category to the /subject endpoint
   ([#175](https://github.com/CBIIT/ccdi-federation-api/pull/175))
