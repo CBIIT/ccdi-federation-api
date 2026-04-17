@@ -65,6 +65,11 @@ use utoipa::openapi;
             description = "Indiana Precision Oncology CCDI API server"
 
         ),
+        (
+            url = "https://dcc.ccdi.cancer.gov/api/v1",
+            description = "CCDI Data Node API Server"
+
+        ),
     ),
     tags(
         (
