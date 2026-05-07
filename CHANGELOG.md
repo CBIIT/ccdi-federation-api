@@ -7,11 +7,15 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Added a blog post "CCDI Data via Federation API".
-  ([#180](https://github.com/CBIIT/ccdi-federation-api/pull/180))
+
+## [v1.3.0] — 05-07-2026
+
+### Added
+
 - Adds the CCDI data server to the list of available implementations.
   ([#184](https://github.com/CBIIT/ccdi-federation-api/pull/184))
-### Added
+- Added a blog post "CCDI Data via Federation API".
+  ([#180](https://github.com/CBIIT/ccdi-federation-api/pull/180))
 - Added diagnosis_category to the /subject endpoint
   ([#175](https://github.com/CBIIT/ccdi-federation-api/pull/175))
 - Added diagnosis_category to the /sample endpoint
