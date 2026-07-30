@@ -44,6 +44,13 @@
         link="/ccdi-federation-api/blog/03-26-2026-the-federation-api-dcc-ccdi"
       />
     </ul>
+    <ul>
+      <BlogEntry6
+        title="CCDI Data Federation Agent Skill"
+        author="CCDI Federation Resource Team"
+        link="/ccdi-federation-api/blog/08-28-2026-the-federation-api-skill"
+      />
+    </ul>
   </div>
 </template>
 <script setup lang="ts">
@@ -53,6 +60,7 @@ import BlogEntry2 from "./BlogEntry2.vue";
 import BlogEntry3 from "./BlogEntry3.vue";
 import BlogEntry4 from "./BlogEntry4.vue";
 import BlogEntry5 from "./BlogEntry5.vue";
+import BlogEntry6 from "./BlogEntry6.vue";
 </script>
 
 <style scoped></style>
