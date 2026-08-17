@@ -20,6 +20,10 @@ using the [CCDI Federation Resource][CCDI Federation Resource]. The skill
 streamlines the discovery and analysis of metadata from diverse sources,
 helping accelerate childhood cancer research.
 
+<div style="display: flex; justify-content: center;">
+  <img src="./08-28-2026-the-federation-api-agent-skill/CCDI-FederationResourceAISkill.jpg" alt="Diagram illustrating CCDI Federation Resource AI Skill." style="width: 100%; display: block; margin: 0 auto;" />
+</div>
+
 The CCDI Data Federation unifies metadata from multiple pediatric cancer
 resources, enabling researchers to identify subjects, samples, and files
 across participating nodes. While the federation is powerful, it
@@ -30,7 +34,7 @@ this gap.
 
 ## The Role of the Agent Skill
 
-An Agent Skill is a text file in markdown format ( SKILL.md file) that
+An Agent Skill is a text file in markdown format (SKILL.md file) that
 contains structured instructions, context, and examples so AI agents can
 perform specialized tasks efficiently. The Agent Skill serves as a
 metadata-aware copilot for the CCDI Federation API. Its purpose is not
@@ -101,9 +105,10 @@ A user may request:
     API-level errors, enabling users to distinguish between empty results,
     partial federation responses, and actual API issues.
   </div>
-  <div style="flex: 0 0 auto;">
-        <img src="./08-28-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 400px; display: block;" />
-  </div>
+</div>
+<br/>
+<div style="display: flex; justify-content: center;">
+  <img src="./08-28-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 100%; display: block; margin: 0 auto;" />
 </div>
 
 **Create a chart**
@@ -149,6 +154,11 @@ navigate the CCDI Data Federation and begin to utilize the Agent Skill.
 }
 .vp-doc table tbody tr:nth-child(even) {
   background-color: transparent !important;
+}
+.vp-doc img {
+  max-width: 100%;
+  height: auto;
+  image-rendering: -webkit-optimize-contrast; /* Keeps text inside PNGs crisp */
 }
 </style>
 
