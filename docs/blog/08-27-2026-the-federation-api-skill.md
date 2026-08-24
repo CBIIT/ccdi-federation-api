@@ -9,7 +9,7 @@ import {onMounted, computed, defineAsyncComponent, Ref, ref, watch} from "vue"
 ### <span style="color: #1F4D78;">How a metadata-aware copilot helps translate research intent into validated CCDI Federation API workflows.</span>
 
 <div class="text-lg mt-1 dark:text-slate-300 text-slate-900">The CCDI Federation Resource Team</div>
-<div class="dark:text-slate-400 text-slate-800 italic">August 28, 2026</div>
+<div class="dark:text-slate-400 text-slate-800 italic">August 27, 2026</div>
 
 ## Introducing the CCDI Data Federation Agent Skill
 
@@ -21,7 +21,7 @@ streamlines the discovery and analysis of metadata from diverse sources,
 helping accelerate childhood cancer research.
 
 <div style="display: flex; justify-content: center;">
-  <img src="./08-28-2026-the-federation-api-agent-skill/CCDI-FederationResourceAISkill.jpg" alt="Diagram illustrating CCDI Federation Resource AI Skill." style="width: 100%; display: block; margin: 0 auto;" />
+  <img src="./08-27-2026-the-federation-api-agent-skill/CCDI-FederationResourceAISkill.jpg" alt="Diagram illustrating CCDI Federation Resource AI Skill." style="width: 100%; display: block; margin: 0 auto;" />
 </div>
 
 The CCDI Data Federation unifies metadata from multiple pediatric cancer
@@ -108,7 +108,7 @@ A user may request:
 </div>
 <br/>
 <div style="display: flex; justify-content: center;">
-  <img src="./08-28-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 100%; display: block; margin: 0 auto;" />
+  <img src="./08-27-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 100%; display: block; margin: 0 auto;" />
 </div>
 
 **Create a chart**

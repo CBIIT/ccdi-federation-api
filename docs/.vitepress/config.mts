@@ -127,7 +127,7 @@ export default withMermaid(defineConfig({
           },
           {
             text: "CCDI Data Federation Agent Skill",
-            link: "/blog/08-28-2026-the-federation-api-skill",
+            link: "/blog/08-27-2026-the-federation-api-skill",
           },
         ],
       },

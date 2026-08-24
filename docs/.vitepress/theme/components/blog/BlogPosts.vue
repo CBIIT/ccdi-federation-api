@@ -48,7 +48,7 @@
       <BlogEntry6
         title="CCDI Data Federation Agent Skill"
         author="CCDI Federation Resource Team"
-        link="/ccdi-federation-api/blog/08-28-2026-the-federation-api-skill"
+        link="/ccdi-federation-api/blog/08-27-2026-the-federation-api-skill"
       />
     </ul>
   </div>
