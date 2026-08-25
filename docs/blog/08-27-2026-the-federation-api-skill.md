@@ -10,7 +10,7 @@ import {onMounted, computed, defineAsyncComponent, Ref, ref, watch} from "vue"
 <div class="text-lg mt-1 dark:text-slate-300 text-slate-900">The CCDI Federation Resource Team</div>
 <div class="dark:text-slate-400 text-slate-800 italic">August 27, 2026</div>
 
-## Introducing the CCDI Data Federation Agent Skill
+## Introducing the CCDI Data Federation Resource AgentSkill
 
 The Childhood Cancer Data Initiative ([CCDI][CCDI]) is pleased to announce a new
 Agent Skill ([CCDI Federation AI][CCDI Federation AI]) designed
