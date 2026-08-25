@@ -7,7 +7,8 @@ and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+- Added a blog post "CCDI Data Federation Agent Skill".
+  ([#188](https://github.com/CBIIT/ccdi-federation-api/pull/188))
 ## [v1.3.0] — 05-07-2026
 
 ### Added
