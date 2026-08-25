@@ -6,7 +6,6 @@ import {onMounted, computed, defineAsyncComponent, Ref, ref, watch} from "vue"
 <div class="text-4xl font-extrabold">Using the CCDI Data Federation Agent Skill to Build Better Metadata Queries</div>
 <br/>
 
-### <span style="color: #1F4D78;">How a metadata-aware copilot helps translate research intent into validated CCDI Federation API workflows.</span>
 
 <div class="text-lg mt-1 dark:text-slate-300 text-slate-900">The CCDI Federation Resource Team</div>
 <div class="dark:text-slate-400 text-slate-800 italic">August 27, 2026</div>
@@ -58,9 +57,9 @@ workflows: API explanation and cohort query planning.
   defined by the [API specification][API specification].
 
 Skills are portable. Once created, a skill can be adapted for AI coding
-and agent platforms, including Claude Code, OpenAI Codex, Cursor, Gemini
+and agent platforms, including Claude Code, OpenAI ChatGPT, Cursor, Gemini
 CLI, and others. Although the first version of the CCDI Data Federation
-Agent Skill was developed and tested with OpenAI Codex, users can load
+Agent Skill was developed and tested with OpenAI ChatGPT, users can load
 the skill file in other supported AI platforms.
 
 One of the most valuable aspects of the Agent Skill is semantic
