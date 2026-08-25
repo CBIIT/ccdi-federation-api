@@ -90,12 +90,7 @@ values are involved, it verifies bundled permissible-value metadata for
 subject, sample, and file entities. The output is a query plan detailing
 the endpoint, method, filters, pagination settings, assumptions, and any
 ambiguities.
-
 <br/>
-A user may request:
-
-### Run this query: What is the Distribution of Participants by Sex by CCDI Federation Member?
-
 <div style="display: flex; gap: 40px; align-items: flex-start;">
   <div style="flex: 3;">
     Upon such requests, the skill uses validated read-only API calls,
