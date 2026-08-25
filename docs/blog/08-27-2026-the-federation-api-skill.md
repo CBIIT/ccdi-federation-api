@@ -3,14 +3,11 @@ import {onMounted, computed, defineAsyncComponent, Ref, ref, watch} from "vue"
 
 </script>
 <ClientOnly>
-<div class="text-4xl font-extrabold">Using the CCDI Data Federation Agent Skill to Build Better Metadata Queries</div>
+<div class="text-4xl font-extrabold">Introducing the CCDI Data Federation Agent Skill</div>
 <br/>
-
 
 <div class="text-lg mt-1 dark:text-slate-300 text-slate-900">The CCDI Federation Resource Team</div>
 <div class="dark:text-slate-400 text-slate-800 italic">August 27, 2026</div>
-
-## Introducing the CCDI Data Federation Resource AgentSkill
 
 The Childhood Cancer Data Initiative ([CCDI][CCDI]) is pleased to announce a new
 Agent Skill ([CCDI Federation AI][CCDI Federation AI]) designed
@@ -57,7 +54,7 @@ workflows: API explanation and cohort query planning.
   defined by the [API specification][API specification].
 
 Skills are portable. Once created, a skill can be adapted for AI coding
-and agent platforms, including Claude Code, OpenAI ChatGPT, Cursor, Gemini
+and agent platforms, including Claude Code, OpenAI ChatGPT, Gemini
 CLI, and others. Although the first version of the CCDI Data Federation
 Agent Skill was developed and tested with OpenAI ChatGPT, users can load
 the skill file in other supported AI platforms.
@@ -83,24 +80,9 @@ as:
 "**What is the distribution by sex for registered participants by
 Federation member?"**
 
-Before proposing or executing a query, the skill checks the route and
-parameters against the CCDI Federation Open API definition, preventing
-unsupported filters and incorrect endpoint behavior. When controlled
-values are involved, it verifies bundled permissible-value metadata for
-subject, sample, and file entities. The output is a query plan detailing
-the endpoint, method, filters, pagination settings, assumptions, and any
-ambiguities.
-<br/>
-<div style="display: flex; gap: 40px; align-items: flex-start;">
-  <div style="flex: 3;">
-    Upon such requests, the skill uses validated read-only API calls,
-    applies pagination limits, and provides summarized metadata rather than
-    the full raw response. It also retains node-level, page-level, and
-    API-level errors, enabling users to distinguish between empty results,
-    partial federation responses, and actual API issues.
-    
-  </div>
-</div>
+Before proposing or executing a query, the skill checks the route and parameters against the CCDI Federation Open API definition, preventing unsupported filters and incorrect endpoint behavior. When controlled values are involved, it verifies bundled permissible-value metadata for subject, sample, and file entities. The output is a query plan detailing the endpoint, method, filters, pagination settings, assumptions, and any ambiguities.
+
+Upon such requests, the skill uses validated read-only API calls, applies pagination limits, and provides summarized metadata rather than the full raw response. It also retains node-level, page-level, and API-level errors, enabling users to distinguish between empty results, partial federation responses, and actual API issues.
 
 **Create a chart**
 
@@ -114,7 +96,7 @@ chart that can be exported for slides or reports.
 
 ## Try It Out!
 
-The Github repository ([CCDI Federation AI][CCDI Federation AI]) 
+The GitHub repository ([CCDI Federation AI][CCDI Federation AI]) 
 provides the Agent Skill and corresponding documentation to
 begin to load and run the Agent Skill. The following set of questions
 includes some of the types of questions that Agent Skill can provide
