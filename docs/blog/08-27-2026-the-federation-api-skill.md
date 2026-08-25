@@ -98,17 +98,19 @@ ambiguities.
     the full raw response. It also retains node-level, page-level, and
     API-level errors, enabling users to distinguish between empty results,
     partial federation responses, and actual API issues.
+    
   </div>
-</div>
-<br/>
-<div style="display: flex; justify-content: center;">
-  <img src="./08-27-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 100%; display: block; margin: 0 auto;" />
 </div>
 
 **Create a chart**
 
 The resulting data can also be summarized in a presentation-quality
 chart that can be exported for slides or reports.
+
+<div style="display: flex; justify-content: center;">
+  <img src="./08-27-2026-the-federation-api-agent-skill/ParticipantsDistributionBySex.png" alt="Diagram illustrating a request which groups the subjects by the metadata 'sex' field and returns counts." style="width: 100%; display: block; margin: 0 auto;" />
+</div>
+
 
 ## Try It Out!
 
