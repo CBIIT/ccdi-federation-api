@@ -99,7 +99,7 @@ chart that can be exported for slides or reports.
 The GitHub repository ([CCDI Federation AI][CCDI Federation AI]) 
 provides the Agent Skill and corresponding documentation to
 begin to load and run the Agent Skill. The following set of questions
-includes some of the types of questions that Agent Skill can provide
+includes some of the types of questions that the Agent Skill can provide
 answers to. It is not meant to be an exhaustive list but rather is
 illustrative of the types of analysis that can be performed to help
 navigate the CCDI Data Federation and begin to utilize the Agent Skill.
