@@ -16,6 +16,8 @@ jobs:
             - run: |
                   cd crates
                   cargo run --all-features --bin ccdi-spec generate > ../current-swagger.yml
+              env:
+                  RUST_MIN_STACK: 33554432
             - run: |
                   if ! diff swagger.yml current-swagger.yml; then
                     exit 1
