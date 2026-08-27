@@ -133,6 +133,21 @@ navigate the CCDI Data Federation and begin to utilize the Agent Skill.
 .vp-doc table tbody tr:nth-child(even) {
   background-color: transparent !important;
 }
+html.dark .vp-doc table th,
+html.dark .vp-doc table td {
+  color: #e5e7eb;
+  border-color: #4b5563;
+}
+html.dark .vp-doc table th {
+  background-color: #1f3a5f !important;
+  color: #f8fafc !important;
+}
+html.dark .vp-doc table tbody tr:nth-child(odd) {
+  background-color: #1f2937 !important;
+}
+html.dark .vp-doc table tbody tr:nth-child(even) {
+  background-color: transparent !important;
+}
 .vp-doc img {
   max-width: 100%;
   height: auto;
